@@ -2,11 +2,10 @@
 
 import React, { useState } from 'react';
 import { useAuth } from '@/providers/auth-provider';
-import { useTheme } from '@/providers/theme-provider';
+
 
 export function Topbar() {
   const { user, logout } = useAuth();
-  const { theme, toggleTheme } = useTheme();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   return (
@@ -24,13 +23,6 @@ export function Topbar() {
         </div>
       </div>
       <div className="flex items-center gap-4">
-        <button
-          onClick={toggleTheme}
-          className="p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-800 transition-colors focus:outline-none"
-          title="Toggle Theme"
-        >
-          {theme === 'dark' ? '☀️' : '🌙'}
-        </button>
         <div className="relative">
           <button
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}

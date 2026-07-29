@@ -3,12 +3,11 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/providers/auth-provider';
-import { useTheme } from '@/providers/theme-provider';
+
 import { Button } from '@/components/ui/Button';
 
 export function Navbar() {
   const { user, logout } = useAuth();
-  const { theme, toggleTheme } = useTheme();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isAvatarDropdownOpen, setIsAvatarDropdownOpen] = useState(false);
 
@@ -30,13 +29,7 @@ export function Navbar() {
             </div>
           </div>
           <div className="flex items-center gap-4">
-            <button
-              onClick={toggleTheme}
-              className="p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-800 transition-colors"
-              aria-label="Toggle theme"
-            >
-              {theme === 'dark' ? '☀️' : '🌙'}
-            </button>
+
             <div className="hidden md:flex items-center gap-4">
               {user ? (
                 <div className="relative">

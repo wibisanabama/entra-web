@@ -46,11 +46,6 @@ export default function HomePage() {
           <p className="text-lg md:text-xl text-indigo-100 mb-10 max-w-2xl mx-auto drop-shadow">
             Platform terbaik untuk mencari, memesan, dan membuat event dengan mudah. Bergabunglah dengan ribuan pengguna lainnya.
           </p>
-          <Link href="/events">
-            <Button size="lg" className="!bg-white !text-[#7C3AED] hover:!bg-gray-200 shadow-xl text-lg px-8 py-6 rounded-full transition-all ">
-              Jelajahi Event
-            </Button>
-          </Link>
         </div>
       </section>
 

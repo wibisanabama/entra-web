@@ -39,7 +39,6 @@ export default function HomePage() {
     <div className="w-full">
       {/* Hero Section */}
       <section className="relative w-full py-20 md:py-32 bg-[#7C3AED] overflow-hidden">
-        <div className="absolute inset-0 bg-[url('https://placehold.co/1920x1080/000000/1e1e1e?text=Pattern')] opacity-10 bg-cover mix-blend-overlay"></div>
         <div className="container mx-auto px-4 text-center relative z-10">
           <h1 className="text-4xl md:text-6xl font-extrabold text-white mb-6 tracking-tight drop-shadow-md animate-fade-in-up">
             Temukan Event Terbaik <br className="hidden md:block" /> di Sekitarmu

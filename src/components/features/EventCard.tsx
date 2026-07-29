@@ -11,7 +11,17 @@ export interface EventCardProps {
 }
 
 export function EventCard({ event }: EventCardProps) {
-  const startDate = new Date(event.start_date);
+  let formattedDate = 'Waktu Belum Ditentukan';
+  try {
+    if (event.start_date) {
+      const startDate = new Date(event.start_date);
+      if (!isNaN(startDate.getTime())) {
+        formattedDate = format(startDate, 'dd MMM yyyy, HH:mm', { locale: id });
+      }
+    }
+  } catch (err) {
+    // ignore
+  }
   
   return (
     <Link href={`/events/${event.id}`}>
@@ -39,7 +49,7 @@ export function EventCard({ event }: EventCardProps) {
           <div className="space-y-2 mt-auto">
             <div className="flex items-center text-sm text-gray-400">
               <span className="mr-2">📅</span>
-              {format(startDate, 'dd MMM yyyy, HH:mm', { locale: id })}
+              {formattedDate}
             </div>
             <div className="flex items-center text-sm text-gray-400">
               <span className="mr-2">📍</span>

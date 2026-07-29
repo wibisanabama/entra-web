@@ -75,7 +75,7 @@ export default function HomePage() {
               <p className="text-gray-400">Jangan lewatkan keseruan event-event ini</p>
             </div>
             <Link href="/events" className="text-[#7C3AED] hover:text-[#4F46E5] font-medium hidden md:block">
-              Lihat Semua &rarr;
+              Lihat Semua
             </Link>
           </div>
 
@@ -96,7 +96,7 @@ export default function HomePage() {
           </div>
           <div className="mt-8 text-center md:hidden">
             <Link href="/events" className="text-[#7C3AED] hover:text-[#4F46E5] font-medium">
-              Lihat Semua &rarr;
+              Lihat Semua
             </Link>
           </div>
         </div>

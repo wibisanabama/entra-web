@@ -56,7 +56,7 @@ export default function HomePage() {
       </section>
 
       {/* Categories Section */}
-      <section className="pt-24 pb-12 bg-gray-950">
+      <section className="pt-32 pb-12 bg-gray-950">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-2xl font-bold mb-8 text-white">Kategori Populer</h2>
           <div className="flex flex-wrap justify-center gap-4">

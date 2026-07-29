@@ -96,7 +96,7 @@ export default function EventDetailPage() {
           
           {/* Main Info */}
           <div className="lg:col-span-2 space-y-8">
-            <div className="bg-gray-900 p-6 md:p-8 rounded-2xl border border-gray-800 shadow-xl">
+            <div className="bg-gray-900 p-6 md:p-8 rounded-2xl shadow-xl">
               <Badge status={event.category} className="bg-[#7C3AED] hover:bg-[#4F46E5] text-white mb-4" />
               <h1 className="text-3xl md:text-5xl font-bold text-white mb-4 leading-tight">{event.title}</h1>
               
@@ -124,13 +124,13 @@ export default function EventDetailPage() {
               </div>
             </div>
 
-            <div className="bg-gray-900 p-6 md:p-8 rounded-2xl border border-gray-800">
+            <div className="bg-gray-900 p-6 md:p-8 rounded-2xl ">
               <h2 className="text-2xl font-bold text-white mb-4">Deskripsi Event</h2>
               <div className="text-gray-300 leading-relaxed space-y-4">
                 <p>{event.description}</p>
               </div>
               
-              <div className="mt-8 pt-8 border-t border-gray-800">
+              <div className="mt-8 pt-8 ">
                 <h3 className="text-lg font-bold text-white mb-2">Diselenggarakan oleh</h3>
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center font-bold text-xl text-[#7C3AED]">
@@ -145,8 +145,8 @@ export default function EventDetailPage() {
           {/* Ticket Section */}
           <div className="lg:col-span-1">
             <div className="sticky top-24">
-              <Card className="bg-gray-900 border-gray-800 shadow-xl overflow-hidden">
-                <div className="p-6 bg-[#7C3AED]/20 border-b border-gray-800">
+              <Card className="bg-gray-900 shadow-xl overflow-hidden">
+                <div className="p-6 bg-[#7C3AED]/20 ">
                   <h3 className="text-xl font-bold text-white">Pilih Tiket</h3>
                 </div>
                 <div className="p-6">

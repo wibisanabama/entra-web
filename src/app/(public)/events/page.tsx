@@ -64,7 +64,7 @@ export default function EventsPage() {
             placeholder="Cari event berdasarkan nama atau lokasi..." 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="flex-grow bg-gray-900 border-gray-700 text-white"
+            className="flex-grow bg-gray-900 text-white"
           />
           <Button type="submit" className="bg-[#7C3AED] hover:bg-[#4F46E5] text-white">
             Cari
@@ -79,8 +79,8 @@ export default function EventsPage() {
             status={cat}
             className={`px-4 py-2 text-sm rounded-full whitespace-nowrap cursor-pointer transition-colors ${
               activeCategory === cat 
-                ? 'bg-[#7C3AED] hover:bg-[#4F46E5] text-white border-transparent' 
-                : 'border-gray-700 hover:border-[#7C3AED] bg-transparent text-gray-300'
+                ? 'bg-[#7C3AED] hover:bg-[#4F46E5] text-white ' 
+                : '] bg-transparent text-gray-300'
             }`}
             onClick={() => setActiveCategory(cat)}
           />
@@ -110,11 +110,11 @@ export default function EventsPage() {
 
       {!loading && filteredEvents.length > 0 && (
         <div className="mt-12 flex justify-center gap-2">
-          <Button variant="outline" className="border-gray-700 text-white hover:bg-gray-800" disabled>Sebelumnya</Button>
-          <Button variant="outline" className="border-[#7C3AED] text-[#7C3AED] bg-gray-900 hover:bg-gray-800">1</Button>
-          <Button variant="outline" className="border-gray-700 text-white hover:bg-gray-800">2</Button>
-          <Button variant="outline" className="border-gray-700 text-white hover:bg-gray-800">3</Button>
-          <Button variant="outline" className="border-gray-700 text-white hover:bg-gray-800">Selanjutnya</Button>
+          <Button variant="outline" className="text-white hover:bg-gray-800" disabled>Sebelumnya</Button>
+          <Button variant="outline" className="] text-[#7C3AED] bg-gray-900 hover:bg-gray-800">1</Button>
+          <Button variant="outline" className="text-white hover:bg-gray-800">2</Button>
+          <Button variant="outline" className="text-white hover:bg-gray-800">3</Button>
+          <Button variant="outline" className="text-white hover:bg-gray-800">Selanjutnya</Button>
         </div>
       )}
     </div>

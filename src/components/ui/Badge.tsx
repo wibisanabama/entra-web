@@ -10,16 +10,16 @@ export function Badge({ status, className = '', ...props }: BadgeProps) {
       case 'ACTIVE':
       case 'PAID':
       case 'PUBLISHED':
-        return 'bg-green-500/10 text-green-400 border border-green-500/20';
+        return 'bg-green-500/10 text-green-400 ';
       case 'PENDING':
-        return 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20';
+        return 'bg-yellow-500/10 text-yellow-400 ';
       case 'EXPIRED':
       case 'CANCELLED':
-        return 'bg-red-500/10 text-red-400 border border-red-500/20';
+        return 'bg-red-500/10 text-red-400 ';
       case 'USED':
       case 'DRAFT':
       default:
-        return 'bg-gray-500/10 text-gray-400 border border-gray-500/20';
+        return 'bg-gray-500/10 text-gray-400 ';
     }
   };
 

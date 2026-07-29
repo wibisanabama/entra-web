@@ -21,13 +21,13 @@ export default function DashboardOrdersPage() {
         <p className="text-gray-400">Daftar transaksi pembelian tiket untuk event Anda.</p>
       </div>
 
-      <Card className="bg-gray-900 border-gray-800 overflow-hidden">
-        <div className="p-4 border-b border-gray-800 flex justify-between items-center bg-gray-900/50">
+      <Card className="bg-gray-900 overflow-hidden">
+        <div className="p-4 flex justify-between items-center bg-gray-900/50">
           <Input 
             placeholder="Cari Order ID atau email..." 
-            className="max-w-xs bg-gray-800 border-gray-700 text-white"
+            className="max-w-xs bg-gray-800 text-white"
           />
-          <select className="bg-gray-800 border border-gray-700 text-white text-sm rounded-md focus:ring-[#7C3AED] focus:border-[#7C3AED] block p-2.5">
+          <select className="bg-gray-800 text-white text-sm rounded-md focus:ring-[#7C3AED] ] block p-2.5">
             <option>Semua Event</option>
             <option>Music Festival 2024</option>
             <option>Tech Conference</option>
@@ -49,7 +49,7 @@ export default function DashboardOrdersPage() {
             </thead>
             <tbody>
               {orders.map((order) => (
-                <tr key={order.id} className="border-b border-gray-800 hover:bg-gray-800/50 transition-colors">
+                <tr key={order.id} className="hover:bg-gray-800/50 transition-colors">
                   <td className="px-6 py-4 font-mono font-medium text-white">
                     {order.id}
                   </td>
@@ -64,7 +64,7 @@ export default function DashboardOrdersPage() {
                   </td>
                   <td className="px-6 py-4">{order.date}</td>
                   <td className="px-6 py-4">
-                    <Button variant="outline" size="sm" className="border-gray-700 text-white hover:bg-gray-800">Detail</Button>
+                    <Button variant="outline" size="sm" className="text-white hover:bg-gray-800">Detail</Button>
                   </td>
                 </tr>
               ))}

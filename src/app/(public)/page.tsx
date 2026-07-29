@@ -47,7 +47,7 @@ export default function HomePage() {
             Platform terbaik untuk mencari, memesan, dan membuat event dengan mudah. Bergabunglah dengan ribuan pengguna lainnya.
           </p>
           <Link href="/events">
-            <Button size="lg" className="!bg-white !text-[#7C3AED] hover:!bg-gray-200 shadow-xl text-lg px-8 py-6 rounded-full transition-all border-none">
+            <Button size="lg" className="!bg-white !text-[#7C3AED] hover:!bg-gray-200 shadow-xl text-lg px-8 py-6 rounded-full transition-all ">
               Jelajahi Event
             </Button>
           </Link>
@@ -55,12 +55,12 @@ export default function HomePage() {
       </section>
 
       {/* Categories Section */}
-      <section className="py-12 bg-gray-950 border-b border-gray-900">
+      <section className="py-12 bg-gray-950 ">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-2xl font-bold mb-8 text-white">Kategori Populer</h2>
           <div className="flex flex-wrap justify-center gap-4">
             {['Music', 'Technology', 'Sports', 'Culinary', 'Arts', 'Workshop'].map((cat) => (
-              <Badge key={cat} status={cat} className="px-6 py-2 text-md rounded-full border-gray-700 hover:border-[#7C3AED] bg-gray-900/50 text-gray-300 hover:text-white cursor-pointer transition-all" />
+              <Badge key={cat} status={cat} className="px-6 py-2 text-md rounded-full ] bg-gray-900/50 text-gray-300 hover:text-white cursor-pointer transition-all" />
             ))}
           </div>
         </div>
@@ -103,7 +103,7 @@ export default function HomePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 bg-gray-900 border-t border-gray-800">
+      <section className="py-24 bg-gray-900 ">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">Punya Event Sendiri?</h2>
           <p className="text-gray-400 max-w-2xl mx-auto mb-10 text-lg">

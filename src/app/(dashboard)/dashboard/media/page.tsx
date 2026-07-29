@@ -34,7 +34,7 @@ export default function DashboardMediaPage() {
         <p className="text-gray-400">Unggah dan kelola gambar untuk event Anda.</p>
       </div>
 
-      <Card className="bg-gray-900 border-gray-800 p-6">
+      <Card className="bg-gray-900 p-6">
         <h2 className="text-lg font-bold text-white mb-4">Unggah Media Baru</h2>
         <MediaUploader onUploadComplete={handleUploadSuccess} />
       </Card>
@@ -43,7 +43,7 @@ export default function DashboardMediaPage() {
         <h2 className="text-xl font-bold text-white mb-4">Galeri Media</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {images.map((image) => (
-            <Card key={image.id} className="bg-gray-900 border-gray-800 overflow-hidden group">
+            <Card key={image.id} className="bg-gray-900 overflow-hidden group">
               <div className="relative h-40 bg-gray-800">
                 <img src={image.url} alt={image.name} className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">

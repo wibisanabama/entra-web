@@ -37,7 +37,7 @@ export function TicketSelector({ ticketTypes, onSelect }: TicketSelectorProps) {
   };
 
   if (!ticketTypes || ticketTypes.length === 0) {
-    return <div className="text-gray-400 p-4 text-center border border-gray-800 rounded-lg">Belum ada tiket yang tersedia.</div>;
+    return <div className="text-gray-400 p-4 text-center rounded-lg">Belum ada tiket yang tersedia.</div>;
   }
 
   return (
@@ -48,7 +48,7 @@ export function TicketSelector({ ticketTypes, onSelect }: TicketSelectorProps) {
           const isAvailable = ticket.quota > 0;
 
           return (
-            <div key={ticket.id} className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 border border-gray-700 bg-gray-800/50 rounded-lg">
+            <div key={ticket.id} className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 bg-gray-800/50 rounded-lg">
               <div className="mb-4 sm:mb-0">
                 <h4 className="text-lg font-semibold text-white">{ticket.name}</h4>
                 <p className="text-sm text-gray-400">{ticket.description}</p>
@@ -82,7 +82,7 @@ export function TicketSelector({ ticketTypes, onSelect }: TicketSelectorProps) {
         })}
       </div>
 
-      <div className="border-t border-gray-700 pt-4 mt-6">
+      <div className="pt-4 mt-6">
         <div className="flex justify-between items-center mb-6">
           <span className="text-gray-300 font-medium">Total Harga</span>
           <span className="text-2xl font-bold text-white">

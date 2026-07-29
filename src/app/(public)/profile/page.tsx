@@ -37,17 +37,17 @@ export default function ProfilePage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* Profile Sidebar */}
         <div className="md:col-span-1">
-          <Card className="bg-gray-900 border-gray-800 p-6 shadow-xl sticky top-24">
+          <Card className="bg-gray-900 p-6 shadow-xl sticky top-24">
             <div className="flex flex-col items-center text-center">
               <div className="w-24 h-24 bg-[#7C3AED] rounded-full flex items-center justify-center text-3xl font-bold text-white mb-4 shadow-lg">
                 {user.full_name?.charAt(0) || 'U'}
               </div>
               <h2 className="text-xl font-bold text-white">{user.full_name}</h2>
               <p className="text-gray-400 mb-4">{user.email}</p>
-              <Badge status={user.role === 'organizer' ? 'Organizer' : 'Pembeli'} className="border-[#7C3AED] text-[#7C3AED] mb-6" />
+              <Badge status={user.role === 'organizer' ? 'Organizer' : 'Pembeli'} className="] text-[#7C3AED] mb-6" />
             </div>
             
-            <div className="space-y-4 border-t border-gray-800 pt-6">
+            <div className="space-y-4 pt-6">
               <div className="flex justify-between items-center text-sm">
                 <span className="text-gray-400">No. HP</span>
                 <span className="text-white font-medium">{user.phone || '-'}</span>
@@ -60,7 +60,7 @@ export default function ProfilePage() {
 
             <Button 
               variant="outline" 
-              className="w-full mt-8 border-red-500/50 text-red-500 hover:bg-red-500/10"
+              className="w-full mt-8 text-red-500 hover:bg-red-500/10"
               onClick={() => logout()}
             >
               Keluar Akun
@@ -75,20 +75,20 @@ export default function ProfilePage() {
           <div className="space-y-4">
             {tickets.length > 0 ? (
               tickets.map((ticket) => (
-                <Card key={ticket.id} className="bg-gray-900 border-gray-800 p-0 overflow-hidden flex flex-col sm:flex-row shadow-lg">
+                <Card key={ticket.id} className="bg-gray-900 p-0 overflow-hidden flex flex-col sm:flex-row shadow-lg">
                   <div className="bg-[#7C3AED] w-full sm:w-2 md:w-3 flex-shrink-0 hidden sm:block"></div>
-                  <div className="p-6 flex-grow flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-l-4 sm:border-l-0 border-[#7C3AED] sm:border-none">
+                  <div className="p-6 flex-grow flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 ] ">
                     <div>
                       <h3 className="text-lg font-bold text-white mb-1">{ticket.event}</h3>
                       <p className="text-sm text-gray-400 mb-2">{ticket.date} • {ticket.type}</p>
-                      <div className="inline-block bg-gray-800 rounded px-3 py-1 font-mono text-sm text-[#7C3AED] border border-gray-700">
+                      <div className="inline-block bg-gray-800 rounded px-3 py-1 font-mono text-sm text-[#7C3AED] ">
                         {ticket.code}
                       </div>
                     </div>
                     <div className="text-left sm:text-right w-full sm:w-auto">
                       <Badge status={ticket.status} />
                       <div className="mt-4 sm:mt-2">
-                        <Button variant="outline" size="sm" className="w-full sm:w-auto border-gray-700 text-white hover:bg-gray-800">
+                        <Button variant="outline" size="sm" className="w-full sm:w-auto text-white hover:bg-gray-800">
                           Lihat E-Ticket
                         </Button>
                       </div>
@@ -97,7 +97,7 @@ export default function ProfilePage() {
                 </Card>
               ))
             ) : (
-              <div className="text-center py-12 bg-gray-900 rounded-xl border border-gray-800">
+              <div className="text-center py-12 bg-gray-900 rounded-xl ">
                 <p className="text-gray-400 mb-4">Anda belum memiliki tiket.</p>
                 <Button className="bg-[#7C3AED] text-white">Cari Event</Button>
               </div>

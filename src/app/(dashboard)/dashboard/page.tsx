@@ -20,7 +20,7 @@ export default function DashboardOverviewPage() {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.map((stat, index) => (
-          <Card key={index} className="bg-gray-900 border-gray-800 p-6 relative overflow-hidden">
+          <Card key={index} className="bg-gray-900 p-6 relative overflow-hidden">
             <div className="absolute -right-4 -top-4 w-24 h-24 bg-[#7C3AED]/20 rounded-full blur-xl"></div>
             <div className="flex items-start justify-between">
               <div>
@@ -41,7 +41,7 @@ export default function DashboardOverviewPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Chart Area */}
         <div className="lg:col-span-2">
-          <Card className="bg-gray-900 border-gray-800 p-6 h-full min-h-[400px]">
+          <Card className="bg-gray-900 p-6 h-full min-h-[400px]">
             <h3 className="text-xl font-bold text-white mb-6">Tren Penjualan (Bulan Ini)</h3>
             <div className="flex h-64 items-end gap-2 mt-8">
               {[40, 25, 60, 30, 80, 50, 90, 65, 45, 100, 75, 55].map((height, i) => (
@@ -69,7 +69,7 @@ export default function DashboardOverviewPage() {
 
         {/* Recent Orders */}
         <div className="lg:col-span-1">
-          <Card className="bg-gray-900 border-gray-800 p-6 h-full">
+          <Card className="bg-gray-900 p-6 h-full">
             <h3 className="text-xl font-bold text-white mb-6">Pesanan Terbaru</h3>
             <div className="space-y-6">
               {[1, 2, 3, 4, 5].map((i) => (

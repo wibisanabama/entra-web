@@ -9,7 +9,7 @@ export function Topbar() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   return (
-    <header className="bg-gray-900 border-b border-gray-800 h-16 flex items-center justify-between px-6 z-10 w-full">
+    <header className="bg-gray-900 h-16 flex items-center justify-between px-6 z-10 w-full">
       <div className="flex items-center flex-1">
         <div className="relative w-full max-w-md">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -17,7 +17,7 @@ export function Topbar() {
           </div>
           <input
             type="text"
-            className="block w-full pl-10 pr-3 py-2 border border-gray-700 rounded-lg leading-5 bg-gray-800 text-gray-300 placeholder-gray-400 focus:outline-none focus:bg-gray-900 focus:border-violet-500 focus:ring-1 focus:ring-violet-500 sm:text-sm transition-colors"
+            className="block w-full pl-10 pr-3 py-2 rounded-lg leading-5 bg-gray-800 text-gray-300 placeholder-gray-400 focus:outline-none focus:bg-gray-900 focus:ring-1 focus:ring-violet-500 sm:text-sm transition-colors"
             placeholder="Cari sesuatu..."
           />
         </div>

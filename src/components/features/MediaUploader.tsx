@@ -100,12 +100,12 @@ export function MediaUploader({ onUploadComplete }: MediaUploaderProps) {
   return (
     <div className="w-full">
       <div
-        className={`border-2 border-dashed rounded-xl p-8 text-center transition-colors ${
+        className={`rounded-xl p-8 text-center transition-colors ${
           isDragging 
-            ? 'border-violet-500 bg-violet-500/10' 
+            ? 'bg-violet-500/10' 
             : error 
-              ? 'border-red-500 bg-red-500/5' 
-              : 'border-gray-700 bg-gray-800/50 hover:bg-gray-800'
+              ? 'bg-red-500/5' 
+              : 'bg-gray-800/50 hover:bg-gray-800'
         }`}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
@@ -123,7 +123,7 @@ export function MediaUploader({ onUploadComplete }: MediaUploaderProps) {
         
         {isUploading ? (
           <div className="space-y-4">
-            <div className="w-12 h-12 rounded-full border-4 border-gray-700 border-t-violet-500 animate-spin mx-auto"></div>
+            <div className="w-12 h-12 rounded-full animate-spin mx-auto"></div>
             <div>
               <p className="text-sm font-medium text-white mb-2">Mengupload... {progress}%</p>
               <div className="w-full bg-gray-700 rounded-full h-2">

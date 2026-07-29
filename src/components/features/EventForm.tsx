@@ -62,7 +62,7 @@ export function EventForm({ initialData, onSubmit, isLoading = false }: EventFor
             onChange={handleChange}
             required
             rows={4}
-            className="flex w-full rounded-lg bg-gray-800 border border-gray-700 text-white px-3 py-2 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-violet-500"
+            className="flex w-full rounded-lg bg-gray-800 text-white px-3 py-2 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-violet-500"
             placeholder="Jelaskan detail event Anda..."
           />
         </div>
@@ -95,7 +95,7 @@ export function EventForm({ initialData, onSubmit, isLoading = false }: EventFor
               name="category_id"
               value={formData.category_id}
               onChange={handleChange}
-              className="flex w-full rounded-lg bg-gray-800 border border-gray-700 text-white px-3 py-2 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-violet-500"
+              className="flex w-full rounded-lg bg-gray-800 text-white px-3 py-2 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-violet-500"
             >
               <option value="">Pilih Kategori</option>
               <option value="cat_1">Musik</option>
@@ -121,7 +121,7 @@ export function EventForm({ initialData, onSubmit, isLoading = false }: EventFor
             name="is_online"
             checked={formData.is_online}
             onChange={handleChange}
-            className="rounded bg-gray-800 border-gray-700 text-violet-600 focus:ring-violet-500 focus:ring-offset-gray-900"
+            className="rounded bg-gray-800 text-violet-600 focus:ring-violet-500 focus:ring-offset-gray-900"
           />
           <label htmlFor="is_online" className="text-sm font-medium text-gray-200">
             Event Online
@@ -146,7 +146,7 @@ export function EventForm({ initialData, onSubmit, isLoading = false }: EventFor
               name="venue_id"
               value={formData.venue_id || ''}
               onChange={handleChange}
-              className="flex w-full rounded-lg bg-gray-800 border border-gray-700 text-white px-3 py-2 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-violet-500"
+              className="flex w-full rounded-lg bg-gray-800 text-white px-3 py-2 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-violet-500"
             >
               <option value="">Pilih Venue</option>
               <option value="ven_1">Stadion Utama</option>
@@ -165,7 +165,7 @@ export function EventForm({ initialData, onSubmit, isLoading = false }: EventFor
         />
       </div>
 
-      <div className="pt-4 border-t border-gray-800 flex justify-end gap-3">
+      <div className="pt-4 flex justify-end gap-3">
         <Button type="button" variant="ghost">Batal</Button>
         <Button type="submit" variant="primary" isLoading={isLoading}>
           {initialData ? 'Simpan Perubahan' : 'Buat Event'}

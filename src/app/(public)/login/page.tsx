@@ -36,14 +36,14 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
-      <Card className="w-full max-w-md p-8 bg-gray-900 border-gray-800 shadow-2xl">
+      <Card className="w-full max-w-md p-8 bg-gray-900 shadow-2xl">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-white mb-2">Selamat Datang</h1>
           <p className="text-gray-400">Masuk ke akun Entra Anda</p>
         </div>
 
         {error && (
-          <div className="bg-red-500/10 border border-red-500/50 text-red-500 p-3 rounded-md mb-6 text-sm text-center">
+          <div className="bg-red-500/10 text-red-500 p-3 rounded-md mb-6 text-sm text-center">
             {error}
           </div>
         )}
@@ -57,7 +57,7 @@ export default function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="bg-gray-800 border-gray-700 text-white"
+              className="bg-gray-800 text-white"
             />
           </div>
           
@@ -72,7 +72,7 @@ export default function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="bg-gray-800 border-gray-700 text-white"
+              className="bg-gray-800 text-white"
             />
           </div>
 

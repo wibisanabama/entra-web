@@ -38,8 +38,8 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
         onClick={onClose}
         aria-hidden="true"
       />
-      <div className="relative bg-gray-900 border border-gray-700 rounded-xl shadow-2xl w-full max-w-lg overflow-hidden transform transition-all">
-        <div className="px-6 py-4 border-b border-gray-800 flex items-center justify-between">
+      <div className="relative bg-gray-900 rounded-xl shadow-2xl w-full max-w-lg overflow-hidden transform transition-all">
+        <div className="px-6 py-4 flex items-center justify-between">
           <h3 className="text-lg font-semibold text-white">{title}</h3>
           <Button variant="ghost" size="sm" onClick={onClose} className="!px-2 !py-1 text-gray-400 hover:text-white">
             <span className="sr-only">Tutup</span>

@@ -30,14 +30,14 @@ export default function DashboardEventsPage() {
         </Link>
       </div>
 
-      <Card className="bg-gray-900 border-gray-800 overflow-hidden">
-        <div className="p-4 border-b border-gray-800 flex justify-between items-center bg-gray-900/50">
+      <Card className="bg-gray-900 overflow-hidden">
+        <div className="p-4 flex justify-between items-center bg-gray-900/50">
           <Input 
             placeholder="Cari event..." 
-            className="max-w-xs bg-gray-800 border-gray-700 text-white"
+            className="max-w-xs bg-gray-800 text-white"
           />
           <div className="flex gap-2">
-            <Button variant="outline" size="sm" className="border-gray-700 text-gray-300">Filter</Button>
+            <Button variant="outline" size="sm" className="text-gray-300">Filter</Button>
           </div>
         </div>
 
@@ -54,7 +54,7 @@ export default function DashboardEventsPage() {
             </thead>
             <tbody>
               {events.map((event) => (
-                <tr key={event.id} className="border-b border-gray-800 hover:bg-gray-800/50 transition-colors">
+                <tr key={event.id} className="hover:bg-gray-800/50 transition-colors">
                   <td className="px-6 py-4 font-medium text-white whitespace-nowrap">
                     {event.title}
                   </td>
@@ -76,11 +76,11 @@ export default function DashboardEventsPage() {
                   <td className="px-6 py-4 text-right">
                     <div className="flex justify-end gap-2">
                       <Link href={`/dashboard/events/${event.id}/edit`}>
-                        <Button variant="outline" size="sm" className="border-gray-700 text-white hover:bg-gray-800 hover:text-[#7C3AED]">
+                        <Button variant="outline" size="sm" className="text-white hover:bg-gray-800 hover:text-[#7C3AED]">
                           Edit
                         </Button>
                       </Link>
-                      <Button variant="outline" size="sm" className="border-gray-700 text-white hover:bg-red-500/10 hover:text-red-500 hover:border-red-500/50">
+                      <Button variant="outline" size="sm" className="text-white hover:bg-red-500/10 hover:text-red-500 ">
                         Hapus
                       </Button>
                     </div>
@@ -92,12 +92,12 @@ export default function DashboardEventsPage() {
         </div>
         
         {/* Pagination */}
-        <div className="p-4 border-t border-gray-800 flex items-center justify-between">
+        <div className="p-4 flex items-center justify-between">
           <span className="text-sm text-gray-400">Menampilkan 1-3 dari 3 event</span>
           <div className="flex gap-1">
-            <Button variant="outline" size="sm" className="border-gray-700 text-gray-400 px-2 py-1" disabled>&lt;</Button>
-            <Button variant="outline" size="sm" className="border-[#7C3AED] bg-gray-800 text-[#7C3AED] px-3 py-1">1</Button>
-            <Button variant="outline" size="sm" className="border-gray-700 text-gray-400 px-2 py-1" disabled>&gt;</Button>
+            <Button variant="outline" size="sm" className="text-gray-400 px-2 py-1" disabled>&lt;</Button>
+            <Button variant="outline" size="sm" className="] bg-gray-800 text-[#7C3AED] px-3 py-1">1</Button>
+            <Button variant="outline" size="sm" className="text-gray-400 px-2 py-1" disabled>&gt;</Button>
           </div>
         </div>
       </Card>

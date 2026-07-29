@@ -48,7 +48,7 @@ export default function HomePage() {
             Platform terbaik untuk mencari, memesan, dan membuat event dengan mudah. Bergabunglah dengan ribuan pengguna lainnya.
           </p>
           <Link href="/events">
-            <Button size="lg" className="!bg-white !text-[#7C3AED] hover:!bg-gray-100 shadow-xl text-lg px-8 py-6 rounded-full transition-all border-none">
+            <Button size="lg" className="!bg-white !text-[#7C3AED] hover:!bg-gray-200 shadow-xl text-lg px-8 py-6 rounded-full transition-all border-none">
               Jelajahi Event
             </Button>
           </Link>

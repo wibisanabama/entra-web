@@ -10,7 +10,7 @@ export function Footer() {
         <p className="text-gray-400 text-sm max-w-md mb-8">
           Platform manajemen event dan tiket modern. Buat, kelola, dan jual tiket event Anda dengan mudah.
         </p>
-        <div className="mt-4">
+        <div className="mt-12 w-full text-center">
           <p className="text-base text-gray-400">
             &copy; {new Date().getFullYear()} Entra. Hak Cipta Dilindungi.
           </p>

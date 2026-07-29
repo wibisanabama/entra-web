@@ -19,14 +19,7 @@ export function Navbar() {
             <Link href="/" className="text-2xl font-bold text-violet-500">
               Entra
             </Link>
-            <div className="hidden md:ml-10 md:flex md:space-x-8">
-              <Link href="/" className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">
-                Beranda
-              </Link>
-              <Link href="/events" className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">
-                Event
-              </Link>
-            </div>
+
           </div>
           <div className="flex items-center gap-4">
 
@@ -80,8 +73,7 @@ export function Navbar() {
       {isMobileMenuOpen && (
         <div className="md:hidden bg-gray-900 ">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            <Link href="/" className="block text-gray-300 hover:text-white px-3 py-2 rounded-md text-base font-medium">Beranda</Link>
-            <Link href="/events" className="block text-gray-300 hover:text-white px-3 py-2 rounded-md text-base font-medium">Event</Link>
+
             {!user && (
               <>
                 <Link href="/login" className="block text-gray-300 hover:text-white px-3 py-2 rounded-md text-base font-medium">Masuk</Link>

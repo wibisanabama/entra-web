@@ -1,7 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
 import { Card } from '@/components/ui/Card';
-import { Badge } from '@/components/ui/Badge';
 import { Event } from '@/types';
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
@@ -38,9 +37,6 @@ export function EventCard({ event }: EventCardProps) {
               <span className="text-gray-500 font-medium">Tanpa Gambar</span>
             </div>
           )}
-          <div className="absolute top-3 right-3">
-            <Badge status={event.status || 'ACTIVE'} className="shadow-lg backdrop-blur-md bg-opacity-90" />
-          </div>
         </div>
         <div className="p-5 flex flex-col flex-1">
           <h3 className="text-lg font-bold text-white mb-2 line-clamp-2 group-hover:text-violet-400 transition-colors">

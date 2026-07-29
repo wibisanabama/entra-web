@@ -11,7 +11,6 @@ import { Skeleton } from '@/components/ui/Skeleton';
 export default function HomePage() {
   const [events, setEvents] = useState<Record<string, unknown>[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -55,26 +54,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Categories Section */}
-      <section className="pt-40 pb-12 bg-gray-950">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-2xl font-bold mb-8 text-white">Kategori Populer</h2>
-          <div className="flex flex-wrap justify-center gap-4">
-            {['Music', 'Technology', 'Sports', 'Culinary', 'Arts', 'Workshop'].map((cat) => (
-              <Badge 
-                key={cat} 
-                status={cat} 
-                onClick={() => setSelectedCategory(selectedCategory === cat ? null : cat)}
-                className={`px-6 py-2 text-md rounded-full cursor-pointer transition-all ${
-                  selectedCategory === cat 
-                    ? '!bg-violet-600 !text-white shadow-lg' 
-                    : '!bg-gray-900/50 !text-gray-300 hover:!text-white'
-                }`} 
-              />
-            ))}
-          </div>
-        </div>
-      </section>
+
 
       {/* Featured Events Section */}
       <section className="py-20 bg-gray-950">
@@ -99,9 +79,7 @@ export default function HomePage() {
                 </div>
               ))
             ) : (
-              events
-                .filter(event => !selectedCategory || (event as any).category === selectedCategory)
-                .map((event) => (
+              events.map((event) => (
                   <EventCard key={(event as any).id} event={event as any} />
               ))
             )}

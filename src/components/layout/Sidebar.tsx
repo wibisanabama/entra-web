@@ -19,7 +19,7 @@ export function Sidebar() {
     <div className={`flex flex-col bg-gray-900 border-r border-gray-800 h-screen transition-all duration-300 ${isCollapsed ? 'w-16' : 'w-64'}`}>
       <div className="flex items-center justify-between h-16 px-4 border-b border-gray-800">
         {!isCollapsed && (
-          <Link href="/" className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-violet-500 to-indigo-500">
+          <Link href="/" className="text-xl font-bold text-violet-500">
             Entra
           </Link>
         )}

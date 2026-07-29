@@ -21,7 +21,7 @@ export default function DashboardOverviewPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.map((stat, index) => (
           <Card key={index} className="bg-gray-900 border-gray-800 p-6 relative overflow-hidden">
-            <div className="absolute -right-4 -top-4 w-24 h-24 bg-gradient-to-br from-[#7C3AED]/20 to-transparent rounded-full blur-xl"></div>
+            <div className="absolute -right-4 -top-4 w-24 h-24 bg-[#7C3AED]/20 rounded-full blur-xl"></div>
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-gray-400 text-sm font-medium mb-1">{stat.title}</p>

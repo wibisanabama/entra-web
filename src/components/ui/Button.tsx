@@ -23,7 +23,7 @@ export function Button({
   const baseStyles = 'inline-flex items-center justify-center rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 focus:ring-offset-gray-900 disabled:opacity-50 disabled:pointer-events-none';
   
   const variants = {
-    primary: 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white hover:from-violet-700 hover:to-indigo-700 border border-transparent shadow-sm',
+    primary: 'bg-violet-600 text-white hover:bg-violet-700 border border-transparent shadow-sm',
     secondary: 'bg-gray-800 text-gray-100 hover:bg-gray-700 border border-gray-700',
     outline: 'bg-transparent text-gray-200 border border-gray-600 hover:border-gray-500 hover:bg-gray-800',
     ghost: 'bg-transparent text-gray-300 hover:text-white hover:bg-gray-800 border border-transparent',

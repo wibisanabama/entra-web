@@ -38,7 +38,7 @@ export default function HomePage() {
   return (
     <div className="w-full">
       {/* Hero Section */}
-      <section className="relative w-full py-20 md:py-32 bg-gradient-to-br from-[#4F46E5] to-[#7C3AED] overflow-hidden">
+      <section className="relative w-full py-20 md:py-32 bg-[#7C3AED] overflow-hidden">
         <div className="absolute inset-0 bg-[url('https://placehold.co/1920x1080/000000/1e1e1e?text=Pattern')] opacity-10 bg-cover mix-blend-overlay"></div>
         <div className="container mx-auto px-4 text-center relative z-10">
           <h1 className="text-4xl md:text-6xl font-extrabold text-white mb-6 tracking-tight drop-shadow-md animate-fade-in-up">
@@ -111,7 +111,7 @@ export default function HomePage() {
             Bergabunglah sebagai organizer dan mulai jual tiket eventmu di Entra. Dapatkan jangkauan luas dan fitur manajemen event yang lengkap.
           </p>
           <Link href="/register?role=organizer">
-            <Button size="lg" className="bg-gradient-to-r from-[#7C3AED] to-[#4F46E5] hover:opacity-90 shadow-lg px-8 py-6 rounded-full text-lg">
+            <Button size="lg" className="bg-[#7C3AED] hover:opacity-90 shadow-lg px-8 py-6 rounded-full text-lg">
               Mulai Jual Tiket Eventmu
             </Button>
           </Link>

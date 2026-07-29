@@ -7,7 +7,7 @@ export function Footer() {
       <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
         <div className="xl:grid xl:grid-cols-3 xl:gap-8">
           <div className="space-y-8 xl:col-span-1">
-            <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-violet-500 to-indigo-500">
+            <span className="text-2xl font-bold text-violet-500">
               Entra
             </span>
             <p className="text-gray-400 text-sm max-w-xs">

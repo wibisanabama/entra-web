@@ -34,7 +34,7 @@ export function EventCard({ event }: EventCardProps) {
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             />
           ) : (
-            <div className="w-full h-full bg-gradient-to-br from-violet-900 to-gray-800 flex items-center justify-center">
+            <div className="w-full h-full bg-violet-900 flex items-center justify-center">
               <span className="text-gray-500 font-medium">Tanpa Gambar</span>
             </div>
           )}

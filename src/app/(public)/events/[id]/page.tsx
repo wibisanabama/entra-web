@@ -88,7 +88,7 @@ export default function EventDetailPage() {
       {/* Banner */}
       <div className="w-full h-[300px] md:h-[500px] relative">
         <img src={event.image} alt={event.title} className="w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-t from-gray-950 to-transparent"></div>
+        <div className="absolute inset-0 bg-gray-950/80"></div>
       </div>
 
       <div className="container mx-auto px-4 -mt-32 relative z-10">
@@ -146,7 +146,7 @@ export default function EventDetailPage() {
           <div className="lg:col-span-1">
             <div className="sticky top-24">
               <Card className="bg-gray-900 border-gray-800 shadow-xl overflow-hidden">
-                <div className="p-6 bg-gradient-to-r from-[#4F46E5]/20 to-[#7C3AED]/20 border-b border-gray-800">
+                <div className="p-6 bg-[#7C3AED]/20 border-b border-gray-800">
                   <h3 className="text-xl font-bold text-white">Pilih Tiket</h3>
                 </div>
                 <div className="p-6">

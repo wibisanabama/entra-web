@@ -39,7 +39,7 @@ export default function ProfilePage() {
         <div className="md:col-span-1">
           <Card className="bg-gray-900 border-gray-800 p-6 shadow-xl sticky top-24">
             <div className="flex flex-col items-center text-center">
-              <div className="w-24 h-24 bg-gradient-to-br from-[#4F46E5] to-[#7C3AED] rounded-full flex items-center justify-center text-3xl font-bold text-white mb-4 shadow-lg">
+              <div className="w-24 h-24 bg-[#7C3AED] rounded-full flex items-center justify-center text-3xl font-bold text-white mb-4 shadow-lg">
                 {user.full_name?.charAt(0) || 'U'}
               </div>
               <h2 className="text-xl font-bold text-white">{user.full_name}</h2>

@@ -1,5 +1,5 @@
-import React from 'react';
 import Link from 'next/link';
+import { Twitter, Instagram, Linkedin } from 'lucide-react';
 
 export function Footer() {
   return (
@@ -14,17 +14,17 @@ export function Footer() {
               Platform manajemen event dan tiket modern. Buat, kelola, dan jual tiket event Anda dengan mudah.
             </p>
             <div className="flex space-x-6">
-              <a href="#" className="text-gray-400 hover:text-white">
+              <a href="#" className="text-gray-400 hover:text-white transition-colors">
                 <span className="sr-only">Twitter</span>
-                🐦
+                <Twitter className="h-6 w-6" />
               </a>
-              <a href="#" className="text-gray-400 hover:text-white">
+              <a href="#" className="text-gray-400 hover:text-white transition-colors">
                 <span className="sr-only">Instagram</span>
-                📸
+                <Instagram className="h-6 w-6" />
               </a>
-              <a href="#" className="text-gray-400 hover:text-white">
+              <a href="#" className="text-gray-400 hover:text-white transition-colors">
                 <span className="sr-only">LinkedIn</span>
-                💼
+                <Linkedin className="h-6 w-6" />
               </a>
             </div>
           </div>

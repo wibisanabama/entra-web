@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
+import { Camera } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 
 export interface MediaUploaderProps {
@@ -135,8 +136,8 @@ export function MediaUploader({ onUploadComplete }: MediaUploaderProps) {
             </div>
           </div>
         ) : (
-          <div className="space-y-2 cursor-pointer">
-            <div className="text-4xl mb-3">📸</div>
+          <div className="flex flex-col items-center justify-center pt-5 pb-6">
+            <Camera className="w-10 h-10 mb-3 text-gray-500" />
             <p className="text-base font-medium text-white">
               Klik atau tarik gambar ke sini
             </p>

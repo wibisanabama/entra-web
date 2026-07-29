@@ -1,4 +1,5 @@
 import React from 'react';
+import { Calendar, MapPin } from 'lucide-react';
 import Link from 'next/link';
 import { Card } from '@/components/ui/Card';
 import { Event } from '@/types';
@@ -44,11 +45,11 @@ export function EventCard({ event }: EventCardProps) {
           </h3>
           <div className="space-y-2 mt-auto">
             <div className="flex items-center text-sm text-gray-400">
-              <span className="mr-2">📅</span>
+              <Calendar className="mr-2 h-4 w-4" />
               {formattedDate}
             </div>
             <div className="flex items-center text-sm text-gray-400">
-              <span className="mr-2">📍</span>
+              <MapPin className="mr-2 h-4 w-4" />
               {event.is_online ? 'Online Event' : (event.venue?.name || 'TBA')}
             </div>
           </div>

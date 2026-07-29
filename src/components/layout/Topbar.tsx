@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { Search, ChevronDown } from 'lucide-react';
 import { useAuth } from '@/providers/auth-provider';
 
 
@@ -13,7 +14,7 @@ export function Topbar() {
       <div className="flex items-center flex-1">
         <div className="relative w-full max-w-md">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <span className="text-gray-400">🔍</span>
+            <Search className="text-gray-400 h-4 w-4" />
           </div>
           <input
             type="text"
@@ -34,7 +35,7 @@ export function Topbar() {
             <span className="text-sm font-medium text-gray-200 hidden sm:block">
               {user?.full_name || 'User'}
             </span>
-            <span className="text-gray-400 text-xs">▼</span>
+            <ChevronDown className="h-4 w-4 text-gray-400" />
           </button>
           
           {isDropdownOpen && (

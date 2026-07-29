@@ -3,16 +3,17 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { BarChart3, Calendar, ShoppingCart, ChevronLeft, ChevronRight, Folder } from 'lucide-react';
 
 export function Sidebar() {
   const pathname = usePathname();
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   const menuItems = [
-    { name: 'Dashboard', path: '/dashboard', icon: '📊' },
-    { name: 'Event', path: '/dashboard/events', icon: '📅' },
-    { name: 'Pesanan', path: '/dashboard/orders', icon: '🛒' },
-    { name: 'Media', path: '/dashboard/media', icon: '📁' },
+    { name: 'Dashboard', path: '/dashboard', icon: <BarChart3 className="h-5 w-5" /> },
+    { name: 'Event', path: '/dashboard/events', icon: <Calendar className="h-5 w-5" /> },
+    { name: 'Pesanan', path: '/dashboard/orders', icon: <ShoppingCart className="h-5 w-5" /> },
+    { name: 'Media', path: '/dashboard/media', icon: <Folder className="h-5 w-5" /> },
   ];
 
   return (
@@ -27,7 +28,7 @@ export function Sidebar() {
           onClick={() => setIsCollapsed(!isCollapsed)}
           className="p-1 rounded-md text-gray-400 hover:text-white hover:bg-gray-800 focus:outline-none"
         >
-          {isCollapsed ? '➡️' : '⬅️'}
+          {isCollapsed ? <ChevronRight className="h-5 w-5" /> : <ChevronLeft className="h-5 w-5" />}
         </button>
       </div>
       <div className="flex-1 py-4 px-3 overflow-y-auto">
@@ -45,7 +46,7 @@ export function Sidebar() {
                   }`}
                   title={isCollapsed ? item.name : undefined}
                 >
-                  <span className={`text-xl ${isActive ? 'text-white' : 'text-gray-400 group-hover:text-white'}`}>
+                  <span className={`flex-shrink-0 flex items-center justify-center ${isActive ? 'text-white' : 'text-gray-400 group-hover:text-white'}`}>
                     {item.icon}
                   </span>
                   {!isCollapsed && (

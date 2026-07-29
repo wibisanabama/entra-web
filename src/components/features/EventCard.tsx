@@ -25,7 +25,7 @@ export function EventCard({ event }: EventCardProps) {
   
   return (
     <Link href={`/events/${event.id}`}>
-      <Card className="h-full flex flex-col group hover:scale-[1.02] hover:shadow-xl transition-all duration-300">
+      <Card className="h-full flex flex-col group hover:shadow-xl transition-all duration-300">
         <div className="relative h-48 w-full overflow-hidden">
           {event.banner_url ? (
             <img 

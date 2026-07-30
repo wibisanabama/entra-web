@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/providers/auth-provider';
 import { Menu, X } from 'lucide-react';
@@ -10,6 +10,20 @@ export function Navbar() {
   const { user, logout } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isAvatarDropdownOpen, setIsAvatarDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsAvatarDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   return (
     <nav className="sticky top-0 z-40 w-full backdrop-blur bg-gray-950/80">
@@ -25,7 +39,7 @@ export function Navbar() {
 
             <div className="hidden md:flex items-center gap-4">
               {user ? (
-                <div className="relative">
+                <div className="relative" ref={dropdownRef}>
                   <button 
                     onClick={() => setIsAvatarDropdownOpen(!isAvatarDropdownOpen)}
                     className="flex items-center focus:outline-none"
@@ -37,10 +51,16 @@ export function Navbar() {
                   {isAvatarDropdownOpen && (
                     <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-gray-800 ring-1 ring-black ring-opacity-5">
                       <div className="py-1">
-                        <Link href="/dashboard" className="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700">
-                          Dashboard
-                        </Link>
-                        <button onClick={logout} className="block w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-gray-700">
+                        {user.role === 'user' ? (
+                          <Link href="/profile" onClick={() => setIsAvatarDropdownOpen(false)} className="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700">
+                            Profil
+                          </Link>
+                        ) : (
+                          <Link href="/dashboard" onClick={() => setIsAvatarDropdownOpen(false)} className="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700">
+                            Dashboard
+                          </Link>
+                        )}
+                        <button onClick={() => { setIsAvatarDropdownOpen(false); logout(); }} className="block w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-gray-700">
                           Keluar
                         </button>
                       </div>
@@ -82,7 +102,11 @@ export function Navbar() {
             )}
             {user && (
               <>
-                <Link href="/dashboard" className="block text-gray-300 hover:text-white px-3 py-2 rounded-md text-base font-medium">Dashboard</Link>
+                {user.role === 'user' ? (
+                  <Link href="/profile" className="block text-gray-300 hover:text-white px-3 py-2 rounded-md text-base font-medium">Profil</Link>
+                ) : (
+                  <Link href="/dashboard" className="block text-gray-300 hover:text-white px-3 py-2 rounded-md text-base font-medium">Dashboard</Link>
+                )}
                 <button onClick={logout} className="block w-full text-left text-red-400 hover:text-red-300 px-3 py-2 rounded-md text-base font-medium">Keluar</button>
               </>
             )}

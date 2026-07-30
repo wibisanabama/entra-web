@@ -189,3 +189,13 @@ export interface RegisterRequest {
   phone: string;
   role: string;
 }
+
+export interface ForgotPasswordRequest {
+  email: string;
+}
+
+export interface ResetPasswordRequest {
+  token: string;
+  new_password: string;
+}
+

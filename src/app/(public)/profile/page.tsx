@@ -76,7 +76,6 @@ export default function ProfilePage() {
             {tickets.length > 0 ? (
               tickets.map((ticket) => (
                 <Card key={ticket.id} className="bg-gray-900 p-0 overflow-hidden flex flex-col sm:flex-row shadow-lg">
-                  <div className="bg-[#7C3AED] w-full sm:w-2 md:w-3 flex-shrink-0 hidden sm:block"></div>
                   <div className="p-6 flex-grow flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 ] ">
                     <div>
                       <h3 className="text-lg font-bold text-white mb-1">{ticket.event}</h3>

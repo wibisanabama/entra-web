@@ -12,21 +12,16 @@ export default function ForgotPasswordPage() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
-  const [resetToken, setResetToken] = useState(''); // For local development/testing
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
     setSuccess(false);
-    setResetToken('');
 
     try {
-      const response = await authApi.post<{ reset_token: string }>('/api/v1/auth/forgot-password', { email });
+      await authApi.post('/api/v1/auth/forgot-password', { email });
       setSuccess(true);
-      if (response.data?.reset_token) {
-        setResetToken(response.data.reset_token);
-      }
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Gagal memproses permintaan Anda');
     } finally {
@@ -51,18 +46,6 @@ export default function ForgotPasswordPage() {
         {success && (
           <div className="bg-green-500/10 text-green-500 p-3 rounded-md mb-6 text-sm text-center">
             Tautan reset password telah dikirim ke email Anda. (Silakan periksa email Anda)
-          </div>
-        )}
-
-        {resetToken && (
-          <div className="bg-blue-500/10 text-blue-500 p-4 rounded-md mb-6 text-sm text-center break-all">
-            <p className="font-bold mb-2">[DEV MODE] Reset Token Anda:</p>
-            <code>{resetToken}</code>
-            <div className="mt-4">
-              <Link href={`/reset-password?token=${resetToken}`}>
-                <Button className="bg-blue-600 hover:bg-blue-700 text-white w-full">Gunakan Token Ini</Button>
-              </Link>
-            </div>
           </div>
         )}
 

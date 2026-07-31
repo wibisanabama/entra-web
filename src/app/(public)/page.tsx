@@ -6,11 +6,22 @@ import { EventCard } from '@/components/features/EventCard';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Skeleton } from '@/components/ui/Skeleton';
+import { useAuth } from '@/providers/auth-provider';
 // import { fetchApi } from '@/lib/api';
 
 export default function HomePage() {
+  const { user } = useAuth();
   const [events, setEvents] = useState<Record<string, unknown>[]>([]);
   const [loading, setLoading] = useState(true);
+
+  let targetHref = '/register?role=organizer';
+  if (user) {
+    if (user.role === 'user') {
+      targetHref = '/profile';
+    } else if (user.role === 'organizer') {
+      targetHref = '/dashboard';
+    }
+  }
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -94,7 +105,7 @@ export default function HomePage() {
           <p className="text-gray-400 max-w-2xl mx-auto mb-10 text-lg">
             Bergabunglah sebagai organizer dan mulai jual tiket eventmu di Entra. Dapatkan jangkauan luas dan fitur manajemen event yang lengkap.
           </p>
-          <Link href="/register?role=organizer">
+          <Link href={targetHref}>
             <Button size="lg" className="bg-[#7C3AED] hover:opacity-90 shadow-lg px-8 py-6 rounded-full text-lg">
               Mulai Jual Tiket Eventmu
             </Button>

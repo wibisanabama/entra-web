@@ -11,6 +11,7 @@ interface AuthContextType {
   register: (data: RegisterRequest) => Promise<void>;
   logout: () => void;
   refreshToken: () => Promise<void>;
+  loadProfile: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -105,7 +106,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, isLoading, login, register, logout, refreshToken }}>
+    <AuthContext.Provider value={{ user, isLoading, login, register, logout, refreshToken, loadProfile }}>
       {children}
     </AuthContext.Provider>
   );

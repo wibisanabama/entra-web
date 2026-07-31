@@ -54,7 +54,11 @@ function RegisterForm() {
         phone: formData.phone,
         role: formData.role
       });
-      router.push('/login?registered=true');
+      if (formData.role === 'organizer') {
+        router.push('/dashboard');
+      } else {
+        router.push('/');
+      }
     } catch (err: any) {
       setError(err.message || 'Terjadi kesalahan saat mendaftar');
     } finally {

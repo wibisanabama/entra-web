@@ -3,31 +3,54 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/providers/auth-provider';
+import { authApi } from '@/lib/api';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 
 export default function ProfilePage() {
-  const { user, logout } = useAuth();
+  const { user, isLoading, logout, loadProfile } = useAuth();
   const isAuthenticated = !!user;
   const router = useRouter();
   const [tickets, setTickets] = useState<any[]>([]);
+  const [selectedTicket, setSelectedTicket] = useState<any | null>(null);
+  const [isUpgrading, setIsUpgrading] = useState(false);
+
+  const handleUpgrade = async () => {
+    try {
+      setIsUpgrading(true);
+      await authApi.post('/api/v1/auth/upgrade');
+      await loadProfile();
+      router.push('/dashboard');
+    } catch (error) {
+      console.error('Failed to upgrade role:', error);
+      alert('Gagal meningkatkan akun. Silakan coba lagi.');
+    } finally {
+      setIsUpgrading(false);
+    }
+  };
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (!isLoading && !isAuthenticated) {
       router.push('/login');
       return;
     }
 
-    // Fetch user tickets placeholder
-    setTickets([
-      { id: 'TRX-12345', event: 'Music Festival 2024', type: 'VIP', code: 'MF24-ABC-123', status: 'Active', date: '12 Okt 2024' },
-      { id: 'TRX-12346', event: 'Tech Conference', type: 'General', code: 'TC-XYZ-987', status: 'Used', date: '5 Nov 2024' }
-    ]);
-  }, [isAuthenticated, router]);
+    if (isAuthenticated) {
+      // Fetch user tickets placeholder
+      setTickets([
+        { id: 'TRX-12345', event: 'Music Festival 2024', type: 'VIP', code: 'MF24-ABC-123', status: 'Active', date: '12 Okt 2024' },
+        { id: 'TRX-12346', event: 'Tech Conference', type: 'General', code: 'TC-XYZ-987', status: 'Used', date: '5 Nov 2024' }
+      ]);
+    }
+  }, [isLoading, isAuthenticated, router]);
 
-  if (!isAuthenticated || !user) {
-    return <div className="min-h-screen flex items-center justify-center text-white">Memuat...</div>;
+  if (isLoading || !user) {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-[#7C3AED] border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
   }
 
   return (
@@ -58,9 +81,23 @@ export default function ProfilePage() {
               </div>
             </div>
 
+            {user.role === 'user' && (
+              <div className="mt-8 pt-6 border-t border-gray-800">
+                <h3 className="text-white font-medium mb-2">Ingin membuat event sendiri?</h3>
+                <p className="text-gray-400 text-sm mb-4">Tingkatkan akun Anda menjadi Organizer Event untuk mulai membuat dan menjual tiket.</p>
+                <Button 
+                  className="w-full bg-[#7C3AED] hover:bg-[#6D28D9] text-white"
+                  onClick={handleUpgrade}
+                  disabled={isUpgrading}
+                >
+                  {isUpgrading ? 'Memproses...' : 'Tingkatkan ke Organizer'}
+                </Button>
+              </div>
+            )}
+
             <Button 
               variant="outline" 
-              className="w-full mt-8 text-red-500 hover:bg-red-500/10"
+              className="w-full mt-6 text-red-500 hover:bg-red-500/10 border-red-500/20"
               onClick={() => logout()}
             >
               Keluar Akun
@@ -87,7 +124,12 @@ export default function ProfilePage() {
                     <div className="text-left sm:text-right w-full sm:w-auto">
                       <Badge status={ticket.status} />
                       <div className="mt-4 sm:mt-2">
-                        <Button variant="outline" size="sm" className="w-full sm:w-auto text-white hover:bg-gray-800">
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="w-full sm:w-auto text-white hover:bg-gray-800"
+                          onClick={() => setSelectedTicket(ticket)}
+                        >
                           Lihat E-Ticket
                         </Button>
                       </div>
@@ -104,6 +146,74 @@ export default function ProfilePage() {
           </div>
         </div>
       </div>
+
+      {/* Modal E-Ticket */}
+      {selectedTicket && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+          <div className="bg-gray-900 border border-gray-800 rounded-2xl w-full max-w-md overflow-hidden shadow-2xl relative">
+            
+            {/* Header */}
+            <div className="bg-[#7C3AED] p-6 text-center relative">
+              <button 
+                onClick={() => setSelectedTicket(null)}
+                className="absolute top-4 right-4 text-white hover:text-gray-200 transition-colors bg-black/20 rounded-full p-1"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              </button>
+              <h2 className="text-2xl font-bold text-white mb-1">{selectedTicket.event}</h2>
+              <p className="text-white/80 text-sm">{selectedTicket.date}</p>
+            </div>
+            
+            {/* Body */}
+            <div className="p-8 text-center bg-gray-900 relative">
+              {/* Ticket Type & Status */}
+              <div className="flex justify-between items-center mb-8 border-b border-gray-800 pb-4">
+                <div className="text-left">
+                  <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">Tipe Tiket</p>
+                  <p className="font-bold text-white text-lg">{selectedTicket.type}</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">Status</p>
+                  <Badge status={selectedTicket.status} />
+                </div>
+              </div>
+              
+              {/* QR Code Placeholder */}
+              <div className="bg-white p-4 rounded-xl inline-block mb-6 shadow-md mx-auto relative group">
+                <div className="w-48 h-48 bg-gray-100 flex items-center justify-center border-2 border-dashed border-gray-300 rounded-lg">
+                  <div className="text-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="mx-auto mb-2 opacity-50"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><path d="M7 7h.01"></path><path d="M17 7h.01"></path><path d="M7 17h.01"></path><path d="M17 17h.01"></path><path d="M12 7v10"></path><path d="M7 12h10"></path></svg>
+                    <span className="text-gray-400 text-sm font-medium">QR Code</span>
+                  </div>
+                </div>
+                {/* Decorative scanning line */}
+                {selectedTicket.status === 'Active' && (
+                  <div className="absolute top-4 left-4 right-4 h-0.5 bg-[#7C3AED] shadow-[0_0_8px_#7C3AED] animate-[scan_2s_ease-in-out_infinite]"></div>
+                )}
+              </div>
+              
+              {/* Ticket Code */}
+              <div>
+                <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">Kode Tiket</p>
+                <div className="bg-gray-800 py-3 px-6 rounded-lg inline-block">
+                  <p className="font-mono text-xl tracking-widest text-white">{selectedTicket.code}</p>
+                </div>
+              </div>
+              
+              <div className="mt-8 text-xs text-gray-500 text-center">
+                <p>Tunjukkan e-ticket ini saat masuk ke area acara.</p>
+              </div>
+            </div>
+            
+            {/* Cutout effect circles */}
+            <div className="absolute left-[-12px] top-[108px] w-6 h-6 bg-black/80 rounded-full"></div>
+            <div className="absolute right-[-12px] top-[108px] w-6 h-6 bg-black/80 rounded-full"></div>
+            
+            {/* Dashed line across ticket */}
+            <div className="absolute left-4 right-4 top-[120px] h-[1px] bg-white/20 border-t border-dashed border-white/40"></div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

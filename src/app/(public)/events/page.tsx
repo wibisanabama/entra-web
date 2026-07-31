@@ -8,49 +8,49 @@ import { Skeleton } from '@/components/ui/Skeleton';
 import { Badge } from '@/components/ui/Badge';
 
 
+import { eventApi } from '@/lib/api';
+import { Event, Category } from '@/types';
+
 export default function EventsPage() {
-  const [events, setEvents] = useState<Record<string, unknown>[]>([]);
+  const [events, setEvents] = useState<Event[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeCategory, setActiveCategory] = useState('All');
+  const [activeCategory, setActiveCategory] = useState<string | 'All'>('All');
 
   useEffect(() => {
-    const fetchEvents = async () => {
+    const fetchData = async () => {
       setLoading(true);
       try {
-        // Placeholder for API call
-        // const endpoint = searchQuery ? `/api/v1/events/search?q=${searchQuery}` : `/api/v1/events?page=1&per_page=12`;
-        // const data = await fetchApi(endpoint);
-        
-        // Mock data delay
-        await new Promise(r => setTimeout(r, 800));
-        setEvents([
-          { id: '1', title: 'Music Festival 2024', date: '2024-10-12', venue: 'GBK Stadium', image: 'https://placehold.co/600x400/1e1e1e/8a2be2', category: 'Music' },
-          { id: '2', title: 'Tech Conference', date: '2024-11-05', venue: 'JCC Senayan', image: 'https://placehold.co/600x400/1e1e1e/8a2be2', category: 'Technology' },
-          { id: '3', title: 'Food & Beverage Expo', date: '2024-09-20', venue: 'ICE BSD', image: 'https://placehold.co/600x400/1e1e1e/8a2be2', category: 'Culinary' },
-          { id: '4', title: 'Marathon 10K', date: '2024-08-30', venue: 'Sudirman Street', image: 'https://placehold.co/600x400/1e1e1e/8a2be2', category: 'Sports' },
-          { id: '5', title: 'Art Exhibition', date: '2024-12-01', venue: 'National Museum', image: 'https://placehold.co/600x400/1e1e1e/8a2be2', category: 'Arts' },
-          { id: '6', title: 'Startup Bootcamp', date: '2024-10-25', venue: 'Co-working Space', image: 'https://placehold.co/600x400/1e1e1e/8a2be2', category: 'Workshop' },
-        ]);
+        const catRes = await eventApi.get('/api/v1/categories');
+        if (catRes.data && Array.isArray(catRes.data.data)) {
+          setCategories(catRes.data.data);
+        }
+
+        const endpoint = searchQuery ? `/api/v1/events/search?q=${encodeURIComponent(searchQuery)}` : `/api/v1/events?page=1&per_page=20`;
+        const res = await eventApi.get(endpoint);
+        if (res.data && Array.isArray(res.data.data)) {
+          setEvents(res.data.data);
+        }
       } catch (error) {
-        console.error('Error fetching events:', error);
+        console.error('Error fetching data:', error);
       } finally {
         setLoading(false);
       }
     };
-    fetchEvents();
+    fetchData();
   }, [searchQuery]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    // Search is handled by effect dependency
+    // Search is automatically triggered by useEffect dependency on searchQuery,
+    // but if we want it strictly onSubmit we can change dependency to a debounced or separate state.
+    // For now, it will search on every keystroke due to `searchQuery` in dependency array.
   };
-
-  const categories = ['All', 'Music', 'Technology', 'Sports', 'Culinary', 'Arts', 'Workshop'];
 
   const filteredEvents = activeCategory === 'All' 
     ? events 
-    : events.filter(e => e.category === activeCategory);
+    : events.filter(e => e.category_id === activeCategory);
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -73,16 +73,25 @@ export default function EventsPage() {
       </div>
 
       <div className="flex overflow-x-auto pb-4 mb-8 gap-2 no-scrollbar">
+        <Badge 
+          status="All"
+          className={`px-4 py-2 text-sm rounded-full whitespace-nowrap cursor-pointer transition-colors ${
+            activeCategory === 'All' 
+              ? 'bg-[#7C3AED] text-white' 
+              : 'bg-transparent hover:bg-gray-800 text-gray-300 hover:text-white'
+          }`}
+          onClick={() => setActiveCategory('All')}
+        />
         {categories.map((cat) => (
           <Badge 
-            key={cat} 
-            status={cat}
+            key={cat.id} 
+            status={cat.name}
             className={`px-4 py-2 text-sm rounded-full whitespace-nowrap cursor-pointer transition-colors ${
-              activeCategory === cat 
-                ? 'bg-[#7C3AED] hover:bg-[#4F46E5] text-white ' 
-                : '] bg-transparent text-gray-300'
+              activeCategory === cat.id 
+                ? 'bg-[#7C3AED] text-white' 
+                : 'bg-transparent hover:bg-gray-800 text-gray-300 hover:text-white'
             }`}
-            onClick={() => setActiveCategory(cat)}
+            onClick={() => setActiveCategory(cat.id)}
           />
         ))}
       </div>
@@ -98,12 +107,11 @@ export default function EventsPage() {
           ))
         ) : filteredEvents.length > 0 ? (
           filteredEvents.map((event) => (
-            <EventCard key={(event as any).id} event={event as any} />
+            <EventCard key={event.id} event={event} />
           ))
         ) : (
-          <div className="col-span-full py-20 text-center">
-            <h3 className="text-2xl font-bold text-white mb-2">Event tidak ditemukan</h3>
-            <p className="text-gray-400">Coba gunakan kata kunci pencarian yang berbeda atau ganti kategori.</p>
+          <div className="col-span-full text-center py-12 text-gray-400">
+            Tidak ada event yang ditemukan.
           </div>
         )}
       </div>

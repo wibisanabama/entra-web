@@ -25,7 +25,7 @@ export default function CreateEventPage() {
         <p className="text-gray-400">Isi detail di bawah ini untuk membuat event baru dan mulai menjual tiket.</p>
       </div>
 
-      <EventForm onSubmit={handleSubmit} />
+      <EventForm onSubmit={handleSubmit} onCancel={() => router.push('/dashboard/events')} />
     </div>
   );
 }

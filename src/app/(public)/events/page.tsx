@@ -16,21 +16,31 @@ export default function EventsPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [submittedQuery, setSubmittedQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState<string | 'All'>('All');
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const catRes = await eventApi.get('/api/v1/categories');
-        if (catRes.data && Array.isArray(catRes.data.data)) {
-          setCategories(catRes.data.data);
+        const endpoint = submittedQuery ? `/api/v1/events/search?q=${encodeURIComponent(submittedQuery)}` : `/api/v1/events?page=1&per_page=20`;
+        const [catRes, venueRes, res] = await Promise.all([
+          eventApi.get('/api/v1/categories').catch(() => ({ data: [] })),
+          eventApi.get('/api/v1/venues').catch(() => ({ data: [] })),
+          eventApi.get(endpoint).catch(() => ({ data: [] }))
+        ]);
+        
+        if (catRes.data && Array.isArray(catRes.data)) {
+          setCategories(catRes.data as Category[]);
         }
 
-        const endpoint = searchQuery ? `/api/v1/events/search?q=${encodeURIComponent(searchQuery)}` : `/api/v1/events?page=1&per_page=20`;
-        const res = await eventApi.get(endpoint);
-        if (res.data && Array.isArray(res.data.data)) {
-          setEvents(res.data.data);
+        if (res.data && Array.isArray(res.data)) {
+          const venues = venueRes.data?.data || venueRes.data || [];
+          const eventsWithVenues = (res.data as Event[]).map(ev => {
+            const venue = venues.find((v: any) => v.id === ev.venue_id);
+            return { ...ev, venue: venue || ev.venue };
+          });
+          setEvents(eventsWithVenues);
         }
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -39,13 +49,11 @@ export default function EventsPage() {
       }
     };
     fetchData();
-  }, [searchQuery]);
+  }, [submittedQuery]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    // Search is automatically triggered by useEffect dependency on searchQuery,
-    // but if we want it strictly onSubmit we can change dependency to a debounced or separate state.
-    // For now, it will search on every keystroke due to `searchQuery` in dependency array.
+    setSubmittedQuery(searchQuery);
   };
 
   const filteredEvents = activeCategory === 'All' 
@@ -66,6 +74,19 @@ export default function EventsPage() {
             onChange={(e) => setSearchQuery(e.target.value)}
             className="flex-grow bg-gray-900 text-white"
           />
+          {submittedQuery && (
+            <Button 
+              type="button" 
+              variant="outline"
+              className="text-white hover:bg-gray-800"
+              onClick={() => {
+                setSearchQuery('');
+                setSubmittedQuery('');
+              }}
+            >
+              Reset
+            </Button>
+          )}
           <Button type="submit" className="bg-[#7C3AED] hover:bg-[#4F46E5] text-white">
             Cari
           </Button>
@@ -82,7 +103,7 @@ export default function EventsPage() {
           }`}
           onClick={() => setActiveCategory('All')}
         />
-        {categories.map((cat) => (
+        {categories.filter(cat => events.some(e => e.category_id === cat.id)).map((cat) => (
           <Badge 
             key={cat.id} 
             status={cat.name}
@@ -116,15 +137,6 @@ export default function EventsPage() {
         )}
       </div>
 
-      {!loading && filteredEvents.length > 0 && (
-        <div className="mt-12 flex justify-center gap-2">
-          <Button variant="outline" className="text-white hover:bg-gray-800" disabled>Sebelumnya</Button>
-          <Button variant="outline" className="] text-[#7C3AED] bg-gray-900 hover:bg-gray-800">1</Button>
-          <Button variant="outline" className="text-white hover:bg-gray-800">2</Button>
-          <Button variant="outline" className="text-white hover:bg-gray-800">3</Button>
-          <Button variant="outline" className="text-white hover:bg-gray-800">Selanjutnya</Button>
-        </div>
-      )}
     </div>
   );
 }

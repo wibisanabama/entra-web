@@ -2,7 +2,7 @@
 
 import { useState, Suspense } from 'react';
 import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '@/providers/auth-provider';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
@@ -11,9 +11,6 @@ import { Badge } from '@/components/ui/Badge';
 
 function RegisterForm() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const initialRole = searchParams?.get('role') === 'organizer' ? 'organizer' : 'user';
-  
   const { register } = useAuth();
   
   const [formData, setFormData] = useState({
@@ -22,7 +19,7 @@ function RegisterForm() {
     phone: '',
     password: '',
     confirmPassword: '',
-    role: initialRole
+    role: 'user'
   });
   
   const [loading, setLoading] = useState(false);
@@ -54,11 +51,7 @@ function RegisterForm() {
         phone: formData.phone,
         role: formData.role
       });
-      if (formData.role === 'organizer') {
-        router.push('/dashboard');
-      } else {
-        router.push('/');
-      }
+      router.push('/');
     } catch (err: any) {
       setError(err.message || 'Terjadi kesalahan saat mendaftar');
     } finally {
@@ -74,27 +67,7 @@ function RegisterForm() {
           <p className="text-gray-400">Bergabung dengan Entra sekarang</p>
         </div>
 
-        {/* Role Selector */}
-        <div className="flex p-1 mb-8 bg-gray-800 rounded-lg">
-          <button
-            type="button"
-            className={`flex-1 py-2 text-sm font-medium rounded-md transition-colors ${
-              formData.role === 'user' ? 'bg-[#7C3AED] text-white shadow' : 'text-gray-400 hover:text-white'
-            }`}
-            onClick={() => setFormData({...formData, role: 'user'})}
-          >
-            Pembeli Tiket
-          </button>
-          <button
-            type="button"
-            className={`flex-1 py-2 text-sm font-medium rounded-md transition-colors ${
-              formData.role === 'organizer' ? 'bg-[#7C3AED] text-white shadow' : 'text-gray-400 hover:text-white'
-            }`}
-            onClick={() => setFormData({...formData, role: 'organizer'})}
-          >
-            Organizer Event
-          </button>
-        </div>
+        {/* Role Selector Removed */}
 
         {error && (
           <div className="bg-red-500/10 text-red-500 p-3 rounded-md mb-6 text-sm text-center">

@@ -6,6 +6,11 @@ import { TicketSelector } from '@/components/features/TicketSelector';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/Card';
+import { eventApi, ticketApi } from '@/lib/api';
+import { format } from 'date-fns';
+import { id as localeId } from 'date-fns/locale';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/providers/auth-provider';
 
 interface EventDetail {
   id: string | string[];
@@ -28,30 +33,73 @@ interface EventDetail {
 
 export default function EventDetailPage() {
   const params = useParams();
+  const router = useRouter();
+  const { user } = useAuth();
   const [event, setEvent] = useState<EventDetail | null>(null);
   const [loading, setLoading] = useState(true);
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
 
   useEffect(() => {
     const fetchEvent = async () => {
       try {
-        // Placeholder
-        await new Promise(r => setTimeout(r, 800));
-        setEvent({
-          id: (params.id as string) || '',
-          title: 'Music Festival 2024: A Journey Through Sound',
-          description: 'Bergabunglah dalam festival musik terbesar tahun ini yang menampilkan lebih dari 50 artis lokal dan internasional. Nikmati pengalaman tak terlupakan dengan tata suara dan cahaya spektakuler di tiga panggung berbeda.',
-          date: '12 Oktober 2024',
-          time: '15:00 - 23:00 WIB',
-          venue: 'Gelora Bung Karno Stadium, Jakarta',
-          image: 'https://placehold.co/1200x500/1e1e1e/8a2be2',
-          category: 'Music',
-          organizer: 'Entra Live',
-          tickets: [
-            { id: 't1', name: 'Early Bird - Festival', price: 250000, quota: 100, available: 0 },
-            { id: 't2', name: 'Presale - Festival', price: 350000, quota: 500, available: 120 },
-            { id: 't3', name: 'VIP', price: 850000, quota: 200, available: 50 },
-          ]
-        });
+        const [res, ticketRes, catRes, venueRes] = await Promise.all([
+          eventApi.get<any>(`/api/v1/events/${params.id}`),
+          eventApi.get<any>(`/api/v1/events/${params.id}/tickets`).catch(() => ({ data: { data: [] } })),
+          eventApi.get<any>(`/api/v1/categories`).catch(() => ({ data: [] })),
+          eventApi.get<any>(`/api/v1/venues`).catch(() => ({ data: [] }))
+        ]);
+
+        if (res.data) {
+          const apiEvent = res.data.data || res.data;
+          const apiTickets = ticketRes.data?.data || ticketRes.data || [];
+          const categories = catRes.data || [];
+          
+          let dateStr = 'TBA';
+          let timeStr = 'TBA';
+          if (apiEvent.start_date) {
+            const startDate = new Date(apiEvent.start_date);
+            dateStr = format(startDate, 'dd MMMM yyyy', { locale: localeId });
+            timeStr = format(startDate, 'HH:mm', { locale: localeId }) + ' WIB';
+          }
+
+          let categoryName = 'Kategori';
+          if (apiEvent.category_id) {
+            const cat = categories.find((c: any) => c.id === apiEvent.category_id);
+            if (cat) categoryName = cat.name;
+          }
+          
+          let venueName = 'Lokasi Belum Ditentukan';
+          if (apiEvent.is_online) {
+            venueName = 'Online Event';
+          } else if (apiEvent.venue?.name) {
+            venueName = `${apiEvent.venue.name}, ${apiEvent.venue.city}`;
+          } else if (apiEvent.venue_id) {
+            const venues = venueRes.data?.data || venueRes.data || [];
+            const venue = venues.find((v: any) => v.id === apiEvent.venue_id);
+            if (venue) {
+              venueName = `${venue.name}, ${venue.city}`;
+            }
+          }
+          
+          setEvent({
+            id: apiEvent.id,
+            title: apiEvent.title,
+            description: apiEvent.description || 'Tidak ada deskripsi',
+            date: dateStr,
+            time: timeStr,
+            venue: venueName,
+            image: apiEvent.banner_url || 'https://placehold.co/1200x500/1e1e1e/8a2be2?text=Tanpa+Gambar',
+            category: apiEvent.category?.name || categoryName,
+            organizer: 'Organizer Event',
+            tickets: Array.isArray(apiTickets) ? apiTickets.map((t: any) => ({
+              id: t.id,
+              name: t.name,
+              price: parseFloat(t.price) || 0,
+              quota: t.quantity,
+              available: t.quantity - (t.sold || 0)
+            })) : []
+          });
+        }
       } catch (error) {
         console.error('Error fetching event details', error);
       } finally {
@@ -97,7 +145,7 @@ export default function EventDetailPage() {
           {/* Main Info */}
           <div className="lg:col-span-2 space-y-8">
             <div className="bg-gray-900 p-6 md:p-8 rounded-2xl shadow-xl">
-              <Badge status={event.category} className="bg-[#7C3AED] hover:bg-[#4F46E5] text-white mb-4" />
+              <Badge status={event.category} className="bg-[#7C3AED] text-white mb-4 rounded-full px-3 py-1" />
               <h1 className="text-3xl md:text-5xl font-bold text-white mb-4 leading-tight">{event.title}</h1>
               
               <div className="flex flex-col sm:flex-row gap-6 mt-8 text-gray-300">
@@ -106,9 +154,18 @@ export default function EventDetailPage() {
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
                   </div>
                   <div>
-                    <p className="font-semibold text-white">Tanggal & Waktu</p>
+                    <p className="font-semibold text-white">Tanggal</p>
                     <p>{event.date}</p>
-                    <p className="text-sm">{event.time}</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <div className="p-3 bg-gray-800 rounded-lg text-[#7C3AED]">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-white">Waktu</p>
+                    <p>{event.time}</p>
                   </div>
                 </div>
                 
@@ -152,8 +209,35 @@ export default function EventDetailPage() {
                 <div className="p-6">
                   <TicketSelector 
                     ticketTypes={event.tickets as any} 
-                    onSelect={(selected) => console.log('Selected:', selected)} 
+                    onSelect={async (selected) => {
+                      if (!user) {
+                        router.push('/login');
+                        return;
+                      }
+                      
+                      if (selected.length === 0) return;
+                      try {
+                        setCheckoutLoading(true);
+                        // For simplicity, we create one order per selected ticket type
+                        for (const item of selected) {
+                          const ticketData = event.tickets.find(t => t.id === item.ticketTypeId);
+                          await ticketApi.post('/api/v1/tickets/orders', {
+                            event_id: event.id,
+                            ticket_type_id: item.ticketTypeId,
+                            quantity: item.quantity,
+                            price: ticketData?.price || 0
+                          });
+                        }
+                        alert('Berhasil memesan tiket! Pesanan Anda berstatus PENDING. Silakan bayar di halaman Profil.');
+                        router.push('/profile');
+                      } catch (error: any) {
+                        alert('Gagal membuat pesanan: ' + (error.response?.data?.message || error.message));
+                      } finally {
+                        setCheckoutLoading(false);
+                      }
+                    }} 
                   />
+                  {checkoutLoading && <p className="text-sm text-violet-400 mt-4 text-center animate-pulse">Memproses pesanan...</p>}
                 </div>
               </Card>
             </div>

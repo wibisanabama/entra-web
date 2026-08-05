@@ -22,18 +22,6 @@ export default function DashboardOrdersPage() {
       </div>
 
       <Card className="bg-gray-900 overflow-hidden">
-        <div className="p-4 flex justify-between items-center bg-gray-900/50">
-          <Input 
-            placeholder="Cari Order ID atau email..." 
-            className="max-w-xs bg-gray-800 text-white"
-          />
-          <select className="bg-gray-800 text-white text-sm rounded-md focus:ring-[#7C3AED] ] block p-2.5">
-            <option>Semua Event</option>
-            <option>Music Festival 2024</option>
-            <option>Tech Conference</option>
-          </select>
-        </div>
-
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm text-gray-400">
             <thead className="text-xs text-gray-400 uppercase bg-gray-800">

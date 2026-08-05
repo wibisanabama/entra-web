@@ -57,7 +57,7 @@ export default function EditEventPage() {
         <p className="text-gray-400">Perbarui detail event Anda.</p>
       </div>
 
-      <EventForm initialData={initialData} onSubmit={handleSubmit} />
+      <EventForm initialData={initialData} onSubmit={handleSubmit} onCancel={() => router.push('/dashboard/events')} />
     </div>
   );
 }

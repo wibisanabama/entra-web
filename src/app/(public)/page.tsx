@@ -7,7 +7,8 @@ import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { useAuth } from '@/providers/auth-provider';
-// import { fetchApi } from '@/lib/api';
+import { eventApi } from '@/lib/api';
+import { Event } from '@/types';
 
 export default function HomePage() {
   const { user } = useAuth();
@@ -26,17 +27,18 @@ export default function HomePage() {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        // Placeholder for API call
-        // const data = await fetchApi('/api/v1/events?page=1&per_page=6');
-        // setEvents(data.data);
-        
-        // Mock data
-        setEvents([
-          { id: '1', title: 'Music Festival 2024', date: '2024-10-12', venue: 'GBK Stadium', image: 'https://placehold.co/600x400/1e1e1e/8a2be2', category: 'Music' },
-          { id: '2', title: 'Tech Conference', date: '2024-11-05', venue: 'JCC Senayan', image: 'https://placehold.co/600x400/1e1e1e/8a2be2', category: 'Technology' },
-          { id: '3', title: 'Food & Beverage Expo', date: '2024-09-20', venue: 'ICE BSD', image: 'https://placehold.co/600x400/1e1e1e/8a2be2', category: 'Culinary' },
-          { id: '4', title: 'Marathon 10K', date: '2024-08-30', venue: 'Sudirman Street', image: 'https://placehold.co/600x400/1e1e1e/8a2be2', category: 'Sports' },
+        const [res, venueRes] = await Promise.all([
+          eventApi.get('/api/v1/events?page=1&per_page=4'),
+          eventApi.get('/api/v1/venues').catch(() => ({ data: [] }))
         ]);
+        if (res.data && Array.isArray(res.data)) {
+          const venues = venueRes.data?.data || venueRes.data || [];
+          const eventsWithVenues = (res.data as any[]).map(ev => {
+            const venue = venues.find((v: any) => v.id === ev.venue_id);
+            return { ...ev, venue: venue || ev.venue };
+          });
+          setEvents(eventsWithVenues);
+        }
       } catch (error) {
         console.error('Error fetching events:', error);
       } finally {
@@ -84,10 +86,14 @@ export default function HomePage() {
                   <Skeleton className="h-4 w-1/2 bg-gray-900" />
                 </div>
               ))
-            ) : (
+            ) : events.length > 0 ? (
               events.map((event) => (
                   <EventCard key={(event as any).id} event={event as any} />
               ))
+            ) : (
+              <div className="col-span-full text-center py-12 text-gray-400">
+                Belum ada event mendatang.
+              </div>
             )}
           </div>
           <div className="mt-8 text-center md:hidden">

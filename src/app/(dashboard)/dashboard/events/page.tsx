@@ -31,16 +31,6 @@ export default function DashboardEventsPage() {
       </div>
 
       <Card className="bg-gray-900 overflow-hidden">
-        <div className="p-4 flex justify-between items-center bg-gray-900/50">
-          <Input 
-            placeholder="Cari event..." 
-            className="max-w-xs bg-gray-800 text-white"
-          />
-          <div className="flex gap-2">
-            <Button variant="outline" size="sm" className="text-gray-300">Filter</Button>
-          </div>
-        </div>
-
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm text-gray-400">
             <thead className="text-xs text-gray-400 uppercase bg-gray-800">

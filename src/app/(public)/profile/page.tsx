@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/providers/auth-provider';
-import { authApi } from '@/lib/api';
+import { authApi, ticketApi } from '@/lib/api';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
@@ -13,8 +13,10 @@ export default function ProfilePage() {
   const isAuthenticated = !!user;
   const router = useRouter();
   const [tickets, setTickets] = useState<any[]>([]);
+  const [orders, setOrders] = useState<any[]>([]);
   const [selectedTicket, setSelectedTicket] = useState<any | null>(null);
   const [isUpgrading, setIsUpgrading] = useState(false);
+  const [isPaying, setIsPaying] = useState(false);
 
   const handleUpgrade = async () => {
     try {
@@ -30,6 +32,32 @@ export default function ProfilePage() {
     }
   };
 
+  const fetchTicketsAndOrders = async () => {
+    try {
+      const [ticketsRes, ordersRes] = await Promise.all([
+        ticketApi.get('/api/v1/tickets').catch(() => ({ data: { data: [] } })),
+        ticketApi.get('/api/v1/tickets/orders').catch(() => ({ data: { data: [] } }))
+      ]);
+      setTickets(ticketsRes.data?.data || []);
+      setOrders(ordersRes.data?.data || []);
+    } catch (error) {
+      console.error('Failed to fetch tickets and orders', error);
+    }
+  };
+
+  const handlePayOrder = async (orderId: string) => {
+    try {
+      setIsPaying(true);
+      await ticketApi.post(`/api/v1/tickets/orders/${orderId}/pay`);
+      alert('Pembayaran berhasil disimulasikan!');
+      await fetchTicketsAndOrders();
+    } catch (error: any) {
+      alert('Gagal mensimulasikan pembayaran: ' + (error.response?.data?.error || error.message));
+    } finally {
+      setIsPaying(false);
+    }
+  };
+
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
       router.push('/login');
@@ -37,11 +65,7 @@ export default function ProfilePage() {
     }
 
     if (isAuthenticated) {
-      // Fetch user tickets placeholder
-      setTickets([
-        { id: 'TRX-12345', event: 'Music Festival 2024', type: 'VIP', code: 'MF24-ABC-123', status: 'Active', date: '12 Okt 2024' },
-        { id: 'TRX-12346', event: 'Tech Conference', type: 'General', code: 'TC-XYZ-987', status: 'Used', date: '5 Nov 2024' }
-      ]);
+      fetchTicketsAndOrders();
     }
   }, [isLoading, isAuthenticated, router]);
 
@@ -115,10 +139,10 @@ export default function ProfilePage() {
                 <Card key={ticket.id} className="bg-gray-900 p-0 overflow-hidden flex flex-col sm:flex-row shadow-lg">
                   <div className="p-6 flex-grow flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 ] ">
                     <div>
-                      <h3 className="text-lg font-bold text-white mb-1">{ticket.event}</h3>
-                      <p className="text-sm text-gray-400 mb-2">{ticket.date} • {ticket.type}</p>
+                      <h3 className="text-lg font-bold text-white mb-1">Event ID: {ticket.event_id}</h3>
+                      <p className="text-sm text-gray-400 mb-2">Tipe Tiket: {ticket.ticket_type_id}</p>
                       <div className="inline-block bg-gray-800 rounded px-3 py-1 font-mono text-sm text-[#7C3AED] ">
-                        {ticket.code}
+                        {ticket.ticket_code}
                       </div>
                     </div>
                     <div className="text-left sm:text-right w-full sm:w-auto">
@@ -139,8 +163,42 @@ export default function ProfilePage() {
               ))
             ) : (
               <div className="text-center py-12 bg-gray-900 rounded-xl ">
-                <p className="text-gray-400 mb-4">Anda belum memiliki tiket.</p>
-                <Button className="bg-[#7C3AED] text-white">Cari Event</Button>
+                <p className="text-gray-400 mb-4">Anda belum memiliki e-ticket aktif.</p>
+              </div>
+            )}
+          </div>
+
+          <h2 className="text-2xl font-bold text-white mb-6 mt-12">Pesanan Menunggu Pembayaran</h2>
+          <div className="space-y-4">
+            {orders.filter(o => o.status === 'PENDING').length > 0 ? (
+              orders.filter(o => o.status === 'PENDING').map((order) => (
+                <Card key={order.id} className="bg-gray-900 p-0 overflow-hidden flex flex-col sm:flex-row shadow-lg border-l-4 border-yellow-500">
+                  <div className="p-6 flex-grow flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 ] ">
+                    <div>
+                      <h3 className="text-lg font-bold text-white mb-1">Order #{order.id.substring(0, 8)}</h3>
+                      <p className="text-sm text-gray-400 mb-2">Event ID: {order.event_id}</p>
+                      <p className="text-sm font-semibold text-yellow-500">Total: Rp {parseFloat(order.total_amount).toLocaleString('id-ID')}</p>
+                    </div>
+                    <div className="text-left sm:text-right w-full sm:w-auto">
+                      <Badge status={order.status} />
+                      <div className="mt-4 sm:mt-2">
+                        <Button 
+                          variant="primary" 
+                          size="sm" 
+                          className="w-full sm:w-auto"
+                          disabled={isPaying}
+                          onClick={() => handlePayOrder(order.id)}
+                        >
+                          {isPaying ? 'Memproses...' : 'Simulasi Pembayaran (Mock)'}
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+              ))
+            ) : (
+              <div className="text-center py-6 bg-gray-900 rounded-xl ">
+                <p className="text-gray-400">Tidak ada pesanan tertunda.</p>
               </div>
             )}
           </div>
@@ -160,8 +218,8 @@ export default function ProfilePage() {
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
               </button>
-              <h2 className="text-2xl font-bold text-white mb-1">{selectedTicket.event}</h2>
-              <p className="text-white/80 text-sm">{selectedTicket.date}</p>
+              <h2 className="text-2xl font-bold text-white mb-1">Tiket Event {selectedTicket.event_id.substring(0,8)}</h2>
+              <p className="text-white/80 text-sm">Issued at: {new Date(selectedTicket.created_at).toLocaleString('id-ID')}</p>
             </div>
             
             {/* Body */}
@@ -170,7 +228,7 @@ export default function ProfilePage() {
               <div className="flex justify-between items-center mb-8 border-b border-gray-800 pb-4">
                 <div className="text-left">
                   <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">Tipe Tiket</p>
-                  <p className="font-bold text-white text-lg">{selectedTicket.type}</p>
+                  <p className="font-bold text-white text-lg">{selectedTicket.ticket_type_id.substring(0,8)}</p>
                 </div>
                 <div className="text-right">
                   <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">Status</p>
@@ -196,7 +254,7 @@ export default function ProfilePage() {
               <div>
                 <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">Kode Tiket</p>
                 <div className="bg-gray-800 py-3 px-6 rounded-lg inline-block">
-                  <p className="font-mono text-xl tracking-widest text-white">{selectedTicket.code}</p>
+                  <p className="font-mono text-xl tracking-widest text-white">{selectedTicket.ticket_code}</p>
                 </div>
               </div>
               

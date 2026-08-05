@@ -25,7 +25,7 @@ export function Badge({ status, className = '', ...props }: BadgeProps) {
 
   return (
     <span
-      className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${getBadgeStyles(status)} ${className}`}
+      className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium tracking-wide ${getBadgeStyles(status)} ${className}`}
       {...props}
     >
       {status.toUpperCase()}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Calendar, MapPin } from 'lucide-react';
+import { Calendar, Clock } from 'lucide-react';
 import Link from 'next/link';
 import { Card } from '@/components/ui/Card';
 import { Event } from '@/types';
@@ -11,12 +11,14 @@ export interface EventCardProps {
 }
 
 export function EventCard({ event }: EventCardProps) {
-  let formattedDate = 'Waktu Belum Ditentukan';
+  let formattedDate = 'Tanggal Belum Ditentukan';
+  let formattedTime = 'Waktu Belum Ditentukan';
   try {
     if (event.start_date) {
       const startDate = new Date(event.start_date);
       if (!isNaN(startDate.getTime())) {
-        formattedDate = format(startDate, 'dd MMM yyyy, HH:mm', { locale: id });
+        formattedDate = format(startDate, 'dd MMM yyyy', { locale: id });
+        formattedTime = format(startDate, 'HH:mm', { locale: id }) + ' WIB';
       }
     }
   } catch (err) {
@@ -49,8 +51,8 @@ export function EventCard({ event }: EventCardProps) {
               {formattedDate}
             </div>
             <div className="flex items-center text-sm text-gray-400">
-              <MapPin className="mr-2 h-4 w-4" />
-              {event.is_online ? 'Online Event' : (event.venue?.name || 'TBA')}
+              <Clock className="mr-2 h-4 w-4" />
+              {formattedTime}
             </div>
           </div>
         </div>

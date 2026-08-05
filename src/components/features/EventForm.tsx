@@ -8,10 +8,11 @@ import { Button } from '@/components/ui/Button';
 export interface EventFormProps {
   initialData?: Event;
   onSubmit: (data: Partial<Event>) => void;
+  onCancel?: () => void;
   isLoading?: boolean;
 }
 
-export function EventForm({ initialData, onSubmit, isLoading = false }: EventFormProps) {
+export function EventForm({ initialData, onSubmit, onCancel, isLoading = false }: EventFormProps) {
   const [formData, setFormData] = useState<Partial<Event>>({
     title: initialData?.title || '',
     description: initialData?.description || '',
@@ -166,7 +167,9 @@ export function EventForm({ initialData, onSubmit, isLoading = false }: EventFor
       </div>
 
       <div className="pt-4 flex justify-end gap-3">
-        <Button type="button" variant="ghost">Batal</Button>
+        {onCancel && (
+          <Button type="button" variant="ghost" onClick={onCancel}>Batal</Button>
+        )}
         <Button type="submit" variant="primary" isLoading={isLoading}>
           {initialData ? 'Simpan Perubahan' : 'Buat Event'}
         </Button>

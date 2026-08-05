@@ -16,7 +16,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         )}
         <input
           type={type}
-          className={`flex w-full rounded-lg bg-gray-800 text-white px-3 py-2 text-sm transition-colors
+          className={`flex h-10 w-full rounded-lg bg-gray-800 text-white px-3 py-2 text-sm transition-colors
             focus:outline-none focus:ring-2 focus:ring-violet-500 disabled:cursor-not-allowed disabled:opacity-50
             ${error ? '' : ''}
             ${className}`}

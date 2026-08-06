@@ -1,9 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Event } from '@/types';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
+import { eventApi } from '@/lib/api';
+import { toast } from 'sonner';
 
 export interface EventFormProps {
   initialData?: Event;
@@ -26,6 +28,48 @@ export function EventForm({ initialData, onSubmit, onCancel, isLoading = false }
     max_attendees: initialData?.max_attendees || 0,
   });
 
+  const [categories, setCategories] = useState<any[]>([]);
+  const [venues, setVenues] = useState<any[]>([]);
+  const [loadingData, setLoadingData] = useState(true);
+
+  useEffect(() => {
+    // If initialData changes, update form data
+    if (initialData) {
+      setFormData({
+        title: initialData.title || '',
+        description: initialData.description || '',
+        start_date: initialData.start_date || '',
+        end_date: initialData.end_date || '',
+        venue_id: initialData.venue_id || '',
+        category_id: initialData.category_id || '',
+        banner_url: initialData.banner_url || '',
+        is_online: initialData.is_online || false,
+        online_url: initialData.online_url || '',
+        max_attendees: initialData.max_attendees || 0,
+      });
+    }
+  }, [initialData]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [catRes, venRes] = await Promise.all([
+          eventApi.get('/api/v1/categories'),
+          eventApi.get('/api/v1/venues')
+        ]);
+        
+        if (catRes.data?.data) setCategories(catRes.data.data);
+        if (venRes.data?.data) setVenues(venRes.data.data);
+      } catch (error) {
+        console.error("Failed to fetch form reference data", error);
+        toast.error("Gagal memuat kategori dan venue");
+      } finally {
+        setLoadingData(false);
+      }
+    };
+    fetchData();
+  }, []);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
     
@@ -38,7 +82,26 @@ export function EventForm({ initialData, onSubmit, onCancel, isLoading = false }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(formData);
+    
+    // Format dates for API if needed
+    const submitData = { ...formData };
+    
+    // Convert datetime-local to ISO string
+    if (submitData.start_date && !submitData.start_date.includes('T') && submitData.start_date.includes(' ')) {
+        // Handle format mismatch if necessary, or just rely on backend parsing
+    }
+    
+    // Ensure numbers
+    submitData.max_attendees = Number(submitData.max_attendees);
+    
+    // Clean up unused fields
+    if (submitData.is_online) {
+      submitData.venue_id = '';
+    } else {
+      submitData.online_url = '';
+    }
+    
+    onSubmit(submitData);
   };
 
   return (
@@ -70,18 +133,18 @@ export function EventForm({ initialData, onSubmit, onCancel, isLoading = false }
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Input
-            label="Tanggal Mulai"
+            label="Tanggal Mulai (UTC)"
             name="start_date"
             type="datetime-local"
-            value={formData.start_date as string}
+            value={(formData.start_date as string)?.substring(0, 16)}
             onChange={handleChange}
             required
           />
           <Input
-            label="Tanggal Selesai"
+            label="Tanggal Selesai (UTC)"
             name="end_date"
             type="datetime-local"
-            value={formData.end_date as string}
+            value={(formData.end_date as string)?.substring(0, 16)}
             onChange={handleChange}
             required
           />
@@ -96,13 +159,14 @@ export function EventForm({ initialData, onSubmit, onCancel, isLoading = false }
               name="category_id"
               value={formData.category_id}
               onChange={handleChange}
-              className="flex w-full rounded-lg bg-gray-800 text-white px-3 py-2 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-violet-500"
+              disabled={loadingData}
+              required
+              className="flex w-full rounded-lg bg-gray-800 text-white px-3 py-2 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-violet-500 disabled:opacity-50"
             >
               <option value="">Pilih Kategori</option>
-              <option value="cat_1">Musik</option>
-              <option value="cat_2">Workshop</option>
-              <option value="cat_3">Webinar</option>
-              <option value="cat_4">Olahraga</option>
+              {categories.map((c: any) => (
+                <option key={c.id} value={c.id}>{c.name}</option>
+              ))}
             </select>
           </div>
           <Input
@@ -137,6 +201,7 @@ export function EventForm({ initialData, onSubmit, onCancel, isLoading = false }
             value={formData.online_url || ''}
             onChange={handleChange}
             placeholder="https://..."
+            required
           />
         ) : (
           <div className="w-full">
@@ -147,11 +212,14 @@ export function EventForm({ initialData, onSubmit, onCancel, isLoading = false }
               name="venue_id"
               value={formData.venue_id || ''}
               onChange={handleChange}
-              className="flex w-full rounded-lg bg-gray-800 text-white px-3 py-2 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-violet-500"
+              disabled={loadingData}
+              required={!formData.is_online}
+              className="flex w-full rounded-lg bg-gray-800 text-white px-3 py-2 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-violet-500 disabled:opacity-50"
             >
               <option value="">Pilih Venue</option>
-              <option value="ven_1">Stadion Utama</option>
-              <option value="ven_2">Gedung Serbaguna</option>
+              {venues.map((v: any) => (
+                <option key={v.id} value={v.id}>{v.name}</option>
+              ))}
             </select>
           </div>
         )}
@@ -170,7 +238,7 @@ export function EventForm({ initialData, onSubmit, onCancel, isLoading = false }
         {onCancel && (
           <Button type="button" variant="ghost" onClick={onCancel}>Batal</Button>
         )}
-        <Button type="submit" variant="primary" isLoading={isLoading}>
+        <Button type="submit" variant="primary" isLoading={isLoading || loadingData}>
           {initialData ? 'Simpan Perubahan' : 'Buat Event'}
         </Button>
       </div>

@@ -32,7 +32,7 @@ export default function HomePage() {
           eventApi.get('/api/v1/venues').catch(() => ({ data: [] }))
         ]);
         if (res.data && Array.isArray(res.data)) {
-          const venues = venueRes.data?.data || venueRes.data || [];
+          const venues = (venueRes as any).data?.data || (venueRes as any).data || [];
           const eventsWithVenues = (res.data as any[]).map(ev => {
             const venue = venues.find((v: any) => v.id === ev.venue_id);
             return { ...ev, venue: venue || ev.venue };
@@ -104,20 +104,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-24 bg-gray-900 ">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">Punya Event Sendiri?</h2>
-          <p className="text-gray-400 max-w-2xl mx-auto mb-10 text-lg">
-            Bergabunglah sebagai organizer dan mulai jual tiket eventmu di Entra. Dapatkan jangkauan luas dan fitur manajemen event yang lengkap.
-          </p>
-          <Link href={targetHref}>
-            <Button size="lg" className="bg-[#7C3AED] hover:opacity-90 shadow-lg px-8 py-6 rounded-full text-lg">
-              Mulai Jual Tiket Eventmu
-            </Button>
-          </Link>
-        </div>
-      </section>
+
     </div>
   );
 }

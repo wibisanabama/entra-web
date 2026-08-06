@@ -41,10 +41,13 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
       <div className="relative bg-gray-900 rounded-xl shadow-2xl w-full max-w-lg overflow-hidden transform transition-all">
         <div className="px-6 py-4 flex items-center justify-between">
           <h3 className="text-lg font-semibold text-white">{title}</h3>
-          <Button variant="ghost" size="sm" onClick={onClose} className="!px-2 !py-1 text-gray-400 hover:text-white">
+          <button 
+            onClick={onClose} 
+            className="w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:text-white hover:bg-gray-800 transition-colors text-2xl pb-1"
+          >
             <span className="sr-only">Tutup</span>
             &times;
-          </Button>
+          </button>
         </div>
         <div className="px-6 py-4">
           {children}

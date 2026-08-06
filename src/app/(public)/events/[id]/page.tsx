@@ -1,15 +1,16 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { TicketSelector } from '@/components/features/TicketSelector';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/Card';
+import { Modal } from '@/components/ui/Modal';
+import { Button } from '@/components/ui/Button';
 import { eventApi, ticketApi } from '@/lib/api';
 import { format } from 'date-fns';
 import { id as localeId } from 'date-fns/locale';
-import { useRouter } from 'next/navigation';
 import { useAuth } from '@/providers/auth-provider';
 
 interface EventDetail {
@@ -38,6 +39,7 @@ export default function EventDetailPage() {
   const [event, setEvent] = useState<EventDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const [modalData, setModalData] = useState<{isOpen: boolean, title: string, message: string, type: 'success' | 'error'}>({isOpen: false, title: '', message: '', type: 'success'});
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -74,7 +76,7 @@ export default function EventDetailPage() {
           } else if (apiEvent.venue?.name) {
             venueName = `${apiEvent.venue.name}, ${apiEvent.venue.city}`;
           } else if (apiEvent.venue_id) {
-            const venues = venueRes.data?.data || venueRes.data || [];
+            const venues = (venueRes as any).data?.data || (venueRes as any).data || [];
             const venue = venues.find((v: any) => v.id === apiEvent.venue_id);
             if (venue) {
               venueName = `${venue.name}, ${venue.city}`;
@@ -228,10 +230,19 @@ export default function EventDetailPage() {
                             price: ticketData?.price || 0
                           });
                         }
-                        alert('Berhasil memesan tiket! Pesanan Anda berstatus PENDING. Silakan bayar di halaman Profil.');
-                        router.push('/profile');
+                        setModalData({
+                          isOpen: true,
+                          title: 'Pemesanan Berhasil',
+                          message: 'Pesanan tiket Anda berhasil dibuat dan berstatus PENDING. Silakan selesaikan pembayaran di halaman Profil Anda.',
+                          type: 'success'
+                        });
                       } catch (error: any) {
-                        alert('Gagal membuat pesanan: ' + (error.response?.data?.message || error.message));
+                        setModalData({
+                          isOpen: true,
+                          title: 'Gagal Memesan Tiket',
+                          message: 'Terjadi kesalahan: ' + (error.response?.data?.message || error.message),
+                          type: 'error'
+                        });
                       } finally {
                         setCheckoutLoading(false);
                       }
@@ -245,6 +256,43 @@ export default function EventDetailPage() {
           
         </div>
       </div>
+
+      <Modal 
+        isOpen={modalData.isOpen} 
+        onClose={() => {
+          setModalData({...modalData, isOpen: false});
+          if (modalData.type === 'success') {
+            router.push('/profile');
+          }
+        }} 
+        title={modalData.title}
+      >
+        <div className="text-center py-4">
+          <div className={`mx-auto flex items-center justify-center h-16 w-16 rounded-full ${modalData.type === 'success' ? 'bg-green-100' : 'bg-red-100'} mb-6`}>
+            {modalData.type === 'success' ? (
+              <svg className="h-8 w-8 text-green-600" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+              </svg>
+            ) : (
+              <svg className="h-8 w-8 text-red-600" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+            )}
+          </div>
+          <p className="text-gray-300 text-lg mb-8">{modalData.message}</p>
+          <Button 
+            className="w-full bg-[#7C3AED] hover:bg-[#6D28D9] text-white"
+            onClick={() => {
+              setModalData({...modalData, isOpen: false});
+              if (modalData.type === 'success') {
+                router.push('/profile');
+              }
+            }}
+          >
+            {modalData.type === 'success' ? 'Lanjut ke Pembayaran' : 'Tutup'}
+          </Button>
+        </div>
+      </Modal>
     </div>
   );
 }

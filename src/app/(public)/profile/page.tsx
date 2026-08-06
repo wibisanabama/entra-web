@@ -7,6 +7,7 @@ import { authApi, ticketApi } from '@/lib/api';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
+import { toast } from 'sonner';
 
 export default function ProfilePage() {
   const { user, isLoading, logout, loadProfile } = useAuth();
@@ -26,7 +27,7 @@ export default function ProfilePage() {
       router.push('/dashboard');
     } catch (error) {
       console.error('Failed to upgrade role:', error);
-      alert('Gagal meningkatkan akun. Silakan coba lagi.');
+      toast.error('Gagal meningkatkan akun. Silakan coba lagi.');
     } finally {
       setIsUpgrading(false);
     }
@@ -35,11 +36,11 @@ export default function ProfilePage() {
   const fetchTicketsAndOrders = async () => {
     try {
       const [ticketsRes, ordersRes] = await Promise.all([
-        ticketApi.get('/api/v1/tickets').catch(() => ({ data: { data: [] } })),
-        ticketApi.get('/api/v1/tickets/orders').catch(() => ({ data: { data: [] } }))
+        ticketApi.get('/api/v1/tickets').catch(() => ({ data: [] })),
+        ticketApi.get('/api/v1/tickets/orders').catch(() => ({ data: [] }))
       ]);
-      setTickets(ticketsRes.data?.data || []);
-      setOrders(ordersRes.data?.data || []);
+      setTickets((ticketsRes as any).data || []);
+      setOrders((ordersRes as any).data || []);
     } catch (error) {
       console.error('Failed to fetch tickets and orders', error);
     }
@@ -48,11 +49,44 @@ export default function ProfilePage() {
   const handlePayOrder = async (orderId: string) => {
     try {
       setIsPaying(true);
-      await ticketApi.post(`/api/v1/tickets/orders/${orderId}/pay`);
-      alert('Pembayaran berhasil disimulasikan!');
-      await fetchTicketsAndOrders();
+      const res = await ticketApi.post<any>(`/api/v1/tickets/orders/${orderId}/pay`);
+      const token = (res as any).data?.token;
+      
+      if (!token) {
+        throw new Error('Gagal mendapatkan token pembayaran dari server.');
+      }
+
+      // @ts-ignore
+      if (window.snap) {
+        // @ts-ignore
+        window.snap.pay(token, {
+          onSuccess: async function (result: any) {
+            // FOR LOCALHOST TESTING: Manually trigger the webhook 
+            try {
+              await ticketApi.post('/api/v1/tickets/midtrans/webhook', result);
+            } catch (e) {
+              console.error("Webhook trigger failed", e);
+            }
+            toast.success('Pembayaran berhasil!');
+            fetchTicketsAndOrders();
+          },
+          onPending: function (result: any) {
+            toast.info('Menunggu pembayaran Anda.');
+            fetchTicketsAndOrders();
+          },
+          onError: function (result: any) {
+            toast.error('Pembayaran gagal.');
+            fetchTicketsAndOrders();
+          },
+          onClose: function () {
+            toast.warning('Anda menutup jendela pembayaran.');
+          }
+        });
+      } else {
+        toast.error('Midtrans Snap gagal dimuat. Coba refresh halaman.');
+      }
     } catch (error: any) {
-      alert('Gagal mensimulasikan pembayaran: ' + (error.response?.data?.error || error.message));
+      toast.error('Gagal memproses pembayaran: ' + (error.response?.data?.error || error.message));
     } finally {
       setIsPaying(false);
     }
@@ -121,7 +155,7 @@ export default function ProfilePage() {
 
             <Button 
               variant="outline" 
-              className="w-full mt-6 text-red-500 hover:bg-red-500/10 border-red-500/20"
+              className="w-full mt-3 text-red-500 hover:bg-red-500/10 border-red-500/20"
               onClick={() => logout()}
             >
               Keluar Akun
@@ -163,7 +197,7 @@ export default function ProfilePage() {
               ))
             ) : (
               <div className="text-center py-12 bg-gray-900 rounded-xl ">
-                <p className="text-gray-400 mb-4">Anda belum memiliki e-ticket aktif.</p>
+                <p className="text-gray-400">Anda belum memiliki e-ticket aktif.</p>
               </div>
             )}
           </div>
@@ -172,7 +206,7 @@ export default function ProfilePage() {
           <div className="space-y-4">
             {orders.filter(o => o.status === 'PENDING').length > 0 ? (
               orders.filter(o => o.status === 'PENDING').map((order) => (
-                <Card key={order.id} className="bg-gray-900 p-0 overflow-hidden flex flex-col sm:flex-row shadow-lg border-l-4 border-yellow-500">
+                <Card key={order.id} className="bg-gray-900 p-0 overflow-hidden flex flex-col sm:flex-row shadow-lg">
                   <div className="p-6 flex-grow flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 ] ">
                     <div>
                       <h3 className="text-lg font-bold text-white mb-1">Order #{order.id.substring(0, 8)}</h3>
@@ -189,7 +223,7 @@ export default function ProfilePage() {
                           disabled={isPaying}
                           onClick={() => handlePayOrder(order.id)}
                         >
-                          {isPaying ? 'Memproses...' : 'Simulasi Pembayaran (Mock)'}
+                          {isPaying ? 'Memproses...' : 'Bayar Sekarang'}
                         </Button>
                       </div>
                     </div>

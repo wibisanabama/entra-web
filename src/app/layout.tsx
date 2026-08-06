@@ -7,10 +7,14 @@ import { QueryProvider } from "@/providers/query-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
+import Script from "next/script";
+
 export const metadata: Metadata = {
   title: "Entra - Event Ticketing Platform",
   description: "Your modern and reliable event ticketing platform.",
 };
+
+import { Toaster } from "sonner";
 
 export default function RootLayout({
   children,
@@ -20,6 +24,7 @@ export default function RootLayout({
   return (
     <html lang="id" className="dark" suppressHydrationWarning>
       <body className={`${inter.className} min-h-screen bg-background text-foreground antialiased`}>
+        <Toaster position="top-center" richColors />
         <QueryProvider>
           <ThemeProvider>
             <AuthProvider>
@@ -27,6 +32,11 @@ export default function RootLayout({
             </AuthProvider>
           </ThemeProvider>
         </QueryProvider>
+        <Script 
+          src="https://app.sandbox.midtrans.com/snap/snap.js" 
+          data-client-key={process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY || "SB-Mid-client-dummy-key-for-dev-only"} 
+          strategy="lazyOnload" 
+        />
       </body>
     </html>
   );

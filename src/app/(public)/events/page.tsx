@@ -2,8 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { EventCard } from '@/components/features/EventCard';
-import { Input } from '@/components/ui/Input';
-import { Button } from '@/components/ui/Button';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { Badge } from '@/components/ui/Badge';
 
@@ -15,15 +13,17 @@ export default function EventsPage() {
   const [events, setEvents] = useState<Event[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [submittedQuery, setSubmittedQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState<string | 'All'>('All');
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const endpoint = submittedQuery ? `/api/v1/events/search?q=${encodeURIComponent(submittedQuery)}` : `/api/v1/events?page=1&per_page=20`;
+        const endpoint = `/api/v1/events?page=1&per_page=20`;
         const [catRes, venueRes, res] = await Promise.all([
           eventApi.get('/api/v1/categories').catch(() => ({ data: [] })),
           eventApi.get('/api/v1/venues').catch(() => ({ data: [] })),
@@ -35,7 +35,7 @@ export default function EventsPage() {
         }
 
         if (res.data && Array.isArray(res.data)) {
-          const venues = venueRes.data?.data || venueRes.data || [];
+          const venues = (venueRes as any).data?.data || (venueRes as any).data || [];
           const eventsWithVenues = (res.data as Event[]).map(ev => {
             const venue = venues.find((v: any) => v.id === ev.venue_id);
             return { ...ev, venue: venue || ev.venue };
@@ -49,12 +49,7 @@ export default function EventsPage() {
       }
     };
     fetchData();
-  }, [submittedQuery]);
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmittedQuery(searchQuery);
-  };
+  }, []);
 
   const filteredEvents = activeCategory === 'All' 
     ? events 
@@ -65,32 +60,6 @@ export default function EventsPage() {
       <div className="mb-10 text-center max-w-2xl mx-auto">
         <h1 className="text-4xl font-bold text-white mb-4">Jelajahi Event</h1>
         <p className="text-gray-400 mb-8">Temukan berbagai event menarik yang sesuai dengan minat Anda</p>
-        
-        <form onSubmit={handleSearch} className="flex gap-2">
-          <Input 
-            type="text" 
-            placeholder="Cari event berdasarkan nama atau lokasi..." 
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="flex-grow bg-gray-900 text-white"
-          />
-          {submittedQuery && (
-            <Button 
-              type="button" 
-              variant="outline"
-              className="text-white hover:bg-gray-800"
-              onClick={() => {
-                setSearchQuery('');
-                setSubmittedQuery('');
-              }}
-            >
-              Reset
-            </Button>
-          )}
-          <Button type="submit" className="bg-[#7C3AED] hover:bg-[#4F46E5] text-white">
-            Cari
-          </Button>
-        </form>
       </div>
 
       <div className="flex overflow-x-auto pb-4 mb-8 gap-2 no-scrollbar">
@@ -119,7 +88,7 @@ export default function EventsPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {loading ? (
-          Array(8).fill(0).map((_, i) => (
+          Array(4).fill(0).map((_, i) => (
             <div key={i} className="flex flex-col gap-3">
               <Skeleton className="h-48 w-full rounded-xl bg-gray-900" />
               <Skeleton className="h-6 w-3/4 bg-gray-900" />
@@ -131,8 +100,10 @@ export default function EventsPage() {
             <EventCard key={event.id} event={event} />
           ))
         ) : (
-          <div className="col-span-full text-center py-12 text-gray-400">
-            Tidak ada event yang ditemukan.
+          <div className="col-span-full flex flex-col items-center justify-center min-h-[300px] text-gray-400 bg-gray-900/30 rounded-2xl border border-gray-800/50">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="mb-4 text-gray-600"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <p className="text-lg">Tidak ada event yang ditemukan.</p>
+            <p className="text-sm mt-2 text-gray-500">Coba gunakan kata kunci atau lokasi yang berbeda</p>
           </div>
         )}
       </div>

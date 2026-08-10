@@ -8,18 +8,21 @@ import { Card } from '@/components/ui/Card';
 import { eventApi } from '@/lib/api';
 import { toast } from 'sonner';
 import { Skeleton } from '@/components/ui/Skeleton';
+import { Modal } from '@/components/ui/Modal';
 
 export default function DashboardEventsPage() {
   const [events, setEvents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [eventToDelete, setEventToDelete] = useState<any>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
         setLoading(true);
         const res = await eventApi.get('/api/v1/organizer/events');
-        if (res.data?.data) {
-          setEvents(res.data.data);
+        if (res.data) {
+          setEvents(res.data as any);
         }
       } catch (error) {
         console.error("Failed to fetch events", error);
@@ -87,13 +90,23 @@ export default function DashboardEventsPage() {
                     })}
                   </td>
                   <td className="px-6 py-4">
-                    <Badge status={event.status === 'PUBLISHED' ? 'Published' : 'Draft'} />
+                    <Badge status={event.status?.toLowerCase() === 'published' ? 'Published' : 'Draft'} />
                   </td>
                   <td className="px-6 py-4">
                     <span className="text-sm">Tidak Tersedia</span>
                   </td>
                   <td className="px-6 py-4 text-right">
                     <div className="flex justify-end gap-2">
+                      <Link href={`/dashboard/events/${event.id}/tickets`}>
+                        <Button variant="outline" size="sm" className="text-white hover:bg-gray-800 hover:text-[#7C3AED]">
+                          Tiket
+                        </Button>
+                      </Link>
+                      <Link href={`/dashboard/events/${event.id}/attendees`}>
+                        <Button variant="outline" size="sm" className="text-white hover:bg-gray-800 hover:text-[#7C3AED]">
+                          Peserta
+                        </Button>
+                      </Link>
                       <Link href={`/dashboard/events/${event.id}/edit`}>
                         <Button variant="outline" size="sm" className="text-white hover:bg-gray-800 hover:text-[#7C3AED]">
                           Edit
@@ -103,19 +116,7 @@ export default function DashboardEventsPage() {
                         variant="outline" 
                         size="sm" 
                         className="text-white hover:bg-red-500/10 hover:text-red-500"
-                        onClick={async () => {
-                          if (window.confirm('Yakin ingin menghapus event ini?')) {
-                            try {
-                              await eventApi.delete(`/api/v1/events/${event.id}`);
-                              toast.success('Event berhasil dihapus');
-                              // Trigger reload
-                              setEvents(events.filter(e => e.id !== event.id));
-                            } catch (error) {
-                              console.error('Error deleting event', error);
-                              toast.error('Gagal menghapus event');
-                            }
-                          }
-                        }}
+                        onClick={() => setEventToDelete(event)}
                       >
                         Hapus
                       </Button>
@@ -139,6 +140,49 @@ export default function DashboardEventsPage() {
           </div>
         )}
       </Card>
+
+      <Modal
+        isOpen={!!eventToDelete}
+        onClose={() => !isDeleting && setEventToDelete(null)}
+        title="Hapus Event"
+      >
+        <div className="space-y-4">
+          <p className="text-gray-300">
+            Apakah Anda yakin ingin menghapus event <span className="font-semibold text-white">"{eventToDelete?.title}"</span>? Tindakan ini tidak dapat dibatalkan.
+          </p>
+          <div className="flex justify-end gap-3 pt-4 border-t border-gray-800">
+            <Button
+              variant="outline"
+              onClick={() => setEventToDelete(null)}
+              disabled={isDeleting}
+            >
+              Batal
+            </Button>
+            <Button
+              variant="primary"
+              className="bg-red-600 hover:bg-red-700 text-white border-transparent"
+              isLoading={isDeleting}
+              onClick={async () => {
+                if (!eventToDelete) return;
+                try {
+                  setIsDeleting(true);
+                  await eventApi.del(`/api/v1/events/${eventToDelete.id}`);
+                  toast.success('Event berhasil dihapus');
+                  setEvents(events.filter(e => e.id !== eventToDelete.id));
+                  setEventToDelete(null);
+                } catch (error) {
+                  console.error('Error deleting event', error);
+                  toast.error('Gagal menghapus event');
+                } finally {
+                  setIsDeleting(false);
+                }
+              }}
+            >
+              Ya, Hapus
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }

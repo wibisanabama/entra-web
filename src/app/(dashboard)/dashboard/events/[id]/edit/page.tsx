@@ -19,9 +19,9 @@ export default function EditEventPage() {
     const fetchEvent = async () => {
       try {
         const res = await eventApi.get(`/api/v1/events/${params.id}`);
-        if (res.data?.data) {
+        if (res.data) {
           // Format date for datetime-local input (YYYY-MM-DDThh:mm)
-          const data = res.data.data;
+          const data = res.data as any;
           
           const formatDate = (dateString: string) => {
             if (!dateString) return '';
@@ -61,6 +61,7 @@ export default function EditEventPage() {
         is_online: data.is_online,
         online_url: data.online_url || '',
         max_attendees: data.max_attendees,
+        status: data.status,
       };
 
       await eventApi.put(`/api/v1/events/${params.id}`, payload);

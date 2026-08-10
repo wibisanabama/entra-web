@@ -3,6 +3,7 @@
 import React, { useState, useRef } from 'react';
 import { Camera } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
+import { getCookie } from '@/lib/api';
 
 export interface MediaUploaderProps {
   onUploadComplete: (url: string) => void;
@@ -56,8 +57,14 @@ export function MediaUploader({ onUploadComplete }: MediaUploaderProps) {
         setProgress(prev => (prev < 90 ? prev + 10 : prev));
       }, 200);
 
-      const response = await fetch('/api/v1/storage/upload', {
+      const baseUrl = process.env.NEXT_PUBLIC_STORAGE_API_URL || 'http://localhost:8087';
+      const token = getCookie('entra_token');
+
+      const response = await fetch(`${baseUrl}/api/v1/storage/upload`, {
         method: 'POST',
+        headers: {
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+        },
         body: formData,
       });
 

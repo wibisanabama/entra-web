@@ -1,18 +1,36 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
-import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
+import { ticketApi } from '@/lib/api';
+import { toast } from 'sonner';
+import { Skeleton } from '@/components/ui/Skeleton';
 
 export default function DashboardOrdersPage() {
-  const [orders] = useState([
-    { id: 'ORD-001', buyer: 'Budi Santoso', email: 'budi@example.com', event: 'Music Festival 2024', total: 'Rp 500.000', status: 'Sukses', date: '10 Ags 2024' },
-    { id: 'ORD-002', buyer: 'Siti Aminah', email: 'siti@example.com', event: 'Tech Conference', total: 'Rp 250.000', status: 'Pending', date: '11 Ags 2024' },
-    { id: 'ORD-003', buyer: 'Andi Wijaya', email: 'andi@example.com', event: 'Music Festival 2024', total: 'Rp 850.000', status: 'Sukses', date: '11 Ags 2024' },
-    { id: 'ORD-004', buyer: 'Dewi Lestari', email: 'dewi@example.com', event: 'Food & Beverage Expo', total: 'Rp 100.000', status: 'Dibatalkan', date: '12 Ags 2024' },
-  ]);
+  const [orders, setOrders] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        setLoading(true);
+        const res = await ticketApi.get('/api/v1/tickets/organizer/orders');
+        if (res.data) {
+          setOrders(res.data as any);
+        }
+      } catch (error) {
+        console.error("Failed to fetch orders", error);
+        toast.error("Gagal memuat daftar pesanan");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOrders();
+  }, []);
 
   return (
     <div className="space-y-6">
@@ -27,32 +45,54 @@ export default function DashboardOrdersPage() {
             <thead className="text-xs text-gray-400 uppercase bg-gray-800">
               <tr>
                 <th scope="col" className="px-6 py-4">Order ID</th>
-                <th scope="col" className="px-6 py-4">Pembeli</th>
                 <th scope="col" className="px-6 py-4">Event</th>
                 <th scope="col" className="px-6 py-4">Total</th>
                 <th scope="col" className="px-6 py-4">Status</th>
                 <th scope="col" className="px-6 py-4">Tanggal</th>
-                <th scope="col" className="px-6 py-4">Aksi</th>
+                <th scope="col" className="px-6 py-4 text-right">Aksi</th>
               </tr>
             </thead>
             <tbody>
-              {orders.map((order) => (
-                <tr key={order.id} className="hover:bg-gray-800/50 transition-colors">
+              {loading ? (
+                Array(4).fill(0).map((_, i) => (
+                  <tr key={i} className="border-b border-gray-800">
+                    <td className="px-6 py-4"><Skeleton className="h-6 w-32 bg-gray-800" /></td>
+                    <td className="px-6 py-4"><Skeleton className="h-6 w-40 bg-gray-800" /></td>
+                    <td className="px-6 py-4"><Skeleton className="h-6 w-24 bg-gray-800" /></td>
+                    <td className="px-6 py-4"><Skeleton className="h-6 w-20 bg-gray-800" /></td>
+                    <td className="px-6 py-4"><Skeleton className="h-6 w-24 bg-gray-800" /></td>
+                    <td className="px-6 py-4 text-right"><Skeleton className="h-8 w-16 ml-auto bg-gray-800" /></td>
+                  </tr>
+                ))
+              ) : orders.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
+                    Belum ada pesanan yang masuk.
+                  </td>
+                </tr>
+              ) : orders.map((order) => (
+                <tr key={order.id} className="hover:bg-gray-800/50 transition-colors border-b border-gray-800 last:border-0">
                   <td className="px-6 py-4 font-mono font-medium text-white">
-                    {order.id}
+                    {order.id.substring(0, 8).toUpperCase()}...
+                  </td>
+                  <td className="px-6 py-4 text-white font-medium">
+                    {order.event_id ? `Event ID: ${order.event_id.substring(0, 8)}...` : 'N/A'}
+                  </td>
+                  <td className="px-6 py-4 text-white font-medium">
+                    Rp {Number(order.total_amount).toLocaleString('id-ID')}
                   </td>
                   <td className="px-6 py-4">
-                    <p className="text-white font-medium">{order.buyer}</p>
-                    <p className="text-xs text-gray-500">{order.email}</p>
+                    <Badge status={order.status === 'PAID' || order.status === 'SUCCESS' ? 'Sukses' : order.status === 'PENDING' ? 'Pending' : 'Dibatalkan'} />
                   </td>
-                  <td className="px-6 py-4">{order.event}</td>
-                  <td className="px-6 py-4 text-white font-medium">{order.total}</td>
                   <td className="px-6 py-4">
-                    <Badge status={order.status} />
+                    {new Date(order.created_at).toLocaleDateString('id-ID', {
+                      day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
+                    })}
                   </td>
-                  <td className="px-6 py-4">{order.date}</td>
-                  <td className="px-6 py-4">
-                    <Button variant="outline" size="sm" className="text-white hover:bg-gray-800">Detail</Button>
+                  <td className="px-6 py-4 text-right">
+                    <Link href={`/dashboard/orders/${order.id}`}>
+                      <Button variant="outline" size="sm" className="text-white hover:bg-gray-800">Detail</Button>
+                    </Link>
                   </td>
                 </tr>
               ))}

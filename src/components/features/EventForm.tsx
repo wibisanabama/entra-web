@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { eventApi } from '@/lib/api';
 import { toast } from 'sonner';
+import { getPgText } from '@/lib/utils';
 
 export interface EventFormProps {
   initialData?: Event;
@@ -17,15 +18,16 @@ export interface EventFormProps {
 export function EventForm({ initialData, onSubmit, onCancel, isLoading = false }: EventFormProps) {
   const [formData, setFormData] = useState<Partial<Event>>({
     title: initialData?.title || '',
-    description: initialData?.description || '',
+    description: getPgText(initialData?.description) || '',
     start_date: initialData?.start_date || '',
     end_date: initialData?.end_date || '',
     venue_id: initialData?.venue_id || '',
     category_id: initialData?.category_id || '',
-    banner_url: initialData?.banner_url || '',
+    banner_url: getPgText(initialData?.banner_url) || '',
     is_online: initialData?.is_online || false,
-    online_url: initialData?.online_url || '',
+    online_url: getPgText(initialData?.online_url) || '',
     max_attendees: initialData?.max_attendees || 0,
+    status: initialData?.status || 'draft',
   });
 
   const [categories, setCategories] = useState<any[]>([]);
@@ -37,15 +39,16 @@ export function EventForm({ initialData, onSubmit, onCancel, isLoading = false }
     if (initialData) {
       setFormData({
         title: initialData.title || '',
-        description: initialData.description || '',
+        description: getPgText(initialData.description) || '',
         start_date: initialData.start_date || '',
         end_date: initialData.end_date || '',
         venue_id: initialData.venue_id || '',
         category_id: initialData.category_id || '',
-        banner_url: initialData.banner_url || '',
+        banner_url: getPgText(initialData.banner_url) || '',
         is_online: initialData.is_online || false,
-        online_url: initialData.online_url || '',
+        online_url: getPgText(initialData.online_url) || '',
         max_attendees: initialData.max_attendees || 0,
+        status: initialData.status || 'draft',
       });
     }
   }, [initialData]);
@@ -58,8 +61,8 @@ export function EventForm({ initialData, onSubmit, onCancel, isLoading = false }
           eventApi.get('/api/v1/venues')
         ]);
         
-        if (catRes.data?.data) setCategories(catRes.data.data);
-        if (venRes.data?.data) setVenues(venRes.data.data);
+        if (catRes.data) setCategories(catRes.data as any);
+        if (venRes.data) setVenues(venRes.data as any);
       } catch (error) {
         console.error("Failed to fetch form reference data", error);
         toast.error("Gagal memuat kategori dan venue");
@@ -232,6 +235,22 @@ export function EventForm({ initialData, onSubmit, onCancel, isLoading = false }
           onChange={handleChange}
           placeholder="https://... atau gunakan uploader"
         />
+
+        <div className="w-full">
+          <label className="block text-sm font-medium text-gray-200 mb-1">
+            Status Event
+          </label>
+          <select
+            name="status"
+            value={formData.status || 'draft'}
+            onChange={handleChange}
+            required
+            className="flex w-full rounded-lg bg-gray-800 text-white px-3 py-2 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-violet-500"
+          >
+            <option value="draft">Draft (Disembunyikan)</option>
+            <option value="published">Published (Diterbitkan)</option>
+          </select>
+        </div>
       </div>
 
       <div className="pt-4 flex justify-end gap-3">

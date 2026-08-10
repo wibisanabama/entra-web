@@ -16,7 +16,7 @@ export function Sidebar() {
   ];
 
   return (
-    <div className="flex flex-col bg-gray-900 h-screen transition-all duration-300 w-64">
+    <div className="flex flex-col bg-gray-900 h-full transition-all duration-300 w-64">
       <div className="flex items-center justify-between h-16 px-4 ">
         <Link href="/" className="text-xl font-bold text-violet-500">
           Entra

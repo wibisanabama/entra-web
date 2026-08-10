@@ -24,28 +24,28 @@ export default function DashboardOverviewPage() {
       try {
         setLoading(true);
         const [statsRes, eventsRes, trendRes, ordersRes] = await Promise.all([
-          ticketApi.get('/api/v1/tickets/organizer/stats').catch(() => ({ data: { data: null } })),
-          eventApi.get('/api/v1/organizer/events').catch(() => ({ data: { data: [] } })),
-          ticketApi.get('/api/v1/tickets/organizer/trend').catch(() => ({ data: { data: [] } })),
-          ticketApi.get('/api/v1/tickets/organizer/orders').catch(() => ({ data: { data: [] } }))
+          ticketApi.get('/api/v1/tickets/organizer/stats').catch(() => ({ data: null })),
+          eventApi.get('/api/v1/organizer/events').catch(() => ({ data: [] })),
+          ticketApi.get('/api/v1/tickets/organizer/trend').catch(() => ({ data: [] })),
+          ticketApi.get('/api/v1/tickets/organizer/orders').catch(() => ({ data: [] }))
         ]);
 
-        if (statsRes.data?.data) {
-          setStatsData(statsRes.data.data);
+        if (statsRes.data) {
+          setStatsData(statsRes.data as any);
         }
         
-        if (eventsRes.data?.data) {
-          const events = eventsRes.data.data || [];
+        if (eventsRes.data) {
+          const events = (eventsRes.data as any) || [];
           setTotalEvents(events.length);
-          setActiveEvents(events.filter((e: any) => e.status === 'PUBLISHED').length);
+          setActiveEvents(events.filter((e: any) => e.status?.toLowerCase() === 'published').length);
         }
 
-        if (trendRes.data?.data) {
-          setSalesTrend(trendRes.data.data || []);
+        if (trendRes.data) {
+          setSalesTrend((trendRes.data as any) || []);
         }
 
-        if (ordersRes.data?.data) {
-          setRecentOrders(ordersRes.data.data || []);
+        if (ordersRes.data) {
+          setRecentOrders((ordersRes.data as any) || []);
         }
 
       } catch (error) {

@@ -67,10 +67,14 @@ export interface TicketType {
   id: string;
   event_id: string;
   name: string;
-  description?: string;
-  price: number;
-  quota: number;
+  description?: { String: string; Valid: boolean } | string;
+  price: string;
+  quantity: number;
   sold: number;
+  max_per_order: { Int32: number; Valid: boolean } | number;
+  sale_start: string;
+  sale_end: string;
+  is_active: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -126,7 +130,7 @@ export interface Wallet {
   updated_at: string;
 }
 
-export interface ApiResponse<T> {
+export interface ApiResponse<T = any> {
   success: boolean;
   message?: string;
   data?: T;

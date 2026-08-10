@@ -1,11 +1,10 @@
 import { ApiResponse } from '@/types';
 
 // Helper to get cookie on the client side
-function getCookie(name: string): string | null {
+export function getCookie(name: string): string | null {
   if (typeof document === 'undefined') return null;
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop()?.split(';').shift() || null;
+  const match = document.cookie.match(new RegExp('(^|;\\s*)' + name + '=([^;]+)'));
+  if (match) return match[2];
   return null;
 }
 
@@ -16,7 +15,7 @@ class ApiClient {
     this.baseUrl = baseUrl;
   }
 
-  private async fetchWithAuth<T>(endpoint: string, options: RequestInit = {}): Promise<ApiResponse<T>> {
+  private async fetchWithAuth<T = any>(endpoint: string, options: RequestInit = {}): Promise<ApiResponse<T>> {
     const token = getCookie('entra_token');
     
     const headers = new Headers(options.headers || {});
@@ -26,6 +25,7 @@ class ApiClient {
     }
 
     const response = await fetch(`${this.baseUrl}${endpoint}`, {
+      cache: 'no-store',
       ...options,
       headers,
     });
@@ -39,11 +39,11 @@ class ApiClient {
     return data;
   }
 
-  public async get<T>(endpoint: string, options?: RequestInit): Promise<ApiResponse<T>> {
+  public async get<T = any>(endpoint: string, options?: RequestInit): Promise<ApiResponse<T>> {
     return this.fetchWithAuth<T>(endpoint, { ...options, method: 'GET' });
   }
 
-  public async post<T>(endpoint: string, body?: any, options?: RequestInit): Promise<ApiResponse<T>> {
+  public async post<T = any>(endpoint: string, body?: any, options?: RequestInit): Promise<ApiResponse<T>> {
     return this.fetchWithAuth<T>(endpoint, {
       ...options,
       method: 'POST',
@@ -51,7 +51,7 @@ class ApiClient {
     });
   }
 
-  public async put<T>(endpoint: string, body?: any, options?: RequestInit): Promise<ApiResponse<T>> {
+  public async put<T = any>(endpoint: string, body?: any, options?: RequestInit): Promise<ApiResponse<T>> {
     return this.fetchWithAuth<T>(endpoint, {
       ...options,
       method: 'PUT',
@@ -59,7 +59,7 @@ class ApiClient {
     });
   }
 
-  public async del<T>(endpoint: string, options?: RequestInit): Promise<ApiResponse<T>> {
+  public async del<T = any>(endpoint: string, options?: RequestInit): Promise<ApiResponse<T>> {
     return this.fetchWithAuth<T>(endpoint, { ...options, method: 'DELETE' });
   }
 }

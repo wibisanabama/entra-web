@@ -10,11 +10,14 @@ export function Badge({ status, className = '', ...props }: BadgeProps) {
       case 'ACTIVE':
       case 'PAID':
       case 'PUBLISHED':
+      case 'SUCCESS':
+      case 'SUKSES':
         return 'bg-green-500/10 text-green-400 ';
       case 'PENDING':
         return 'bg-yellow-500/10 text-yellow-400 ';
       case 'EXPIRED':
       case 'CANCELLED':
+      case 'DIBATALKAN':
         return 'bg-red-500/10 text-red-400 ';
       case 'USED':
       case 'DRAFT':

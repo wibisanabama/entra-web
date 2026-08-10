@@ -5,6 +5,7 @@ import { Card } from '@/components/ui/Card';
 import { Event } from '@/types';
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
+import { getPgText } from '@/lib/utils';
 
 export interface EventCardProps {
   event: Event;
@@ -29,9 +30,9 @@ export function EventCard({ event }: EventCardProps) {
     <Link href={`/events/${event.id}`}>
       <Card className="h-full flex flex-col group hover:shadow-xl transition-all duration-300">
         <div className="relative h-48 w-full overflow-hidden">
-          {event.banner_url ? (
+          {getPgText(event.banner_url) ? (
             <img 
-              src={event.banner_url} 
+              src={getPgText(event.banner_url)} 
               alt={event.title} 
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             />

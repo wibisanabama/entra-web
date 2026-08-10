@@ -26,6 +26,7 @@ export default function CreateEventPage() {
         is_online: data.is_online,
         online_url: data.online_url || '',
         max_attendees: data.max_attendees,
+        status: data.status,
       };
 
       await eventApi.post('/api/v1/events', payload);

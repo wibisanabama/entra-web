@@ -8,6 +8,7 @@ import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { toast } from 'sonner';
+import { QRCodeSVG } from 'qrcode.react';
 
 export default function ProfilePage() {
   const { user, isLoading, logout, loadProfile } = useAuth();
@@ -270,13 +271,15 @@ export default function ProfilePage() {
                 </div>
               </div>
               
-              {/* QR Code Placeholder */}
+              {/* QR Code */}
               <div className="bg-white p-4 rounded-xl inline-block mb-6 shadow-md mx-auto relative group">
-                <div className="w-48 h-48 bg-gray-100 flex items-center justify-center border-2 border-dashed border-gray-300 rounded-lg">
-                  <div className="text-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="mx-auto mb-2 opacity-50"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><path d="M7 7h.01"></path><path d="M17 7h.01"></path><path d="M7 17h.01"></path><path d="M17 17h.01"></path><path d="M12 7v10"></path><path d="M7 12h10"></path></svg>
-                    <span className="text-gray-400 text-sm font-medium">QR Code</span>
-                  </div>
+                <div className="w-48 h-48 flex items-center justify-center">
+                  <QRCodeSVG 
+                    value={selectedTicket.id} 
+                    size={192} 
+                    level="H"
+                    includeMargin={false}
+                  />
                 </div>
                 {/* Decorative scanning line */}
                 {selectedTicket.status === 'Active' && (

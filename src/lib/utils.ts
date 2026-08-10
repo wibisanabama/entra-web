@@ -35,3 +35,10 @@ export function getInitials(name: string): string {
   }
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
+
+export function getPgText(val: any): string {
+  if (!val) return '';
+  if (typeof val === 'string') return val;
+  if (val.Valid && typeof val.String === 'string') return val.String;
+  return '';
+}

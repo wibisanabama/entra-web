@@ -8,10 +8,11 @@ import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/Card';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
-import { eventApi, ticketApi } from '@/lib/api';
+import { eventApi, ticketApi, authApi } from '@/lib/api';
 import { format } from 'date-fns';
 import { id as localeId } from 'date-fns/locale';
 import { useAuth } from '@/providers/auth-provider';
+import { getPgText } from '@/lib/utils';
 
 interface EventDetail {
   id: string | string[];
@@ -56,6 +57,18 @@ export default function EventDetailPage() {
           const apiTickets = ticketRes.data?.data || ticketRes.data || [];
           const categories = catRes.data || [];
           
+          let organizerName = 'Organizer Event';
+          if (apiEvent.organizer_id) {
+            try {
+              const userRes = await authApi.get<any>(`/api/v1/users/${apiEvent.organizer_id}`);
+              if (userRes.data?.full_name) {
+                organizerName = userRes.data.full_name;
+              }
+            } catch (err) {
+              // Ignore if organizer is not found (e.g. for old seeded events)
+            }
+          }
+          
           let dateStr = 'TBA';
           let timeStr = 'TBA';
           if (apiEvent.start_date) {
@@ -90,9 +103,9 @@ export default function EventDetailPage() {
             date: dateStr,
             time: timeStr,
             venue: venueName,
-            image: apiEvent.banner_url || 'https://placehold.co/1200x500/1e1e1e/8a2be2?text=Tanpa+Gambar',
+            image: getPgText(apiEvent.banner_url) || 'https://placehold.co/1200x500/1e1e1e/8a2be2?text=Tanpa+Gambar',
             category: apiEvent.category?.name || categoryName,
-            organizer: 'Organizer Event',
+            organizer: organizerName,
             tickets: Array.isArray(apiTickets) ? apiTickets.map((t: any) => ({
               id: t.id,
               name: t.name,

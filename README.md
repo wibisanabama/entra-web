@@ -149,8 +149,9 @@ npm run start
 |---|---|---|
 | `/dashboard` | Organizer | High-level metrics dashboard (Total Orders, Total Revenue, Tickets Sold, Recent Activity). |
 | `/dashboard/events` | Organizer | Interface for creating, editing, publishing, and deleting organizer events. |
-| `/dashboard/media` | Organizer | Media library manager for uploading event banners and images to MinIO storage. |
 | `/dashboard/orders` | Organizer | Transaction ledger, order search, and attendee check-in monitoring. |
+| `/dashboard/withdrawals` | Organizer | Organizer revenue balance overview, bank payout requests, and withdrawal history ledger. |
+| `/dashboard/media` | Organizer | Media library manager for uploading event banners and images to MinIO storage. |
 
 ---
 

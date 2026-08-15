@@ -1,11 +1,14 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { Card } from '@/components/ui/Card';
+import { Button } from '@/components/ui/Button';
 import { ticketApi, eventApi } from '@/lib/api';
 import { formatCurrency } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { toast } from 'sonner';
+import { Wallet, ArrowUpRight } from 'lucide-react';
 
 export default function DashboardOverviewPage() {
   const [loading, setLoading] = useState(true);
@@ -13,6 +16,11 @@ export default function DashboardOverviewPage() {
     total_orders: 0,
     total_revenue: 0,
     tickets_sold: 0,
+  });
+  const [balanceData, setBalanceData] = useState<any>({
+    available_balance: 0,
+    pending_amount: 0,
+    paid_amount: 0,
   });
   const [activeEvents, setActiveEvents] = useState(0);
   const [totalEvents, setTotalEvents] = useState(0);
@@ -23,8 +31,9 @@ export default function DashboardOverviewPage() {
     const fetchDashboardData = async () => {
       try {
         setLoading(true);
-        const [statsRes, eventsRes, trendRes, ordersRes] = await Promise.all([
+        const [statsRes, balanceRes, eventsRes, trendRes, ordersRes] = await Promise.all([
           ticketApi.get('/api/v1/tickets/organizer/stats').catch(() => ({ data: null })),
+          ticketApi.get('/api/v1/tickets/organizer/balance').catch(() => ({ data: null })),
           eventApi.get('/api/v1/organizer/events').catch(() => ({ data: [] })),
           ticketApi.get('/api/v1/tickets/organizer/trend').catch(() => ({ data: [] })),
           ticketApi.get('/api/v1/tickets/organizer/orders').catch(() => ({ data: [] }))
@@ -32,6 +41,10 @@ export default function DashboardOverviewPage() {
 
         if (statsRes.data) {
           setStatsData(statsRes.data as any);
+        }
+
+        if (balanceRes && balanceRes.data) {
+          setBalanceData(balanceRes.data as any);
         }
         
         if (eventsRes.data) {
@@ -60,9 +73,9 @@ export default function DashboardOverviewPage() {
   }, []);
 
   const stats = [
-    { title: 'Total Event', value: totalEvents.toString(), change: 'Keseluruhan', icon: 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z' },
-    { title: 'Tiket Terjual', value: statsData.tickets_sold.toString(), change: 'Total', icon: 'M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z' },
+    { title: 'Saldo Tersedia', value: formatCurrency(parseFloat(balanceData.available_balance || 0)), change: 'Siap Ditarik', icon: 'M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z', highlight: true },
     { title: 'Total Pendapatan', value: formatCurrency(parseFloat(statsData.total_revenue || 0)), change: 'Semua Waktu', icon: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z' },
+    { title: 'Tiket Terjual', value: statsData.tickets_sold.toString(), change: 'Total', icon: 'M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z' },
     { title: 'Event Aktif', value: activeEvents.toString(), change: 'Published', icon: 'M13 10V3L4 14h7v7l9-11h-7z' },
   ];
 
@@ -86,22 +99,30 @@ export default function DashboardOverviewPage() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold text-white mb-2">Dashboard Overview</h1>
-        <p className="text-gray-400">Ringkasan performa event dan penjualan tiket Anda.</p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-white mb-2">Dashboard Overview</h1>
+          <p className="text-gray-400">Ringkasan performa event dan penjualan tiket Anda.</p>
+        </div>
+        <Link href="/dashboard/withdrawals">
+          <Button className="bg-violet-600 hover:bg-violet-700 text-white flex items-center gap-2">
+            <Wallet className="h-4 w-4" />
+            Tarik Saldo
+          </Button>
+        </Link>
       </div>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.map((stat, index) => (
-          <Card key={index} className="bg-gray-900 p-6 relative overflow-hidden">
+          <Card key={index} className={`p-6 relative overflow-hidden ${stat.highlight ? 'bg-gradient-to-br from-violet-950/50 via-gray-900 to-gray-900 border-violet-500/30' : 'bg-gray-900 border-gray-800'}`}>
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-gray-400 text-sm font-medium mb-1">{stat.title}</p>
+                <p className={`text-sm font-medium mb-1 ${stat.highlight ? 'text-violet-400 font-semibold' : 'text-gray-400'}`}>{stat.title}</p>
                 {loading ? <Skeleton className="h-8 w-24 mb-2 bg-gray-800" /> : <h3 className="text-2xl font-bold text-white mb-2">{stat.value}</h3>}
                 <p className="text-xs text-green-400">{stat.change}</p>
               </div>
-              <div className="p-3 bg-gray-800 rounded-lg text-[#7C3AED]">
+              <div className={`p-3 rounded-lg ${stat.highlight ? 'bg-violet-600/20 text-violet-400' : 'bg-gray-800 text-[#7C3AED]'}`}>
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={stat.icon} />
                 </svg>

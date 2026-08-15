@@ -203,3 +203,34 @@ export interface ResetPasswordRequest {
   new_password: string;
 }
 
+export interface Withdrawal {
+  id: string;
+  organizer_id: string;
+  amount: number | string;
+  bank_name: string;
+  account_number: string;
+  account_name: string;
+  status: 'PENDING' | 'APPROVED' | 'PAID' | 'REJECTED' | string;
+  rejection_reason?: { String: string; Valid: boolean } | string;
+  notes?: { String: string; Valid: boolean } | string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface OrganizerBalance {
+  total_revenue: number;
+  total_withdrawn: number;
+  available_balance: number;
+  pending_amount: number;
+  paid_amount: number;
+  total_requests: number;
+}
+
+export interface CreateWithdrawalRequest {
+  amount: number;
+  bank_name: string;
+  account_number: string;
+  account_name: string;
+  notes?: string;
+}
+

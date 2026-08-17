@@ -35,7 +35,15 @@ export function Navbar() {
             </Link>
 
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-6">
+            <Link href="/events" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
+              Jelajahi Event
+            </Link>
+            {user && (
+              <Link href="/my-tickets" className="text-sm font-medium text-gray-300 hover:text-violet-400 transition-colors">
+                Tiket Saya
+              </Link>
+            )}
 
             <div className="hidden md:flex items-center gap-4">
               {user ? (
@@ -49,18 +57,22 @@ export function Navbar() {
                     </div>
                   </button>
                   {isAvatarDropdownOpen && (
-                    <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-gray-800 ring-1 ring-black ring-opacity-5 overflow-hidden">
-                      <div className="flex flex-col">
+                    <div className="absolute right-0 mt-2 w-48 rounded-xl shadow-xl bg-gray-900 border border-gray-800 ring-1 ring-black ring-opacity-5 overflow-hidden z-50">
+                      <div className="flex flex-col py-1">
+                        <Link href="/my-tickets" onClick={() => setIsAvatarDropdownOpen(false)} className="block px-4 py-2.5 text-sm text-gray-200 hover:bg-gray-800 hover:text-violet-400 transition-colors">
+                          Tiket Saya
+                        </Link>
                         {user.role === 'user' ? (
-                          <Link href="/profile" onClick={() => setIsAvatarDropdownOpen(false)} className="block px-4 py-3 text-sm text-gray-200 hover:bg-gray-700 transition-colors">
+                          <Link href="/profile" onClick={() => setIsAvatarDropdownOpen(false)} className="block px-4 py-2.5 text-sm text-gray-200 hover:bg-gray-800 transition-colors">
                             Profil
                           </Link>
                         ) : (
-                          <Link href="/dashboard" onClick={() => setIsAvatarDropdownOpen(false)} className="block px-4 py-3 text-sm text-gray-200 hover:bg-gray-700 transition-colors">
-                            Dashboard
+                          <Link href="/dashboard" onClick={() => setIsAvatarDropdownOpen(false)} className="block px-4 py-2.5 text-sm text-gray-200 hover:bg-gray-800 transition-colors">
+                            Dashboard Organizer
                           </Link>
                         )}
-                        <button onClick={() => { setIsAvatarDropdownOpen(false); logout(); }} className="block w-full text-left px-4 py-3 text-sm text-red-400 hover:bg-gray-700 transition-colors">
+                        <div className="border-t border-gray-800 my-1"></div>
+                        <button onClick={() => { setIsAvatarDropdownOpen(false); logout(); }} className="block w-full text-left px-4 py-2.5 text-sm text-red-400 hover:bg-gray-800 transition-colors">
                           Keluar
                         </button>
                       </div>
@@ -91,8 +103,9 @@ export function Navbar() {
         </div>
       </div>
       {isMobileMenuOpen && (
-        <div className="md:hidden bg-gray-900 ">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+        <div className="md:hidden bg-gray-900 border-b border-gray-800">
+          <div className="px-3 pt-2 pb-4 space-y-1 sm:px-3">
+            <Link href="/events" className="block text-gray-300 hover:text-white px-3 py-2 rounded-md text-base font-medium">Jelajahi Event</Link>
 
             {!user && (
               <>
@@ -102,10 +115,11 @@ export function Navbar() {
             )}
             {user && (
               <>
+                <Link href="/my-tickets" className="block text-violet-400 hover:text-violet-300 px-3 py-2 rounded-md text-base font-medium">Tiket Saya</Link>
                 {user.role === 'user' ? (
                   <Link href="/profile" className="block text-gray-300 hover:text-white px-3 py-2 rounded-md text-base font-medium">Profil</Link>
                 ) : (
-                  <Link href="/dashboard" className="block text-gray-300 hover:text-white px-3 py-2 rounded-md text-base font-medium">Dashboard</Link>
+                  <Link href="/dashboard" className="block text-gray-300 hover:text-white px-3 py-2 rounded-md text-base font-medium">Dashboard Organizer</Link>
                 )}
                 <button onClick={logout} className="block w-full text-left text-red-400 hover:text-red-300 px-3 py-2 rounded-md text-base font-medium">Keluar</button>
               </>

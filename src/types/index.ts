@@ -112,6 +112,11 @@ export interface Ticket {
   updated_at: string;
 }
 
+export interface EnrichedTicket extends Ticket {
+  event?: Event;
+  ticket_type?: TicketType;
+}
+
 export interface Transaction {
   id: string;
   wallet_id: string;

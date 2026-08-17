@@ -141,6 +141,7 @@ npm run start
 | `/register` | Public | Account registration page for attendees and organizers. |
 | `/forgot-password` | Public | Password recovery request page. |
 | `/reset-password` | Public | Password reset execution page via email verification token. |
+| `/my-tickets` | Protected | User e-ticket pass portal, live QR code display, and order invoice history. |
 | `/profile` | Protected | User account details, role status, and profile image management. |
 
 ### Organizer Dashboard Routes (`(dashboard)`)

@@ -7,10 +7,11 @@ export interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   title: string;
+  className?: string;
   children: React.ReactNode;
 }
 
-export function Modal({ isOpen, onClose, title, children }: ModalProps) {
+export function Modal({ isOpen, onClose, title, className = '', children }: ModalProps) {
   const handleEscape = useCallback((e: KeyboardEvent) => {
     if (e.key === 'Escape') onClose();
   }, [onClose]);
@@ -38,7 +39,7 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
         onClick={onClose}
         aria-hidden="true"
       />
-      <div className="relative bg-gray-900 rounded-xl shadow-2xl w-full max-w-lg overflow-hidden transform transition-all">
+      <div className={`relative bg-gray-900 rounded-xl shadow-2xl w-full max-w-lg overflow-hidden transform transition-all ${className}`}>
         <div className="px-6 py-4 flex items-center justify-between">
           <h3 className="text-lg font-semibold text-white">{title}</h3>
           <button 

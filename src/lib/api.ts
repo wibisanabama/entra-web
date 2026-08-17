@@ -59,6 +59,14 @@ class ApiClient {
     });
   }
 
+  public async patch<T = any>(endpoint: string, body?: any, options?: RequestInit): Promise<ApiResponse<T>> {
+    return this.fetchWithAuth<T>(endpoint, {
+      ...options,
+      method: 'PATCH',
+      body: body ? JSON.stringify(body) : undefined,
+    });
+  }
+
   public async del<T = any>(endpoint: string, options?: RequestInit): Promise<ApiResponse<T>> {
     return this.fetchWithAuth<T>(endpoint, { ...options, method: 'DELETE' });
   }

@@ -152,6 +152,7 @@ npm run start
 | `/dashboard/events` | Organizer | Interface for creating, editing, publishing, and deleting organizer events. |
 | `/dashboard/orders` | Organizer | Transaction ledger, order search, and attendee check-in monitoring. |
 | `/dashboard/withdrawals` | Organizer | Organizer revenue balance overview, bank payout requests, and withdrawal history ledger. |
+| `/dashboard/admin/withdrawals` | Admin | Financial payout review portal for approving, settling (PAID), or rejecting organizer withdrawal requests. |
 | `/dashboard/media` | Organizer | Media library manager for uploading event banners and images to MinIO storage. |
 
 ---

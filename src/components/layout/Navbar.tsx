@@ -40,9 +40,14 @@ export function Navbar() {
               Jelajahi Event
             </Link>
             {user && (
-              <Link href="/my-tickets" className="text-sm font-medium text-gray-300 hover:text-violet-400 transition-colors">
-                Tiket Saya
-              </Link>
+              <>
+                <Link href="/my-tickets" className="text-sm font-medium text-gray-300 hover:text-violet-400 transition-colors">
+                  Tiket Saya
+                </Link>
+                <Link href="/cashless" className="text-sm font-medium text-gray-300 hover:text-violet-400 transition-colors">
+                  Gelang Cashless
+                </Link>
+              </>
             )}
 
             <div className="hidden md:flex items-center gap-4">
@@ -61,6 +66,9 @@ export function Navbar() {
                       <div className="flex flex-col py-1">
                         <Link href="/my-tickets" onClick={() => setIsAvatarDropdownOpen(false)} className="block px-4 py-2.5 text-sm text-gray-200 hover:bg-gray-800 hover:text-violet-400 transition-colors">
                           Tiket Saya
+                        </Link>
+                        <Link href="/cashless" onClick={() => setIsAvatarDropdownOpen(false)} className="block px-4 py-2.5 text-sm text-gray-200 hover:bg-gray-800 hover:text-violet-400 transition-colors">
+                          Gelang Cashless
                         </Link>
                         {user.role === 'user' ? (
                           <Link href="/profile" onClick={() => setIsAvatarDropdownOpen(false)} className="block px-4 py-2.5 text-sm text-gray-200 hover:bg-gray-800 transition-colors">
@@ -116,6 +124,7 @@ export function Navbar() {
             {user && (
               <>
                 <Link href="/my-tickets" className="block text-violet-400 hover:text-violet-300 px-3 py-2 rounded-md text-base font-medium">Tiket Saya</Link>
+                <Link href="/cashless" className="block text-violet-400 hover:text-violet-300 px-3 py-2 rounded-md text-base font-medium">Gelang Cashless</Link>
                 {user.role === 'user' ? (
                   <Link href="/profile" className="block text-gray-300 hover:text-white px-3 py-2 rounded-md text-base font-medium">Profil</Link>
                 ) : (

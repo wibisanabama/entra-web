@@ -142,6 +142,7 @@ npm run start
 | `/forgot-password` | Public | Password recovery request page. |
 | `/reset-password` | Public | Password reset execution page via email verification token. |
 | `/my-tickets` | Protected | User e-ticket pass portal, live QR code display, and order invoice history. |
+| `/cashless` | Protected | NFC / RFID festival wristband portal, live balance, instant top-up, and merchant POS simulation. |
 | `/profile` | Protected | User account details, role status, and profile image management. |
 
 ### Organizer Dashboard Routes (`(dashboard)`)

@@ -57,8 +57,16 @@ export function Navbar() {
                     onClick={() => setIsAvatarDropdownOpen(!isAvatarDropdownOpen)}
                     className="flex items-center focus:outline-none"
                   >
-                    <div className="h-8 w-8 rounded-full bg-violet-600 flex items-center justify-center text-white font-bold text-sm">
-                      {user.full_name?.charAt(0) || 'U'}
+                    <div className="h-8 w-8 rounded-full bg-violet-600 overflow-hidden flex items-center justify-center text-white font-bold text-sm border border-violet-500/40">
+                      {user.avatar_url ? (
+                        <img
+                          src={user.avatar_url}
+                          alt={user.full_name || 'User'}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        user.full_name?.charAt(0).toUpperCase() || 'U'
+                      )}
                     </div>
                   </button>
                   {isAvatarDropdownOpen && (

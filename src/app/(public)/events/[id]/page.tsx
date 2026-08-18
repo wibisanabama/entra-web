@@ -224,7 +224,8 @@ export default function EventDetailPage() {
                 <div className="p-6">
                   <TicketSelector 
                     ticketTypes={event.tickets as any} 
-                    onSelect={async (selected) => {
+                    eventId={String(event.id)}
+                    onSelect={async (selected, appliedPromo) => {
                       if (!user) {
                         router.push('/login');
                         return;
@@ -236,17 +237,28 @@ export default function EventDetailPage() {
                         // For simplicity, we create one order per selected ticket type
                         for (const item of selected) {
                           const ticketData = event.tickets.find(t => t.id === item.ticketTypeId);
+                          const basePrice = ticketData?.price || 0;
+                          // If promo applied on single order, compute discounted rate
+                          let unitPrice = basePrice;
+                          if (appliedPromo && appliedPromo.discountAmount > 0) {
+                            const subtotal = basePrice * item.quantity;
+                            const finalSubtotal = Math.max(0, subtotal - appliedPromo.discountAmount);
+                            unitPrice = finalSubtotal / item.quantity;
+                          }
+
                           await ticketApi.post('/api/v1/tickets/orders', {
                             event_id: event.id,
                             ticket_type_id: item.ticketTypeId,
                             quantity: item.quantity,
-                            price: ticketData?.price || 0
+                            price: unitPrice
                           });
                         }
                         setModalData({
                           isOpen: true,
                           title: 'Pemesanan Berhasil',
-                          message: 'Pesanan tiket Anda berhasil dibuat dan berstatus PENDING. Silakan selesaikan pembayaran di halaman Profil Anda.',
+                          message: appliedPromo 
+                            ? `Pesanan tiket berhasil dibuat dengan kupon ${appliedPromo.promoCode}! Silakan selesaikan pembayaran di halaman Profil Anda.`
+                            : 'Pesanan tiket Anda berhasil dibuat dan berstatus PENDING. Silakan selesaikan pembayaran di halaman Profil Anda.',
                           type: 'success'
                         });
                       } catch (error: any) {

@@ -28,7 +28,9 @@ import {
   Shirt,
   Coffee,
   Copy,
-  Check
+  Check,
+  Landmark,
+  ArrowDownToLine
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -40,12 +42,14 @@ const SAMPLE_MERCHANTS = [
   { id: 'm-merch-03', name: 'Official Festival Merchandise Store', category: 'Merchandise', icon: <Shirt className="h-5 w-5" /> },
 ];
 
+const BANK_OPTIONS = ['BCA', 'Bank Mandiri', 'BNI', 'BRI', 'SeaBank', 'Bank Jago', 'GoPay', 'OVO', 'DANA'];
+
 export default function CashlessPortalPage() {
   const { user, isLoading: authLoading } = useAuth();
   const [loading, setLoading] = useState(true);
   const [wallet, setWallet] = useState<Wallet | null>(null);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [txFilter, setTxFilter] = useState<'ALL' | 'TOPUP' | 'PURCHASE'>('ALL');
+  const [txFilter, setTxFilter] = useState<'ALL' | 'TOPUP' | 'PURCHASE' | 'REFUND'>('ALL');
   const [copied, setCopied] = useState(false);
 
   // Top-Up Modal State
@@ -60,6 +64,16 @@ export default function CashlessPortalPage() {
   const [posAmount, setPosAmount] = useState<number>(35000);
   const [customPosInput, setCustomPosInput] = useState<string>('35000');
   const [posLoading, setPosLoading] = useState(false);
+
+  // Wristband Balance Refund Modal State
+  const [isRefundOpen, setIsRefundOpen] = useState(false);
+  const [refundAmount, setRefundAmount] = useState<number>(0);
+  const [customRefundInput, setCustomRefundInput] = useState<string>('0');
+  const [refundBank, setRefundBank] = useState<string>(BANK_OPTIONS[0]);
+  const [refundAccountNumber, setRefundAccountNumber] = useState<string>('');
+  const [refundAccountHolder, setRefundAccountHolder] = useState<string>('');
+  const [refundReason, setRefundReason] = useState<string>('Selesai event festival');
+  const [refundLoading, setRefundLoading] = useState(false);
 
   const fetchWalletAndTransactions = async () => {
     if (!user) return;
@@ -91,6 +105,11 @@ export default function CashlessPortalPage() {
       setLoading(false);
     }
   }, [user, authLoading]);
+
+  const parseAmount = (val: any): number => {
+    if (typeof val === 'number') return val;
+    return parseFloat(val) || 0;
+  };
 
   const handleTopUpSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -149,9 +168,41 @@ export default function CashlessPortalPage() {
     }
   };
 
-  const parseAmount = (val: any): number => {
-    if (typeof val === 'number') return val;
-    return parseFloat(val) || 0;
+  const handleRefundSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const currentBal = parseAmount(wallet?.balance);
+    if (refundAmount < 1000) {
+      toast.error('Minimal nominal penarikan saldo refund adalah Rp 1.000');
+      return;
+    }
+    if (refundAmount > currentBal) {
+      toast.error(`Saldo tidak mencukupi. Saldo aktif Anda: ${formatCurrency(currentBal)}`);
+      return;
+    }
+    if (!refundAccountNumber.trim() || !refundAccountHolder.trim()) {
+      toast.error('Harap lengkapi nomor rekening dan nama pemilik rekening tujuan');
+      return;
+    }
+
+    try {
+      setRefundLoading(true);
+      await cashlessApi.post('/api/v1/cashless/refund', {
+        amount: refundAmount,
+        bank_name: refundBank,
+        account_number: refundAccountNumber.trim(),
+        account_holder: refundAccountHolder.trim(),
+        reason: refundReason.trim() || 'Refund sisa saldo gelang',
+      });
+
+      toast.success(`Pengajuan refund saldo ${formatCurrency(refundAmount)} ke ${refundBank} berhasil diproses!`);
+      setIsRefundOpen(false);
+      fetchWalletAndTransactions();
+    } catch (error: any) {
+      console.error('Refund error:', error);
+      toast.error(error.message || 'Gagal mengajukan refund saldo gelang.');
+    } finally {
+      setRefundLoading(false);
+    }
   };
 
   const handleCopyWristbandCode = () => {
@@ -166,8 +217,10 @@ export default function CashlessPortalPage() {
   // Filter transactions
   const filteredTransactions = transactions.filter((tx) => {
     const isTopUp = tx.type?.toUpperCase() === 'TOPUP' || tx.type?.toUpperCase() === 'CREDIT';
-    if (txFilter === 'TOPUP') return isTopUp;
-    if (txFilter === 'PURCHASE') return !isTopUp;
+    const isRefund = tx.description?.toLowerCase().includes('refund');
+    if (txFilter === 'TOPUP') return isTopUp && !isRefund;
+    if (txFilter === 'REFUND') return isRefund;
+    if (txFilter === 'PURCHASE') return !isTopUp && !isRefund;
     return true;
   });
 
@@ -214,7 +267,7 @@ export default function CashlessPortalPage() {
             Portal Gelang RFID Cashless
           </h1>
           <p className="text-gray-400 text-sm mt-1">
-            Cek saldo aktif gelang festival, top-up saldo instan, dan pantau mutasi transaksi tenant F&B.
+            Cek saldo aktif gelang festival, top-up saldo instan, refund sisa dana, dan pantau transaksi tenant F&B.
           </p>
         </div>
 
@@ -321,7 +374,7 @@ export default function CashlessPortalPage() {
           <div>
             <h3 className="text-lg font-bold text-white mb-1">Aksi Cepat Gelang</h3>
             <p className="text-xs text-gray-400">
-              Isi ulang saldo instan atau simulasikan pembayaran kasir merchant festival.
+              Isi ulang saldo instan, bayar di kasir, atau cairkan sisa saldo gelang Anda.
             </p>
           </div>
 
@@ -332,9 +385,9 @@ export default function CashlessPortalPage() {
                 setCustomTopUpInput('100000');
                 setIsTopUpOpen(true);
               }}
-              className="w-full bg-violet-600 hover:bg-violet-700 text-white font-bold py-6 rounded-2xl flex items-center justify-center gap-3 text-base shadow-lg shadow-violet-900/30"
+              className="w-full bg-violet-600 hover:bg-violet-700 text-white font-bold py-5 rounded-2xl flex items-center justify-center gap-3 text-sm shadow-lg shadow-violet-900/30"
             >
-              <Zap className="h-5 w-5" />
+              <Zap className="h-4 w-4" />
               Top-Up Saldo Gelang
             </Button>
 
@@ -345,16 +398,31 @@ export default function CashlessPortalPage() {
                 setCustomPosInput('35000');
                 setIsPosOpen(true);
               }}
-              className="w-full border-gray-700 hover:bg-gray-800 text-gray-200 font-semibold py-6 rounded-2xl flex items-center justify-center gap-3 text-sm"
+              className="w-full border-gray-700 hover:bg-gray-800 text-gray-200 font-semibold py-5 rounded-2xl flex items-center justify-center gap-3 text-xs"
             >
-              <Store className="h-5 w-5 text-emerald-400" />
+              <Store className="h-4 w-4 text-emerald-400" />
               Simulasi Kasir POS (Tap to Pay)
+            </Button>
+
+            <Button
+              variant="outline"
+              onClick={() => {
+                setRefundAmount(balanceAmount > 0 ? balanceAmount : 0);
+                setCustomRefundInput(balanceAmount > 0 ? balanceAmount.toString() : '0');
+                setRefundAccountHolder(user?.full_name || '');
+                setIsRefundOpen(true);
+              }}
+              disabled={balanceAmount <= 0}
+              className="w-full border-rose-900/40 hover:bg-rose-950/30 text-rose-400 font-semibold py-5 rounded-2xl flex items-center justify-center gap-3 text-xs"
+            >
+              <ArrowDownToLine className="h-4 w-4 text-rose-400" />
+              Tarik Saldo Gelang (Refund)
             </Button>
           </div>
 
           <div className="p-3.5 bg-gray-950 rounded-xl border border-gray-800 text-xs text-gray-400 flex items-start gap-2">
             <CheckCircle2 className="h-4 w-4 text-emerald-400 flex-shrink-0 mt-0.5" />
-            <span>Sisa saldo gelang yang belum terpakai dapat di-refund setelah event selesai.</span>
+            <span>Sisa saldo gelang dapat di-refund kapan saja setelah event festival berakhir.</span>
           </div>
         </div>
       </div>
@@ -365,12 +433,12 @@ export default function CashlessPortalPage() {
           <div>
             <h2 className="text-xl font-bold text-white">Riwayat Transaksi Gelang</h2>
             <p className="text-xs text-gray-400 mt-0.5">
-              Seluruh mutasi saldo top-up dan transaksi tenant festival tercatat di sini secara real-time.
+              Seluruh mutasi saldo top-up, belanja kasir, dan penarikan refund tercatat secara real-time.
             </p>
           </div>
 
           {/* Filter Tabs */}
-          <div className="flex bg-gray-950 p-1 rounded-xl border border-gray-800 text-xs w-fit">
+          <div className="flex flex-wrap bg-gray-950 p-1 rounded-xl border border-gray-800 text-xs w-fit gap-1">
             <button
               onClick={() => setTxFilter('ALL')}
               className={`px-3 py-1.5 rounded-lg font-medium transition-colors ${
@@ -393,77 +461,78 @@ export default function CashlessPortalPage() {
                 txFilter === 'PURCHASE' ? 'bg-violet-600 text-white' : 'text-gray-400 hover:text-white'
               }`}
             >
-              Belanja F&B / Tenant
+              Belanja Tenant
+            </button>
+            <button
+              onClick={() => setTxFilter('REFUND')}
+              className={`px-3 py-1.5 rounded-lg font-medium transition-colors ${
+                txFilter === 'REFUND' ? 'bg-rose-600 text-white' : 'text-gray-400 hover:text-white'
+              }`}
+            >
+              Refund
             </button>
           </div>
         </div>
 
-        {/* Transactions List */}
+        {/* Transaction Items */}
         {loading ? (
           <div className="space-y-3">
-            {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="p-4 bg-gray-950 rounded-xl flex justify-between items-center">
-                <Skeleton className="h-5 w-40" />
-                <Skeleton className="h-5 w-24" />
-              </div>
+            {[1, 2, 3].map((i) => (
+              <Skeleton key={i} className="h-16 w-full bg-gray-800/60 rounded-xl" />
             ))}
           </div>
         ) : filteredTransactions.length === 0 ? (
-          <div className="text-center py-16 bg-gray-950/40 border border-gray-800 rounded-2xl p-8 space-y-3">
-            <div className="p-4 bg-gray-800/50 rounded-full w-14 h-14 mx-auto flex items-center justify-center text-gray-500">
-              <ShoppingBag className="h-7 w-7" />
-            </div>
-            <h3 className="text-base font-bold text-white">Belum Ada Transaksi Gelang</h3>
-            <p className="text-gray-400 text-xs max-w-sm mx-auto">
-              Lakukan top-up saldo atau belanja di tenant festival untuk melihat mutasi transaksi Anda.
-            </p>
+          <div className="py-12 text-center text-gray-500 space-y-3">
+            <CreditCard className="h-10 w-10 mx-auto text-gray-600" />
+            <p className="text-sm font-medium">Belum ada mutasi transaksi pada filter ini.</p>
           </div>
         ) : (
           <div className="divide-y divide-gray-800">
             {filteredTransactions.map((tx) => {
-              const isTopUp = tx.type?.toUpperCase() === 'TOPUP' || tx.type?.toUpperCase() === 'CREDIT';
-              const amountNum = parseAmount(tx.amount);
+              const isCredit = tx.type?.toUpperCase() === 'CREDIT' || tx.type?.toUpperCase() === 'TOPUP';
+              const isRefund = tx.description?.toLowerCase().includes('refund');
+              const amount = parseAmount(tx.amount);
 
               return (
-                <div
-                  key={tx.id}
-                  className="py-4 flex items-center justify-between gap-4 hover:bg-gray-800/30 px-3 rounded-xl transition-colors"
-                >
-                  <div className="flex items-center gap-3.5">
+                <div key={tx.id} className="py-4 flex items-center justify-between gap-4">
+                  <div className="flex items-center gap-3">
                     <div
-                      className={`p-2.5 rounded-xl ${
-                        isTopUp
-                          ? 'bg-emerald-500/10 text-emerald-400'
-                          : 'bg-rose-500/10 text-rose-400'
+                      className={`p-2.5 rounded-xl border ${
+                        isRefund
+                          ? 'bg-rose-500/10 border-rose-500/30 text-rose-400'
+                          : isCredit
+                          ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
+                          : 'bg-orange-500/10 border-orange-500/30 text-orange-400'
                       }`}
                     >
-                      {isTopUp ? <ArrowDownLeft className="h-5 w-5" /> : <ArrowUpRight className="h-5 w-5" />}
+                      {isRefund ? (
+                        <ArrowDownToLine className="h-5 w-5" />
+                      ) : isCredit ? (
+                        <ArrowDownLeft className="h-5 w-5" />
+                      ) : (
+                        <ArrowUpRight className="h-5 w-5" />
+                      )}
                     </div>
-
-                    <div className="space-y-0.5">
-                      <p className="text-sm font-semibold text-white">
-                        {tx.description || (isTopUp ? 'Top-Up Saldo Gelang' : 'Pembelian di Tenant Festival')}
+                    <div>
+                      <h4 className="text-sm font-bold text-white">
+                        {tx.description || (isCredit ? 'Top-Up Saldo Gelang' : 'Pembayaran Tenant')}
+                      </h4>
+                      <p className="text-xs text-gray-400">
+                        {tx.created_at ? formatDate(tx.created_at) : 'Waktu transaksi'}
                       </p>
-                      <div className="flex items-center gap-2 text-xs text-gray-400">
-                        <span>{formatDate(tx.created_at)}</span>
-                        <span className="text-gray-600">•</span>
-                        <span className="font-mono text-[11px] text-gray-500">
-                          ID: {tx.id.substring(0, 8)}...
-                        </span>
-                      </div>
                     </div>
                   </div>
 
                   <div className="text-right">
                     <span
-                      className={`text-base font-bold font-mono ${
-                        isTopUp ? 'text-emerald-400' : 'text-white'
+                      className={`text-sm font-bold font-mono ${
+                        isRefund ? 'text-rose-400' : isCredit ? 'text-emerald-400' : 'text-gray-200'
                       }`}
                     >
-                      {isTopUp ? `+${formatCurrency(amountNum)}` : `-${formatCurrency(amountNum)}`}
+                      {isCredit ? '+' : '-'} {formatCurrency(amount)}
                     </span>
-                    <span className="text-[10px] text-gray-500 block uppercase font-bold">
-                      {isTopUp ? 'BERHASIL' : 'SELESAI'}
+                    <span className="block text-[10px] text-gray-500 uppercase tracking-wider">
+                      {isRefund ? 'REFUND DIKIRIM' : isCredit ? 'BERHASIL' : 'DIBAYAR'}
                     </span>
                   </div>
                 </div>
@@ -478,17 +547,18 @@ export default function CashlessPortalPage() {
         <Modal
           isOpen={isTopUpOpen}
           onClose={() => !topUpLoading && setIsTopUpOpen(false)}
-          title="Top-Up Saldo Gelang RFID"
+          title="Top-Up Saldo Gelang Festival"
         >
           <form onSubmit={handleTopUpSubmit} className="space-y-5">
-            <div className="p-4 bg-violet-950/40 border border-violet-500/30 rounded-xl space-y-1">
-              <span className="text-xs text-violet-300 font-semibold uppercase tracking-wider block">
-                Saldo Gelang Saat Ini
-              </span>
-              <p className="text-2xl font-bold text-white">{formatCurrency(balanceAmount)}</p>
+            <div className="p-3.5 bg-gray-950 border border-gray-800 rounded-xl text-xs text-gray-400 space-y-1">
+              <p className="text-white font-semibold flex items-center gap-1.5">
+                <Zap className="h-4 w-4 text-violet-400" />
+                Isi Ulang Saldo Instan
+              </p>
+              <p>Saldo akan langsung masuk ke RFID wristband pass Anda dan siap ditap di merchant festival.</p>
             </div>
 
-            {/* Quick Preset Chips */}
+            {/* Quick Chips */}
             <div className="space-y-2">
               <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
                 Pilih Nominal Cepat
@@ -638,6 +708,139 @@ export default function CashlessPortalPage() {
                 className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 font-bold flex items-center gap-1.5"
               >
                 {posLoading ? 'Memproses...' : `Tap Gelang & Bayar (${formatCurrency(posAmount)})`}
+              </Button>
+            </div>
+          </form>
+        </Modal>
+      )}
+
+      {/* MODAL 3: Form Pengajuan Refund Sisa Saldo Gelang */}
+      {isRefundOpen && (
+        <Modal
+          isOpen={isRefundOpen}
+          onClose={() => !refundLoading && setIsRefundOpen(false)}
+          title="Tarik Sisa Saldo Gelang (Refund)"
+        >
+          <form onSubmit={handleRefundSubmit} className="space-y-4">
+            <div className="p-3.5 bg-gray-950 border border-gray-800 rounded-xl text-xs text-gray-400 space-y-1">
+              <p className="text-white font-semibold flex items-center gap-1.5">
+                <Landmark className="h-4 w-4 text-rose-400" />
+                Pencairan Saldo ke Rekening / E-Wallet
+              </p>
+              <p>
+                Saldo gelang yang tidak terpakai akan ditransfer langsung ke rekening bank atau e-wallet Anda.
+              </p>
+            </div>
+
+            {/* Quick Percentage Chips */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider flex justify-between">
+                <span>Nominal Refund (Rp)</span>
+                <span className="text-violet-400">Saldo: {formatCurrency(balanceAmount)}</span>
+              </label>
+              <div className="grid grid-cols-3 gap-2">
+                {[
+                  { label: 'Semua (100%)', val: balanceAmount },
+                  { label: '50%', val: Math.floor(balanceAmount * 0.5) },
+                  { label: 'Rp 50.000', val: 50000 },
+                ].map((preset, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => {
+                      const actual = Math.min(preset.val, balanceAmount);
+                      setRefundAmount(actual);
+                      setCustomRefundInput(actual.toString());
+                    }}
+                    className={`py-2 px-2.5 rounded-xl text-xs font-bold border transition-colors ${
+                      refundAmount === preset.val
+                        ? 'bg-rose-600 text-white border-rose-500'
+                        : 'bg-gray-950 text-gray-300 border-gray-800 hover:border-gray-700'
+                    }`}
+                  >
+                    {preset.label}
+                  </button>
+                ))}
+              </div>
+
+              <input
+                type="number"
+                min="1000"
+                max={balanceAmount}
+                value={customRefundInput}
+                onChange={(e) => {
+                  setCustomRefundInput(e.target.value);
+                  setRefundAmount(Number(e.target.value) || 0);
+                }}
+                className="w-full px-4 py-2.5 bg-gray-950 border border-gray-800 rounded-xl text-white font-bold focus:outline-none focus:border-rose-500 mt-2"
+                placeholder="Nominal yang ditarik..."
+                required
+              />
+            </div>
+
+            {/* Bank Select */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                Bank / E-Wallet Tujuan
+              </label>
+              <select
+                value={refundBank}
+                onChange={(e) => setRefundBank(e.target.value)}
+                className="w-full px-4 py-2.5 bg-gray-950 border border-gray-800 rounded-xl text-white font-medium focus:outline-none focus:border-rose-500 cursor-pointer"
+              >
+                {BANK_OPTIONS.map((bank) => (
+                  <option key={bank} value={bank}>
+                    {bank}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Account Number */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                Nomor Rekening / No. HP E-Wallet
+              </label>
+              <input
+                type="text"
+                value={refundAccountNumber}
+                onChange={(e) => setRefundAccountNumber(e.target.value)}
+                className="w-full px-4 py-2.5 bg-gray-950 border border-gray-800 rounded-xl text-white font-medium focus:outline-none focus:border-rose-500"
+                placeholder="Contoh: 1234567890"
+                required
+              />
+            </div>
+
+            {/* Account Holder Name */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                Nama Pemilik Rekening
+              </label>
+              <input
+                type="text"
+                value={refundAccountHolder}
+                onChange={(e) => setRefundAccountHolder(e.target.value)}
+                className="w-full px-4 py-2.5 bg-gray-950 border border-gray-800 rounded-xl text-white font-medium focus:outline-none focus:border-rose-500"
+                placeholder="Nama sesuai buku tabungan"
+                required
+              />
+            </div>
+
+            <div className="flex justify-end gap-3 pt-2">
+              <Button
+                type="button"
+                variant="outline"
+                disabled={refundLoading}
+                onClick={() => setIsRefundOpen(false)}
+              >
+                Batal
+              </Button>
+              <Button
+                type="submit"
+                disabled={refundLoading || refundAmount <= 0 || refundAmount > balanceAmount}
+                className="bg-rose-600 hover:bg-rose-700 text-white px-6 font-bold flex items-center gap-1.5"
+              >
+                {refundLoading ? 'Memproses...' : `Cairkan ${formatCurrency(refundAmount)}`}
               </Button>
             </div>
           </form>

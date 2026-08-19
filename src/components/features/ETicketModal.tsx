@@ -16,7 +16,9 @@ import {
   Check,
   ShieldCheck,
   Sparkles,
-  Ticket as TicketIcon
+  Ticket as TicketIcon,
+  SendHorizontal,
+  Download
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -24,9 +26,10 @@ interface ETicketModalProps {
   isOpen: boolean;
   onClose: () => void;
   ticket: EnrichedTicket | null;
+  onOpenTransfer?: (ticket: EnrichedTicket) => void;
 }
 
-export function ETicketModal({ isOpen, onClose, ticket }: ETicketModalProps) {
+export function ETicketModal({ isOpen, onClose, ticket, onOpenTransfer }: ETicketModalProps) {
   const [copied, setCopied] = React.useState(false);
 
   if (!ticket) return null;
@@ -51,7 +54,7 @@ export function ETicketModal({ isOpen, onClose, ticket }: ETicketModalProps) {
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="E-Ticket Digital"
+      title="E-Ticket Digital & Invoice"
       className="max-w-xl p-0 overflow-hidden"
     >
       <div className="p-6 space-y-6 print:p-0">
@@ -69,7 +72,7 @@ export function ETicketModal({ isOpen, onClose, ticket }: ETicketModalProps) {
                     <TicketIcon className="h-4 w-4" />
                   </div>
                   <span className="text-xs font-semibold uppercase tracking-wider text-violet-400">
-                    Entra Official E-Ticket
+                    Entra Official E-Ticket Pass
                   </span>
                 </div>
                 <h2 className="text-2xl font-extrabold text-white tracking-tight leading-snug">
@@ -182,19 +185,35 @@ export function ETicketModal({ isOpen, onClose, ticket }: ETicketModalProps) {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex justify-between items-center gap-3 pt-2 print:hidden">
-          <Button
-            variant="outline"
-            onClick={handlePrint}
-            className="flex items-center gap-2 text-gray-300"
-          >
-            <Printer className="h-4 w-4" />
-            Cetak / Simpan PDF
-          </Button>
+        <div className="flex flex-wrap justify-between items-center gap-3 pt-2 print:hidden">
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              onClick={handlePrint}
+              className="flex items-center gap-2 text-gray-300 text-xs"
+            >
+              <Printer className="h-4 w-4" />
+              Cetak / PDF
+            </Button>
+
+            {isActive && onOpenTransfer && (
+              <Button
+                variant="outline"
+                onClick={() => {
+                  onClose();
+                  onOpenTransfer(ticket);
+                }}
+                className="flex items-center gap-2 text-violet-300 border-violet-800/50 hover:bg-violet-950/40 text-xs"
+              >
+                <SendHorizontal className="h-4 w-4" />
+                Transfer Tiket
+              </Button>
+            )}
+          </div>
 
           <Button
             onClick={onClose}
-            className="bg-violet-600 hover:bg-violet-700 text-white px-6"
+            className="bg-violet-600 hover:bg-violet-700 text-white px-6 text-xs font-bold"
           >
             Tutup
           </Button>

@@ -10,6 +10,7 @@ import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Skeleton } from '@/components/ui/Skeleton';
+import { Modal } from '@/components/ui/Modal';
 import { ETicketModal } from '@/components/features/ETicketModal';
 import {
   Ticket as TicketIcon,
@@ -23,7 +24,11 @@ import {
   Clock,
   Sparkles,
   ShoppingBag,
-  ExternalLink
+  SendHorizontal,
+  Printer,
+  AlertCircle,
+  CheckCircle2,
+  FileText
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -52,6 +57,17 @@ export default function MyTicketsPage() {
   const [selectedTicket, setSelectedTicket] = useState<EnrichedTicket | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [payingOrderId, setPayingOrderId] = useState<string | null>(null);
+
+  // Ticket Transfer Modal State
+  const [isTransferOpen, setIsTransferOpen] = useState(false);
+  const [transferTicket, setTransferTicket] = useState<EnrichedTicket | null>(null);
+  const [recipientEmail, setRecipientEmail] = useState('');
+  const [recipientName, setRecipientName] = useState('');
+  const [transferLoading, setTransferLoading] = useState(false);
+
+  // Invoice Modal State
+  const [selectedOrderForInvoice, setSelectedOrderForInvoice] = useState<Order | null>(null);
+  const [isInvoiceOpen, setIsInvoiceOpen] = useState(false);
 
   const fetchUserTicketsAndOrders = async () => {
     if (!user) return;
@@ -138,6 +154,35 @@ export default function MyTicketsPage() {
     }
   };
 
+  const handleTransferSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!transferTicket) return;
+    if (!recipientEmail.trim() || !recipientEmail.includes('@')) {
+      toast.error('Masukkan alamat email penerima yang valid');
+      return;
+    }
+
+    try {
+      setTransferLoading(true);
+      await ticketApi.post(`/api/v1/tickets/${transferTicket.id}/transfer`, {
+        recipient_email: recipientEmail.trim(),
+        recipient_name: recipientName.trim() || 'Teman / Kerabat',
+      });
+
+      toast.success(`Tiket ${transferTicket.ticket_code} berhasil ditransfer ke ${recipientEmail.trim()}!`);
+      setIsTransferOpen(false);
+      setTransferTicket(null);
+      setRecipientEmail('');
+      setRecipientName('');
+      fetchUserTicketsAndOrders();
+    } catch (error: any) {
+      console.error('Transfer error:', error);
+      toast.error(error.response?.data?.message || error.message || 'Gagal mentransfer tiket.');
+    } finally {
+      setTransferLoading(false);
+    }
+  };
+
   // Filter tickets
   const filteredTickets = tickets.filter((t) => {
     const matchesFilter =
@@ -195,7 +240,7 @@ export default function MyTicketsPage() {
           </div>
           <h1 className="text-3xl font-extrabold text-white tracking-tight">Tiket & Pesanan Saya</h1>
           <p className="text-gray-400 text-sm mt-1">
-            Kelola e-ticket digital Anda, tampilkan QR code saat masuk gate, dan pantau riwayat transaksi.
+            Kelola e-ticket digital Anda, transfer ke teman, cetak PDF resmi, dan pantau riwayat transaksi.
           </p>
         </div>
 
@@ -432,9 +477,9 @@ export default function MyTicketsPage() {
                       <div className="w-4 h-6 bg-gray-950 rounded-l-full border-l border-gray-800"></div>
                     </div>
 
-                    {/* Ticket Code & Action */}
-                    <div className="p-5 bg-gray-950/40 flex items-center justify-between gap-3">
-                      <div>
+                    {/* Ticket Code & Actions */}
+                    <div className="p-4 bg-gray-950/40 flex flex-col gap-3">
+                      <div className="flex items-center justify-between">
                         <span className="text-[10px] text-gray-500 uppercase tracking-wider block">
                           Kode Tiket
                         </span>
@@ -443,17 +488,34 @@ export default function MyTicketsPage() {
                         </span>
                       </div>
 
-                      <Button
-                        size="sm"
-                        onClick={() => {
-                          setSelectedTicket(t);
-                          setIsModalOpen(true);
-                        }}
-                        className="bg-violet-600 hover:bg-violet-700 text-white flex items-center gap-1.5 text-xs"
-                      >
-                        <QrCode className="h-3.5 w-3.5" />
-                        Buka E-Ticket
-                      </Button>
+                      <div className="flex items-center gap-2 pt-1">
+                        <Button
+                          size="sm"
+                          onClick={() => {
+                            setSelectedTicket(t);
+                            setIsModalOpen(true);
+                          }}
+                          className="flex-1 bg-violet-600 hover:bg-violet-700 text-white flex items-center justify-center gap-1.5 text-xs font-bold py-2 rounded-xl"
+                        >
+                          <QrCode className="h-3.5 w-3.5" />
+                          Buka E-Ticket
+                        </Button>
+
+                        {isActive && (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => {
+                              setTransferTicket(t);
+                              setIsTransferOpen(true);
+                            }}
+                            className="border-gray-800 hover:bg-gray-800 text-gray-300 text-xs px-2.5 rounded-xl"
+                            title="Transfer Tiket ke Teman"
+                          >
+                            <SendHorizontal className="h-3.5 w-3.5 text-violet-400" />
+                          </Button>
+                        )}
+                      </div>
                     </div>
                   </Card>
                 );
@@ -497,7 +559,6 @@ export default function MyTicketsPage() {
               {orders.map((order) => {
                 const isPaid = order.status?.toUpperCase() === 'PAID';
                 const isPending = order.status?.toUpperCase() === 'PENDING';
-                const isExpired = order.status?.toUpperCase() === 'EXPIRED';
 
                 return (
                   <Card
@@ -536,16 +597,33 @@ export default function MyTicketsPage() {
                         </span>
                       </div>
 
-                      {isPending && (
-                        <Button
-                          onClick={() => handlePayOrder(order.id)}
-                          disabled={payingOrderId === order.id}
-                          className="bg-emerald-600 hover:bg-emerald-700 text-white flex items-center gap-1.5 text-xs font-bold"
-                        >
-                          {payingOrderId === order.id ? 'Memuat...' : 'Bayar Sekarang'}
-                          <ArrowRight className="h-3.5 w-3.5" />
-                        </Button>
-                      )}
+                      <div className="flex items-center gap-2">
+                        {isPaid && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              setSelectedOrderForInvoice(order);
+                              setIsInvoiceOpen(true);
+                            }}
+                            className="border-gray-700 hover:bg-gray-800 text-gray-200 text-xs flex items-center gap-1.5"
+                          >
+                            <FileText className="h-3.5 w-3.5 text-violet-400" />
+                            Lihat Invoice
+                          </Button>
+                        )}
+
+                        {isPending && (
+                          <Button
+                            onClick={() => handlePayOrder(order.id)}
+                            disabled={payingOrderId === order.id}
+                            className="bg-emerald-600 hover:bg-emerald-700 text-white flex items-center gap-1.5 text-xs font-bold"
+                          >
+                            {payingOrderId === order.id ? 'Memuat...' : 'Bayar Sekarang'}
+                            <ArrowRight className="h-3.5 w-3.5" />
+                          </Button>
+                        )}
+                      </div>
                     </div>
                   </Card>
                 );
@@ -555,7 +633,7 @@ export default function MyTicketsPage() {
         </div>
       )}
 
-      {/* Interactive Modal */}
+      {/* Interactive ETicket Modal */}
       <ETicketModal
         isOpen={isModalOpen}
         onClose={() => {
@@ -563,7 +641,147 @@ export default function MyTicketsPage() {
           setSelectedTicket(null);
         }}
         ticket={selectedTicket}
+        onOpenTransfer={(t) => {
+          setTransferTicket(t);
+          setIsTransferOpen(true);
+        }}
       />
+
+      {/* MODAL: Transfer Tiket ke Teman */}
+      {isTransferOpen && transferTicket && (
+        <Modal
+          isOpen={isTransferOpen}
+          onClose={() => !transferLoading && setIsTransferOpen(false)}
+          title="Transfer Tiket ke Pengguna Lain"
+        >
+          <form onSubmit={handleTransferSubmit} className="space-y-4">
+            <div className="p-3.5 bg-gray-950 border border-gray-800 rounded-xl text-xs text-gray-400 space-y-1">
+              <p className="text-white font-semibold flex items-center gap-1.5">
+                <SendHorizontal className="h-4 w-4 text-violet-400" />
+                Pindah Kepemilikan Tiket
+              </p>
+              <p>
+                Tiket yang ditransfer akan berpindah ke akun penerima dan tidak dapat lagi Anda gunakan di gerbang masuk.
+              </p>
+            </div>
+
+            {/* Ticket Snapshot Card */}
+            <div className="p-3 bg-violet-950/30 border border-violet-500/30 rounded-xl space-y-1">
+              <p className="text-xs text-violet-300 font-bold">{transferTicket.event?.title || 'Event'}</p>
+              <div className="flex justify-between text-xs text-gray-400">
+                <span>{transferTicket.ticket_type?.name || 'Tiket'}</span>
+                <span className="font-mono text-violet-400 font-bold">{transferTicket.ticket_code}</span>
+              </div>
+            </div>
+
+            {/* Recipient Email Input */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                Email Penerima
+              </label>
+              <input
+                type="email"
+                value={recipientEmail}
+                onChange={(e) => setRecipientEmail(e.target.value)}
+                placeholder="nama@email.com"
+                className="w-full px-4 py-2.5 bg-gray-950 border border-gray-800 rounded-xl text-white font-medium focus:outline-none focus:border-violet-500"
+                required
+              />
+            </div>
+
+            {/* Recipient Name Input */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                Nama Penerima (Opsional)
+              </label>
+              <input
+                type="text"
+                value={recipientName}
+                onChange={(e) => setRecipientName(e.target.value)}
+                placeholder="Nama Teman / Kerabat"
+                className="w-full px-4 py-2.5 bg-gray-950 border border-gray-800 rounded-xl text-white font-medium focus:outline-none focus:border-violet-500"
+              />
+            </div>
+
+            <div className="flex justify-end gap-3 pt-2">
+              <Button
+                type="button"
+                variant="outline"
+                disabled={transferLoading}
+                onClick={() => setIsTransferOpen(false)}
+              >
+                Batal
+              </Button>
+              <Button
+                type="submit"
+                disabled={transferLoading || !recipientEmail.trim()}
+                className="bg-violet-600 hover:bg-violet-700 text-white px-6 font-bold flex items-center gap-1.5"
+              >
+                {transferLoading ? 'Mentransfer...' : 'Kirim Tiket Sekarang'}
+              </Button>
+            </div>
+          </form>
+        </Modal>
+      )}
+
+      {/* MODAL: Invoice Pembayaran Resmi */}
+      {isInvoiceOpen && selectedOrderForInvoice && (
+        <Modal
+          isOpen={isInvoiceOpen}
+          onClose={() => setIsInvoiceOpen(false)}
+          title="Invoice Pembayaran Resmi"
+        >
+          <div className="space-y-5 print:p-0">
+            <div id="printable-invoice" className="p-6 bg-gray-950 border border-gray-800 rounded-2xl space-y-4">
+              <div className="flex justify-between items-start border-b border-gray-800 pb-4">
+                <div>
+                  <h3 className="text-lg font-black text-white">INVOICE ENTRA</h3>
+                  <p className="text-xs text-gray-400">Order #{selectedOrderForInvoice.id.substring(0, 16)}</p>
+                </div>
+                <Badge variant="success" className="text-xs">
+                  LUNAS
+                </Badge>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 text-xs text-gray-400">
+                <div>
+                  <span className="text-gray-500 block">Diterbitkan untuk:</span>
+                  <span className="text-white font-semibold">{user?.full_name || 'Pembeli Tiket'}</span>
+                  <span className="block text-[11px] text-gray-500">{user?.email}</span>
+                </div>
+                <div className="text-right">
+                  <span className="text-gray-500 block">Waktu Transaksi:</span>
+                  <span className="text-white font-semibold">{formatDate(selectedOrderForInvoice.created_at)}</span>
+                </div>
+              </div>
+
+              <div className="pt-3 border-t border-gray-800 flex justify-between items-center text-sm">
+                <span className="text-gray-300 font-bold">Total Pembayaran</span>
+                <span className="text-xl font-black text-emerald-400 font-mono">
+                  {formatCurrency(selectedOrderForInvoice.total_amount)}
+                </span>
+              </div>
+            </div>
+
+            <div className="flex justify-between items-center pt-2 print:hidden">
+              <Button
+                variant="outline"
+                onClick={() => window.print()}
+                className="flex items-center gap-1.5 text-xs text-gray-300"
+              >
+                <Printer className="h-4 w-4" />
+                Cetak Invoice
+              </Button>
+              <Button
+                onClick={() => setIsInvoiceOpen(false)}
+                className="bg-violet-600 hover:bg-violet-700 text-white text-xs font-bold"
+              >
+                Tutup
+              </Button>
+            </div>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 }

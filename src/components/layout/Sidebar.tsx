@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { BarChart3, Calendar, ShoppingCart, Folder, Wallet, ShieldCheck } from 'lucide-react';
+import { BarChart3, Calendar, ShoppingCart, Folder, Wallet, ShieldCheck, MapPin } from 'lucide-react';
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -11,6 +11,7 @@ export function Sidebar() {
   const menuItems = [
     { name: 'Dashboard', path: '/dashboard', icon: <BarChart3 className="h-5 w-5" /> },
     { name: 'Event', path: '/dashboard/events', icon: <Calendar className="h-5 w-5" /> },
+    { name: 'Venue & Lokasi', path: '/dashboard/venues', icon: <MapPin className="h-5 w-5" /> },
     { name: 'Pesanan', path: '/dashboard/orders', icon: <ShoppingCart className="h-5 w-5" /> },
     { name: 'Keuangan & Saldo', path: '/dashboard/withdrawals', icon: <Wallet className="h-5 w-5" /> },
     { name: 'Pencairan Admin', path: '/dashboard/admin/withdrawals', icon: <ShieldCheck className="h-5 w-5" /> },

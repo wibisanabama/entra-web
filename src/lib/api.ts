@@ -70,6 +70,10 @@ class ApiClient {
   public async del<T = any>(endpoint: string, options?: RequestInit): Promise<ApiResponse<T>> {
     return this.fetchWithAuth<T>(endpoint, { ...options, method: 'DELETE' });
   }
+
+  public async delete<T = any>(endpoint: string, options?: RequestInit): Promise<ApiResponse<T>> {
+    return this.del<T>(endpoint, options);
+  }
 }
 
 export const authApi = new ApiClient(process.env.NEXT_PUBLIC_AUTH_API_URL || 'http://localhost:8081');

@@ -22,13 +22,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const setCookies = (accessToken: string, refreshToken: string, expiresAt: number) => {
     const date = new Date(expiresAt * 1000).toUTCString();
-    document.cookie = `entra_token=${accessToken}; path=/; expires=${date}`;
-    document.cookie = `entra_refresh=${refreshToken}; path=/; expires=${date}`;
+    const isSecure = typeof window !== 'undefined' && window.location.protocol === 'https:';
+    const secureFlag = isSecure ? '; SameSite=Strict; Secure' : '; SameSite=Lax';
+    document.cookie = `entra_token=${accessToken}; path=/; expires=${date}${secureFlag}`;
+    document.cookie = `entra_refresh=${refreshToken}; path=/; expires=${date}${secureFlag}`;
   };
 
   const clearCookies = () => {
-    document.cookie = "entra_token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT";
-    document.cookie = "entra_refresh=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT";
+    document.cookie = "entra_token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=Lax";
+    document.cookie = "entra_refresh=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=Lax";
   };
 
   const loadProfile = async () => {

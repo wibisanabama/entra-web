@@ -24,5 +24,8 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
+      - name: Run Unit Tests
+        run: npm test
+
       - name: Run Next.js Build
         run: npm run build

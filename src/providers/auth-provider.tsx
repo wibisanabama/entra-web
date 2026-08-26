@@ -29,8 +29,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const clearCookies = () => {
-    document.cookie = "entra_token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=Lax";
-    document.cookie = "entra_refresh=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=Lax";
+    const isSecure = typeof window !== 'undefined' && window.location.protocol === 'https:';
+    const secureFlag = isSecure ? '; SameSite=Strict; Secure' : '; SameSite=Lax';
+    document.cookie = `entra_token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT${secureFlag}`;
+    document.cookie = `entra_refresh=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT${secureFlag}`;
   };
 
   const loadProfile = async () => {

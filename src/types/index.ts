@@ -196,7 +196,7 @@ export interface RegisterRequest {
   password: string;
   full_name: string;
   phone: string;
-  role: string;
+  role?: string;
 }
 
 export interface ForgotPasswordRequest {

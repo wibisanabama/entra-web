@@ -19,7 +19,6 @@ function RegisterForm() {
     phone: '',
     password: '',
     confirmPassword: '',
-    role: 'user'
   });
   
   const [loading, setLoading] = useState(false);
@@ -49,7 +48,6 @@ function RegisterForm() {
         email: formData.email,
         password: formData.password,
         phone: formData.phone,
-        role: formData.role
       });
       router.push('/');
     } catch (err: any) {

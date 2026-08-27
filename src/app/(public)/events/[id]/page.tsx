@@ -13,9 +13,10 @@ import { format } from 'date-fns';
 import { id as localeId } from 'date-fns/locale';
 import { useAuth } from '@/providers/auth-provider';
 import { getPgText } from '@/lib/utils';
+import { Event as EventType, Category, Venue, User, TicketType } from '@/types';
 
 interface EventDetail {
-  id: string | string[];
+  id: string;
   title: string;
   description: string;
   date: string;
@@ -45,27 +46,29 @@ export default function EventDetailPage() {
   useEffect(() => {
     const fetchEvent = async () => {
       try {
+        const eventId = String(params.id);
         const [res, ticketRes, catRes, venueRes] = await Promise.all([
-          eventApi.get<any>(`/api/v1/events/${params.id}`),
-          eventApi.get<any>(`/api/v1/events/${params.id}/tickets`).catch(() => ({ data: { data: [] } })),
-          eventApi.get<any>(`/api/v1/categories`).catch(() => ({ data: [] })),
-          eventApi.get<any>(`/api/v1/venues`).catch(() => ({ data: [] }))
+          eventApi.get<EventType>(`/api/v1/events/${eventId}`),
+          eventApi.get<TicketType[]>(`/api/v1/events/${eventId}/tickets`).catch(() => ({ success: false, data: [] as TicketType[] })),
+          eventApi.get<Category[]>(`/api/v1/categories`).catch(() => ({ success: false, data: [] as Category[] })),
+          eventApi.get<Venue[]>(`/api/v1/venues`).catch(() => ({ success: false, data: [] as Venue[] }))
         ]);
 
         if (res.data) {
-          const apiEvent = res.data.data || res.data;
-          const apiTickets = ticketRes.data?.data || ticketRes.data || [];
-          const categories = catRes.data || [];
+          const apiEvent = res.data;
+          const rawTickets = Array.isArray(ticketRes.data) ? ticketRes.data : [];
+          const categories = Array.isArray(catRes.data) ? catRes.data : [];
+          const venues = Array.isArray(venueRes.data) ? venueRes.data : [];
           
           let organizerName = 'Organizer Event';
           if (apiEvent.organizer_id) {
             try {
-              const userRes = await authApi.get<any>(`/api/v1/users/${apiEvent.organizer_id}`);
+              const userRes = await authApi.get<User>(`/api/v1/users/${apiEvent.organizer_id}`);
               if (userRes.data?.full_name) {
                 organizerName = userRes.data.full_name;
               }
-            } catch (err) {
-              // Ignore if organizer is not found (e.g. for old seeded events)
+            } catch {
+              // Ignore if organizer is not found
             }
           }
           
@@ -79,7 +82,7 @@ export default function EventDetailPage() {
 
           let categoryName = 'Kategori';
           if (apiEvent.category_id) {
-            const cat = categories.find((c: any) => c.id === apiEvent.category_id);
+            const cat = categories.find((c) => c.id === apiEvent.category_id);
             if (cat) categoryName = cat.name;
           }
           
@@ -89,8 +92,7 @@ export default function EventDetailPage() {
           } else if (apiEvent.venue?.name) {
             venueName = `${apiEvent.venue.name}, ${apiEvent.venue.city}`;
           } else if (apiEvent.venue_id) {
-            const venues = (venueRes as any).data?.data || (venueRes as any).data || [];
-            const venue = venues.find((v: any) => v.id === apiEvent.venue_id);
+            const venue = venues.find((v) => v.id === apiEvent.venue_id);
             if (venue) {
               venueName = `${venue.name}, ${venue.city}`;
             }
@@ -99,20 +101,20 @@ export default function EventDetailPage() {
           setEvent({
             id: apiEvent.id,
             title: apiEvent.title,
-            description: apiEvent.description || 'Tidak ada deskripsi',
+            description: getPgText(apiEvent.description) || 'Tidak ada deskripsi',
             date: dateStr,
             time: timeStr,
             venue: venueName,
             image: getPgText(apiEvent.banner_url) || 'https://placehold.co/1200x500/1e1e1e/8a2be2?text=Tanpa+Gambar',
             category: apiEvent.category?.name || categoryName,
             organizer: organizerName,
-            tickets: Array.isArray(apiTickets) ? apiTickets.map((t: any) => ({
+            tickets: rawTickets.map((t) => ({
               id: t.id,
               name: t.name,
-              price: parseFloat(t.price) || 0,
+              price: parseFloat(String(t.price)) || 0,
               quota: t.quantity,
               available: t.quantity - (t.sold || 0)
-            })) : []
+            }))
           });
         }
       } catch (error) {
@@ -223,7 +225,7 @@ export default function EventDetailPage() {
                 </div>
                 <div className="p-6">
                   <TicketSelector 
-                    ticketTypes={event.tickets as any} 
+                    ticketTypes={event.tickets as unknown as TicketType[]} 
                     eventId={String(event.id)}
                     onSelect={async (selected, appliedPromo) => {
                       if (!user) {
@@ -234,16 +236,20 @@ export default function EventDetailPage() {
                       if (selected.length === 0) return;
                       try {
                         setCheckoutLoading(true);
-                        // For simplicity, we create one order per selected ticket type
+                        const totalRawSubtotal = selected.reduce((sum, item) => {
+                          const t = event.tickets.find((tk) => tk.id === item.ticketTypeId);
+                          return sum + (t?.price || 0) * item.quantity;
+                        }, 0);
+
                         for (const item of selected) {
-                          const ticketData = event.tickets.find(t => t.id === item.ticketTypeId);
+                          const ticketData = event.tickets.find((t) => t.id === item.ticketTypeId);
                           const basePrice = ticketData?.price || 0;
-                          // If promo applied on single order, compute discounted rate
                           let unitPrice = basePrice;
-                          if (appliedPromo && appliedPromo.discountAmount > 0) {
-                            const subtotal = basePrice * item.quantity;
-                            const finalSubtotal = Math.max(0, subtotal - appliedPromo.discountAmount);
-                            unitPrice = finalSubtotal / item.quantity;
+                          if (appliedPromo && appliedPromo.discountAmount > 0 && totalRawSubtotal > 0) {
+                            const itemSubtotal = basePrice * item.quantity;
+                            const itemDiscount = (itemSubtotal / totalRawSubtotal) * appliedPromo.discountAmount;
+                            const finalItemSubtotal = Math.max(0, itemSubtotal - itemDiscount);
+                            unitPrice = item.quantity > 0 ? Math.round((finalItemSubtotal / item.quantity) * 100) / 100 : basePrice;
                           }
 
                           await ticketApi.post('/api/v1/tickets/orders', {
@@ -253,19 +259,21 @@ export default function EventDetailPage() {
                             price: unitPrice
                           });
                         }
+
                         setModalData({
                           isOpen: true,
                           title: 'Pemesanan Berhasil',
                           message: appliedPromo 
-                            ? `Pesanan tiket berhasil dibuat dengan kupon ${appliedPromo.promoCode}! Silakan selesaikan pembayaran di halaman Profil Anda.`
-                            : 'Pesanan tiket Anda berhasil dibuat dan berstatus PENDING. Silakan selesaikan pembayaran di halaman Profil Anda.',
+                            ? `Pesanan tiket berhasil dibuat dengan kupon ${appliedPromo.promoCode}! Silakan selesaikan pembayaran di halaman Tiket Saya.`
+                            : 'Pesanan tiket Anda berhasil dibuat dan berstatus PENDING. Silakan selesaikan pembayaran di halaman Tiket Saya.',
                           type: 'success'
                         });
-                      } catch (error: any) {
+                      } catch (error: unknown) {
+                        const errMsg = error instanceof Error ? error.message : 'Terjadi kesalahan saat memesan tiket';
                         setModalData({
                           isOpen: true,
                           title: 'Gagal Memesan Tiket',
-                          message: 'Terjadi kesalahan: ' + (error.response?.data?.message || error.message),
+                          message: 'Terjadi kesalahan: ' + errMsg,
                           type: 'error'
                         });
                       } finally {

@@ -3,38 +3,25 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { EventCard } from '@/components/features/EventCard';
-import { Button } from '@/components/ui/Button';
-import { Badge } from '@/components/ui/Badge';
 import { Skeleton } from '@/components/ui/Skeleton';
-import { useAuth } from '@/providers/auth-provider';
 import { eventApi } from '@/lib/api';
-import { Event } from '@/types';
+import { Event as EventType, Venue } from '@/types';
 
 export default function HomePage() {
-  const { user } = useAuth();
-  const [events, setEvents] = useState<Record<string, unknown>[]>([]);
+  const [events, setEvents] = useState<EventType[]>([]);
   const [loading, setLoading] = useState(true);
-
-  let targetHref = '/register?role=organizer';
-  if (user) {
-    if (user.role === 'user') {
-      targetHref = '/profile';
-    } else if (user.role === 'organizer') {
-      targetHref = '/dashboard';
-    }
-  }
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
         const [res, venueRes] = await Promise.all([
-          eventApi.get('/api/v1/events?page=1&per_page=4'),
-          eventApi.get('/api/v1/venues').catch(() => ({ data: [] }))
+          eventApi.get<EventType[]>('/api/v1/events?page=1&per_page=4'),
+          eventApi.get<Venue[]>('/api/v1/venues').catch(() => ({ success: false, data: [] as Venue[] }))
         ]);
         if (res.data && Array.isArray(res.data)) {
-          const venues = (venueRes as any).data?.data || (venueRes as any).data || [];
-          const eventsWithVenues = (res.data as any[]).map(ev => {
-            const venue = venues.find((v: any) => v.id === ev.venue_id);
+          const venues: Venue[] = Array.isArray(venueRes.data) ? venueRes.data : [];
+          const eventsWithVenues: EventType[] = res.data.map((ev) => {
+            const venue = venues.find((v) => v.id === ev.venue_id);
             return { ...ev, venue: venue || ev.venue };
           });
           setEvents(eventsWithVenues);
@@ -88,7 +75,7 @@ export default function HomePage() {
               ))
             ) : events.length > 0 ? (
               events.map((event) => (
-                  <EventCard key={(event as any).id} event={event as any} />
+                  <EventCard key={event.id} event={event} />
               ))
             ) : (
               <div className="col-span-full text-center py-12 text-gray-400">

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/providers/auth-provider';
 import { cashlessApi } from '@/lib/api';
@@ -14,16 +14,13 @@ import { Skeleton } from '@/components/ui/Skeleton';
 import { QRCodeSVG } from 'qrcode.react';
 import {
   CreditCard,
-  QrCode,
   Zap,
-  ShoppingBag,
   ArrowUpRight,
   ArrowDownLeft,
   RefreshCw,
   Sparkles,
   Store,
   CheckCircle2,
-  AlertCircle,
   UtensilsCrossed,
   Shirt,
   Coffee,
@@ -46,7 +43,7 @@ const BANK_OPTIONS = ['BCA', 'Bank Mandiri', 'BNI', 'BRI', 'SeaBank', 'Bank Jago
 
 export default function CashlessPortalPage() {
   const { user, isLoading: authLoading } = useAuth();
-  const [loading, setLoading] = useState(true);
+  const [dataLoading, setDataLoading] = useState(true);
   const [wallet, setWallet] = useState<Wallet | null>(null);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [txFilter, setTxFilter] = useState<'ALL' | 'TOPUP' | 'PURCHASE' | 'REFUND'>('ALL');
@@ -75,13 +72,12 @@ export default function CashlessPortalPage() {
   const [refundReason, setRefundReason] = useState<string>('Selesai event festival');
   const [refundLoading, setRefundLoading] = useState(false);
 
-  const fetchWalletAndTransactions = async () => {
+  const fetchWalletAndTransactions = useCallback(async () => {
     if (!user) return;
     try {
-      setLoading(true);
       const [walletRes, txRes] = await Promise.all([
-        cashlessApi.get('/api/v1/cashless/wallet').catch(() => null),
-        cashlessApi.get('/api/v1/cashless/transactions').catch(() => null),
+        cashlessApi.get<Wallet>('/api/v1/cashless/wallet').catch(() => null),
+        cashlessApi.get<Transaction[]>('/api/v1/cashless/transactions').catch(() => null),
       ]);
 
       if (walletRes && walletRes.data) {
@@ -94,21 +90,22 @@ export default function CashlessPortalPage() {
       console.error('Failed to fetch cashless data:', error);
       toast.error('Gagal memuat informasi saldo gelang cashless.');
     } finally {
-      setLoading(false);
+      setDataLoading(false);
     }
-  };
+  }, [user]);
 
   useEffect(() => {
     if (!authLoading && user) {
       fetchWalletAndTransactions();
-    } else if (!authLoading && !user) {
-      setLoading(false);
     }
-  }, [user, authLoading]);
+  }, [user, authLoading, fetchWalletAndTransactions]);
 
-  const parseAmount = (val: any): number => {
+  const loading = authLoading || (user ? dataLoading : false);
+
+  const parseAmount = (val: number | string | undefined | null): number => {
     if (typeof val === 'number') return val;
-    return parseFloat(val) || 0;
+    if (typeof val === 'string') return parseFloat(val) || 0;
+    return 0;
   };
 
   const handleTopUpSubmit = async (e: React.FormEvent) => {
@@ -127,9 +124,10 @@ export default function CashlessPortalPage() {
       toast.success(`Top-Up saldo gelang sebesar ${formatCurrency(topUpAmount)} berhasil diproses!`);
       setIsTopUpOpen(false);
       fetchWalletAndTransactions();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Top-Up error:', error);
-      toast.error(error.message || 'Gagal memproses top-up saldo.');
+      const errMsg = error instanceof Error ? error.message : 'Gagal memproses top-up saldo.';
+      toast.error(errMsg);
     } finally {
       setTopUpLoading(false);
     }
@@ -152,7 +150,7 @@ export default function CashlessPortalPage() {
       setPosLoading(true);
       await cashlessApi.post('/api/v1/cashless/pay', {
         amount: posAmount,
-        merchant_id: '00000000-0000-0000-0000-000000000001',
+        merchant_id: selectedMerchant.id,
       });
 
       toast.success(
@@ -160,9 +158,10 @@ export default function CashlessPortalPage() {
       );
       setIsPosOpen(false);
       fetchWalletAndTransactions();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('POS payment error:', error);
-      toast.error(error.message || 'Pembayaran gelang di merchant gagal.');
+      const errMsg = error instanceof Error ? error.message : 'Pembayaran gelang di merchant gagal.';
+      toast.error(errMsg);
     } finally {
       setPosLoading(false);
     }
@@ -197,9 +196,10 @@ export default function CashlessPortalPage() {
       toast.success(`Pengajuan refund saldo ${formatCurrency(refundAmount)} ke ${refundBank} berhasil diproses!`);
       setIsRefundOpen(false);
       fetchWalletAndTransactions();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Refund error:', error);
-      toast.error(error.message || 'Gagal mengajukan refund saldo gelang.');
+      const errMsg = error instanceof Error ? error.message : 'Gagal mengajukan refund saldo gelang.';
+      toast.error(errMsg);
     } finally {
       setRefundLoading(false);
     }
@@ -823,6 +823,20 @@ export default function CashlessPortalPage() {
                 className="w-full px-4 py-2.5 bg-gray-950 border border-gray-800 rounded-xl text-white font-medium focus:outline-none focus:border-rose-500"
                 placeholder="Nama sesuai buku tabungan"
                 required
+              />
+            </div>
+
+            {/* Reason */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                Alasan Refund
+              </label>
+              <input
+                type="text"
+                value={refundReason}
+                onChange={(e) => setRefundReason(e.target.value)}
+                className="w-full px-4 py-2.5 bg-gray-950 border border-gray-800 rounded-xl text-white font-medium focus:outline-none focus:border-rose-500"
+                placeholder="Contoh: Selesai event festival"
               />
             </div>
 

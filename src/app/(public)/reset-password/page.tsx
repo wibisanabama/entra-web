@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { authApi } from '@/lib/api';
@@ -17,13 +17,7 @@ function ResetPasswordForm() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [error, setError] = useState('');
-
-  useEffect(() => {
-    if (!token) {
-      setError('Token reset tidak valid atau tidak ditemukan.');
-    }
-  }, [token]);
+  const [error, setError] = useState(!token ? 'Token reset tidak valid atau tidak ditemukan.' : '');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

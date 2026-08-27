@@ -1,11 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/providers/auth-provider';
 import { ticketApi, eventApi } from '@/lib/api';
-import { EnrichedTicket, Order, Event as EventType } from '@/types';
-import { formatCurrency, formatDate, getPgText } from '@/lib/utils';
+import { EnrichedTicket, Order, Event as EventType, Ticket } from '@/types';
+import { formatCurrency, formatDate } from '@/lib/utils';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
@@ -26,8 +26,6 @@ import {
   ShoppingBag,
   SendHorizontal,
   Printer,
-  AlertCircle,
-  CheckCircle2,
   FileText
 } from 'lucide-react';
 import { toast } from 'sonner';
@@ -36,9 +34,9 @@ declare global {
   interface Window {
     snap?: {
       pay: (token: string, callbacks: {
-        onSuccess: (result: any) => void;
-        onPending: (result: any) => void;
-        onError: (result: any) => void;
+        onSuccess: (result: unknown) => void;
+        onPending: (result: unknown) => void;
+        onError: (result: unknown) => void;
         onClose: () => void;
       }) => void;
     };
@@ -47,18 +45,20 @@ declare global {
 
 export default function MyTicketsPage() {
   const { user, isLoading: authLoading } = useAuth();
-  const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'tickets' | 'orders'>('tickets');
   const [ticketFilter, setTicketFilter] = useState<'ALL' | 'ACTIVE' | 'USED'>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
+  const [dataLoading, setDataLoading] = useState(true);
 
   const [tickets, setTickets] = useState<EnrichedTicket[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
-  const [selectedTicket, setSelectedTicket] = useState<EnrichedTicket | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [payingOrderId, setPayingOrderId] = useState<string | null>(null);
 
-  // Ticket Transfer Modal State
+  // E-Ticket Detail Modal State
+  const [selectedTicket, setSelectedTicket] = useState<EnrichedTicket | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // Transfer Ticket Modal State
   const [isTransferOpen, setIsTransferOpen] = useState(false);
   const [transferTicket, setTransferTicket] = useState<EnrichedTicket | null>(null);
   const [recipientEmail, setRecipientEmail] = useState('');
@@ -69,14 +69,13 @@ export default function MyTicketsPage() {
   const [selectedOrderForInvoice, setSelectedOrderForInvoice] = useState<Order | null>(null);
   const [isInvoiceOpen, setIsInvoiceOpen] = useState(false);
 
-  const fetchUserTicketsAndOrders = async () => {
+  const fetchUserTicketsAndOrders = useCallback(async () => {
     if (!user) return;
     try {
-      setLoading(true);
       const [ticketsRes, ordersRes, eventsRes] = await Promise.all([
-        ticketApi.get('/api/v1/tickets').catch(() => ({ data: [] })),
-        ticketApi.get('/api/v1/tickets/orders').catch(() => ({ data: [] })),
-        eventApi.get('/api/v1/events').catch(() => ({ data: [] })),
+        ticketApi.get<Ticket[]>('/api/v1/tickets').catch(() => ({ success: false, data: [] as Ticket[] })),
+        ticketApi.get<Order[]>('/api/v1/tickets/orders').catch(() => ({ success: false, data: [] as Order[] })),
+        eventApi.get<EventType[]>('/api/v1/events').catch(() => ({ success: false, data: [] as EventType[] })),
       ]);
 
       const rawTickets = Array.isArray(ticketsRes.data) ? ticketsRes.data : [];
@@ -88,7 +87,7 @@ export default function MyTicketsPage() {
       rawEvents.forEach((ev) => eventMap.set(ev.id, ev));
 
       // Enrich tickets with event data and ticket type details
-      const enriched: EnrichedTicket[] = rawTickets.map((t: any) => {
+      const enriched: EnrichedTicket[] = (rawTickets as Ticket[]).map((t) => {
         const ev = eventMap.get(t.event_id);
         const tt = ev?.ticket_types?.find((type) => type.id === t.ticket_type_id);
         return {
@@ -99,28 +98,28 @@ export default function MyTicketsPage() {
       });
 
       setTickets(enriched);
-      setOrders(rawOrders);
+      setOrders(rawOrders as Order[]);
     } catch (error) {
       console.error('Failed to fetch user tickets:', error);
       toast.error('Gagal memuat daftar tiket Anda.');
     } finally {
-      setLoading(false);
+      setDataLoading(false);
     }
-  };
+  }, [user]);
 
   useEffect(() => {
     if (!authLoading && user) {
       fetchUserTicketsAndOrders();
-    } else if (!authLoading && !user) {
-      setLoading(false);
     }
-  }, [user, authLoading]);
+  }, [user, authLoading, fetchUserTicketsAndOrders]);
+
+  const loading = authLoading || (user ? dataLoading : false);
 
   const handlePayOrder = async (orderId: string) => {
     try {
       setPayingOrderId(orderId);
-      const res = await ticketApi.post(`/api/v1/tickets/orders/${orderId}/pay`);
-      const token = res.data?.token || res.data;
+      const res = await ticketApi.post<{ token?: string } | string>(`/api/v1/tickets/orders/${orderId}/pay`);
+      const token = typeof res.data === 'string' ? res.data : res.data?.token;
 
       if (!token) {
         throw new Error('Token pembayaran tidak ditemukan.');
@@ -146,9 +145,10 @@ export default function MyTicketsPage() {
       } else {
         toast.error('Midtrans Snap gateway belum siap.');
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Payment error:', error);
-      toast.error(error.message || 'Gagal memulai transaksi pembayaran.');
+      const errMsg = error instanceof Error ? error.message : 'Gagal memulai transaksi pembayaran.';
+      toast.error(errMsg);
     } finally {
       setPayingOrderId(null);
     }
@@ -175,9 +175,10 @@ export default function MyTicketsPage() {
       setRecipientEmail('');
       setRecipientName('');
       fetchUserTicketsAndOrders();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Transfer error:', error);
-      toast.error(error.response?.data?.message || error.message || 'Gagal mentransfer tiket.');
+      const errMsg = error instanceof Error ? error.message : 'Gagal mentransfer tiket.';
+      toast.error(errMsg);
     } finally {
       setTransferLoading(false);
     }
@@ -387,6 +388,7 @@ export default function MyTicketsPage() {
               <input
                 type="text"
                 placeholder="Cari event, kode tiket..."
+                aria-label="Cari event, kode tiket"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-9 pr-4 py-2 bg-gray-900 border border-gray-800 rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none focus:border-violet-500"

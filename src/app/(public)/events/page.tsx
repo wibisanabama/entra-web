@@ -9,9 +9,7 @@ import { Event, Category, Venue } from '@/types';
 import {
   Search,
   SlidersHorizontal,
-  Calendar as CalendarIcon,
   MapPin,
-  Tag,
   ArrowUpDown,
   X,
   RotateCcw,
@@ -46,18 +44,14 @@ export default function EventsPage() {
       setLoading(true);
       try {
         const [catRes, venueRes, res] = await Promise.all([
-          eventApi.get('/api/v1/categories').catch(() => ({ data: [] })),
-          eventApi.get('/api/v1/venues').catch(() => ({ data: [] })),
-          eventApi.get('/api/v1/events?page=1&per_page=50').catch(() => ({ data: [] })),
+          eventApi.get<Category[]>('/api/v1/categories').catch(() => ({ success: false, data: [] as Category[] })),
+          eventApi.get<Venue[]>('/api/v1/venues').catch(() => ({ success: false, data: [] as Venue[] })),
+          eventApi.get<Event[]>('/api/v1/events?page=1&per_page=50').catch(() => ({ success: false, data: [] as Event[] })),
         ]);
 
-        const rawCategories = Array.isArray(catRes.data) ? (catRes.data as Category[]) : [];
-        const rawVenues = Array.isArray(venueRes.data?.data)
-          ? (venueRes.data.data as Venue[])
-          : Array.isArray(venueRes.data)
-          ? (venueRes.data as Venue[])
-          : [];
-        const rawEvents = Array.isArray(res.data) ? (res.data as Event[]) : [];
+        const rawCategories = Array.isArray(catRes.data) ? catRes.data : [];
+        const rawVenues = Array.isArray(venueRes.data) ? venueRes.data : [];
+        const rawEvents = Array.isArray(res.data) ? res.data : [];
 
         setCategories(rawCategories);
         setVenues(rawVenues);
@@ -236,6 +230,7 @@ export default function EventsPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Cari judul event, artis, atau nama venue..."
+              aria-label="Cari judul event, artis, atau nama venue"
               className="w-full pl-12 pr-10 py-3 bg-gray-950 border border-gray-800 rounded-2xl text-sm text-white placeholder-gray-500 focus:outline-none focus:border-violet-500 font-medium"
             />
             {searchQuery && (

@@ -33,7 +33,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         };
       }
     }
-  } catch (e) {
+  } catch {
     // Fallback on network or API failure
   }
 

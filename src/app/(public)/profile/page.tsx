@@ -16,7 +16,6 @@ import {
   Key,
   Camera,
   CheckCircle2,
-  AlertCircle,
   Copy,
   Check,
   Sparkles,
@@ -28,7 +27,6 @@ import {
   ArrowRight,
   Mail,
   Phone,
-  Calendar,
   Lock
 } from 'lucide-react';
 
@@ -54,16 +52,17 @@ export default function ProfilePage() {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const [prevUserId, setPrevUserId] = useState<string | null>(null);
+  if (user && user.id !== prevUserId) {
+    setPrevUserId(user.id);
+    setFullName(user.full_name || '');
+    setPhone(user.phone || '');
+    setAvatarUrl(user.avatar_url || '');
+  }
+
   useEffect(() => {
     if (!isLoading && !user) {
       router.push('/login');
-      return;
-    }
-
-    if (user) {
-      setFullName(user.full_name || '');
-      setPhone(user.phone || '');
-      setAvatarUrl(user.avatar_url || '');
     }
   }, [user, isLoading, router]);
 
@@ -117,9 +116,10 @@ export default function ProfilePage() {
         setAvatarUrl(data.url);
         toast.success('Foto profil berhasil diunggah! Jangan lupa simpan perubahan.');
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Avatar upload error:', error);
-      toast.error(error.message || 'Terjadi kesalahan saat mengunggah foto profil.');
+      const errMsg = error instanceof Error ? error.message : 'Terjadi kesalahan saat mengunggah foto profil.';
+      toast.error(errMsg);
     } finally {
       setIsUploadingAvatar(false);
     }
@@ -142,9 +142,10 @@ export default function ProfilePage() {
 
       await loadProfile();
       toast.success('Profil akun berhasil diperbarui!');
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Update profile error:', error);
-      toast.error(error.message || 'Gagal menyimpan pembaruan profil.');
+      const errMsg = error instanceof Error ? error.message : 'Gagal menyimpan pembaruan profil.';
+      toast.error(errMsg);
     } finally {
       setIsSavingProfile(false);
     }
@@ -161,9 +162,10 @@ export default function ProfilePage() {
 
       setResetRequested(true);
       toast.success('Tautan reset kata sandi telah dikirimkan ke email Anda.');
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Password reset request error:', error);
-      toast.error(error.message || 'Gagal mengirimkan tautan reset kata sandi.');
+      const errMsg = error instanceof Error ? error.message : 'Gagal mengirimkan tautan reset kata sandi.';
+      toast.error(errMsg);
     } finally {
       setIsRequestingReset(false);
     }
@@ -176,7 +178,7 @@ export default function ProfilePage() {
       await loadProfile();
       toast.success('Selamat! Akun Anda berhasil ditingkatkan menjadi Organizer.');
       router.push('/dashboard');
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Failed to upgrade role:', error);
       toast.error('Gagal meningkatkan akun. Silakan coba lagi.');
     } finally {

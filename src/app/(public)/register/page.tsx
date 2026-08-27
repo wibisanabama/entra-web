@@ -7,7 +7,6 @@ import { useAuth } from '@/providers/auth-provider';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
-import { Badge } from '@/components/ui/Badge';
 
 function RegisterForm() {
   const router = useRouter();
@@ -50,8 +49,9 @@ function RegisterForm() {
         phone: formData.phone,
       });
       router.push('/');
-    } catch (err: any) {
-      setError(err.message || 'Terjadi kesalahan saat mendaftar');
+    } catch (err: unknown) {
+      const errMsg = err instanceof Error ? err.message : 'Terjadi kesalahan saat mendaftar';
+      setError(errMsg);
     } finally {
       setLoading(false);
     }

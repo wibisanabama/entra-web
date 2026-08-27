@@ -35,11 +35,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     document.cookie = `entra_refresh=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT${secureFlag}`;
   };
 
-  const loadProfile = async () => {
+  const loadProfile = React.useCallback(async () => {
     setIsLoading(true);
     try {
       // Check if token exists
-      const tokenMatch = document.cookie.match(/(?:(?:^|.*;\s*)entra_token\s*\=\s*([^;]*).*$)|^.*$/);
+      const tokenMatch = document.cookie.match(/(?:(?:^|.*;\s*)entra_token\s*=\s*([^;]*).*$)|^.*$/);
       const token = tokenMatch ? tokenMatch[1] : null;
 
       if (token) {
@@ -47,42 +47,65 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (response.data) {
           setUser(response.data);
         }
+      } else {
+        setUser(null);
       }
     } catch (error) {
       console.error("Failed to load profile:", error);
       clearCookies();
+      setUser(null);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
-    loadProfile();
+    let isMounted = true;
+    const initAuth = async () => {
+      try {
+        const tokenMatch = document.cookie.match(/(?:(?:^|.*;\s*)entra_token\s*=\s*([^;]*).*$)|^.*$/);
+        const token = tokenMatch ? tokenMatch[1] : null;
+
+        if (token) {
+          const response = await authApi.get<User>("/api/v1/auth/profile");
+          if (isMounted && response.data) {
+            setUser(response.data);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to load profile on mount:", error);
+        if (isMounted) {
+          clearCookies();
+          setUser(null);
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    initAuth();
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const login = async (data: LoginRequest) => {
-    try {
-      const response = await authApi.post<AuthResponse>("/api/v1/auth/login", data);
-      if (response.data) {
-        const { user: userData, tokens } = response.data;
-        setCookies(tokens.access_token, tokens.refresh_token, tokens.expires_at);
-        setUser(userData);
-      }
-    } catch (error) {
-      throw error;
+    const response = await authApi.post<AuthResponse>("/api/v1/auth/login", data);
+    if (response.data) {
+      const { user: userData, tokens } = response.data;
+      setCookies(tokens.access_token, tokens.refresh_token, tokens.expires_at);
+      setUser(userData);
     }
   };
 
   const register = async (data: RegisterRequest) => {
-    try {
-      const response = await authApi.post<AuthResponse>("/api/v1/auth/register", data);
-      if (response.data) {
-        const { user: userData, tokens } = response.data;
-        setCookies(tokens.access_token, tokens.refresh_token, tokens.expires_at);
-        setUser(userData);
-      }
-    } catch (error) {
-      throw error;
+    const response = await authApi.post<AuthResponse>("/api/v1/auth/register", data);
+    if (response.data) {
+      const { user: userData, tokens } = response.data;
+      setCookies(tokens.access_token, tokens.refresh_token, tokens.expires_at);
+      setUser(userData);
     }
   };
 
@@ -93,7 +116,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const refreshToken = async () => {
     try {
-      const refreshMatch = document.cookie.match(/(?:(?:^|.*;\s*)entra_refresh\s*\=\s*([^;]*).*$)|^.*$/);
+      const refreshMatch = document.cookie.match(/(?:(?:^|.*;\s*)entra_refresh\s*=\s*([^;]*).*$)|^.*$/);
       const token = refreshMatch ? refreshMatch[1] : null;
       
       if (!token) throw new Error("No refresh token available");

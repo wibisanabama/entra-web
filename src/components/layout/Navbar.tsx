@@ -78,15 +78,14 @@ export function Navbar() {
                         <Link href="/cashless" onClick={() => setIsAvatarDropdownOpen(false)} className="block px-4 py-2.5 text-sm text-gray-200 hover:bg-gray-800 hover:text-violet-400 transition-colors">
                           Gelang Cashless
                         </Link>
-                        {user.role === 'user' ? (
-                          <Link href="/profile" onClick={() => setIsAvatarDropdownOpen(false)} className="block px-4 py-2.5 text-sm text-gray-200 hover:bg-gray-800 transition-colors">
-                            Profil
-                          </Link>
-                        ) : (
-                          <Link href="/dashboard" onClick={() => setIsAvatarDropdownOpen(false)} className="block px-4 py-2.5 text-sm text-gray-200 hover:bg-gray-800 transition-colors">
+                        {user.role !== 'user' && (
+                          <Link href="/dashboard" onClick={() => setIsAvatarDropdownOpen(false)} className="block px-4 py-2.5 text-sm text-gray-200 hover:bg-gray-800 hover:text-violet-400 transition-colors">
                             Dashboard Organizer
                           </Link>
                         )}
+                        <Link href="/profile" onClick={() => setIsAvatarDropdownOpen(false)} className="block px-4 py-2.5 text-sm text-gray-200 hover:bg-gray-800 hover:text-violet-400 transition-colors">
+                          Profil
+                        </Link>
                         <div className="border-t border-gray-800 my-1"></div>
                         <button onClick={() => { setIsAvatarDropdownOpen(false); logout(); }} className="block w-full text-left px-4 py-2.5 text-sm text-red-400 hover:bg-gray-800 transition-colors">
                           Keluar
@@ -133,11 +132,10 @@ export function Navbar() {
               <>
                 <Link href="/my-tickets" className="block text-violet-400 hover:text-violet-300 px-3 py-2 rounded-md text-base font-medium">Tiket Saya</Link>
                 <Link href="/cashless" className="block text-violet-400 hover:text-violet-300 px-3 py-2 rounded-md text-base font-medium">Gelang Cashless</Link>
-                {user.role === 'user' ? (
-                  <Link href="/profile" className="block text-gray-300 hover:text-white px-3 py-2 rounded-md text-base font-medium">Profil</Link>
-                ) : (
+                {user.role !== 'user' && (
                   <Link href="/dashboard" className="block text-gray-300 hover:text-white px-3 py-2 rounded-md text-base font-medium">Dashboard Organizer</Link>
                 )}
+                <Link href="/profile" className="block text-gray-300 hover:text-white px-3 py-2 rounded-md text-base font-medium">Profil</Link>
                 <button onClick={logout} className="block w-full text-left text-red-400 hover:text-red-300 px-3 py-2 rounded-md text-base font-medium">Keluar</button>
               </>
             )}

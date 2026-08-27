@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState, useSyncExternalStore } from "react";
 
 type Theme = "dark" | "light";
 
@@ -12,22 +12,26 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
+const emptySubscribe = () => () => {};
+
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setThemeState] = useState<Theme>("dark");
-  const [mounted, setMounted] = useState(false);
+  const isMounted = useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false
+  );
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (mounted) {
+    if (isMounted) {
       const root = window.document.documentElement;
       root.classList.remove("light", "dark");
       root.classList.add(theme);
-      localStorage.setItem("theme", theme);
+      try {
+        localStorage.setItem("theme", theme);
+      } catch {}
     }
-  }, [theme, mounted]);
+  }, [theme, isMounted]);
 
   const setTheme = (newTheme: Theme) => {
     setThemeState(newTheme);
@@ -37,7 +41,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     setThemeState((prev) => (prev === "dark" ? "light" : "dark"));
   };
 
-  if (!mounted) {
+  if (!isMounted) {
     // Return children with provider to avoid SSR context error
     return (
       <ThemeContext.Provider value={{ theme: "dark", setTheme, toggleTheme }}>

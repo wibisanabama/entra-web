@@ -1,9 +1,8 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-
+import Link from 'next/link';
 import { useAuth } from '@/providers/auth-provider';
-
 
 export function Topbar() {
   const { user, logout } = useAuth();
@@ -45,9 +44,13 @@ export function Topbar() {
           {isDropdownOpen && (
             <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-gray-800 ring-1 ring-black ring-opacity-5 overflow-hidden">
               <div className="flex flex-col">
-                <a href="/profile" className="block px-4 py-3 text-sm text-gray-200 hover:bg-gray-700 transition-colors">
+                <Link
+                  href="/profile"
+                  onClick={() => setIsDropdownOpen(false)}
+                  className="block px-4 py-3 text-sm text-gray-200 hover:bg-gray-700 transition-colors"
+                >
                   Profil Saya
-                </a>
+                </Link>
                 <button
                   onClick={logout}
                   className="block w-full text-left px-4 py-3 text-sm text-red-400 hover:bg-gray-700 transition-colors"

@@ -10,15 +10,13 @@ import { formatDate, getPgText } from '@/lib/utils';
 import {
   Calendar,
   MapPin,
-  Clock,
   Printer,
   Copy,
   Check,
   ShieldCheck,
   Sparkles,
   Ticket as TicketIcon,
-  SendHorizontal,
-  Download
+  SendHorizontal
 } from 'lucide-react';
 import { toast } from 'sonner';
 

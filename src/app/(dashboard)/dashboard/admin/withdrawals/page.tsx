@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
@@ -21,8 +21,7 @@ import {
   AlertCircle,
   Banknote,
   Send,
-  User,
-  FileText
+  User
 } from 'lucide-react';
 
 export default function AdminWithdrawalsPage() {
@@ -37,24 +36,23 @@ export default function AdminWithdrawalsPage() {
   const [rejectionReason, setRejectionReason] = useState<string>('');
   const [actionLoading, setActionLoading] = useState(false);
 
-  const fetchAdminWithdrawals = async () => {
+  const fetchAdminWithdrawals = useCallback(async () => {
     try {
-      setLoading(true);
-      const res = await ticketApi.get('/api/v1/tickets/admin/withdrawals?per_page=100');
+      const res = await ticketApi.get<Withdrawal[]>('/api/v1/tickets/admin/withdrawals?per_page=100');
       if (res && res.data) {
         setWithdrawals(Array.isArray(res.data) ? res.data : []);
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Failed to fetch admin withdrawals:', error);
       toast.error('Gagal memuat daftar pengajuan pencairan dana admin.');
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchAdminWithdrawals();
-  }, []);
+  }, [fetchAdminWithdrawals]);
 
   const handleUpdateStatus = async (
     withdrawalId: string,
@@ -81,9 +79,10 @@ export default function AdminWithdrawalsPage() {
       setSelectedWithdrawal(null);
       setRejectionReason('');
       fetchAdminWithdrawals();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Status update error:', error);
-      toast.error(error.message || 'Gagal memperbarui status penarikan.');
+      const errMsg = error instanceof Error ? error.message : 'Gagal memperbarui status penarikan.';
+      toast.error(errMsg);
     } finally {
       setActionLoading(false);
     }
@@ -102,9 +101,10 @@ export default function AdminWithdrawalsPage() {
     return matchesStatus && matchesSearch;
   });
 
-  const parseAmount = (val: any): number => {
+  const parseAmount = (val: string | number | undefined | null): number => {
     if (typeof val === 'number') return val;
-    return parseFloat(val) || 0;
+    if (typeof val === 'string') return parseFloat(val) || 0;
+    return 0;
   };
 
   // Metric aggregates
@@ -275,6 +275,7 @@ export default function AdminWithdrawalsPage() {
               <input
                 type="text"
                 placeholder="Cari bank, rekening, nama, ID..."
+                aria-label="Cari bank, rekening, nama organizer, atau ID penarikan"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-9 pr-4 py-2 bg-gray-950 border border-gray-800 rounded-lg text-sm text-white placeholder-gray-500 focus:outline-none focus:border-violet-500"

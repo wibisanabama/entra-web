@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
@@ -20,42 +20,47 @@ import {
   Ticket as TicketIcon
 } from 'lucide-react';
 
+import { Event as EventType, Ticket, User } from '@/types';
+
 export default function AttendeeListPage() {
   const params = useParams();
   const router = useRouter();
-  const [event, setEvent] = useState<any>(null);
-  const [attendees, setAttendees] = useState<any[]>([]);
-  const [users, setUsers] = useState<Record<string, any>>({});
+  const [event, setEvent] = useState<EventType | null>(null);
+  const [attendees, setAttendees] = useState<Ticket[]>([]);
+  const [users, setUsers] = useState<Record<string, User>>({});
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<'ALL' | 'HADIR' | 'BELUM'>('ALL');
 
-  const fetchAttendees = async () => {
+  const fetchAttendees = useCallback(async () => {
+    if (!params.id) return;
     try {
-      setLoading(true);
+      const eventId = String(params.id);
       // Fetch event details
-      const eventRes = await eventApi.get<any>(`/api/v1/events/${params.id}`);
-      setEvent(eventRes.data);
+      const eventRes = await eventApi.get<EventType>(`/api/v1/events/${eventId}`);
+      if (eventRes.data) {
+        setEvent(eventRes.data);
+      }
 
       // Fetch tickets (attendees) for this event
-      const ticketRes = await ticketApi.get<any>(`/api/v1/tickets/organizer/events/${params.id}/attendees`);
-      const tickets = ticketRes.data || [];
+      const ticketRes = await ticketApi.get<Ticket[]>(`/api/v1/tickets/organizer/events/${eventId}/attendees`);
+      const tickets = Array.isArray(ticketRes.data) ? ticketRes.data : [];
       setAttendees(tickets);
 
       // Extract unique user IDs
-      const userIds = [...new Set(tickets.map((t: any) => t.user_id))];
+      const userIds = [...new Set(tickets.map((t) => t.user_id))];
       
       if (userIds.length > 0) {
         try {
           // Fetch user details in batch
-          const usersRes = await authApi.post<any>('/api/v1/auth/users/batch', {
+          const usersRes = await authApi.post<User[]>('/api/v1/auth/users/batch', {
             ids: userIds
           });
           
           // Map users for easy lookup O(1)
-          const userMap: Record<string, any> = {};
-          if (usersRes.data) {
-            usersRes.data.forEach((u: any) => {
+          const userMap: Record<string, User> = {};
+          if (Array.isArray(usersRes.data)) {
+            usersRes.data.forEach((u) => {
               userMap[u.id] = u;
             });
           }
@@ -70,13 +75,13 @@ export default function AttendeeListPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [params.id]);
 
   useEffect(() => {
     if (params.id) {
       fetchAttendees();
     }
-  }, [params.id]);
+  }, [params.id, fetchAttendees]);
 
   const handleExportCsv = () => {
     if (attendees.length === 0) {
@@ -257,6 +262,7 @@ export default function AttendeeListPage() {
             <input
               type="text"
               placeholder="Cari nama, email, kode tiket..."
+              aria-label="Cari nama, email, atau kode tiket peserta"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-9 pr-4 py-2 bg-gray-950 border border-gray-800 rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none focus:border-violet-500"

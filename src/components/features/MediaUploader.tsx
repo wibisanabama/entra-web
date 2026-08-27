@@ -2,7 +2,6 @@
 
 import React, { useState, useRef } from 'react';
 import { Camera } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
 import { getCookie } from '@/lib/api';
 
 export interface MediaUploaderProps {
@@ -79,8 +78,9 @@ export function MediaUploader({ onUploadComplete }: MediaUploaderProps) {
       if (data.url) {
         onUploadComplete(data.url);
       }
-    } catch (err: any) {
-      setError(err.message || 'Terjadi kesalahan saat upload');
+    } catch (err: unknown) {
+      const errMsg = err instanceof Error ? err.message : 'Terjadi kesalahan saat upload';
+      setError(errMsg);
       setProgress(0);
     } finally {
       setTimeout(() => {

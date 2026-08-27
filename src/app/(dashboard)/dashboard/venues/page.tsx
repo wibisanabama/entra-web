@@ -1,7 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useAuth } from '@/providers/auth-provider';
+import { useEffect, useState, useCallback } from 'react';
 import { eventApi } from '@/lib/api';
 import { Venue } from '@/types';
 import { Card } from '@/components/ui/Card';
@@ -17,11 +16,8 @@ import {
   Edit2,
   Trash2,
   Users,
-  Navigation,
   Building2,
   Globe,
-  ExternalLink,
-  Sparkles,
   AlertCircle,
   MapPinned
 } from 'lucide-react';
@@ -53,7 +49,6 @@ const initialForm: VenueFormData = {
 };
 
 export default function VenuesManagementPage() {
-  const { user } = useAuth();
   const [venues, setVenues] = useState<Venue[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -70,10 +65,9 @@ export default function VenuesManagementPage() {
   const [venueToDelete, setVenueToDelete] = useState<Venue | null>(null);
   const [deleting, setDeleting] = useState(false);
 
-  const fetchVenues = async () => {
+  const fetchVenues = useCallback(async () => {
     try {
-      setLoading(true);
-      const res = await eventApi.get('/api/v1/venues');
+      const res = await eventApi.get<Venue[]>('/api/v1/venues');
       const list: Venue[] = Array.isArray(res.data) ? res.data : [];
       setVenues(list);
     } catch (error) {
@@ -82,11 +76,11 @@ export default function VenuesManagementPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchVenues();
-  }, []);
+  }, [fetchVenues]);
 
   const handleOpenCreate = () => {
     setFormData(initialForm);
@@ -130,9 +124,10 @@ export default function VenuesManagementPage() {
 
       setIsModalOpen(false);
       fetchVenues();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Venue submit error:', error);
-      toast.error(error.response?.data?.message || error.message || 'Gagal menyimpan venue.');
+      const errMsg = error instanceof Error ? error.message : 'Gagal menyimpan venue.';
+      toast.error(errMsg);
     } finally {
       setSubmitting(false);
     }
@@ -147,9 +142,10 @@ export default function VenuesManagementPage() {
       setIsDeleteOpen(false);
       setVenueToDelete(null);
       fetchVenues();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Delete venue error:', error);
-      toast.error(error.response?.data?.message || error.message || 'Gagal menghapus venue.');
+      const errMsg = error instanceof Error ? error.message : 'Gagal menghapus venue.';
+      toast.error(errMsg);
     } finally {
       setDeleting(false);
     }
@@ -311,6 +307,7 @@ export default function VenuesManagementPage() {
           <input
             type="text"
             placeholder="Cari nama venue, alamat..."
+            aria-label="Cari nama venue atau alamat"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-9 pr-4 py-2 bg-gray-900 border border-gray-800 rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none focus:border-violet-500"

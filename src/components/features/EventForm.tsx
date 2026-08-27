@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Event } from '@/types';
+import { Event, Category, Venue } from '@/types';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { eventApi } from '@/lib/api';
@@ -30,39 +30,38 @@ export function EventForm({ initialData, onSubmit, onCancel, isLoading = false }
     status: initialData?.status || 'draft',
   });
 
-  const [categories, setCategories] = useState<any[]>([]);
-  const [venues, setVenues] = useState<any[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [venues, setVenues] = useState<Venue[]>([]);
   const [loadingData, setLoadingData] = useState(true);
 
-  useEffect(() => {
-    // If initialData changes, update form data
-    if (initialData) {
-      setFormData({
-        title: initialData.title || '',
-        description: getPgText(initialData.description) || '',
-        start_date: initialData.start_date || '',
-        end_date: initialData.end_date || '',
-        venue_id: initialData.venue_id || '',
-        category_id: initialData.category_id || '',
-        banner_url: getPgText(initialData.banner_url) || '',
-        is_online: initialData.is_online || false,
-        online_url: getPgText(initialData.online_url) || '',
-        max_attendees: initialData.max_attendees || 0,
-        status: initialData.status || 'draft',
-      });
-    }
-  }, [initialData]);
+  const [prevInitialData, setPrevInitialData] = useState<Event | undefined>(initialData);
+  if (initialData && initialData !== prevInitialData) {
+    setPrevInitialData(initialData);
+    setFormData({
+      title: initialData.title || '',
+      description: getPgText(initialData.description) || '',
+      start_date: initialData.start_date || '',
+      end_date: initialData.end_date || '',
+      venue_id: initialData.venue_id || '',
+      category_id: initialData.category_id || '',
+      banner_url: getPgText(initialData.banner_url) || '',
+      is_online: initialData.is_online || false,
+      online_url: getPgText(initialData.online_url) || '',
+      max_attendees: initialData.max_attendees || 0,
+      status: initialData.status || 'draft',
+    });
+  }
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const [catRes, venRes] = await Promise.all([
-          eventApi.get('/api/v1/categories'),
-          eventApi.get('/api/v1/venues')
+          eventApi.get<Category[]>('/api/v1/categories'),
+          eventApi.get<Venue[]>('/api/v1/venues')
         ]);
         
-        if (catRes.data) setCategories(catRes.data as any);
-        if (venRes.data) setVenues(venRes.data as any);
+        if (catRes.data) setCategories(Array.isArray(catRes.data) ? catRes.data : []);
+        if (venRes.data) setVenues(Array.isArray(venRes.data) ? venRes.data : []);
       } catch (error) {
         console.error("Failed to fetch form reference data", error);
         toast.error("Gagal memuat kategori dan venue");
@@ -167,7 +166,7 @@ export function EventForm({ initialData, onSubmit, onCancel, isLoading = false }
               className="flex w-full rounded-lg bg-gray-800 text-white px-3 py-2 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-violet-500 disabled:opacity-50"
             >
               <option value="">Pilih Kategori</option>
-              {categories.map((c: any) => (
+              {categories.map((c) => (
                 <option key={c.id} value={c.id}>{c.name}</option>
               ))}
             </select>
@@ -220,7 +219,7 @@ export function EventForm({ initialData, onSubmit, onCancel, isLoading = false }
               className="flex w-full rounded-lg bg-gray-800 text-white px-3 py-2 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-violet-500 disabled:opacity-50"
             >
               <option value="">Pilih Venue</option>
-              {venues.map((v: any) => (
+              {venues.map((v) => (
                 <option key={v.id} value={v.id}>{v.name}</option>
               ))}
             </select>

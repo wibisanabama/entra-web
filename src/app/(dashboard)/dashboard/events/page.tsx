@@ -9,20 +9,21 @@ import { eventApi } from '@/lib/api';
 import { toast } from 'sonner';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { Modal } from '@/components/ui/Modal';
+import { Event as EventType } from '@/types';
 
 export default function DashboardEventsPage() {
-  const [events, setEvents] = useState<any[]>([]);
+  const [events, setEvents] = useState<EventType[]>([]);
   const [loading, setLoading] = useState(true);
-  const [eventToDelete, setEventToDelete] = useState<any>(null);
+  const [eventToDelete, setEventToDelete] = useState<EventType | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
         setLoading(true);
-        const res = await eventApi.get('/api/v1/organizer/events');
+        const res = await eventApi.get<EventType[]>('/api/v1/organizer/events');
         if (res.data) {
-          setEvents(res.data as any);
+          setEvents(Array.isArray(res.data) ? res.data : []);
         }
       } catch (error) {
         console.error("Failed to fetch events", error);
@@ -134,7 +135,7 @@ export default function DashboardEventsPage() {
             <span className="text-sm text-gray-400">Menampilkan 1-{events.length} dari {events.length} event</span>
             <div className="flex gap-1">
               <Button variant="outline" size="sm" className="text-gray-400 px-2 py-1" disabled>&lt;</Button>
-              <Button variant="outline" size="sm" className="] bg-gray-800 text-[#7C3AED] px-3 py-1">1</Button>
+              <Button variant="outline" size="sm" className="bg-gray-800 text-[#7C3AED] px-3 py-1">1</Button>
               <Button variant="outline" size="sm" className="text-gray-400 px-2 py-1" disabled>&gt;</Button>
             </div>
           </div>
@@ -148,7 +149,7 @@ export default function DashboardEventsPage() {
       >
         <div className="space-y-4">
           <p className="text-gray-300">
-            Apakah Anda yakin ingin menghapus event <span className="font-semibold text-white">"{eventToDelete?.title}"</span>? Tindakan ini tidak dapat dibatalkan.
+            Apakah Anda yakin ingin menghapus event <span className="font-semibold text-white">&quot;{eventToDelete?.title}&quot;</span>? Tindakan ini tidak dapat dibatalkan.
           </p>
           <div className="flex justify-end gap-3 pt-4 border-t border-gray-800">
             <Button

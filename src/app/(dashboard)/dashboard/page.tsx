@@ -8,57 +8,81 @@ import { ticketApi, eventApi } from '@/lib/api';
 import { formatCurrency } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { toast } from 'sonner';
-import { Wallet, ArrowUpRight } from 'lucide-react';
+import { Wallet } from 'lucide-react';
+import { Event as EventType } from '@/types';
+
+interface StatsData {
+  total_orders: number;
+  total_revenue: number;
+  tickets_sold: number;
+}
+
+interface BalanceData {
+  available_balance: number;
+  pending_amount: number;
+  paid_amount: number;
+}
+
+interface SalesTrendItem {
+  sale_date: string;
+  tickets_sold: string | number;
+}
+
+interface RecentOrder {
+  id: string;
+  total_amount: number | string;
+  status: string;
+  user?: { name?: string; email?: string };
+  event?: { title?: string };
+}
 
 export default function DashboardOverviewPage() {
   const [loading, setLoading] = useState(true);
-  const [statsData, setStatsData] = useState<any>({
+  const [statsData, setStatsData] = useState<StatsData>({
     total_orders: 0,
     total_revenue: 0,
     tickets_sold: 0,
   });
-  const [balanceData, setBalanceData] = useState<any>({
+  const [balanceData, setBalanceData] = useState<BalanceData>({
     available_balance: 0,
     pending_amount: 0,
     paid_amount: 0,
   });
   const [activeEvents, setActiveEvents] = useState(0);
-  const [totalEvents, setTotalEvents] = useState(0);
-  const [recentOrders, setRecentOrders] = useState<any[]>([]);
-  const [salesTrend, setSalesTrend] = useState<any[]>([]);
+  const [recentOrders, setRecentOrders] = useState<RecentOrder[]>([]);
+  const [salesTrend, setSalesTrend] = useState<SalesTrendItem[]>([]);
 
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
         setLoading(true);
         const [statsRes, balanceRes, eventsRes, trendRes, ordersRes] = await Promise.all([
-          ticketApi.get('/api/v1/tickets/organizer/stats').catch(() => ({ data: null })),
-          ticketApi.get('/api/v1/tickets/organizer/balance').catch(() => ({ data: null })),
-          eventApi.get('/api/v1/organizer/events').catch(() => ({ data: [] })),
-          ticketApi.get('/api/v1/tickets/organizer/trend').catch(() => ({ data: [] })),
-          ticketApi.get('/api/v1/tickets/organizer/orders').catch(() => ({ data: [] }))
+          ticketApi.get<StatsData>('/api/v1/tickets/organizer/stats').catch(() => ({ success: false, data: null })),
+          ticketApi.get<BalanceData>('/api/v1/tickets/organizer/balance').catch(() => ({ success: false, data: null })),
+          eventApi.get<EventType[]>('/api/v1/organizer/events').catch(() => ({ success: false, data: [] })),
+          ticketApi.get<SalesTrendItem[]>('/api/v1/tickets/organizer/trend').catch(() => ({ success: false, data: [] })),
+          ticketApi.get<RecentOrder[]>('/api/v1/tickets/organizer/orders').catch(() => ({ success: false, data: [] }))
         ]);
 
         if (statsRes.data) {
-          setStatsData(statsRes.data as any);
+          setStatsData(statsRes.data);
         }
 
         if (balanceRes && balanceRes.data) {
-          setBalanceData(balanceRes.data as any);
+          setBalanceData(balanceRes.data);
         }
         
         if (eventsRes.data) {
-          const events = (eventsRes.data as any) || [];
-          setTotalEvents(events.length);
-          setActiveEvents(events.filter((e: any) => e.status?.toLowerCase() === 'published').length);
+          const events = eventsRes.data || [];
+          setActiveEvents(events.filter((e) => e.status?.toLowerCase() === 'published').length);
         }
 
         if (trendRes.data) {
-          setSalesTrend((trendRes.data as any) || []);
+          setSalesTrend(trendRes.data || []);
         }
 
         if (ordersRes.data) {
-          setRecentOrders((ordersRes.data as any) || []);
+          setRecentOrders(ordersRes.data || []);
         }
 
       } catch (error) {
@@ -73,23 +97,21 @@ export default function DashboardOverviewPage() {
   }, []);
 
   const stats = [
-    { title: 'Saldo Tersedia', value: formatCurrency(parseFloat(balanceData.available_balance || 0)), change: 'Siap Ditarik', icon: 'M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z', highlight: true },
-    { title: 'Total Pendapatan', value: formatCurrency(parseFloat(statsData.total_revenue || 0)), change: 'Semua Waktu', icon: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z' },
+    { title: 'Saldo Tersedia', value: formatCurrency(Number(balanceData.available_balance || 0)), change: 'Siap Ditarik', icon: 'M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z', highlight: true },
+    { title: 'Total Pendapatan', value: formatCurrency(Number(statsData.total_revenue || 0)), change: 'Semua Waktu', icon: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z' },
     { title: 'Tiket Terjual', value: statsData.tickets_sold.toString(), change: 'Total', icon: 'M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z' },
     { title: 'Event Aktif', value: activeEvents.toString(), change: 'Published', icon: 'M13 10V3L4 14h7v7l9-11h-7z' },
   ];
 
   // Process sales trend to fit 30 days
   const processTrendChart = () => {
-    // A simple representation mapping the trend to heights (percentage 0-100)
-    if (salesTrend.length === 0) return Array(12).fill(0); // empty state
+    if (salesTrend.length === 0) return Array(12).fill(0);
     
-    // For MVP, just map the actual dates or last 12 entries
     const recent = salesTrend.slice(-12);
-    const maxTickets = Math.max(...recent.map(t => parseInt(t.tickets_sold) || 0), 1);
+    const maxTickets = Math.max(...recent.map((t) => Number(t.tickets_sold) || 0), 1);
     
-    return recent.map(t => {
-      const sold = parseInt(t.tickets_sold) || 0;
+    return recent.map((t) => {
+      const sold = Number(t.tickets_sold) || 0;
       const height = Math.max(5, Math.floor((sold / maxTickets) * 100));
       return { height, label: new Date(t.sale_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }), tickets: sold };
     });
@@ -140,7 +162,7 @@ export default function DashboardOverviewPage() {
             <div className="flex h-64 items-end gap-2 mt-8">
               {loading ? (
                 <div className="w-full h-full flex items-center justify-center text-gray-500">Memuat grafik...</div>
-              ) : chartData.every(d => d === 0 || d.tickets === 0) ? (
+              ) : chartData.every((d) => d === 0 || d.tickets === 0) ? (
                  <div className="w-full h-full flex items-center justify-center text-gray-500">Belum ada data penjualan</div>
               ) : (
                 chartData.map((data, i) => (
@@ -171,23 +193,26 @@ export default function DashboardOverviewPage() {
               ) : recentOrders.length === 0 ? (
                 <div className="text-gray-500 text-sm text-center py-4">Belum ada pesanan</div>
               ) : (
-                recentOrders.slice(0, 5).map((order: any, i) => (
-                  <div key={order.id} className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-[#7C3AED] font-bold shrink-0">
-                      {(order.user?.name || "U")[0].toUpperCase()}
+                recentOrders.slice(0, 5).map((order) => {
+                  const isPaid = order.status?.toUpperCase() === 'PAID' || order.status?.toUpperCase() === 'SUCCESS' || order.status === 'SUKSES';
+                  return (
+                    <div key={order.id} className="flex items-center gap-4">
+                      <div className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-[#7C3AED] font-bold shrink-0">
+                        {(order.user?.name || "U")[0].toUpperCase()}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-white truncate">{order.user?.name || 'User'}</p>
+                        <p className="text-xs text-gray-400 truncate">{order.event?.title || 'Event Tiket'}</p>
+                      </div>
+                      <div className="text-right shrink-0">
+                        <p className="text-sm font-medium text-white">{formatCurrency(Number(order.total_amount))}</p>
+                        <p className={`text-xs ${isPaid ? 'text-green-400' : 'text-yellow-400'}`}>
+                          {isPaid ? 'LUNAS' : order.status}
+                        </p>
+                      </div>
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-white truncate">{order.user?.name || 'User'}</p>
-                      <p className="text-xs text-gray-400 truncate">{order.event?.title || 'Event Tiket'}</p>
-                    </div>
-                    <div className="text-right shrink-0">
-                      <p className="text-sm font-medium text-white">{formatCurrency(parseFloat(order.total_amount))}</p>
-                      <p className={`text-xs ${order.status === 'SUKSES' ? 'text-green-400' : 'text-yellow-400'}`}>
-                        {order.status}
-                      </p>
-                    </div>
-                  </div>
-                ))
+                  );
+                })
               )}
             </div>
           </Card>

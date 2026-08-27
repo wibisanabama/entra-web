@@ -1,8 +1,7 @@
 import React from 'react';
-import { Calendar, Clock, MapPin, Tag } from 'lucide-react';
+import { Calendar, Clock, MapPin } from 'lucide-react';
 import Link from 'next/link';
 import { Card } from '@/components/ui/Card';
-import { Badge } from '@/components/ui/Badge';
 import { Event } from '@/types';
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
@@ -23,7 +22,7 @@ export function EventCard({ event }: EventCardProps) {
         formattedTime = format(startDate, 'HH:mm', { locale: id }) + ' WIB';
       }
     }
-  } catch (err) {
+  } catch {
     // ignore
   }
 

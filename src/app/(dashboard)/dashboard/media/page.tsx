@@ -1,22 +1,22 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { MediaUploader } from '@/components/features/MediaUploader';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { storageApi } from '@/lib/api';
 import { toast } from 'sonner';
+import { MediaFile } from '@/types';
 
 export default function DashboardMediaPage() {
-  const [images, setImages] = useState<any[]>([]);
+  const [images, setImages] = useState<MediaFile[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchMedia = async () => {
+  const fetchMedia = useCallback(async () => {
     try {
-      setLoading(true);
-      const res = await storageApi.get('/api/v1/storage/media');
+      const res = await storageApi.get<MediaFile[]>('/api/v1/storage/media');
       if (res.data) {
-        setImages(res.data as any[]);
+        setImages(Array.isArray(res.data) ? res.data : []);
       }
     } catch (error) {
       console.error('Failed to fetch media', error);
@@ -24,14 +24,13 @@ export default function DashboardMediaPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchMedia();
-  }, []);
+  }, [fetchMedia]);
 
-  const handleUploadSuccess = (url: string) => {
-    // Refresh the list after upload to get accurate size and name from the server
+  const handleUploadSuccess = () => {
     fetchMedia();
   };
 

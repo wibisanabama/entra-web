@@ -18,12 +18,13 @@ export default function EditEventPage() {
     // Fetch existing event
     const fetchEvent = async () => {
       try {
-        const res = await eventApi.get(`/api/v1/events/${params.id}`);
+        const eventId = String(params.id);
+        const res = await eventApi.get<Event>(`/api/v1/events/${eventId}`);
         if (res.data) {
           // Format date for datetime-local input (YYYY-MM-DDThh:mm)
-          const data = res.data as any;
+          const data = res.data;
           
-          const formatDate = (dateString: string) => {
+          const formatDate = (dateString?: string) => {
             if (!dateString) return '';
             const d = new Date(dateString);
             return d.toISOString().slice(0, 16); // Extract YYYY-MM-DDThh:mm
@@ -46,15 +47,16 @@ export default function EditEventPage() {
     if (params.id) fetchEvent();
   }, [params.id, router]);
 
-  const handleSubmit = async (data: Record<string, unknown>) => {
+  const handleSubmit = async (data: Partial<Event>) => {
     try {
       setIsSubmitting(true);
+      const eventId = String(params.id);
       
       const payload = {
         title: data.title,
         description: data.description,
-        start_date: new Date(data.start_date as string).toISOString(),
-        end_date: new Date(data.end_date as string).toISOString(),
+        start_date: data.start_date ? new Date(data.start_date).toISOString() : undefined,
+        end_date: data.end_date ? new Date(data.end_date).toISOString() : undefined,
         venue_id: data.venue_id,
         category_id: data.category_id,
         banner_url: data.banner_url || '',
@@ -64,7 +66,7 @@ export default function EditEventPage() {
         status: data.status,
       };
 
-      await eventApi.put(`/api/v1/events/${params.id}`, payload);
+      await eventApi.put(`/api/v1/events/${eventId}`, payload);
       
       toast.success('Event berhasil diperbarui!');
       router.push('/dashboard/events');

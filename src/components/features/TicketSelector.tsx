@@ -5,7 +5,7 @@ import { TicketType } from '@/types';
 import { Button } from '@/components/ui/Button';
 import { formatCurrency, getPgText } from '@/lib/utils';
 import { ticketApi } from '@/lib/api';
-import { Tag, Sparkles, Check, X, Percent } from 'lucide-react';
+import { Tag, Check, X, Percent } from 'lucide-react';
 import { toast } from 'sonner';
 
 export interface AppliedPromo {
@@ -26,6 +26,16 @@ export interface TicketSelectorProps {
   ) => void;
 }
 
+interface PromoValidateResponse {
+  is_valid: boolean;
+  promo_code: string;
+  discount_type: string;
+  discount_value: number;
+  discount_amount: number;
+  final_total: number;
+  message: string;
+}
+
 const SUGGESTED_PROMOS = ['ENTRA20', 'FESTIVAL50', 'WELCOME10'];
 
 export function TicketSelector({ ticketTypes, eventId, onSelect }: TicketSelectorProps) {
@@ -39,8 +49,7 @@ export function TicketSelector({ ticketTypes, eventId, onSelect }: TicketSelecto
     return parseFloat(price) || 0;
   };
 
-  const getTicketQuota = (ticket: any): number => {
-    if (typeof ticket.quota === 'number') return ticket.quota;
+  const getTicketQuota = (ticket: TicketType): number => {
     if (typeof ticket.quantity === 'number') {
       const sold = ticket.sold || 0;
       return Math.max(0, ticket.quantity - sold);
@@ -84,14 +93,14 @@ export function TicketSelector({ ticketTypes, eventId, onSelect }: TicketSelecto
 
     try {
       setPromoLoading(true);
-      const res = await ticketApi.post<any>('/api/v1/tickets/promo/validate', {
+      const res = await ticketApi.post<PromoValidateResponse | { data: PromoValidateResponse }>('/api/v1/tickets/promo/validate', {
         promo_code: code,
         subtotal: subtotalPrice,
         ticket_quantity: totalTickets,
         event_id: eventId || '',
       });
 
-      const data = res.data?.data || res.data;
+      const data = (res.data && 'data' in res.data && res.data.data) ? res.data.data : (res.data as PromoValidateResponse | undefined);
       if (data && data.is_valid) {
         setAppliedPromo({
           promoCode: data.promo_code,
@@ -106,9 +115,10 @@ export function TicketSelector({ ticketTypes, eventId, onSelect }: TicketSelecto
       } else {
         toast.error(data?.message || 'Kode promo tidak valid');
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error validating promo code:', error);
-      toast.error(error.response?.data?.message || 'Gagal memvalidasi kode promo');
+      const errMsg = error instanceof Error ? error.message : 'Gagal memvalidasi kode promo';
+      toast.error(errMsg);
     } finally {
       setPromoLoading(false);
     }
@@ -122,7 +132,7 @@ export function TicketSelector({ ticketTypes, eventId, onSelect }: TicketSelecto
 
   const handleCheckout = () => {
     const selected = Object.entries(quantities)
-      .filter(([_, qty]) => qty > 0)
+      .filter(([, qty]) => qty > 0)
       .map(([id, quantity]) => ({ ticketTypeId: id, quantity }));
     
     if (selected.length > 0) {
@@ -203,6 +213,7 @@ export function TicketSelector({ ticketTypes, eventId, onSelect }: TicketSelecto
                 value={promoInput}
                 onChange={(e) => setPromoInput(e.target.value.toUpperCase())}
                 placeholder="Contoh: ENTRA20, FESTIVAL50"
+                aria-label="Kode kupon promo"
                 disabled={appliedPromo !== null || promoLoading}
                 className="w-full px-3.5 py-2 bg-gray-900 border border-gray-800 rounded-xl text-xs text-white font-mono uppercase focus:outline-none focus:border-violet-500 disabled:opacity-60"
               />

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -24,7 +24,13 @@ export function TicketTypeModal({ isOpen, onClose, onSubmit, initialData, isLoad
     sale_end: '',
   });
 
-  useEffect(() => {
+  const [prevInitialData, setPrevInitialData] = useState<TicketType | undefined>(initialData);
+  const [prevIsOpen, setPrevIsOpen] = useState<boolean>(isOpen);
+
+  if (isOpen !== prevIsOpen || initialData !== prevInitialData) {
+    setPrevIsOpen(isOpen);
+    setPrevInitialData(initialData);
+
     if (initialData && isOpen) {
       const formatDate = (dateString: string) => {
         if (!dateString) return '';
@@ -67,7 +73,7 @@ export function TicketTypeModal({ isOpen, onClose, onSubmit, initialData, isLoad
         sale_end: '',
       });
     }
-  }, [initialData, isOpen]);
+  }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -85,14 +91,14 @@ export function TicketTypeModal({ isOpen, onClose, onSubmit, initialData, isLoad
       await onSubmit({
         name: formData.name,
         description: formData.description,
-        price: parseFloat(formData.price) || 0,
+        price: String(parseFloat(formData.price) || 0),
         quantity: parseInt(formData.quantity) || 0,
         max_per_order: parseInt(formData.max_per_order) || 4,
         sale_start: new Date(formData.sale_start).toISOString(),
         sale_end: new Date(formData.sale_end).toISOString(),
-      } as any);
+      });
       onClose();
-    } catch (err) {
+    } catch {
       // Error handled by parent
     }
   };

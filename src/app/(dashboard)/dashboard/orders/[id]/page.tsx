@@ -4,44 +4,51 @@ import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
-import { Button } from '@/components/ui/Button';
 import { ticketApi, authApi } from '@/lib/api';
 import { toast } from 'sonner';
+import { formatCurrency } from '@/lib/utils';
+import { Order, Ticket, User } from '@/types';
+
+interface OrderDetailData {
+  order: Order;
+  tickets?: Ticket[];
+}
 
 export default function OrderDetailsPage() {
   const params = useParams();
   const router = useRouter();
-  const [order, setOrder] = useState<any>(null);
-  const [items, setItems] = useState<any[]>([]);
-  const [tickets, setTickets] = useState<any[]>([]);
-  const [buyer, setBuyer] = useState<any>(null);
+  const [order, setOrder] = useState<Order | null>(null);
+  const [tickets, setTickets] = useState<Ticket[]>([]);
+  const [buyer, setBuyer] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchOrderDetails = async () => {
       try {
         setLoading(true);
+        const orderId = String(params.id);
         // Fetch order details from ticket-service
-        const res = await ticketApi.get<any>(`/api/v1/tickets/organizer/orders/${params.id}`);
+        const res = await ticketApi.get<OrderDetailData>(`/api/v1/tickets/organizer/orders/${orderId}`);
         const data = res.data;
-        setOrder(data.order);
-        setItems(data.items || []);
-        setTickets(data.tickets || []);
+        if (data?.order) {
+          setOrder(data.order);
+          setTickets(Array.isArray(data.tickets) ? data.tickets : []);
 
-        // Fetch buyer details from auth-service if we have the user_id
-        if (data.order && data.order.user_id) {
-          try {
-            const userRes = await authApi.post<any>('/api/v1/auth/users/batch', {
-              ids: [data.order.user_id]
-            });
-            if (userRes.data && userRes.data.length > 0) {
-              setBuyer(userRes.data[0]);
+          // Fetch buyer details from auth-service if we have the user_id
+          if (data.order.user_id) {
+            try {
+              const userRes = await authApi.post<User[]>('/api/v1/auth/users/batch', {
+                ids: [data.order.user_id]
+              });
+              if (Array.isArray(userRes.data) && userRes.data.length > 0) {
+                setBuyer(userRes.data[0]);
+              }
+            } catch (e) {
+              console.error('Failed to fetch buyer details', e);
             }
-          } catch (e) {
-            console.error('Failed to fetch buyer details', e);
           }
         }
-      } catch (error: any) {
+      } catch (error: unknown) {
         console.error('Failed to fetch order details', error);
         toast.error('Gagal memuat detail pesanan');
       } finally {
@@ -110,7 +117,7 @@ export default function OrderDetailsPage() {
           <div className="space-y-3">
             <div>
               <p className="text-gray-500 text-sm">Total Pembayaran</p>
-              <p className="text-[#7C3AED] font-bold text-xl">Rp {parseFloat(order.total_amount).toLocaleString('id-ID')}</p>
+              <p className="text-[#7C3AED] font-bold text-xl">{formatCurrency(order.total_amount)}</p>
             </div>
             <div>
               <p className="text-gray-500 text-sm">Tanggal Pemesanan</p>

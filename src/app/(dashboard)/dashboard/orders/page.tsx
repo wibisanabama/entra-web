@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
@@ -17,23 +17,22 @@ import {
   CreditCard,
   CheckCircle2,
   Clock,
-  ShoppingCart,
-  ArrowRight
+  ShoppingCart
 } from 'lucide-react';
+import { Order, Event as EventType } from '@/types';
 
 export default function DashboardOrdersPage() {
-  const [orders, setOrders] = useState<any[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
   const [eventsMap, setEventsMap] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState<string>('ALL');
   const [searchQuery, setSearchQuery] = useState<string>('');
 
-  const fetchOrdersAndEvents = async () => {
+  const fetchOrdersAndEvents = useCallback(async () => {
     try {
-      setLoading(true);
       const [ordersRes, eventsRes] = await Promise.all([
-        ticketApi.get('/api/v1/tickets/organizer/orders').catch(() => ({ data: [] })),
-        eventApi.get('/api/v1/events').catch(() => ({ data: [] })),
+        ticketApi.get<Order[]>('/api/v1/tickets/organizer/orders').catch(() => ({ success: false, data: [] as Order[] })),
+        eventApi.get<EventType[]>('/api/v1/events').catch(() => ({ success: false, data: [] as EventType[] })),
       ]);
 
       const rawOrders = Array.isArray(ordersRes.data) ? ordersRes.data : [];
@@ -41,7 +40,7 @@ export default function DashboardOrdersPage() {
 
       // Map event names
       const evMap: Record<string, string> = {};
-      rawEvents.forEach((ev: any) => {
+      rawEvents.forEach((ev) => {
         evMap[ev.id] = ev.title;
       });
 
@@ -53,11 +52,11 @@ export default function DashboardOrdersPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchOrdersAndEvents();
-  }, []);
+  }, [fetchOrdersAndEvents]);
 
   const handleExportCsv = () => {
     if (orders.length === 0) {
@@ -74,9 +73,10 @@ export default function DashboardOrdersPage() {
     }
   };
 
-  const parseAmount = (val: any): number => {
+  const parseAmount = (val: number | string | undefined | null): number => {
     if (typeof val === 'number') return val;
-    return parseFloat(val) || 0;
+    if (typeof val === 'string') return parseFloat(val) || 0;
+    return 0;
   };
 
   // Metrics
@@ -225,6 +225,7 @@ export default function DashboardOrdersPage() {
             <input
               type="text"
               placeholder="Cari ID pesanan, nama event..."
+              aria-label="Cari ID pesanan atau nama event"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-9 pr-4 py-2 bg-gray-950 border border-gray-800 rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none focus:border-violet-500"

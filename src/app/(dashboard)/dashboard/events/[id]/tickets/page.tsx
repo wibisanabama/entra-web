@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
@@ -26,37 +26,43 @@ export default function EventTicketsPage() {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [ticketToDelete, setTicketToDelete] = useState<string | null>(null);
 
-  const fetchEventAndTickets = async () => {
+  const fetchEventAndTickets = useCallback(async () => {
+    if (!params.id) return;
     try {
-      setLoading(true);
+      const eventId = String(params.id);
       const [eventRes, ticketsRes] = await Promise.all([
-        eventApi.get(`/api/v1/events/${params.id}`),
-        eventApi.get(`/api/v1/events/${params.id}/tickets`)
+        eventApi.get<Event>(`/api/v1/events/${eventId}`),
+        eventApi.get<TicketType[]>(`/api/v1/events/${eventId}/tickets`)
       ]);
-      setEvent(eventRes.data as Event);
-      setTickets((ticketsRes.data as TicketType[]) || []);
+      if (eventRes.data) {
+        setEvent(eventRes.data);
+      }
+      setTickets(Array.isArray(ticketsRes.data) ? ticketsRes.data : []);
     } catch (error) {
       console.error('Error fetching tickets', error);
       toast.error('Gagal memuat data tiket');
     } finally {
       setLoading(false);
     }
-  };
+  }, [params.id]);
 
   useEffect(() => {
     if (params.id) {
       fetchEventAndTickets();
     }
-  }, [params.id]);
+  }, [params.id, fetchEventAndTickets]);
 
-  const handleCreateOrUpdate = async (data: any) => {
+  const handleCreateOrUpdate = async (
+    data: Omit<TicketType, 'id' | 'event_id' | 'sold' | 'created_at' | 'updated_at' | 'is_active'>
+  ) => {
     try {
       setIsSubmitting(true);
+      const eventId = String(params.id);
       if (selectedTicket) {
-        await eventApi.put(`/api/v1/events/${params.id}/tickets/${selectedTicket.id}`, data);
+        await eventApi.put(`/api/v1/events/${eventId}/tickets/${selectedTicket.id}`, data);
         toast.success('Tipe tiket berhasil diperbarui!');
       } else {
-        await eventApi.post(`/api/v1/events/${params.id}/tickets`, data);
+        await eventApi.post(`/api/v1/events/${eventId}/tickets`, data);
         toast.success('Tipe tiket berhasil ditambahkan!');
       }
       fetchEventAndTickets();

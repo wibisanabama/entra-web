@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
@@ -17,7 +17,6 @@ import {
   TrendingUp,
   Clock,
   CheckCircle2,
-  XCircle,
   Building2,
   CreditCard,
   User,
@@ -68,12 +67,11 @@ export default function WithdrawalsPage() {
     notes: '',
   });
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
-      setLoading(true);
       const [balanceRes, withdrawalsRes] = await Promise.all([
-        ticketApi.get('/api/v1/tickets/organizer/balance').catch(() => ({ data: null })),
-        ticketApi.get('/api/v1/tickets/organizer/withdrawals').catch(() => ({ data: [] }))
+        ticketApi.get<OrganizerBalance>('/api/v1/tickets/organizer/balance').catch(() => ({ success: false, data: null })),
+        ticketApi.get<Withdrawal[]>('/api/v1/tickets/organizer/withdrawals').catch(() => ({ success: false, data: [] as Withdrawal[] }))
       ]);
 
       if (balanceRes && balanceRes.data) {
@@ -89,11 +87,11 @@ export default function WithdrawalsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   const handleQuickAmount = (percentage: number) => {
     const calculated = Math.floor((balance.available_balance * percentage) / 100);
@@ -151,9 +149,10 @@ export default function WithdrawalsPage() {
       toast.success('Pengajuan penarikan dana berhasil dikirim!');
       setIsRequestModalOpen(false);
       fetchData();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Withdrawal error:', error);
-      toast.error(error.message || 'Gagal mengajukan penarikan dana.');
+      const errMsg = error instanceof Error ? error.message : 'Gagal mengajukan penarikan dana.';
+      toast.error(errMsg);
     } finally {
       setSubmitting(false);
     }
@@ -316,6 +315,7 @@ export default function WithdrawalsPage() {
               <input
                 type="text"
                 placeholder="Cari bank, nomor rek, nama..."
+                aria-label="Cari bank, nomor rekening, atau nama penerima"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-9 pr-4 py-2 bg-gray-950 border border-gray-800 rounded-lg text-sm text-white placeholder-gray-500 focus:outline-none focus:border-violet-500"

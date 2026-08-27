@@ -44,10 +44,16 @@ export function exportToCsv(filename: string, headers: string[], rows: (string |
   URL.revokeObjectURL(url);
 }
 
+import { Ticket, User, Order } from '@/types';
+
 /**
  * Exports Attendee Manifest to CSV
  */
-export function exportAttendeesToCsv(eventTitle: string, attendees: any[], usersMap: Record<string, any>) {
+export function exportAttendeesToCsv(
+  eventTitle: string,
+  attendees: Ticket[],
+  usersMap: Record<string, User>
+) {
   const headers = [
     'No',
     'Nama Lengkap',
@@ -99,7 +105,7 @@ export function exportAttendeesToCsv(eventTitle: string, attendees: any[], users
 /**
  * Exports Order Transactions List to CSV
  */
-export function exportOrdersToCsv(orders: any[], eventMap?: Record<string, string>) {
+export function exportOrdersToCsv(orders: Order[], eventMap?: Record<string, string>) {
   const headers = [
     'No',
     'Order ID',

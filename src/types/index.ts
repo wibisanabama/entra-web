@@ -135,7 +135,7 @@ export interface Wallet {
   updated_at: string;
 }
 
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   success: boolean;
   message?: string;
   data?: T;
@@ -237,5 +237,28 @@ export interface CreateWithdrawalRequest {
   account_number: string;
   account_name: string;
   notes?: string;
+}
+
+export interface MediaFile {
+  id?: string;
+  name?: string;
+  url: string;
+  size?: number | string;
+  mime_type?: string;
+  created_at?: string;
+}
+
+export interface Attendee {
+  ticket_id?: string;
+  ticket_code: string;
+  ticket_type_id: string;
+  ticket_type_name?: string;
+  user_id: string;
+  user_name?: string;
+  user_email?: string;
+  status: string;
+  created_at: string;
+  checked_in_at?: string | null;
+  gate_name?: string | null;
 }
 

@@ -13,7 +13,7 @@ export function formatDate(dateStr: string): string {
       month: 'long',
       year: 'numeric',
     }).format(date);
-  } catch (e) {
+  } catch {
     return dateStr;
   }
 }
@@ -36,9 +36,9 @@ export function getInitials(name: string): string {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
 
-export function getPgText(val: any): string {
+export function getPgText(val: { String?: string; Valid?: boolean } | string | null | undefined): string {
   if (!val) return '';
   if (typeof val === 'string') return val;
-  if (val.Valid && typeof val.String === 'string') return val.String;
+  if (typeof val === 'object' && val.Valid && typeof val.String === 'string') return val.String;
   return '';
 }

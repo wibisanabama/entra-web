@@ -7,28 +7,30 @@ export interface CsvColumn<T> {
   accessor: (item: T, index: number) => string | number | null | undefined;
 }
 
-export function exportToCsv(filename: string, headers: string[], rows: (string | number)[][]) {
-  // Escape cell content to follow RFC 4180 CSV standard
-  const escapeCell = (cell: string | number | null | undefined): string => {
-    if (cell === null || cell === undefined) return '""';
-    const stringVal = String(cell);
-    if (stringVal.includes('"') || stringVal.includes(',') || stringVal.includes('\n') || stringVal.includes('\r')) {
-      return `"${stringVal.replace(/"/g, '""')}"`;
-    }
-    return `"${stringVal}"`;
-  };
+export function escapeCsvCell(cell: string | number | null | undefined): string {
+  if (cell === null || cell === undefined) return '""';
+  const stringVal = String(cell);
+  if (stringVal.includes('"') || stringVal.includes(',') || stringVal.includes('\n') || stringVal.includes('\r')) {
+    return `"${stringVal.replace(/"/g, '""')}"`;
+  }
+  return `"${stringVal}"`;
+}
 
+export function generateCsvString(headers: string[], rows: (string | number | null | undefined)[][]): string {
   const csvRows: string[] = [];
-
   // Add header row
-  csvRows.push(headers.map(escapeCell).join(','));
-
+  csvRows.push(headers.map(escapeCsvCell).join(','));
   // Add data rows
   for (const row of rows) {
-    csvRows.push(row.map(escapeCell).join(','));
+    csvRows.push(row.map(escapeCsvCell).join(','));
   }
+  return csvRows.join('\r\n');
+}
 
-  const csvContent = csvRows.join('\r\n');
+export function exportToCsv(filename: string, headers: string[], rows: (string | number)[][]) {
+  const csvContent = generateCsvString(headers, rows);
+
+  if (typeof document === 'undefined') return;
 
   // Prepend UTF-8 BOM (\uFEFF) so Excel opens Indonesian text with proper character encoding
   const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -44,7 +46,7 @@ export function exportToCsv(filename: string, headers: string[], rows: (string |
   URL.revokeObjectURL(url);
 }
 
-import { Ticket, User, Order } from '@/types';
+import type { Ticket, User, Order } from '@/types';
 
 /**
  * Exports Attendee Manifest to CSV

@@ -1,4 +1,4 @@
-import { ApiResponse } from '@/types';
+import type { ApiResponse } from '@/types';
 
 // Helper to get cookie on the client side
 export function getCookie(name: string): string | null {
@@ -6,6 +6,18 @@ export function getCookie(name: string): string | null {
   const match = document.cookie.match(new RegExp('(^|;\\s*)' + name + '=([^;]+)'));
   if (match) return match[2];
   return null;
+}
+
+// Helper to set cookie on the client side
+export function setCookie(name: string, value: string, maxAgeSeconds = 86400, path = '/'): void {
+  if (typeof document === 'undefined') return;
+  document.cookie = `${name}=${value}; path=${path}; max-age=${maxAgeSeconds}; SameSite=Lax`;
+}
+
+// Helper to delete cookie on the client side
+export function deleteCookie(name: string, path = '/'): void {
+  if (typeof document === 'undefined') return;
+  document.cookie = `${name}=; path=${path}; expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=Lax`;
 }
 
 // Helper to get token in SSR or browser
@@ -99,7 +111,7 @@ interface RequestOptions extends RequestInit {
   _isRetry?: boolean;
 }
 
-class ApiClient {
+export class ApiClient {
   private baseUrl: string;
 
   constructor(baseUrl: string) {

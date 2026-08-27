@@ -42,3 +42,37 @@ export function getPgText(val: { String?: string; Valid?: boolean } | string | n
   if (typeof val === 'object' && val.Valid && typeof val.String === 'string') return val.String;
   return '';
 }
+
+export function getRoleBadgeColor(role?: string): string {
+  switch (role?.toLowerCase()) {
+    case 'admin':
+      return 'bg-purple-500/10 text-purple-400 border border-purple-500/20';
+    case 'organizer':
+      return 'bg-blue-500/10 text-blue-400 border border-blue-500/20';
+    case 'staff':
+      return 'bg-amber-500/10 text-amber-400 border border-amber-500/20';
+    case 'user':
+    default:
+      return 'bg-gray-500/10 text-gray-400 border border-gray-500/20';
+  }
+}
+
+export function getOrderStatusColor(status?: string): string {
+  switch (status?.toUpperCase()) {
+    case 'PAID':
+    case 'SUCCESS':
+    case 'SUKSES':
+      return 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20';
+    case 'PENDING':
+    case 'MENUNGGU':
+      return 'bg-amber-500/10 text-amber-400 border border-amber-500/20';
+    case 'CANCELLED':
+    case 'EXPIRED':
+    case 'FAILED':
+    case 'DIBATALKAN':
+      return 'bg-rose-500/10 text-rose-400 border border-rose-500/20';
+    default:
+      return 'bg-gray-500/10 text-gray-400 border border-gray-500/20';
+  }
+}
+

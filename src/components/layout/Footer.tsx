@@ -21,7 +21,7 @@ export function Footer() {
         </div>
 
         <p className="text-xs sm:text-[13px] text-zinc-500 font-normal">
-          &copy; Entra 2024–{currentYear}
+          &copy; Entra {currentYear}
         </p>
       </div>
     </footer>

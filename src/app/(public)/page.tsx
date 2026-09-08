@@ -268,13 +268,13 @@ export default function HomePage() {
         <div className="mx-auto max-w-7xl">
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-zinc-500">Cara kerja</p>
           <h2 className="mt-3 max-w-2xl text-3xl font-black tracking-tight text-zinc-950 sm:text-5xl">Dari pencarian sampai pintu masuk.</h2>
-          <div className="mt-12 grid gap-px overflow-hidden rounded-3xl border border-zinc-200 bg-zinc-200 md:grid-cols-3">
+          <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6">
             {[
               ['01', 'Temukan event', 'Gunakan katalog, kategori, waktu, lokasi, dan harga untuk mempersempit pilihan.'],
               ['02', 'Pesan tiket', 'Pilih jenis dan jumlah tiket, periksa ringkasan, lalu selesaikan pembayaran.'],
               ['03', 'Tunjukkan QR', 'Buka tiket aktif dari akun Anda dan tunjukkan QR saat tiba di gate.'],
             ].map(([number, title, description]) => (
-              <article key={number} className="bg-white p-8 sm:p-10">
+              <article key={number} className="bg-zinc-100 rounded-3xl p-8 sm:p-10 flex flex-col justify-between">
                 <span className="text-xs font-bold text-zinc-400">{number}</span>
                 <h3 className="mt-8 text-xl font-bold text-zinc-950">{title}</h3>
                 <p className="mt-3 text-sm leading-6 text-zinc-500">{description}</p>

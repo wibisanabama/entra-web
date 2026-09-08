@@ -247,11 +247,11 @@ export default function EventsPage() {
           Array(8)
             .fill(0)
             .map((_, i) => (
-              <div key={i} className="flex flex-col rounded-2xl bg-white p-3">
-                <Skeleton className="aspect-[16/10] w-full rounded-xl bg-zinc-100" />
+              <div key={i} className="flex flex-col rounded-2xl bg-zinc-100 p-3">
+                <Skeleton className="aspect-[16/10] w-full rounded-xl bg-zinc-200/80" />
                 <div className="pt-3 pb-1 px-1 space-y-2">
-                  <Skeleton className="h-4 w-3/4 bg-zinc-100 rounded-md" />
-                  <Skeleton className="h-3 w-1/2 bg-zinc-100 rounded-md" />
+                  <Skeleton className="h-4 w-3/4 bg-zinc-200/80 rounded-md" />
+                  <Skeleton className="h-3 w-1/2 bg-zinc-200/80 rounded-md" />
                 </div>
               </div>
             ))

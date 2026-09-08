@@ -236,14 +236,14 @@ export default function HomePage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {loading ? (
                 Array(8).fill(0).map((_, i) => (
-                  <div key={i} className="flex flex-col rounded-2xl bg-white p-3">
-                    <Skeleton className="aspect-[16/10] w-full rounded-xl bg-zinc-100" />
+                  <div key={i} className="flex flex-col rounded-2xl bg-zinc-100 p-3">
+                    <Skeleton className="aspect-[16/10] w-full rounded-xl bg-zinc-200/80" />
                     <div className="pt-3 pb-1 px-1 space-y-2">
-                      <Skeleton className="h-4 w-3/4 rounded-md bg-zinc-100" />
-                      <Skeleton className="h-3 w-1/2 rounded-md bg-zinc-100" />
+                      <Skeleton className="h-4 w-3/4 rounded-md bg-zinc-200/80" />
+                      <Skeleton className="h-3 w-1/2 rounded-md bg-zinc-200/80" />
                       <div className="pt-2 flex justify-between items-center">
-                        <Skeleton className="h-3 w-16 rounded-md bg-zinc-100" />
-                        <Skeleton className="h-6 w-20 rounded-full bg-zinc-100" />
+                        <Skeleton className="h-3 w-16 rounded-md bg-zinc-200/80" />
+                        <Skeleton className="h-6 w-20 rounded-full bg-zinc-200/80" />
                       </div>
                     </div>
                   </div>

@@ -36,18 +36,18 @@ export function EventCard({ event }: EventCardProps) {
   const banner = getPgText(event.banner_url);
 
   return (
-    <Link href={`/events/${event.id}`} className="block h-full">
-      <div className="h-full flex flex-col rounded-2xl bg-white p-3">
+    <Link href={`/events/${event.id}`} className="block h-full group">
+      <div className="h-full flex flex-col rounded-2xl bg-zinc-100 p-3 hover:bg-zinc-200/70 transition-colors">
         {/* Banner Thumbnail (16:10 aspect ratio) */}
-        <div className="relative aspect-[16/10] w-full overflow-hidden rounded-xl bg-zinc-100">
+        <div className="relative aspect-[16/10] w-full overflow-hidden rounded-xl bg-zinc-200/80">
           {banner ? (
             <img 
               src={banner} 
               alt={event.title} 
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300"
             />
           ) : (
-            <div className="w-full h-full bg-zinc-100 flex items-center justify-center text-zinc-400">
+            <div className="w-full h-full bg-zinc-200/80 flex items-center justify-center text-zinc-400">
               <span className="font-semibold text-xs tracking-wider uppercase">Entra Event</span>
             </div>
           )}
@@ -55,7 +55,7 @@ export function EventCard({ event }: EventCardProps) {
           {/* Category Pill Tag Overlay */}
           {event.category?.name && (
             <div className="absolute top-2.5 left-2.5">
-              <span className="px-2.5 py-1 text-[11px] font-semibold bg-white/95 backdrop-blur-md text-zinc-900 rounded-full">
+              <span className="px-2.5 py-1 text-[11px] font-semibold bg-white/95 backdrop-blur-md text-zinc-900 rounded-full shadow-2xs">
                 {event.category.name}
               </span>
             </div>
@@ -98,8 +98,8 @@ export function EventCard({ event }: EventCardProps) {
 
           {/* Card Footer: Price Pill */}
           <div className="pt-2 flex items-center justify-between">
-            <span className="text-xs text-zinc-400 font-medium">Harga Tiket</span>
-            <div className="px-2.5 py-1 rounded-full text-xs font-semibold bg-zinc-100 text-zinc-900">
+            <span className="text-xs text-zinc-500 font-medium">Harga Tiket</span>
+            <div className="px-2.5 py-1 rounded-full text-xs font-semibold bg-white text-zinc-900 shadow-2xs">
               {minPrice === null
                 ? 'Informasi Belum Ada'
                 : minPrice === 0

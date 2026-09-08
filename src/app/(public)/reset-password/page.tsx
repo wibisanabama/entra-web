@@ -6,7 +6,6 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { authApi } from '@/lib/api';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
-import { Card } from '@/components/ui/Card';
 import { BrandLogo } from '@/components/brand/BrandLogo';
 
 function ResetPasswordForm() {
@@ -63,18 +62,18 @@ function ResetPasswordForm() {
       </div>
 
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-600 p-3 rounded-2xl mb-6 text-xs font-medium text-center">
+        <div className="bg-rose-100 text-rose-700 p-3 rounded-2xl mb-6 text-xs font-medium text-center">
           {error}
         </div>
       )}
       
       {success ? (
         <div className="text-center space-y-4">
-          <div className="bg-emerald-50 border border-emerald-200 text-emerald-700 p-4 rounded-2xl text-xs font-medium">
+          <div className="bg-emerald-100 text-emerald-800 p-4 rounded-2xl text-xs font-medium">
             Password berhasil direset! Mengalihkan ke halaman login...
           </div>
           <Link href="/login">
-            <Button className="w-full bg-zinc-950 hover:bg-zinc-800 text-white font-bold py-3 rounded-full shadow-sm">
+            <Button className="w-full bg-zinc-950 hover:bg-zinc-800 text-white font-bold py-3 rounded-full border-0 shadow-none">
               Kembali ke Login
             </Button>
           </Link>
@@ -91,7 +90,7 @@ function ResetPasswordForm() {
               required
               minLength={8}
               disabled={!token}
-              className="bg-zinc-50 border-zinc-200 text-zinc-950 rounded-full px-4 py-2.5 focus:bg-white focus:border-zinc-950"
+              className="bg-white border-0 text-zinc-950 rounded-full px-4 py-2.5 focus:bg-white shadow-none"
             />
           </div>
 
@@ -105,13 +104,13 @@ function ResetPasswordForm() {
               required
               minLength={8}
               disabled={!token}
-              className="bg-zinc-50 border-zinc-200 text-zinc-950 rounded-full px-4 py-2.5 focus:bg-white focus:border-zinc-950"
+              className="bg-white border-0 text-zinc-950 rounded-full px-4 py-2.5 focus:bg-white shadow-none"
             />
           </div>
 
           <Button 
             type="submit" 
-            className="w-full bg-zinc-950 hover:bg-zinc-800 text-white font-bold py-3 rounded-full shadow-sm"
+            className="w-full bg-zinc-950 hover:bg-zinc-800 text-white font-bold py-3 rounded-full border-0 shadow-none"
             disabled={loading || !token}
           >
             {loading ? 'Memproses...' : 'Simpan Password Baru'}
@@ -125,11 +124,11 @@ function ResetPasswordForm() {
 export default function ResetPasswordPage() {
   return (
     <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
-      <Card className="w-full max-w-md p-8 sm:p-10 bg-white border border-zinc-200 rounded-3xl shadow-sm">
+      <div className="w-full max-w-md p-8 sm:p-10 bg-zinc-100 rounded-3xl">
         <Suspense fallback={<div className="text-center text-zinc-500 text-sm">Memuat form...</div>}>
           <ResetPasswordForm />
         </Suspense>
-      </Card>
+      </div>
     </div>
   );
 }

@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/providers/auth-provider';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
-import { Card } from '@/components/ui/Card';
 import { BrandLogo } from '@/components/brand/BrandLogo';
 
 function RegisterForm() {
@@ -60,7 +59,7 @@ function RegisterForm() {
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
-      <Card className="w-full max-w-lg p-8 sm:p-10 bg-white border border-zinc-200 rounded-3xl shadow-sm">
+      <div className="w-full max-w-lg p-8 sm:p-10 bg-zinc-100 rounded-3xl">
         <div className="text-center mb-8 flex flex-col items-center">
           <BrandLogo markClassName="h-11 w-11 mb-3" showWordmark={false} />
           <h1 className="text-2xl sm:text-3xl font-black text-zinc-950 tracking-tight mb-2">Buat Akun Baru</h1>
@@ -68,7 +67,7 @@ function RegisterForm() {
         </div>
 
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-600 p-3 rounded-2xl mb-6 text-xs font-medium text-center">
+          <div className="bg-rose-100 text-rose-700 p-3 rounded-2xl mb-6 text-xs font-medium text-center">
             {error}
           </div>
         )}
@@ -82,7 +81,7 @@ function RegisterForm() {
               value={formData.fullName}
               onChange={handleChange}
               required
-              className="bg-zinc-50 border-zinc-200 text-zinc-950 rounded-full px-4 py-2.5 focus:bg-white focus:border-zinc-950"
+              className="bg-white border-0 text-zinc-950 rounded-full px-4 py-2.5 focus:bg-white shadow-none"
             />
           </div>
 
@@ -96,7 +95,7 @@ function RegisterForm() {
                 value={formData.email}
                 onChange={handleChange}
                 required
-                className="bg-zinc-50 border-zinc-200 text-zinc-950 rounded-full px-4 py-2.5 focus:bg-white focus:border-zinc-950"
+                className="bg-white border-0 text-zinc-950 rounded-full px-4 py-2.5 focus:bg-white shadow-none"
               />
             </div>
             <div className="space-y-1.5">
@@ -108,7 +107,7 @@ function RegisterForm() {
                 value={formData.phone}
                 onChange={handleChange}
                 required
-                className="bg-zinc-50 border-zinc-200 text-zinc-950 rounded-full px-4 py-2.5 focus:bg-white focus:border-zinc-950"
+                className="bg-white border-0 text-zinc-950 rounded-full px-4 py-2.5 focus:bg-white shadow-none"
               />
             </div>
           </div>
@@ -123,7 +122,7 @@ function RegisterForm() {
                 value={formData.password}
                 onChange={handleChange}
                 required
-                className="bg-zinc-50 border-zinc-200 text-zinc-950 rounded-full px-4 py-2.5 focus:bg-white focus:border-zinc-950"
+                className="bg-white border-0 text-zinc-950 rounded-full px-4 py-2.5 focus:bg-white shadow-none"
               />
             </div>
             <div className="space-y-1.5">
@@ -135,7 +134,7 @@ function RegisterForm() {
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 required
-                className="bg-zinc-50 border-zinc-200 text-zinc-950 rounded-full px-4 py-2.5 focus:bg-white focus:border-zinc-950"
+                className="bg-white border-0 text-zinc-950 rounded-full px-4 py-2.5 focus:bg-white shadow-none"
               />
             </div>
           </div>
@@ -143,7 +142,7 @@ function RegisterForm() {
           <div className="pt-4">
             <Button 
               type="submit" 
-              className="w-full bg-zinc-950 hover:bg-zinc-800 text-white font-bold py-3 rounded-full shadow-sm"
+              className="w-full bg-zinc-950 hover:bg-zinc-800 text-white font-bold py-3 rounded-full border-0 shadow-none"
               disabled={loading}
             >
               {loading ? 'Memproses...' : 'Daftar Sekarang'}
@@ -157,7 +156,7 @@ function RegisterForm() {
             Masuk
           </Link>
         </div>
-      </Card>
+      </div>
     </div>
   );
 }

@@ -27,7 +27,7 @@ export function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 w-full pt-3 sm:pt-5 pb-2 px-4 flex justify-center pointer-events-none">
-      <div className="pointer-events-auto w-full max-w-[480px] h-11 sm:h-12 bg-[#f3f3f3]/95 backdrop-blur-md rounded-full px-5 sm:px-6 flex items-center justify-between border border-black/[0.04] shadow-[0_2px_8px_rgba(0,0,0,0.03)] transition-all">
+      <div className="pointer-events-auto w-full max-w-[480px] h-11 sm:h-12 bg-[#f3f3f3]/95 backdrop-blur-md rounded-full px-5 sm:px-6 flex items-center justify-between transition-all">
         
         {/* Left: Black Entra Logo */}
         <Link 

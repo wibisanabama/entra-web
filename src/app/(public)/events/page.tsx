@@ -130,40 +130,41 @@ export default function EventsPage() {
   });
 
   return (
-    <div className="container mx-auto px-4 py-12 max-w-7xl space-y-8 text-zinc-900">
-      {/* Header Banner */}
-      <div className="text-center max-w-3xl mx-auto space-y-3">
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-zinc-950 tracking-tight">
-          Jelajahi Event & Konser Spektakuler
-        </h1>
-        <p className="text-zinc-500 text-sm sm:text-base">
-          Temukan tiket festival musik, seminar teknologi, workshop seni, dan turnamen olahraga terbaik di Indonesia.
-        </p>
+    <div className="w-full bg-zinc-100 min-h-screen py-12 sm:py-16 text-zinc-900">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+        {/* Header Banner */}
+        <div className="text-center max-w-3xl mx-auto space-y-3">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-zinc-950 tracking-tight">
+            Jelajahi Event & Konser Spektakuler
+          </h1>
+          <p className="text-zinc-500 text-sm sm:text-base">
+            Temukan tiket festival musik, seminar teknologi, workshop seni, dan turnamen olahraga terbaik di Indonesia.
+          </p>
 
-        {/* Search Bar (Above Categories) */}
-        <div className="pt-3 pb-1 max-w-md mx-auto w-full">
-          <div className="relative flex items-center">
-            <Search className="absolute left-4 h-4 w-4 text-zinc-400 pointer-events-none" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Cari event, artis, atau venue..."
-              aria-label="Cari event"
-              className="w-full h-11 sm:h-12 pl-11 pr-10 bg-zinc-100/80 hover:bg-zinc-100 focus:bg-white text-zinc-950 placeholder-zinc-400 text-sm font-medium rounded-full border border-transparent focus:border-zinc-300 focus:outline-none focus:ring-2 focus:ring-zinc-900/10 transition-all shadow-none"
-            />
-            {searchQuery && (
-              <button
-                type="button"
-                onClick={() => setSearchQuery('')}
-                className="absolute right-3.5 p-1 text-zinc-400 hover:text-zinc-700 cursor-pointer rounded-full"
-                aria-label="Hapus pencarian"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            )}
+          {/* Search Bar (Above Categories) */}
+          <div className="pt-3 pb-1 max-w-md mx-auto w-full">
+            <div className="relative flex items-center">
+              <Search className="absolute left-4 h-4 w-4 text-zinc-400 pointer-events-none" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Cari event, artis, atau venue..."
+                aria-label="Cari event"
+                className="w-full h-11 sm:h-12 pl-11 pr-10 bg-white text-zinc-950 placeholder-zinc-400 text-sm font-medium rounded-full border border-zinc-200/70 focus:border-zinc-300 focus:outline-none focus:ring-2 focus:ring-zinc-900/10 transition-all shadow-none"
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-3.5 p-1 text-zinc-400 hover:text-zinc-700 cursor-pointer rounded-full"
+                  aria-label="Hapus pencarian"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              )}
+            </div>
           </div>
-        </div>
 
         {/* Segmented Category Pill Tabs ala Mobbin */}
         <div className="pt-2 flex justify-center w-full">
@@ -245,7 +246,7 @@ export default function EventsPage() {
         ) : filteredEvents.length > 0 ? (
           filteredEvents.map((event) => <EventCard key={event.id} event={event} />)
         ) : (
-          <div className="col-span-full flex flex-col items-center justify-center min-h-[320px] text-center p-8 bg-zinc-50/50 rounded-3xl border border-zinc-200 space-y-4">
+          <div className="col-span-full flex flex-col items-center justify-center min-h-[320px] text-center p-8 bg-white rounded-3xl space-y-4">
             <div>
               <h3 className="text-lg font-bold text-zinc-950 mb-1">
                 {searchQuery ? 'Tidak Ada Event yang Sesuai' : 'Tidak Ada Event untuk Kategori Ini'}
@@ -269,5 +270,6 @@ export default function EventsPage() {
         )}
       </div>
     </div>
-  );
+  </div>
+);
 }

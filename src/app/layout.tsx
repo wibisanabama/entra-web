@@ -17,9 +17,11 @@ export const metadata: Metadata = {
   title: "Entra - Event Ticketing Platform",
   description: "Your modern and reliable event ticketing platform.",
   icons: {
-    icon: "/assets/white-icon.png",
-    shortcut: "/assets/white-icon.png",
-    apple: "/assets/white-icon.png",
+    icon: [
+      { url: "/assets/white-icon.png?v=2", type: "image/png" },
+    ],
+    shortcut: "/assets/white-icon.png?v=2",
+    apple: "/assets/white-icon.png?v=2",
   },
 };
 

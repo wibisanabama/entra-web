@@ -30,8 +30,8 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-md p-8 sm:p-10 bg-zinc-100 rounded-3xl">
+    <div className="w-full flex items-center justify-center">
+      <div className="w-full max-w-[480px] p-7 sm:p-9 bg-zinc-100 rounded-3xl">
         <div className="text-center mb-8 flex flex-col items-center">
           <Link href="/" aria-label="Kembali ke Beranda">
             <BrandLogo markClassName="h-11 w-11 mb-3 hover:opacity-80 transition-opacity" showWordmark={false} />

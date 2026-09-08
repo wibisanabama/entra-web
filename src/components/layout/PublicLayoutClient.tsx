@@ -13,8 +13,8 @@ export function PublicLayoutClient({ children }: { children: React.ReactNode }) 
 
   if (isAuthPage) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-white text-zinc-900">
-        <main className="w-full flex-grow flex items-center justify-center py-8 sm:py-12">{children}</main>
+      <div className="min-h-screen w-full flex flex-col items-center justify-center bg-white text-zinc-900 px-4 py-8 sm:py-12">
+        <main className="w-full flex items-center justify-center">{children}</main>
       </div>
     );
   }

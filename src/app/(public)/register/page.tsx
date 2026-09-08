@@ -58,8 +58,7 @@ function RegisterForm() {
   };
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-lg p-8 sm:p-10 bg-zinc-100 rounded-3xl">
+    <div className="w-full max-w-[560px] p-7 sm:p-9 bg-zinc-100 rounded-3xl">
         <div className="text-center mb-8 flex flex-col items-center">
           <Link href="/" aria-label="Kembali ke Beranda">
             <BrandLogo markClassName="h-11 w-11 mb-3 hover:opacity-80 transition-opacity" showWordmark={false} />
@@ -159,14 +158,15 @@ function RegisterForm() {
           </Link>
         </div>
       </div>
-    </div>
   );
 }
 
 export default function RegisterPage() {
   return (
-    <Suspense fallback={<div className="min-h-[80vh] flex items-center justify-center text-zinc-500 text-sm">Loading...</div>}>
-      <RegisterForm />
-    </Suspense>
+    <div className="w-full flex items-center justify-center">
+      <Suspense fallback={<div className="text-zinc-500 text-center text-sm">Loading...</div>}>
+        <RegisterForm />
+      </Suspense>
+    </div>
   );
 }

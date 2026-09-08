@@ -125,8 +125,8 @@ function ResetPasswordForm() {
 
 export default function ResetPasswordPage() {
   return (
-    <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-md p-8 sm:p-10 bg-zinc-100 rounded-3xl">
+    <div className="w-full flex items-center justify-center">
+      <div className="w-full max-w-[480px] p-7 sm:p-9 bg-zinc-100 rounded-3xl">
         <Suspense fallback={<div className="text-center text-zinc-500 text-sm">Memuat form...</div>}>
           <ResetPasswordForm />
         </Suspense>

@@ -282,7 +282,7 @@ export default function HomePage() {
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-zinc-500">Cara kerja</p>
             <h2 className="mt-3 text-3xl font-black tracking-tight text-zinc-950 sm:text-5xl">Dari pencarian sampai pintu masuk.</h2>
           </div>
-          <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6">
+          <div className="mt-16 sm:mt-20 lg:mt-24 grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6">
             {[
               ['01', 'Temukan event', 'Gunakan katalog, kategori, waktu, lokasi, dan harga untuk mempersempit pilihan.'],
               ['02', 'Pesan tiket', 'Pilih jenis dan jumlah tiket, periksa ringkasan, lalu selesaikan pembayaran.'],

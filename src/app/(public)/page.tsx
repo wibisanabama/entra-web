@@ -198,9 +198,10 @@ export default function HomePage() {
               </span>
               <Link 
                 href="/events" 
-                className="text-xs font-semibold text-zinc-900 hover:text-zinc-600 transition-colors"
+                className="inline-flex items-center gap-1.5 text-xs font-semibold text-zinc-900 hover:text-zinc-600 transition-colors group"
               >
-                Lihat Katalog Lengkap &rarr;
+                <span>Lihat Katalog Lengkap</span>
+                <ArrowRight className="h-3.5 w-3.5 stroke-[2]" />
               </Link>
             </div>
 

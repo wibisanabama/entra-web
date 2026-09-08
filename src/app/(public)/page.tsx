@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useMemo } from 'react';
 import Link from 'next/link';
 import { EventCard } from '@/components/features/EventCard';
 import { Skeleton } from '@/components/ui/Skeleton';
@@ -14,6 +14,18 @@ export default function HomePage() {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
+
+  // Only display categories that actually have at least one event
+  const activeCategories = useMemo(() => {
+    return categories.filter((cat) =>
+      events.some(
+        (ev) =>
+          ev.category_id === cat.id ||
+          ev.category?.id === cat.id ||
+          ev.category?.name?.toLowerCase().replace(/\s+/g, '-') === cat.id
+      )
+    );
+  }, [categories, events]);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const tabsRef = useRef<Record<string, HTMLButtonElement | null>>({});
@@ -37,7 +49,7 @@ export default function HomePage() {
         container.scrollTo({ left: targetScrollLeft, behavior: 'smooth' });
       }
     }
-  }, [selectedCategory, categories, isReady]);
+  }, [selectedCategory, activeCategories, isReady]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -183,7 +195,7 @@ export default function HomePage() {
                 >
                   Semua Event
                 </button>
-                {categories.map((cat) => {
+                {activeCategories.map((cat) => {
                   const isSelected = selectedCategory === cat.id;
                   return (
                     <button

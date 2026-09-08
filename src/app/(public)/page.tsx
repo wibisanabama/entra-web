@@ -81,20 +81,26 @@ export default function HomePage() {
   return (
     <div className="w-full bg-white text-zinc-900 min-h-screen">
       
-      <section className="border-b border-zinc-200 px-4 py-20 sm:py-28 lg:py-36">
+      <section className="border-b border-zinc-200 px-4 pt-16 pb-20 sm:pt-20 sm:pb-24">
         <div className="mx-auto flex max-w-4xl flex-col items-center text-center">
-          <h1 className="max-w-4xl text-4xl font-black leading-[1.02] tracking-[-0.055em] text-zinc-950 sm:text-6xl lg:text-7xl">
+          <h1 className="max-w-4xl text-4xl sm:text-6xl lg:text-[76px] font-semibold leading-[1.08] tracking-[-0.035em] text-zinc-950">
             Temukan pengalaman nyata di sekitar Anda.
           </h1>
-          <p className="mt-6 max-w-2xl text-base leading-7 text-zinc-500 sm:text-lg">
-            Cari event, pilih tiket, lalu masuk dengan QR. Entra menyatukan perjalanan pengunjung dan operasional organizer dalam satu pengalaman sederhana.
+          <p className="mt-4 sm:mt-5 max-w-xl text-base sm:text-lg text-zinc-500 font-normal leading-relaxed">
+            Cari event, pilih tiket, lalu masuk dengan QR — praktis, aman, dan instan untuk semua pengunjung.
           </p>
-          <div className="mt-8 flex w-full flex-col justify-center gap-3 sm:w-auto sm:flex-row">
-            <Link href="/events" className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-zinc-950 px-7 text-sm font-semibold text-white hover:bg-zinc-800">
-              Jelajahi event <ArrowRight className="h-4 w-4" />
+          <div className="mt-7 sm:mt-8 flex flex-wrap items-center justify-center gap-3">
+            <Link 
+              href="/events" 
+              className="inline-flex h-10 sm:h-11 items-center justify-center rounded-full bg-zinc-950 px-6 text-sm font-semibold text-white hover:bg-zinc-800 transition-all shadow-xs active:scale-95"
+            >
+              Jelajahi event
             </Link>
-            <Link href="/register" className="inline-flex h-12 items-center justify-center rounded-full border border-zinc-200 bg-white px-7 text-sm font-semibold text-zinc-950 hover:bg-zinc-50">
-              Mulai sebagai organizer
+            <Link 
+              href="/register" 
+              className="inline-flex h-10 sm:h-11 items-center justify-center gap-2 rounded-full border border-zinc-200 bg-white px-6 text-sm font-semibold text-zinc-950 hover:bg-zinc-50 transition-all shadow-xs active:scale-95"
+            >
+              Mulai sebagai organizer <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
         </div>

@@ -61,7 +61,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id" className="light" suppressHydrationWarning>
-      <body className={`${inter.className} ${inter.variable} ${mSaans.variable} min-h-screen bg-background text-foreground antialiased`}>
+      <body className={`${mSaans.className} ${mSaans.variable} ${inter.variable} min-h-screen bg-background text-foreground antialiased font-saans`}>
         <Toaster position="top-center" richColors />
         <QueryProvider>
           <ThemeProvider>

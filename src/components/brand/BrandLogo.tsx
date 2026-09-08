@@ -15,7 +15,7 @@ export function BrandLogo({
 }: BrandLogoProps) {
   return (
     <span className={`inline-flex items-center gap-2.5 ${className}`} {...props}>
-      <img className={`${markClassName} object-contain rounded-lg`} src="/assets/black-e.png" alt="Entra" />
+      <img className={`${markClassName} object-contain rounded-lg`} src="/assets/black-logo.png" alt="Entra" />
       {showWordmark && <span className={wordmarkClassName}>Entra</span>}
     </span>
   );

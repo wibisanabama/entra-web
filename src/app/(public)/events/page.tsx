@@ -142,7 +142,7 @@ export default function EventsPage() {
   });
 
   return (
-    <div className="w-full bg-zinc-100 min-h-screen py-12 sm:py-16 text-zinc-900">
+    <div className="w-full bg-white min-h-screen py-12 sm:py-16 text-zinc-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         {/* Header Banner */}
         <div className="text-center max-w-3xl mx-auto space-y-3">
@@ -163,7 +163,7 @@ export default function EventsPage() {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Cari event, artis, atau venue..."
                 aria-label="Cari event"
-                className="w-full h-11 sm:h-12 pl-11 pr-10 bg-white text-zinc-950 placeholder-zinc-400 text-sm font-medium rounded-full border-none outline-none ring-0 focus:outline-none focus:ring-0 focus:border-none transition-all shadow-none"
+                className="w-full h-11 sm:h-12 pl-11 pr-10 bg-zinc-100 text-zinc-950 placeholder-zinc-400 text-sm font-medium rounded-full border-none outline-none ring-0 focus:outline-none focus:ring-0 focus:border-none transition-all shadow-none"
               />
               {searchQuery && (
                 <button
@@ -258,7 +258,7 @@ export default function EventsPage() {
         ) : filteredEvents.length > 0 ? (
           filteredEvents.map((event) => <EventCard key={event.id} event={event} />)
         ) : (
-          <div className="col-span-full flex flex-col items-center justify-center h-[352px] lg:h-[371px] xl:h-[312px] text-center p-6 sm:p-8 bg-white rounded-2xl">
+          <div className="col-span-full flex flex-col items-center justify-center h-[352px] lg:h-[371px] xl:h-[312px] text-center p-6 sm:p-8 bg-zinc-100 rounded-2xl">
             <div className="max-w-md mx-auto">
               <h3 className="text-lg font-bold text-zinc-950 mb-1">
                 {searchQuery ? 'Tidak Ada Event yang Sesuai' : 'Tidak Ada Event untuk Kategori Ini'}

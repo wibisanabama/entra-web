@@ -153,7 +153,7 @@ export default function HomePage() {
       </section>
 
       {/* Event Discovery Section ala Mobbin */}
-      <section className="pt-20 sm:pt-28 pb-20 sm:pb-28 bg-zinc-100">
+      <section className="pt-20 sm:pt-28 pb-20 sm:pb-28 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
           {/* Section Heading & Segmented Category Pill Tabs */}
@@ -259,15 +259,17 @@ export default function HomePage() {
                   <EventCard key={event.id} event={event} />
                 ))
               ) : (
-                <div className="col-span-full text-center py-20 border border-dashed border-zinc-300 rounded-2xl bg-white/70">
-                  <p className="text-sm font-semibold text-zinc-800">Tidak ada event untuk filter ini</p>
-                  <p className="text-xs text-zinc-500 mt-1">Coba pilih kategori lain atau reset filter pilihan Anda.</p>
-                  <button
-                    onClick={() => setSelectedCategory('all')}
-                    className="mt-4 px-4 py-1.5 rounded-full text-xs font-semibold bg-zinc-950 text-white hover:bg-zinc-800 transition-colors cursor-pointer"
-                  >
-                    Reset Filter
-                  </button>
+                <div className="col-span-full flex flex-col items-center justify-center h-[352px] lg:h-[371px] xl:h-[312px] text-center p-6 sm:p-8 bg-zinc-100 rounded-2xl">
+                  <div className="max-w-md mx-auto">
+                    <p className="text-base font-bold text-zinc-950 mb-1">Tidak ada event untuk filter ini</p>
+                    <p className="text-xs text-zinc-500">Coba pilih kategori lain atau reset filter pilihan Anda.</p>
+                    <button
+                      onClick={() => setSelectedCategory('all')}
+                      className="mt-4 px-5 py-2 rounded-full text-xs font-semibold bg-zinc-950 text-white hover:bg-zinc-800 transition-colors cursor-pointer"
+                    >
+                      Reset Filter
+                    </button>
+                  </div>
                 </div>
               )}
             </div>

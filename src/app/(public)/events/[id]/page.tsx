@@ -12,7 +12,6 @@ import { id as localeId } from 'date-fns/locale';
 import { useAuth } from '@/providers/auth-provider';
 import { getPgText } from '@/lib/utils';
 import { Event as EventType, Category, Venue, User, TicketType } from '@/types';
-import { toast } from 'sonner';
 
 interface EventDetail {
   id: string;
@@ -53,7 +52,6 @@ export default function EventDetailPage() {
       if (token.startsWith('MOCK_') || typeof window === 'undefined' || !window.snap) {
         try {
           await ticketApi.post(`/api/v1/tickets/orders/${orderId}/simulate`);
-          toast.success('Pembayaran simulasi dev berhasil! Tiket Anda telah aktif.');
           router.push('/my-tickets');
           return;
         } catch {
@@ -64,28 +62,23 @@ export default function EventDetailPage() {
       if (typeof window !== 'undefined' && window.snap) {
         window.snap.pay(token, {
           onSuccess: () => {
-            toast.success('Pembayaran berhasil! E-Ticket Anda telah aktif.');
             router.push('/my-tickets');
           },
           onPending: () => {
-            toast.info('Menunggu penyelesaian pembayaran.');
             router.push('/my-tickets');
           },
           onError: () => {
-            toast.error('Pembayaran gagal atau dibatalkan.');
+            // User can review order in my-tickets
           },
           onClose: () => {
-            toast.info('Jendela pembayaran ditutup. Anda dapat membayar di halaman Tiket Saya.');
             router.push('/my-tickets');
           },
         });
       } else {
-        toast.info('Silakan lanjutkan pembayaran di halaman Tiket Saya.');
         router.push('/my-tickets');
       }
-    } catch (err: unknown) {
-      const errMsg = err instanceof Error ? err.message : 'Gagal memproses pembayaran';
-      toast.error(errMsg);
+    } catch {
+      // ignore
     } finally {
       setIsPaying(false);
     }

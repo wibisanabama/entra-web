@@ -52,8 +52,6 @@ export const metadata: Metadata = {
   },
 };
 
-import { Toaster } from "sonner";
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -62,7 +60,6 @@ export default function RootLayout({
   return (
     <html lang="id" className="light" suppressHydrationWarning>
       <body className={`${mSaans.className} ${mSaans.variable} ${inter.variable} min-h-screen bg-background text-foreground antialiased font-saans`}>
-        <Toaster position="top-center" richColors />
         <QueryProvider>
           <ThemeProvider>
             <AuthProvider>

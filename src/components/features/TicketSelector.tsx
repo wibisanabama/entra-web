@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/Button';
 import { formatCurrency, getPgText } from '@/lib/utils';
 import { ticketApi } from '@/lib/api';
 import { Tag, Check, X, Percent } from 'lucide-react';
-import { toast } from 'sonner';
 
 export interface AppliedPromo {
   promoCode: string;
@@ -43,6 +42,7 @@ export function TicketSelector({ ticketTypes, eventId, onSelect }: TicketSelecto
   const [promoInput, setPromoInput] = useState('');
   const [promoLoading, setPromoLoading] = useState(false);
   const [appliedPromo, setAppliedPromo] = useState<AppliedPromo | null>(null);
+  const [promoError, setPromoError] = useState<string | null>(null);
 
   const parsePrice = (price: string | number): number => {
     if (typeof price === 'number') return price;
@@ -66,7 +66,7 @@ export function TicketSelector({ ticketTypes, eventId, onSelect }: TicketSelecto
     // Reset applied promo when quantity changes so it can be revalidated
     if (appliedPromo) {
       setAppliedPromo(null);
-      toast.info('Kuantitas tiket berubah. Silakan terapkan ulang kode promo.');
+      setPromoError(null);
     }
   };
 
@@ -82,12 +82,13 @@ export function TicketSelector({ ticketTypes, eventId, onSelect }: TicketSelecto
 
   const handleApplyPromo = async (codeToApply?: string) => {
     const code = (codeToApply || promoInput).trim().toUpperCase();
+    setPromoError(null);
     if (!code) {
-      toast.error('Masukkan kode promo terlebih dahulu');
+      setPromoError('Masukkan kode promo terlebih dahulu');
       return;
     }
     if (totalTickets === 0 || subtotalPrice <= 0) {
-      toast.error('Pilih tiket berbayar terlebih dahulu untuk menggunakan promo');
+      setPromoError('Pilih tiket berbayar terlebih dahulu untuk menggunakan promo');
       return;
     }
 
@@ -111,14 +112,14 @@ export function TicketSelector({ ticketTypes, eventId, onSelect }: TicketSelecto
           message: data.message,
         });
         setPromoInput(data.promo_code);
-        toast.success(`Kupon ${data.promo_code} berhasil diterapkan! Hemat ${formatCurrency(data.discount_amount)}`);
+        setPromoError(null);
       } else {
-        toast.error(data?.message || 'Kode promo tidak valid');
+        setPromoError(data?.message || 'Kode promo tidak valid');
       }
     } catch (error: unknown) {
       console.error('Error validating promo code:', error);
       const errMsg = error instanceof Error ? error.message : 'Gagal memvalidasi kode promo';
-      toast.error(errMsg);
+      setPromoError(errMsg);
     } finally {
       setPromoLoading(false);
     }
@@ -127,7 +128,7 @@ export function TicketSelector({ ticketTypes, eventId, onSelect }: TicketSelecto
   const handleRemovePromo = () => {
     setAppliedPromo(null);
     setPromoInput('');
-    toast.info('Kupon promo telah dilepas');
+    setPromoError(null);
   };
 
   const handleCheckout = () => {
@@ -240,6 +241,12 @@ export function TicketSelector({ ticketTypes, eventId, onSelect }: TicketSelecto
               </Button>
             )}
           </div>
+
+          {promoError && (
+            <p className="text-xs text-rose-600 font-medium px-1">
+              {promoError}
+            </p>
+          )}
 
           {/* Applied Promo Banner */}
           {appliedPromo && (

@@ -7,6 +7,7 @@ import { authApi } from '@/lib/api';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
+import { BrandLogo } from '@/components/brand/BrandLogo';
 
 function ResetPasswordForm() {
   const router = useRouter();
@@ -55,7 +56,8 @@ function ResetPasswordForm() {
 
   return (
     <>
-      <div className="text-center mb-8">
+      <div className="text-center mb-8 flex flex-col items-center">
+        <BrandLogo markClassName="h-11 w-11 mb-3" showWordmark={false} />
         <h1 className="text-2xl sm:text-3xl font-black text-zinc-950 tracking-tight mb-2">Reset Password</h1>
         <p className="text-sm text-zinc-500">Masukkan password baru Anda</p>
       </div>

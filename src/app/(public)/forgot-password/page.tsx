@@ -6,6 +6,7 @@ import { authApi } from '@/lib/api';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
+import { BrandLogo } from '@/components/brand/BrandLogo';
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
@@ -23,7 +24,7 @@ export default function ForgotPasswordPage() {
       await authApi.post('/api/v1/auth/forgot-password', { email });
       setSuccess(true);
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Gagal memproses permintaan Anda');
+      setError(err instanceof Error ? err.message : 'Terjadi kesalahan saat meminta reset password');
     } finally {
       setLoading(false);
     }
@@ -32,7 +33,8 @@ export default function ForgotPasswordPage() {
   return (
     <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
       <Card className="w-full max-w-md p-8 sm:p-10 bg-white border border-zinc-200 rounded-3xl shadow-sm">
-        <div className="text-center mb-8">
+        <div className="text-center mb-8 flex flex-col items-center">
+          <BrandLogo markClassName="h-11 w-11 mb-3" showWordmark={false} />
           <h1 className="text-2xl sm:text-3xl font-black text-zinc-950 tracking-tight mb-2">Lupa Password?</h1>
           <p className="text-sm text-zinc-500">Masukkan email Anda untuk mereset password</p>
         </div>

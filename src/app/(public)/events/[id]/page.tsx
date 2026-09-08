@@ -298,11 +298,8 @@ export default function EventDetailPage() {
           <div className="lg:col-span-5 xl:col-span-4">
             <div className="sticky top-24">
               <div className="bg-zinc-100 rounded-3xl overflow-hidden">
-                <div className="p-5 sm:p-6 flex items-center justify-between">
+                <div className="p-5 sm:p-6 pb-2">
                   <h3 className="text-lg font-black text-zinc-950">Pilih Tiket</h3>
-                  <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full">
-                    Garansi Resmi
-                  </span>
                 </div>
                 <div className="p-5 sm:p-6 pt-0">
                   <TicketSelector 

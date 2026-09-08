@@ -23,11 +23,11 @@ export function Button({
   const baseStyles = 'inline-flex items-center justify-center rounded-full font-medium transition-all duration-200 focus:outline-none disabled:opacity-50 disabled:pointer-events-none cursor-pointer select-none';
   
   const variants = {
-    primary: 'bg-zinc-950 text-white hover:bg-zinc-800 active:scale-[0.98] shadow-xs',
-    secondary: 'bg-zinc-100 text-zinc-900 hover:bg-zinc-200/80 active:scale-[0.98] border border-zinc-200/60',
-    outline: 'bg-white text-zinc-900 border border-zinc-200 hover:bg-zinc-50 active:scale-[0.98] shadow-xs',
+    primary: 'bg-zinc-950 text-white hover:bg-zinc-800 shadow-xs',
+    secondary: 'bg-zinc-100 text-zinc-900 hover:bg-zinc-200/80 border border-zinc-200/60',
+    outline: 'bg-white text-zinc-900 border border-zinc-200 hover:bg-zinc-50 shadow-xs',
     ghost: 'bg-transparent text-zinc-600 hover:text-zinc-950 hover:bg-zinc-100',
-    danger: 'bg-rose-600 text-white hover:bg-rose-700 active:scale-[0.98] shadow-xs',
+    danger: 'bg-rose-600 text-white hover:bg-rose-700 shadow-xs',
   };
 
   const sizes = {

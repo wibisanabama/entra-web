@@ -47,30 +47,30 @@ export function Navbar() {
           <div className="flex items-center gap-4 sm:gap-7">
             <Link 
               href="/events" 
-              className={`text-xs sm:text-sm transition-colors ${
+              className={`text-xs sm:text-sm font-medium transition-colors ${
                 pathname.startsWith('/events') 
-                  ? 'text-zinc-950 font-semibold' 
-                  : 'text-zinc-800 hover:text-zinc-950 font-medium'
+                  ? 'text-zinc-950' 
+                  : 'text-zinc-800 hover:text-zinc-950'
               }`}
             >
               Event
             </Link>
             <Link 
               href="/my-tickets" 
-              className={`hidden sm:inline-block text-xs sm:text-sm transition-colors ${
+              className={`hidden sm:inline-block text-xs sm:text-sm font-medium transition-colors ${
                 pathname.startsWith('/my-tickets') 
-                  ? 'text-zinc-950 font-semibold' 
-                  : 'text-zinc-800 hover:text-zinc-950 font-medium'
+                  ? 'text-zinc-950' 
+                  : 'text-zinc-800 hover:text-zinc-950'
               }`}
             >
               Tiket Saya
             </Link>
             <Link 
               href="/cashless" 
-              className={`hidden md:inline-block text-xs sm:text-sm transition-colors ${
+              className={`hidden md:inline-block text-xs sm:text-sm font-medium transition-colors ${
                 pathname.startsWith('/cashless') 
-                  ? 'text-zinc-950 font-semibold' 
-                  : 'text-zinc-800 hover:text-zinc-950 font-medium'
+                  ? 'text-zinc-950' 
+                  : 'text-zinc-800 hover:text-zinc-950'
               }`}
             >
               Gelang Cashless
@@ -160,20 +160,20 @@ export function Navbar() {
           <nav className="flex items-center gap-4 sm:gap-6">
             <Link 
               href="/events" 
-              className={`text-sm transition-colors ${
+              className={`text-sm font-medium transition-colors ${
                 pathname.startsWith('/events') 
-                  ? 'text-zinc-950 font-semibold' 
-                  : 'text-zinc-800 hover:text-zinc-950 font-medium'
+                  ? 'text-zinc-950' 
+                  : 'text-zinc-800 hover:text-zinc-950'
               }`}
             >
               Event
             </Link>
             <Link 
               href="/login" 
-              className={`text-sm transition-colors ${
+              className={`text-sm font-medium transition-colors ${
                 pathname === '/login' 
-                  ? 'text-zinc-950 font-semibold' 
-                  : 'text-zinc-800 hover:text-zinc-950 font-medium'
+                  ? 'text-zinc-950' 
+                  : 'text-zinc-800 hover:text-zinc-950'
               }`}
             >
               Masuk

@@ -41,7 +41,9 @@ function LoginForm() {
   return (
     <div className="w-full max-w-md p-8 sm:p-10 bg-zinc-100 rounded-3xl">
       <div className="text-center mb-8 flex flex-col items-center">
-        <BrandLogo markClassName="h-11 w-11 mb-3" showWordmark={false} />
+        <Link href="/" aria-label="Kembali ke Beranda">
+          <BrandLogo markClassName="h-11 w-11 mb-3 hover:opacity-80 transition-opacity" showWordmark={false} />
+        </Link>
         <h1 className="text-2xl sm:text-3xl font-black text-zinc-950 tracking-tight mb-2">Selamat Datang</h1>
         <p className="text-sm text-zinc-500">Masuk ke akun Entra Anda</p>
       </div>

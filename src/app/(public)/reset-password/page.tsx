@@ -56,7 +56,9 @@ function ResetPasswordForm() {
   return (
     <>
       <div className="text-center mb-8 flex flex-col items-center">
-        <BrandLogo markClassName="h-11 w-11 mb-3" showWordmark={false} />
+        <Link href="/" aria-label="Kembali ke Beranda">
+          <BrandLogo markClassName="h-11 w-11 mb-3 hover:opacity-80 transition-opacity" showWordmark={false} />
+        </Link>
         <h1 className="text-2xl sm:text-3xl font-black text-zinc-950 tracking-tight mb-2">Reset Password</h1>
         <p className="text-sm text-zinc-500">Masukkan password baru Anda</p>
       </div>

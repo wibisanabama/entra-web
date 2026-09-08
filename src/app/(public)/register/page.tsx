@@ -61,7 +61,9 @@ function RegisterForm() {
     <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-lg p-8 sm:p-10 bg-zinc-100 rounded-3xl">
         <div className="text-center mb-8 flex flex-col items-center">
-          <BrandLogo markClassName="h-11 w-11 mb-3" showWordmark={false} />
+          <Link href="/" aria-label="Kembali ke Beranda">
+            <BrandLogo markClassName="h-11 w-11 mb-3 hover:opacity-80 transition-opacity" showWordmark={false} />
+          </Link>
           <h1 className="text-2xl sm:text-3xl font-black text-zinc-950 tracking-tight mb-2">Buat Akun Baru</h1>
           <p className="text-sm text-zinc-500">Bergabung dengan Entra sekarang</p>
         </div>

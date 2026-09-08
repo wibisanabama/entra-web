@@ -11,6 +11,33 @@ const inter = localFont({
   display: "swap",
 });
 
+const mSaans = localFont({
+  src: [
+    {
+      path: "./fonts/m-saans-regular.woff2",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "./fonts/m-saans-medium.woff2",
+      weight: "500",
+      style: "normal",
+    },
+    {
+      path: "./fonts/m-saans-semibold.woff2",
+      weight: "600",
+      style: "normal",
+    },
+    {
+      path: "./fonts/m-saans-bold.woff2",
+      weight: "700",
+      style: "normal",
+    },
+  ],
+  variable: "--font-saans",
+  display: "swap",
+});
+
 import Script from "next/script";
 
 export const metadata: Metadata = {
@@ -34,7 +61,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id" className="light" suppressHydrationWarning>
-      <body className={`${inter.className} ${inter.variable} min-h-screen bg-background text-foreground antialiased`}>
+      <body className={`${inter.className} ${inter.variable} ${mSaans.variable} min-h-screen bg-background text-foreground antialiased`}>
         <Toaster position="top-center" richColors />
         <QueryProvider>
           <ThemeProvider>

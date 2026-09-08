@@ -53,6 +53,11 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --font-saans: var(--font-saans);
+}
+
+.font-saans {
+  font-family: var(--font-saans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 body {

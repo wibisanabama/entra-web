@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/providers/auth-provider';
 import { Menu, X, Search, Ticket, Wallet, LayoutDashboard, User, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
+import { BrandLogo } from '@/components/brand/BrandLogo';
 
 export function Navbar() {
   const { user, logout } = useAuth();
@@ -45,12 +46,7 @@ export function Navbar() {
           {/* Brand Logo */}
           <div className="flex items-center gap-6">
             <Link href="/" className="flex items-center gap-2 group">
-              <span className="w-8 h-8 rounded-full bg-zinc-950 flex items-center justify-center text-white font-bold text-sm tracking-tighter group-hover:scale-105 transition-transform">
-                E
-              </span>
-              <span className="text-xl font-bold tracking-tight text-zinc-950">
-                Entra
-              </span>
+              <BrandLogo markClassName="h-8 w-8 transition-transform group-hover:scale-105" />
             </Link>
 
             <nav className="hidden lg:flex items-center gap-1 text-sm font-medium text-zinc-600">

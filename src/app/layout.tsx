@@ -16,6 +16,13 @@ import Script from "next/script";
 export const metadata: Metadata = {
   title: "Entra - Event Ticketing Platform",
   description: "Your modern and reliable event ticketing platform.",
+  icons: {
+    icon: [
+      { url: "/brand/favicon.svg", type: "image/svg+xml" },
+      { url: "/brand/favicon.ico", sizes: "any" },
+    ],
+    apple: "/brand/entra-mark-192.png",
+  },
 };
 
 import { Toaster } from "sonner";

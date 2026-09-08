@@ -7,6 +7,7 @@ import { Skeleton } from '@/components/ui/Skeleton';
 import { eventApi } from '@/lib/api';
 import { Event as EventType, Category, Venue } from '@/types';
 import { ArrowRight, Compass, Music, Laptop, Briefcase, Users, Palette, Utensils, Trophy, Globe2, Ticket } from 'lucide-react';
+import { BrandLogo } from '@/components/brand/BrandLogo';
 
 export default function HomePage() {
   const [events, setEvents] = useState<EventType[]>([]);
@@ -93,9 +94,7 @@ export default function HomePage() {
       
       <section className="border-b border-zinc-200 px-4 py-20 sm:py-28 lg:py-36">
         <div className="mx-auto flex max-w-4xl flex-col items-center text-center">
-          <div className="mb-8 flex h-16 w-16 items-center justify-center rounded-2xl bg-zinc-950 text-2xl font-black text-white shadow-[0_8px_30px_rgba(0,0,0,0.12)]">
-            E
-          </div>
+          <BrandLogo className="mb-8" markClassName="h-16 w-16 shadow-[0_8px_30px_rgba(0,0,0,0.12)]" showWordmark={false} />
           <p className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-zinc-500">Event yang layak dikenang</p>
           <h1 className="max-w-4xl text-4xl font-black leading-[1.02] tracking-[-0.055em] text-zinc-950 sm:text-6xl lg:text-7xl">
             Temukan pengalaman nyata di sekitar Anda.

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/providers/auth-provider';
 import { BarChart3, Calendar, ShoppingCart, Folder, Wallet, ShieldCheck, MapPin, ArrowUpRight } from 'lucide-react';
+import { BrandLogo } from '@/components/brand/BrandLogo';
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -26,11 +27,11 @@ export function Sidebar() {
     <div className="flex flex-col bg-white h-full transition-all duration-300 w-64 select-none">
       <div className="flex items-center justify-between h-16 px-6 border-b border-zinc-200">
         <Link href="/" className="flex items-center gap-2.5">
-          <span className="h-7 w-7 rounded-lg bg-zinc-950 text-white font-black flex items-center justify-center text-xs shadow-xs">
-            E
-          </span>
-          <span className="font-black text-lg tracking-tight text-zinc-950">
-            Entra<span className="text-zinc-400 font-bold text-[10px] ml-1.5 px-1.5 py-0.5 bg-zinc-100 rounded-full">STUDIO</span>
+          <span className="inline-flex items-center gap-2.5">
+            <BrandLogo markClassName="h-7 w-7" showWordmark={false} />
+            <span className="font-black text-lg tracking-tight text-zinc-950">
+              Entra<span className="text-zinc-400 font-bold text-[10px] ml-1.5 px-1.5 py-0.5 bg-zinc-100 rounded-full">STUDIO</span>
+            </span>
           </span>
         </Link>
       </div>

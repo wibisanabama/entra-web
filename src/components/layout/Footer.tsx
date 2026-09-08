@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { BrandLogo } from '@/components/brand/BrandLogo';
 
 export function Footer() {
   return (
@@ -7,12 +8,7 @@ export function Footer() {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
           <div className="max-w-sm">
             <Link href="/" className="flex items-center gap-2 mb-3">
-              <span className="w-7 h-7 rounded-full bg-zinc-950 flex items-center justify-center text-white font-bold text-xs">
-                E
-              </span>
-              <span className="text-lg font-bold tracking-tight text-zinc-950">
-                Entra
-              </span>
+              <BrandLogo markClassName="h-7 w-7" wordmarkClassName="text-lg font-bold tracking-tight text-zinc-950" />
             </Link>
             <p className="text-zinc-500 text-xs leading-relaxed">
               Platform ticketing dan manajemen event modern dengan validasi gate instan dan ekosistem cashless festival.

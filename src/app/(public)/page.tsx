@@ -81,12 +81,12 @@ export default function HomePage() {
   return (
     <div className="w-full bg-white text-zinc-900 min-h-screen">
       
-      <section className="border-b border-zinc-200 px-6 sm:px-8 lg:px-12 min-h-[calc(100vh-5rem)] flex flex-col justify-center items-center py-12 sm:py-16">
-        <div className="mx-auto flex max-w-4xl flex-col items-center text-center">
-          <h1 className="max-w-4xl text-4xl sm:text-6xl lg:text-[72px] font-semibold leading-[1.08] tracking-[-0.035em] text-zinc-950">
+      <section className="border-b border-zinc-200 px-6 sm:px-8 min-h-[calc(100vh-5rem)] flex flex-col justify-center items-center py-12 sm:py-16">
+        <div className="mx-auto flex max-w-[900px] flex-col items-center text-center">
+          <h1 className="max-w-[840px] text-4xl sm:text-5xl lg:text-[64px] font-semibold leading-[1.1] tracking-[-0.035em] text-zinc-950">
             Temukan pengalaman nyata di sekitar Anda.
           </h1>
-          <p className="mt-5 max-w-xl text-base sm:text-lg text-zinc-500 font-normal leading-relaxed">
+          <p className="mt-5 max-w-lg text-base sm:text-lg text-zinc-500 font-normal leading-relaxed">
             Cari event, pilih tiket, lalu masuk dengan QR. Praktis, aman, dan instan untuk semua pengunjung.
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3 sm:gap-4">
@@ -108,7 +108,7 @@ export default function HomePage() {
 
       {/* Sticky Pill Filter Bar ala Mobbin */}
       <div className="sticky top-16 z-40 bg-white/95 backdrop-blur-md border-b border-zinc-200/80 py-3 shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[900px] mx-auto px-4 sm:px-6">
           <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5">
             <button
               onClick={() => setSelectedCategory('all')}
@@ -145,7 +145,7 @@ export default function HomePage() {
 
       {/* Event Gallery Grid Section */}
       <section className="py-8 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[900px] mx-auto px-4 sm:px-6">
           
           <div className="flex items-center justify-between mb-6">
             <span className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
@@ -159,9 +159,9 @@ export default function HomePage() {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {loading ? (
-              Array(8).fill(0).map((_, i) => (
+              Array(6).fill(0).map((_, i) => (
                 <div key={i} className="flex flex-col gap-3 rounded-2xl border border-zinc-200 p-3 bg-white">
                   <Skeleton className="aspect-[16/10] w-full rounded-xl" />
                   <Skeleton className="h-4 w-3/4 rounded-md" />
@@ -200,7 +200,7 @@ export default function HomePage() {
       </section>
 
       <section className="border-t border-zinc-200 bg-zinc-50 px-4 py-20 sm:py-24">
-        <div className="mx-auto max-w-7xl">
+        <div className="mx-auto max-w-[900px] px-4 sm:px-6">
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-zinc-500">Cara kerja</p>
           <h2 className="mt-3 max-w-2xl text-3xl font-black tracking-tight text-zinc-950 sm:text-5xl">Dari pencarian sampai pintu masuk.</h2>
           <div className="mt-12 grid gap-px overflow-hidden rounded-3xl border border-zinc-200 bg-zinc-200 md:grid-cols-3">
@@ -220,7 +220,7 @@ export default function HomePage() {
       </section>
 
       <section className="px-4 py-20 sm:py-28">
-        <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-8 rounded-[2rem] bg-zinc-950 p-8 text-white sm:p-12 lg:flex-row lg:items-end">
+        <div className="mx-auto flex max-w-[900px] flex-col items-start justify-between gap-8 rounded-[2rem] bg-zinc-950 p-8 text-white sm:p-12 lg:flex-row lg:items-end">
           <div className="max-w-2xl">
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-zinc-400">Untuk organizer</p>
             <h2 className="mt-4 text-3xl font-black tracking-tight sm:text-5xl">Kelola event dari publikasi hingga check-in.</h2>

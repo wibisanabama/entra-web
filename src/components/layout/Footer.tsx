@@ -4,7 +4,7 @@ import { BrandLogo } from '@/components/brand/BrandLogo';
 export function Footer() {
   return (
     <footer className="bg-white border-t border-zinc-200 mt-auto">
-      <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[900px] mx-auto py-12 px-4 sm:px-6">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
           <div className="max-w-sm">
             <Link href="/" className="flex items-center gap-2 mb-3">

@@ -170,7 +170,7 @@ export default function HomePage() {
               >
                 {/* Sliding Capsule Highlight */}
                 <div
-                  className={`absolute top-1 sm:top-1.5 bottom-1 sm:bottom-1.5 rounded-full bg-white shadow-[0_1px_2px_rgba(0,0,0,0.08)] pointer-events-none ${
+                  className={`absolute top-1 sm:top-1.5 bottom-1 sm:bottom-1.5 rounded-full bg-white pointer-events-none ${
                     isReady
                       ? 'transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]'
                       : 'transition-none'

@@ -37,9 +37,9 @@ export function EventCard({ event }: EventCardProps) {
 
   return (
     <Link href={`/events/${event.id}`} className="block h-full">
-      <div className="h-full flex flex-col rounded-2xl bg-zinc-100 p-3">
+      <div className="h-full flex flex-col rounded-2xl bg-white p-3">
         {/* Banner Thumbnail (16:10 aspect ratio) */}
-        <div className="relative aspect-[16/10] w-full overflow-hidden rounded-xl bg-zinc-200/70">
+        <div className="relative aspect-[16/10] w-full overflow-hidden rounded-xl bg-zinc-100">
           {banner ? (
             <img 
               src={banner} 
@@ -47,7 +47,7 @@ export function EventCard({ event }: EventCardProps) {
               className="w-full h-full object-cover"
             />
           ) : (
-            <div className="w-full h-full bg-zinc-200/70 flex items-center justify-center text-zinc-400">
+            <div className="w-full h-full bg-zinc-100 flex items-center justify-center text-zinc-400">
               <span className="font-semibold text-xs tracking-wider uppercase">Entra Event</span>
             </div>
           )}
@@ -95,7 +95,7 @@ export function EventCard({ event }: EventCardProps) {
           {/* Card Footer: Price Pill */}
           <div className="pt-2 flex items-center justify-between">
             <span className="text-xs text-zinc-400 font-medium">Harga Tiket</span>
-            <div className="px-2.5 py-1 rounded-full text-xs font-semibold bg-white text-zinc-950">
+            <div className="px-2.5 py-1 rounded-full text-xs font-semibold bg-zinc-100 text-zinc-900">
               {minPrice === null
                 ? 'Informasi Belum Ada'
                 : minPrice === 0

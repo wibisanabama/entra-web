@@ -125,7 +125,7 @@ export default function HomePage() {
       </section>
 
       {/* Event Discovery Section ala Mobbin */}
-      <section className="pt-20 sm:pt-28 pb-16 bg-white">
+      <section className="pt-20 sm:pt-28 pb-20 sm:pb-28 bg-zinc-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
           {/* Section Heading & Segmented Category Pill Tabs */}
@@ -138,7 +138,7 @@ export default function HomePage() {
             <div className="mt-8 sm:mt-10 flex justify-center w-full">
               <div
                 ref={containerRef}
-                className="relative inline-flex items-center p-1 sm:p-1.5 bg-[#f3f3f3] rounded-full gap-1 overflow-x-auto no-scrollbar max-w-full"
+                className="relative inline-flex items-center p-1 sm:p-1.5 bg-zinc-200/80 rounded-full gap-1 overflow-x-auto no-scrollbar max-w-full"
               >
                 {/* Sliding Capsule Highlight */}
                 <div
@@ -207,20 +207,20 @@ export default function HomePage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {loading ? (
                 Array(8).fill(0).map((_, i) => (
-                  <div key={i} className="flex flex-col rounded-2xl bg-zinc-100 p-3">
-                    <Skeleton className="aspect-[16/10] w-full rounded-xl bg-zinc-200/70" />
+                  <div key={i} className="flex flex-col rounded-2xl bg-white p-3">
+                    <Skeleton className="aspect-[16/10] w-full rounded-xl bg-zinc-100" />
                     <div className="pt-3 pb-1 px-1 space-y-2">
-                      <Skeleton className="h-4 w-3/4 rounded-md bg-zinc-200/70" />
-                      <Skeleton className="h-3 w-1/2 rounded-md bg-zinc-200/70" />
+                      <Skeleton className="h-4 w-3/4 rounded-md bg-zinc-100" />
+                      <Skeleton className="h-3 w-1/2 rounded-md bg-zinc-100" />
                       <div className="pt-2 flex justify-between items-center">
-                        <Skeleton className="h-3 w-16 rounded-md bg-zinc-200/70" />
-                        <Skeleton className="h-6 w-20 rounded-full bg-white" />
+                        <Skeleton className="h-3 w-16 rounded-md bg-zinc-100" />
+                        <Skeleton className="h-6 w-20 rounded-full bg-zinc-100" />
                       </div>
                     </div>
                   </div>
                 ))
               ) : loadError ? (
-                <div className="col-span-full flex flex-col items-center rounded-3xl border border-zinc-200 bg-zinc-50 px-6 py-20 text-center">
+                <div className="col-span-full flex flex-col items-center rounded-3xl border border-zinc-200 bg-white px-6 py-20 text-center">
                   <p className="text-base font-bold text-zinc-950">Event belum dapat dimuat</p>
                   <p className="mt-2 max-w-md text-sm text-zinc-500">Periksa koneksi ke layanan event, lalu coba kembali.</p>
                   <button onClick={() => window.location.reload()} className="mt-5 h-10 rounded-full bg-zinc-950 px-5 text-sm font-semibold text-white">Coba lagi</button>
@@ -230,7 +230,7 @@ export default function HomePage() {
                   <EventCard key={event.id} event={event} />
                 ))
               ) : (
-                <div className="col-span-full text-center py-20 border border-dashed border-zinc-200 rounded-2xl bg-zinc-50/50">
+                <div className="col-span-full text-center py-20 border border-dashed border-zinc-300 rounded-2xl bg-white/70">
                   <p className="text-sm font-semibold text-zinc-800">Tidak ada event untuk filter ini</p>
                   <p className="text-xs text-zinc-500 mt-1">Coba pilih kategori lain atau reset filter pilihan Anda.</p>
                   <button
@@ -247,7 +247,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="bg-zinc-50 px-4 py-20 sm:py-24">
+      <section className="bg-white px-4 py-20 sm:py-24">
         <div className="mx-auto max-w-7xl">
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-zinc-500">Cara kerja</p>
           <h2 className="mt-3 max-w-2xl text-3xl font-black tracking-tight text-zinc-950 sm:text-5xl">Dari pencarian sampai pintu masuk.</h2>

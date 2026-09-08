@@ -24,13 +24,8 @@ interface EventDetail {
   image: string;
   category: string;
   organizer: string;
-  tickets: Array<{
-    id: string;
-    name: string;
-    price: number;
-    quota: number;
-    available: number;
-  }>;
+  organizerAvatar?: string;
+  tickets: TicketType[];
 }
 
 export default function EventDetailPage() {
@@ -114,11 +109,15 @@ export default function EventDetailPage() {
           const venues = Array.isArray(venueRes.data) ? venueRes.data : [];
           
           let organizerName = 'Organizer Event';
+          let organizerAvatar: string | undefined;
           if (apiEvent.organizer_id) {
             try {
-              const userRes = await authApi.get<User>(`/api/v1/users/${apiEvent.organizer_id}`);
+              const userRes = await authApi.get<{ full_name?: string; avatar_url?: string }>(`/api/v1/users/${apiEvent.organizer_id}`);
               if (userRes.data?.full_name) {
                 organizerName = userRes.data.full_name;
+              }
+              if (userRes.data?.avatar_url) {
+                organizerAvatar = userRes.data.avatar_url;
               }
             } catch {
               // Ignore if organizer is not found
@@ -130,7 +129,15 @@ export default function EventDetailPage() {
           if (apiEvent.start_date) {
             const startDate = new Date(apiEvent.start_date);
             dateStr = format(startDate, 'dd MMMM yyyy', { locale: localeId });
-            timeStr = format(startDate, 'HH:mm', { locale: localeId }) + ' WIB';
+            if (apiEvent.end_date) {
+              const endDate = new Date(apiEvent.end_date);
+              if (!isNaN(endDate.getTime()) && startDate.toDateString() !== endDate.toDateString()) {
+                dateStr = `${format(startDate, 'dd MMM', { locale: localeId })} - ${format(endDate, 'dd MMMM yyyy', { locale: localeId })}`;
+              }
+              timeStr = `${format(startDate, 'HH:mm', { locale: localeId })} - ${format(endDate, 'HH:mm', { locale: localeId })} WIB`;
+            } else {
+              timeStr = format(startDate, 'HH:mm', { locale: localeId }) + ' WIB';
+            }
           }
 
           let categoryName = 'Kategori';
@@ -154,20 +161,15 @@ export default function EventDetailPage() {
           setEvent({
             id: apiEvent.id,
             title: apiEvent.title,
-            description: getPgText(apiEvent.description) || 'Tidak ada deskripsi',
+            description: getPgText(apiEvent.description) || 'Tidak ada deskripsi yang disediakan oleh penyelenggara.',
             date: dateStr,
             time: timeStr,
             venue: venueName,
             image: getPgText(apiEvent.banner_url) || 'https://placehold.co/1200x500/1e1e1e/8a2be2?text=Tanpa+Gambar',
             category: apiEvent.category?.name || categoryName,
             organizer: organizerName,
-            tickets: rawTickets.map((t) => ({
-              id: t.id,
-              name: t.name,
-              price: parseFloat(String(t.price)) || 0,
-              quota: t.quantity,
-              available: t.quantity - (t.sold || 0)
-            }))
+            organizerAvatar,
+            tickets: rawTickets
           });
         }
       } catch (error) {
@@ -283,12 +285,20 @@ export default function EventDetailPage() {
             <div className="bg-zinc-100 p-6 sm:p-8 rounded-3xl space-y-4">
               <h3 className="text-sm font-bold text-zinc-500 uppercase tracking-wider">Penyelenggara Acara</h3>
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center font-black text-lg text-zinc-950 flex-shrink-0">
-                  {event.organizer.charAt(0)}
-                </div>
+                {event.organizerAvatar ? (
+                  <img 
+                    src={event.organizerAvatar} 
+                    alt={event.organizer} 
+                    className="w-12 h-12 rounded-full object-cover flex-shrink-0"
+                  />
+                ) : (
+                  <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center font-black text-lg text-zinc-950 flex-shrink-0">
+                    {event.organizer.charAt(0)}
+                  </div>
+                )}
                 <div>
                   <h4 className="font-bold text-zinc-950 text-base">{event.organizer}</h4>
-                  <p className="text-xs text-zinc-500">Verified Event Organizer • Entra Partner</p>
+                  <p className="text-xs text-zinc-500">Penyelenggara Terverifikasi di Entra</p>
                 </div>
               </div>
             </div>
@@ -303,7 +313,7 @@ export default function EventDetailPage() {
                 </div>
                 <div className="p-5 sm:p-6 pt-0">
                   <TicketSelector 
-                    ticketTypes={event.tickets as unknown as TicketType[]} 
+                    ticketTypes={event.tickets} 
                     eventId={String(event.id)}
                     onSelect={async (selected, appliedPromo) => {
                       if (!user) {
@@ -316,13 +326,14 @@ export default function EventDetailPage() {
                         setCheckoutLoading(true);
                         const totalRawSubtotal = selected.reduce((sum, item) => {
                           const t = event.tickets.find((tk) => tk.id === item.ticketTypeId);
-                          return sum + (t?.price || 0) * item.quantity;
+                          const price = t?.price ? (typeof t.price === 'number' ? t.price : parseFloat(t.price) || 0) : 0;
+                          return sum + price * item.quantity;
                         }, 0);
 
                         let lastOrderId = '';
                         for (const item of selected) {
                           const ticketData = event.tickets.find((t) => t.id === item.ticketTypeId);
-                          const basePrice = ticketData?.price || 0;
+                          const basePrice = ticketData?.price ? (typeof ticketData.price === 'number' ? ticketData.price : parseFloat(ticketData.price) || 0) : 0;
                           let unitPrice = basePrice;
                           if (appliedPromo && appliedPromo.discountAmount > 0 && totalRawSubtotal > 0) {
                             const itemSubtotal = basePrice * item.quantity;

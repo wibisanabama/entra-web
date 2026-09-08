@@ -430,10 +430,12 @@ export default function EventsPage() {
           Array(8)
             .fill(0)
             .map((_, i) => (
-              <div key={i} className="flex flex-col gap-3 bg-white p-4 rounded-2xl border border-zinc-200 shadow-sm">
-                <Skeleton className="h-44 w-full rounded-xl bg-zinc-200/60" />
-                <Skeleton className="h-5 w-3/4 bg-zinc-200/60 mt-2" />
-                <Skeleton className="h-4 w-1/2 bg-zinc-200/60" />
+              <div key={i} className="flex flex-col">
+                <Skeleton className="aspect-[16/10] w-full rounded-2xl bg-zinc-200/60" />
+                <div className="pt-3 space-y-2">
+                  <Skeleton className="h-4 w-3/4 bg-zinc-200/60 rounded-md" />
+                  <Skeleton className="h-3 w-1/2 bg-zinc-200/60 rounded-md" />
+                </div>
               </div>
             ))
         ) : filteredEvents.length > 0 ? (

@@ -36,15 +36,15 @@ export function EventCard({ event }: EventCardProps) {
   const banner = getPgText(event.banner_url);
 
   return (
-    <Link href={`/events/${event.id}`} className="block h-full group">
-      <div className="h-full flex flex-col rounded-2xl border border-zinc-200 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04)] hover:shadow-xl hover:border-zinc-300 transition-all duration-300 overflow-hidden">
+    <Link href={`/events/${event.id}`} className="block h-full">
+      <div className="h-full flex flex-col">
         {/* Banner Thumbnail (16:10 aspect ratio) */}
-        <div className="relative aspect-[16/10] w-full overflow-hidden bg-zinc-100 border-b border-zinc-100">
+        <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl bg-zinc-100">
           {banner ? (
             <img 
               src={banner} 
               alt={event.title} 
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              className="w-full h-full object-cover"
             />
           ) : (
             <div className="w-full h-full bg-zinc-100 flex items-center justify-center text-zinc-400">
@@ -55,7 +55,7 @@ export function EventCard({ event }: EventCardProps) {
           {/* Category Pill Tag Overlay */}
           {event.category?.name && (
             <div className="absolute top-3 left-3">
-              <span className="px-2.5 py-1 text-[11px] font-semibold bg-white/95 backdrop-blur-md text-zinc-900 border border-zinc-200/90 rounded-full shadow-2xs">
+              <span className="px-2.5 py-1 text-[11px] font-semibold bg-white/95 backdrop-blur-md text-zinc-900 rounded-full">
                 {event.category.name}
               </span>
             </div>
@@ -72,13 +72,13 @@ export function EventCard({ event }: EventCardProps) {
         </div>
 
         {/* Card Body */}
-        <div className="p-4 flex flex-col flex-1 justify-between gap-3 bg-white">
+        <div className="pt-3 pb-1 flex flex-col flex-1 justify-between gap-2.5">
           <div>
-            <h3 className="text-sm font-semibold text-zinc-950 line-clamp-2 group-hover:text-zinc-700 transition-colors leading-snug">
+            <h3 className="text-[15px] font-semibold text-zinc-950 line-clamp-2 leading-snug tracking-[-0.01em]">
               {event.title}
             </h3>
 
-            <div className="mt-2 space-y-1 text-xs text-zinc-500">
+            <div className="mt-1.5 space-y-1 text-xs text-zinc-500">
               <div className="flex items-center gap-1.5">
                 <Calendar className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
                 <span>{formattedDate}</span>
@@ -93,9 +93,9 @@ export function EventCard({ event }: EventCardProps) {
           </div>
 
           {/* Card Footer: Price Pill */}
-          <div className="pt-3 border-t border-zinc-100 flex items-center justify-between">
-            <span className="text-[11px] text-zinc-400 font-medium">Harga Tiket</span>
-            <div className="px-2.5 py-1 rounded-full text-xs font-semibold bg-zinc-100 text-zinc-900 border border-zinc-200/60">
+          <div className="pt-1 flex items-center justify-between">
+            <span className="text-xs text-zinc-400 font-medium">Harga Tiket</span>
+            <div className="px-2.5 py-1 rounded-full text-xs font-semibold bg-zinc-100 text-zinc-900">
               {minPrice === null
                 ? 'Informasi Belum Ada'
                 : minPrice === 0

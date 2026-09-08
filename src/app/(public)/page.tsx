@@ -89,18 +89,18 @@ export default function HomePage() {
           <p className="mt-5 max-w-[620px] text-base sm:text-lg text-zinc-500 font-normal leading-relaxed">
             Cari event, pilih tiket, lalu masuk dengan QR. Praktis, aman, dan instan <br className="hidden sm:inline" />untuk semua pengunjung.
           </p>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3 sm:gap-4">
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <Link 
               href="/events" 
-              className="inline-flex h-11 sm:h-12 items-center justify-center rounded-full bg-zinc-950 px-7 sm:px-8 text-sm font-semibold text-white hover:bg-zinc-800 transition-all shadow-xs active:scale-95"
+              className="inline-flex h-12 items-center justify-center rounded-full bg-zinc-950 px-6 text-[15px] font-semibold text-white hover:bg-zinc-800 transition-all shadow-xs active:scale-95 tracking-[-0.01em]"
             >
               Jelajahi event
             </Link>
             <Link 
               href="/register" 
-              className="inline-flex h-11 sm:h-12 items-center justify-center gap-2 rounded-full border border-zinc-200 bg-white px-7 sm:px-8 text-sm font-semibold text-zinc-950 hover:bg-zinc-50 transition-all shadow-xs active:scale-95"
+              className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-zinc-200 bg-white px-6 text-[15px] font-semibold text-zinc-950 hover:bg-zinc-50 transition-all shadow-xs active:scale-95 tracking-[-0.01em]"
             >
-              Mulai sebagai organizer <ArrowRight className="h-4 w-4" />
+              Mulai sebagai organizer <ArrowRight className="h-4 w-4 stroke-[2]" />
             </Link>
           </div>
         </div>

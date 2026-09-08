@@ -125,6 +125,18 @@ export default function MyTicketsPage() {
         throw new Error('Token pembayaran tidak ditemukan.');
       }
 
+      // If mock token or no snap instance, trigger simulate
+      if (token.startsWith('MOCK_') || typeof window === 'undefined' || !window.snap) {
+        try {
+          await ticketApi.post(`/api/v1/tickets/orders/${orderId}/simulate`);
+          toast.success('Pembayaran simulasi dev berhasil! Tiket Anda telah aktif.');
+          fetchUserTicketsAndOrders();
+          return;
+        } catch {
+          // If simulate fails, fall through
+        }
+      }
+
       if (typeof window !== 'undefined' && window.snap) {
         window.snap.pay(token, {
           onSuccess: () => {
@@ -148,6 +160,21 @@ export default function MyTicketsPage() {
     } catch (error: unknown) {
       console.error('Payment error:', error);
       const errMsg = error instanceof Error ? error.message : 'Gagal memulai transaksi pembayaran.';
+      toast.error(errMsg);
+    } finally {
+      setPayingOrderId(null);
+    }
+  };
+
+  const handleSimulatePayment = async (orderId: string) => {
+    try {
+      setPayingOrderId(orderId);
+      await ticketApi.post(`/api/v1/tickets/orders/${orderId}/simulate`);
+      toast.success('Pembayaran simulasi dev berhasil! Tiket Anda telah aktif.');
+      await fetchUserTicketsAndOrders();
+    } catch (error: unknown) {
+      console.error('Simulate payment error:', error);
+      const errMsg = error instanceof Error ? error.message : 'Gagal simulasi pembayaran';
       toast.error(errMsg);
     } finally {
       setPayingOrderId(null);
@@ -616,14 +643,26 @@ export default function MyTicketsPage() {
                         )}
 
                         {isPending && (
-                          <Button
-                            onClick={() => handlePayOrder(order.id)}
-                            disabled={payingOrderId === order.id}
-                            className="bg-emerald-600 hover:bg-emerald-700 text-white flex items-center gap-1.5 text-xs font-bold"
-                          >
-                            {payingOrderId === order.id ? 'Memuat...' : 'Bayar Sekarang'}
-                            <ArrowRight className="h-3.5 w-3.5" />
-                          </Button>
+                          <div className="flex items-center gap-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleSimulatePayment(order.id)}
+                              disabled={payingOrderId === order.id}
+                              className="border-violet-700/60 hover:bg-violet-950/50 text-violet-300 text-xs font-semibold"
+                              title="Simulasikan pembayaran langsung di mode pengembangan"
+                            >
+                              {payingOrderId === order.id ? 'Memproses...' : 'Simulasi Bayar (Dev)'}
+                            </Button>
+                            <Button
+                              onClick={() => handlePayOrder(order.id)}
+                              disabled={payingOrderId === order.id}
+                              className="bg-emerald-600 hover:bg-emerald-700 text-white flex items-center gap-1.5 text-xs font-bold"
+                            >
+                              {payingOrderId === order.id ? 'Memuat...' : 'Bayar Sekarang'}
+                              <ArrowRight className="h-3.5 w-3.5" />
+                            </Button>
+                          </div>
                         )}
                       </div>
                     </div>

@@ -99,11 +99,11 @@ export default function OrderDetailsPage() {
           <div className="space-y-3">
             <div>
               <p className="text-gray-500 text-sm">Nama Lengkap</p>
-              <p className="text-white font-medium">{buyer ? buyer.full_name : 'Memuat...'}</p>
+              <p className="text-white font-medium">{buyer?.full_name || (loading ? 'Memuat...' : `Pengguna #${order.user_id.slice(0, 8)}`)}</p>
             </div>
             <div>
               <p className="text-gray-500 text-sm">Email</p>
-              <p className="text-white font-medium">{buyer ? buyer.email : 'Memuat...'}</p>
+              <p className="text-white font-medium">{buyer?.email || (loading ? 'Memuat...' : '-')}</p>
             </div>
             <div>
               <p className="text-gray-500 text-sm">User ID</p>

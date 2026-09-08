@@ -1,11 +1,19 @@
 'use client';
 
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useRef } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
 import { EventCard } from '@/components/features/EventCard';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { Button } from '@/components/ui/Button';
 import { eventApi } from '@/lib/api';
 import { Event, Category, Venue } from '@/types';
+import {
+  parseEventFilters,
+  serializeEventFilters,
+  type EventDateFilter as DateFilterOption,
+  type EventPriceFilter as PriceFilterOption,
+  type EventSort as SortOption,
+} from '@/lib/event-filter-url';
 import {
   Search,
   SlidersHorizontal,
@@ -16,11 +24,10 @@ import {
   Sparkles
 } from 'lucide-react';
 
-type DateFilterOption = 'ALL' | 'TODAY' | 'THIS_WEEK' | 'THIS_MONTH' | 'UPCOMING';
-type PriceFilterOption = 'ALL' | 'FREE' | 'PAID';
-type SortOption = 'EARLIEST' | 'NEWEST' | 'PRICE_LOW' | 'PRICE_HIGH' | 'ALPHABETICAL';
-
 export default function EventsPage() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const urlReady = useRef(false);
   const [events, setEvents] = useState<Event[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [venues, setVenues] = useState<Venue[]>([]);
@@ -37,7 +44,33 @@ export default function EventsPage() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    const filters = parseEventFilters(new URLSearchParams(window.location.search));
+    setSearchQuery(filters.query);
+    setSelectedCategory(filters.category);
+    setDateFilter(filters.date);
+    setSelectedCity(filters.city);
+    setPriceFilter(filters.price);
+    setSortBy(filters.sort);
+    urlReady.current = true;
   }, []);
+
+  useEffect(() => {
+    if (!urlReady.current) return;
+
+    const query = serializeEventFilters({
+      query: searchQuery,
+      category: selectedCategory,
+      date: dateFilter,
+      city: selectedCity,
+      price: priceFilter,
+      sort: sortBy,
+    });
+    const timer = window.setTimeout(() => {
+      router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
+    }, 180);
+
+    return () => window.clearTimeout(timer);
+  }, [dateFilter, pathname, priceFilter, router, searchQuery, selectedCategory, selectedCity, sortBy]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -387,7 +420,7 @@ export default function EventsPage() {
       {/* Results Header Count */}
       <div className="flex items-center justify-between text-xs text-zinc-500 px-1">
         <span>
-          Menampilkan <strong className="text-zinc-950 font-semibold">{filteredEvents.length}</strong> event yang tersedia
+          Menampilkan <strong className="text-zinc-950 font-semibold">{filteredEvents.length}</strong> dari {events.length} event yang dimuat
         </span>
       </div>
 

@@ -6,7 +6,7 @@ import { EventCard } from '@/components/features/EventCard';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { eventApi } from '@/lib/api';
 import { Event as EventType, Category, Venue } from '@/types';
-import { Sparkles, Compass, Music, Laptop, Briefcase, Users, Palette, Utensils, Trophy } from 'lucide-react';
+import { ArrowRight, Compass, Music, Laptop, Briefcase, Users, Palette, Utensils, Trophy, Globe2, Ticket } from 'lucide-react';
 
 export default function HomePage() {
   const [events, setEvents] = useState<EventType[]>([]);
@@ -14,10 +14,12 @@ export default function HomePage() {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedFilter, setSelectedFilter] = useState<'all' | 'online' | 'free'>('all');
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoadError(false);
         const [eventRes, catRes, venueRes] = await Promise.all([
           eventApi.get<EventType[]>('/api/v1/events?page=1&per_page=16'),
           eventApi.get<Category[]>('/api/v1/categories').catch(() => ({ success: false, data: [] as Category[] })),
@@ -36,8 +38,8 @@ export default function HomePage() {
           });
           setEvents(eventsWithVenues);
         }
-      } catch (error) {
-        console.error('Error fetching homepage data:', error);
+      } catch {
+        setLoadError(true);
       } finally {
         setLoading(false);
       }
@@ -89,23 +91,27 @@ export default function HomePage() {
   return (
     <div className="w-full bg-white text-zinc-900 min-h-screen">
       
-      {/* Sub-header / Page Title */}
-      <section className="pt-8 pb-4 bg-white border-b border-zinc-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
-          <div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-zinc-100 text-zinc-800 text-xs font-semibold mb-2.5">
-              <Sparkles className="w-3.5 h-3.5 text-zinc-950" />
-              <span>Jelajahi Pengalaman Nyata</span>
-            </div>
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-zinc-950">
-              Temukan Event, Konser & Festival Terbaik
-            </h1>
-            <p className="mt-1 text-sm text-zinc-500">
-              Pesan e-tiket ber-QR resmi, transaksi cashless di venue, dan akses gate instan tanpa antre.
-            </p>
+      <section className="border-b border-zinc-200 px-4 py-20 sm:py-28 lg:py-36">
+        <div className="mx-auto flex max-w-4xl flex-col items-center text-center">
+          <div className="mb-8 flex h-16 w-16 items-center justify-center rounded-2xl bg-zinc-950 text-2xl font-black text-white shadow-[0_8px_30px_rgba(0,0,0,0.12)]">
+            E
           </div>
-
-          <div className="flex items-center gap-2">
+          <p className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-zinc-500">Event yang layak dikenang</p>
+          <h1 className="max-w-4xl text-4xl font-black leading-[1.02] tracking-[-0.055em] text-zinc-950 sm:text-6xl lg:text-7xl">
+            Temukan pengalaman nyata di sekitar Anda.
+          </h1>
+          <p className="mt-6 max-w-2xl text-base leading-7 text-zinc-500 sm:text-lg">
+            Cari event, pilih tiket, lalu masuk dengan QR. Entra menyatukan perjalanan pengunjung dan operasional organizer dalam satu pengalaman sederhana.
+          </p>
+          <div className="mt-8 flex w-full flex-col justify-center gap-3 sm:w-auto sm:flex-row">
+            <Link href="/events" className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-zinc-950 px-7 text-sm font-semibold text-white hover:bg-zinc-800">
+              Jelajahi event <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link href="/register" className="inline-flex h-12 items-center justify-center rounded-full border border-zinc-200 bg-white px-7 text-sm font-semibold text-zinc-950 hover:bg-zinc-50">
+              Mulai sebagai organizer
+            </Link>
+          </div>
+          <div className="mt-10 flex items-center gap-2">
             <button
               onClick={() => setSelectedFilter(selectedFilter === 'online' ? 'all' : 'online')}
               className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer ${
@@ -114,7 +120,7 @@ export default function HomePage() {
                   : 'bg-white text-zinc-600 border border-zinc-200 hover:bg-zinc-50 hover:text-zinc-950'
               }`}
             >
-              🌐 Online Saja
+              <span className="inline-flex items-center gap-1.5"><Globe2 className="h-3.5 w-3.5" /> Online saja</span>
             </button>
             <button
               onClick={() => setSelectedFilter(selectedFilter === 'free' ? 'all' : 'free')}
@@ -124,7 +130,7 @@ export default function HomePage() {
                   : 'bg-white text-zinc-600 border border-zinc-200 hover:bg-zinc-50 hover:text-zinc-950'
               }`}
             >
-              🎟️ Gratis
+              <span className="inline-flex items-center gap-1.5"><Ticket className="h-3.5 w-3.5" /> Gratis</span>
             </button>
           </div>
         </div>
@@ -196,6 +202,12 @@ export default function HomePage() {
                   </div>
                 </div>
               ))
+            ) : loadError ? (
+              <div className="col-span-full flex flex-col items-center rounded-3xl border border-zinc-200 bg-zinc-50 px-6 py-20 text-center">
+                <p className="text-base font-bold text-zinc-950">Event belum dapat dimuat</p>
+                <p className="mt-2 max-w-md text-sm text-zinc-500">Periksa koneksi ke layanan event, lalu coba kembali.</p>
+                <button onClick={() => window.location.reload()} className="mt-5 h-10 rounded-full bg-zinc-950 px-5 text-sm font-semibold text-white">Coba lagi</button>
+              </div>
             ) : filteredEvents.length > 0 ? (
               filteredEvents.map((event) => (
                 <EventCard key={event.id} event={event} />
@@ -214,6 +226,38 @@ export default function HomePage() {
             )}
           </div>
 
+        </div>
+      </section>
+
+      <section className="border-t border-zinc-200 bg-zinc-50 px-4 py-20 sm:py-24">
+        <div className="mx-auto max-w-7xl">
+          <p className="text-xs font-bold uppercase tracking-[0.18em] text-zinc-500">Cara kerja</p>
+          <h2 className="mt-3 max-w-2xl text-3xl font-black tracking-tight text-zinc-950 sm:text-5xl">Dari pencarian sampai pintu masuk.</h2>
+          <div className="mt-12 grid gap-px overflow-hidden rounded-3xl border border-zinc-200 bg-zinc-200 md:grid-cols-3">
+            {[
+              ['01', 'Temukan event', 'Gunakan katalog, kategori, waktu, lokasi, dan harga untuk mempersempit pilihan.'],
+              ['02', 'Pesan tiket', 'Pilih jenis dan jumlah tiket, periksa ringkasan, lalu selesaikan pembayaran.'],
+              ['03', 'Tunjukkan QR', 'Buka tiket aktif dari akun Anda dan tunjukkan QR saat tiba di gate.'],
+            ].map(([number, title, description]) => (
+              <article key={number} className="bg-white p-8 sm:p-10">
+                <span className="text-xs font-bold text-zinc-400">{number}</span>
+                <h3 className="mt-8 text-xl font-bold text-zinc-950">{title}</h3>
+                <p className="mt-3 text-sm leading-6 text-zinc-500">{description}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="px-4 py-20 sm:py-28">
+        <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-8 rounded-[2rem] bg-zinc-950 p-8 text-white sm:p-12 lg:flex-row lg:items-end">
+          <div className="max-w-2xl">
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-zinc-400">Untuk organizer</p>
+            <h2 className="mt-4 text-3xl font-black tracking-tight sm:text-5xl">Kelola event dari publikasi hingga check-in.</h2>
+          </div>
+          <Link href="/register" className="inline-flex h-12 shrink-0 items-center gap-2 rounded-full bg-white px-7 text-sm font-semibold text-zinc-950 hover:bg-zinc-100">
+            Buat akun organizer <ArrowRight className="h-4 w-4" />
+          </Link>
         </div>
       </section>
 

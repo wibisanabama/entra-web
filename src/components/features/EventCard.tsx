@@ -1,7 +1,6 @@
 import React from 'react';
-import { Calendar, Clock, MapPin } from 'lucide-react';
+import { Calendar, MapPin } from 'lucide-react';
 import Link from 'next/link';
-import { Card } from '@/components/ui/Card';
 import { Event } from '@/types';
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';

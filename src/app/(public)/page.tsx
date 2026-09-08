@@ -6,7 +6,7 @@ import { EventCard } from '@/components/features/EventCard';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { eventApi } from '@/lib/api';
 import { Event as EventType, Category, Venue } from '@/types';
-import { ArrowRight, Compass, Music, Laptop, Briefcase, Users, Palette, Utensils, Trophy } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 export default function HomePage() {
   const [events, setEvents] = useState<EventType[]>([]);
@@ -46,27 +46,7 @@ export default function HomePage() {
     fetchData();
   }, []);
 
-  const getCategoryIcon = (identifier?: string) => {
-    const key = identifier?.toLowerCase().replace(/\s+/g, '-');
-    switch (key) {
-      case 'music':
-      case 'musik': return <Music className="w-3.5 h-3.5" />;
-      case 'technology':
-      case 'teknologi': return <Laptop className="w-3.5 h-3.5" />;
-      case 'business':
-      case 'bisnis': return <Briefcase className="w-3.5 h-3.5" />;
-      case 'community':
-      case 'komunitas': return <Users className="w-3.5 h-3.5" />;
-      case 'arts-culture':
-      case 'seni-budaya':
-      case 'seni': return <Palette className="w-3.5 h-3.5" />;
-      case 'food-drink':
-      case 'kuliner': return <Utensils className="w-3.5 h-3.5" />;
-      case 'sports':
-      case 'olahraga': return <Trophy className="w-3.5 h-3.5" />;
-      default: return <Compass className="w-3.5 h-3.5" />;
-    }
-  };
+
 
   // Filter events by category
   const filteredEvents = events.filter((ev) => {
@@ -106,94 +86,99 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Sticky Pill Filter Bar ala Mobbin */}
-      <div className="sticky top-16 z-40 bg-white/95 backdrop-blur-md border-b border-zinc-200/80 py-3 shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5">
-            <button
-              onClick={() => setSelectedCategory('all')}
-              className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all cursor-pointer shrink-0 ${
-                selectedCategory === 'all'
-                  ? 'bg-zinc-950 text-white shadow-xs'
-                  : 'bg-white text-zinc-600 hover:text-zinc-950 hover:bg-zinc-100 border border-zinc-200'
-              }`}
-            >
-              <Compass className="w-3.5 h-3.5" />
-              <span>Semua Kategori</span>
-            </button>
-
-            {categories.map((cat) => {
-              const isSelected = selectedCategory === cat.id;
-              return (
-                <button
-                  key={cat.id}
-                  onClick={() => setSelectedCategory(isSelected ? 'all' : cat.id)}
-                  className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all cursor-pointer shrink-0 ${
-                    isSelected
-                      ? 'bg-zinc-950 text-white shadow-xs'
-                      : 'bg-white text-zinc-600 hover:text-zinc-950 hover:bg-zinc-100 border border-zinc-200'
-                  }`}
-                >
-                  {getCategoryIcon(cat.name)}
-                  <span>{cat.name}</span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-
-      {/* Event Gallery Grid Section */}
-      <section className="py-8 bg-white">
+      {/* Event Discovery Section ala Mobbin */}
+      <section className="pt-20 sm:pt-28 pb-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
-          <div className="flex items-center justify-between mb-6">
-            <span className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
-              {loading ? 'Memuat Event...' : `Menampilkan ${filteredEvents.length} Event`}
-            </span>
-            <Link 
-              href="/events" 
-              className="text-xs font-semibold text-zinc-900 hover:text-zinc-600 transition-colors"
-            >
-              Lihat Katalog Lengkap &rarr;
-            </Link>
-          </div>
+          {/* Section Heading & Segmented Category Pill Tabs */}
+          <div className="flex flex-col items-center text-center">
+            <h2 className="text-4xl sm:text-6xl lg:text-[68px] font-semibold leading-[1.08] tracking-[-0.035em] text-zinc-950">
+              Temukan event <br />dalam hitungan detik.
+            </h2>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {loading ? (
-              Array(8).fill(0).map((_, i) => (
-                <div key={i} className="flex flex-col gap-3 rounded-2xl border border-zinc-200 p-3 bg-white">
-                  <Skeleton className="aspect-[16/10] w-full rounded-xl" />
-                  <Skeleton className="h-4 w-3/4 rounded-md" />
-                  <Skeleton className="h-3 w-1/2 rounded-md" />
-                  <div className="pt-2 border-t border-zinc-100 flex justify-between">
-                    <Skeleton className="h-3 w-16" />
-                    <Skeleton className="h-5 w-20 rounded-full" />
-                  </div>
-                </div>
-              ))
-            ) : loadError ? (
-              <div className="col-span-full flex flex-col items-center rounded-3xl border border-zinc-200 bg-zinc-50 px-6 py-20 text-center">
-                <p className="text-base font-bold text-zinc-950">Event belum dapat dimuat</p>
-                <p className="mt-2 max-w-md text-sm text-zinc-500">Periksa koneksi ke layanan event, lalu coba kembali.</p>
-                <button onClick={() => window.location.reload()} className="mt-5 h-10 rounded-full bg-zinc-950 px-5 text-sm font-semibold text-white">Coba lagi</button>
-              </div>
-            ) : filteredEvents.length > 0 ? (
-              filteredEvents.map((event) => (
-                <EventCard key={event.id} event={event} />
-              ))
-            ) : (
-              <div className="col-span-full text-center py-20 border border-dashed border-zinc-200 rounded-2xl bg-zinc-50/50">
-                <p className="text-sm font-semibold text-zinc-800">Tidak ada event untuk filter ini</p>
-                <p className="text-xs text-zinc-500 mt-1">Coba pilih kategori lain atau reset filter pilihan Anda.</p>
+            {/* Segmented Control Pill ala Mobbin */}
+            <div className="mt-8 sm:mt-10 flex justify-center w-full">
+              <div className="inline-flex p-1 sm:p-1.5 bg-[#f3f3f3] rounded-full gap-1 overflow-x-auto no-scrollbar max-w-full">
                 <button
                   onClick={() => setSelectedCategory('all')}
-                  className="mt-4 px-4 py-1.5 rounded-full text-xs font-semibold bg-zinc-950 text-white hover:bg-zinc-800 transition-colors cursor-pointer"
+                  className={`px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm transition-all whitespace-nowrap cursor-pointer ${
+                    selectedCategory === 'all'
+                      ? 'bg-white text-zinc-950 font-semibold shadow-[0_1px_2px_rgba(0,0,0,0.06)]'
+                      : 'text-zinc-500 hover:text-zinc-900 font-medium'
+                  }`}
                 >
-                  Reset Filter
+                  Semua Event
                 </button>
+                {categories.map((cat) => {
+                  const isSelected = selectedCategory === cat.id;
+                  return (
+                    <button
+                      key={cat.id}
+                      onClick={() => setSelectedCategory(isSelected ? 'all' : cat.id)}
+                      className={`px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm transition-all whitespace-nowrap cursor-pointer ${
+                        isSelected
+                          ? 'bg-white text-zinc-950 font-semibold shadow-[0_1px_2px_rgba(0,0,0,0.06)]'
+                          : 'text-zinc-500 hover:text-zinc-900 font-medium'
+                      }`}
+                    >
+                      {cat.name}
+                    </button>
+                  );
+                })}
               </div>
-            )}
+            </div>
+          </div>
+
+          {/* Event Cards Grid */}
+          <div className="mt-12 sm:mt-16">
+            <div className="flex items-center justify-between mb-6">
+              <span className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
+                {loading ? 'Memuat Event...' : `Menampilkan ${filteredEvents.length} Event`}
+              </span>
+              <Link 
+                href="/events" 
+                className="text-xs font-semibold text-zinc-900 hover:text-zinc-600 transition-colors"
+              >
+                Lihat Katalog Lengkap &rarr;
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {loading ? (
+                Array(8).fill(0).map((_, i) => (
+                  <div key={i} className="flex flex-col gap-3 rounded-2xl border border-zinc-200 p-3 bg-white">
+                    <Skeleton className="aspect-[16/10] w-full rounded-xl" />
+                    <Skeleton className="h-4 w-3/4 rounded-md" />
+                    <Skeleton className="h-3 w-1/2 rounded-md" />
+                    <div className="pt-2 border-t border-zinc-100 flex justify-between">
+                      <Skeleton className="h-3 w-16" />
+                      <Skeleton className="h-5 w-20 rounded-full" />
+                    </div>
+                  </div>
+                ))
+              ) : loadError ? (
+                <div className="col-span-full flex flex-col items-center rounded-3xl border border-zinc-200 bg-zinc-50 px-6 py-20 text-center">
+                  <p className="text-base font-bold text-zinc-950">Event belum dapat dimuat</p>
+                  <p className="mt-2 max-w-md text-sm text-zinc-500">Periksa koneksi ke layanan event, lalu coba kembali.</p>
+                  <button onClick={() => window.location.reload()} className="mt-5 h-10 rounded-full bg-zinc-950 px-5 text-sm font-semibold text-white">Coba lagi</button>
+                </div>
+              ) : filteredEvents.length > 0 ? (
+                filteredEvents.map((event) => (
+                  <EventCard key={event.id} event={event} />
+                ))
+              ) : (
+                <div className="col-span-full text-center py-20 border border-dashed border-zinc-200 rounded-2xl bg-zinc-50/50">
+                  <p className="text-sm font-semibold text-zinc-800">Tidak ada event untuk filter ini</p>
+                  <p className="text-xs text-zinc-500 mt-1">Coba pilih kategori lain atau reset filter pilihan Anda.</p>
+                  <button
+                    onClick={() => setSelectedCategory('all')}
+                    className="mt-4 px-4 py-1.5 rounded-full text-xs font-semibold bg-zinc-950 text-white hover:bg-zinc-800 transition-colors cursor-pointer"
+                  >
+                    Reset Filter
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
 
         </div>

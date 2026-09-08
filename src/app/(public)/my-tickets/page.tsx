@@ -232,19 +232,19 @@ export default function MyTicketsPage() {
 
   if (!authLoading && !user) {
     return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className="text-center max-w-md mx-auto space-y-6 bg-gray-900 border border-gray-800 p-8 rounded-2xl">
-          <div className="p-4 bg-violet-600/20 text-violet-400 rounded-full w-16 h-16 mx-auto flex items-center justify-center">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-zinc-900">
+        <div className="text-center max-w-md mx-auto space-y-6 bg-white border border-zinc-200 p-8 rounded-3xl shadow-sm">
+          <div className="p-4 bg-zinc-100 text-zinc-900 rounded-full w-16 h-16 mx-auto flex items-center justify-center border border-zinc-200">
             <TicketIcon className="h-8 w-8" />
           </div>
           <div>
-            <h2 className="text-2xl font-bold text-white mb-2">Masuk untuk Melihat Tiket</h2>
-            <p className="text-gray-400 text-sm">
+            <h2 className="text-2xl font-black text-zinc-950 mb-2">Masuk untuk Melihat Tiket</h2>
+            <p className="text-zinc-500 text-sm">
               Silakan masuk ke akun Entra Anda untuk mengakses e-ticket digital dan riwayat pesanan.
             </p>
           </div>
           <Link href="/login" className="block w-full">
-            <Button className="w-full bg-violet-600 hover:bg-violet-700 text-white">
+            <Button className="w-full bg-zinc-950 hover:bg-zinc-800 text-white rounded-full py-3">
               Masuk ke Akun
             </Button>
           </Link>
@@ -254,20 +254,20 @@ export default function MyTicketsPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8 text-zinc-900">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-2">
-            <div className="p-1.5 bg-violet-600/20 text-violet-400 rounded-lg">
+            <div className="p-1.5 bg-zinc-100 text-zinc-800 rounded-lg border border-zinc-200">
               <Sparkles className="h-4 w-4" />
             </div>
-            <span className="text-xs font-bold uppercase tracking-wider text-violet-400">
+            <span className="text-xs font-semibold uppercase tracking-wider text-zinc-600">
               Customer Portal
             </span>
           </div>
-          <h1 className="text-3xl font-extrabold text-white tracking-tight">Tiket & Pesanan Saya</h1>
-          <p className="text-gray-400 text-sm mt-1">
+          <h1 className="text-3xl font-black text-zinc-950 tracking-tight">Tiket & Pesanan Saya</h1>
+          <p className="text-zinc-500 text-sm mt-1">
             Kelola e-ticket digital Anda, transfer ke teman, cetak PDF resmi, dan pantau riwayat transaksi.
           </p>
         </div>
@@ -277,13 +277,13 @@ export default function MyTicketsPage() {
             variant="outline"
             onClick={fetchUserTicketsAndOrders}
             disabled={loading}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 text-zinc-700 border-zinc-200 hover:bg-zinc-50 rounded-full text-xs"
           >
             <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
             Refresh
           </Button>
           <Link href="/events">
-            <Button className="bg-violet-600 hover:bg-violet-700 text-white flex items-center gap-2">
+            <Button className="bg-zinc-950 hover:bg-zinc-800 text-white flex items-center gap-2 rounded-full text-xs">
               <ShoppingBag className="h-4 w-4" />
               Beli Tiket Baru
             </Button>
@@ -293,72 +293,72 @@ export default function MyTicketsPage() {
 
       {/* Summary Metrics Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-        <Card className="bg-gradient-to-br from-violet-950/60 via-gray-900 to-gray-900 border-violet-500/30 p-5">
+        <div className="bg-zinc-50 border border-zinc-200 rounded-3xl p-5 shadow-xs">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-violet-400 text-xs font-semibold uppercase tracking-wider mb-1">
+              <p className="text-zinc-500 text-xs font-semibold uppercase tracking-wider mb-1">
                 Tiket Aktif Siap Pakai
               </p>
               {loading ? (
-                <Skeleton className="h-8 w-16 mb-1" />
+                <Skeleton className="h-8 w-16 mb-1 bg-zinc-200" />
               ) : (
-                <h3 className="text-3xl font-bold text-white mb-1">{activeTicketsCount}</h3>
+                <h3 className="text-3xl font-black text-zinc-950 mb-1">{activeTicketsCount}</h3>
               )}
-              <p className="text-xs text-gray-400">Gunakan QR code di pintu masuk</p>
+              <p className="text-xs text-zinc-500">Gunakan QR code di pintu masuk</p>
             </div>
-            <div className="p-3 bg-violet-600/20 text-violet-400 rounded-xl">
+            <div className="p-3 bg-white border border-zinc-200 text-zinc-900 rounded-2xl shadow-xs">
               <QrCode className="h-6 w-6" />
             </div>
           </div>
-        </Card>
+        </div>
 
-        <Card className="bg-gray-900 border-gray-800 p-5">
+        <div className="bg-zinc-50 border border-zinc-200 rounded-3xl p-5 shadow-xs">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-gray-400 text-xs font-medium uppercase tracking-wider mb-1">
+              <p className="text-zinc-500 text-xs font-semibold uppercase tracking-wider mb-1">
                 Total Tiket Dimiliki
               </p>
               {loading ? (
-                <Skeleton className="h-8 w-16 mb-1" />
+                <Skeleton className="h-8 w-16 mb-1 bg-zinc-200" />
               ) : (
-                <h3 className="text-3xl font-bold text-white mb-1">{tickets.length}</h3>
+                <h3 className="text-3xl font-black text-zinc-950 mb-1">{tickets.length}</h3>
               )}
-              <p className="text-xs text-gray-500">Semua riwayat tiket</p>
+              <p className="text-xs text-zinc-500">Semua riwayat tiket</p>
             </div>
-            <div className="p-3 bg-blue-500/10 text-blue-400 rounded-xl">
+            <div className="p-3 bg-white border border-zinc-200 text-zinc-900 rounded-2xl shadow-xs">
               <TicketIcon className="h-6 w-6" />
             </div>
           </div>
-        </Card>
+        </div>
 
-        <Card className="bg-gray-900 border-gray-800 p-5">
+        <div className="bg-zinc-50 border border-zinc-200 rounded-3xl p-5 shadow-xs">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-gray-400 text-xs font-medium uppercase tracking-wider mb-1">
+              <p className="text-zinc-500 text-xs font-semibold uppercase tracking-wider mb-1">
                 Total Event Diikuti
               </p>
               {loading ? (
-                <Skeleton className="h-8 w-16 mb-1" />
+                <Skeleton className="h-8 w-16 mb-1 bg-zinc-200" />
               ) : (
-                <h3 className="text-3xl font-bold text-white mb-1">{distinctEventsCount}</h3>
+                <h3 className="text-3xl font-black text-zinc-950 mb-1">{distinctEventsCount}</h3>
               )}
-              <p className="text-xs text-gray-500">Acara konser, festival & seminar</p>
+              <p className="text-xs text-zinc-500">Acara konser, festival & seminar</p>
             </div>
-            <div className="p-3 bg-emerald-500/10 text-emerald-400 rounded-xl">
+            <div className="p-3 bg-white border border-zinc-200 text-zinc-900 rounded-2xl shadow-xs">
               <Calendar className="h-6 w-6" />
             </div>
           </div>
-        </Card>
+        </div>
       </div>
 
       {/* Main Tabs Navigation */}
-      <div className="flex border-b border-gray-800 space-x-8">
+      <div className="flex border-b border-zinc-200 space-x-6">
         <button
           onClick={() => setActiveTab('tickets')}
-          className={`pb-4 text-sm font-semibold flex items-center gap-2 border-b-2 transition-colors ${
+          className={`pb-3.5 text-sm font-semibold flex items-center gap-2 border-b-2 transition-colors ${
             activeTab === 'tickets'
-              ? 'border-violet-500 text-violet-400'
-              : 'border-transparent text-gray-400 hover:text-white'
+              ? 'border-zinc-950 text-zinc-950'
+              : 'border-transparent text-zinc-500 hover:text-zinc-950'
           }`}
         >
           <TicketIcon className="h-4 w-4" />
@@ -367,10 +367,10 @@ export default function MyTicketsPage() {
 
         <button
           onClick={() => setActiveTab('orders')}
-          className={`pb-4 text-sm font-semibold flex items-center gap-2 border-b-2 transition-colors ${
+          className={`pb-3.5 text-sm font-semibold flex items-center gap-2 border-b-2 transition-colors ${
             activeTab === 'orders'
-              ? 'border-violet-500 text-violet-400'
-              : 'border-transparent text-gray-400 hover:text-white'
+              ? 'border-zinc-950 text-zinc-950'
+              : 'border-transparent text-zinc-500 hover:text-zinc-950'
           }`}
         >
           <CreditCard className="h-4 w-4" />
@@ -383,27 +383,27 @@ export default function MyTicketsPage() {
         <div className="space-y-6">
           {/* Filter Bar */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div className="flex bg-gray-900 p-1 rounded-xl border border-gray-800 text-xs w-fit">
+            <div className="flex bg-zinc-100 p-1 rounded-full border border-zinc-200 text-xs w-fit">
               <button
                 onClick={() => setTicketFilter('ALL')}
-                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                  ticketFilter === 'ALL' ? 'bg-violet-600 text-white' : 'text-gray-400 hover:text-white'
+                className={`px-3.5 py-1.5 rounded-full font-medium transition-colors ${
+                  ticketFilter === 'ALL' ? 'bg-zinc-950 text-white shadow-xs' : 'text-zinc-600 hover:text-zinc-950'
                 }`}
               >
                 Semua ({tickets.length})
               </button>
               <button
                 onClick={() => setTicketFilter('ACTIVE')}
-                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                  ticketFilter === 'ACTIVE' ? 'bg-violet-600 text-white' : 'text-gray-400 hover:text-white'
+                className={`px-3.5 py-1.5 rounded-full font-medium transition-colors ${
+                  ticketFilter === 'ACTIVE' ? 'bg-zinc-950 text-white shadow-xs' : 'text-zinc-600 hover:text-zinc-950'
                 }`}
               >
                 Siap Digunakan ({activeTicketsCount})
               </button>
               <button
                 onClick={() => setTicketFilter('USED')}
-                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                  ticketFilter === 'USED' ? 'bg-violet-600 text-white' : 'text-gray-400 hover:text-white'
+                className={`px-3.5 py-1.5 rounded-full font-medium transition-colors ${
+                  ticketFilter === 'USED' ? 'bg-zinc-950 text-white shadow-xs' : 'text-zinc-600 hover:text-zinc-950'
                 }`}
               >
                 Sudah Digunakan ({tickets.length - activeTicketsCount})
@@ -411,14 +411,14 @@ export default function MyTicketsPage() {
             </div>
 
             <div className="relative w-full sm:w-72">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
               <input
                 type="text"
                 placeholder="Cari event, kode tiket..."
                 aria-label="Cari event, kode tiket"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 bg-gray-900 border border-gray-800 rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none focus:border-violet-500"
+                className="w-full pl-10 pr-4 py-2 bg-white border border-zinc-200 rounded-full text-xs text-zinc-900 placeholder-zinc-400 focus:outline-none focus:border-zinc-900"
               />
             </div>
           </div>
@@ -427,29 +427,29 @@ export default function MyTicketsPage() {
           {loading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {Array.from({ length: 3 }).map((_, i) => (
-                <Card key={i} className="bg-gray-900 border-gray-800 p-6 space-y-4">
-                  <Skeleton className="h-6 w-3/4" />
-                  <Skeleton className="h-4 w-1/2" />
-                  <Skeleton className="h-20 w-full" />
-                  <Skeleton className="h-10 w-full" />
-                </Card>
+                <div key={i} className="bg-white border border-zinc-200 p-6 rounded-3xl space-y-4 shadow-xs">
+                  <Skeleton className="h-6 w-3/4 bg-zinc-200/70" />
+                  <Skeleton className="h-4 w-1/2 bg-zinc-200/70" />
+                  <Skeleton className="h-20 w-full bg-zinc-200/70" />
+                  <Skeleton className="h-10 w-full bg-zinc-200/70 rounded-full" />
+                </div>
               ))}
             </div>
           ) : filteredTickets.length === 0 ? (
-            <div className="text-center py-16 bg-gray-900/50 border border-gray-800 rounded-2xl p-8 space-y-4">
-              <div className="p-4 bg-gray-800/60 rounded-full w-16 h-16 mx-auto flex items-center justify-center text-gray-500">
+            <div className="text-center py-16 bg-zinc-50 border border-zinc-200 rounded-3xl p-8 space-y-4">
+              <div className="p-4 bg-white rounded-full w-16 h-16 mx-auto flex items-center justify-center text-zinc-400 border border-zinc-200">
                 <TicketIcon className="h-8 w-8" />
               </div>
               <div>
-                <h3 className="text-lg font-bold text-white">Tidak ada tiket ditemukan</h3>
-                <p className="text-gray-400 text-sm max-w-sm mx-auto mt-1">
+                <h3 className="text-lg font-bold text-zinc-950">Tidak ada tiket ditemukan</h3>
+                <p className="text-zinc-500 text-xs max-w-sm mx-auto mt-1">
                   {searchQuery || ticketFilter !== 'ALL'
                     ? 'Coba ubah kata kunci pencarian atau filter status tiket Anda.'
                     : 'Anda belum memiliki tiket event. Jelajahi event menarik dan pesan tiket sekarang!'}
                 </p>
               </div>
               <Link href="/events">
-                <Button className="bg-violet-600 hover:bg-violet-700 text-white mt-2">
+                <Button className="bg-zinc-950 hover:bg-zinc-800 text-white rounded-full text-xs mt-2 px-6">
                   Jelajahi Event
                 </Button>
               </Link>
@@ -461,37 +461,42 @@ export default function MyTicketsPage() {
                 const isUsed = t.status?.toUpperCase() === 'USED';
 
                 return (
-                  <Card
+                  <div
                     key={t.id}
-                    className="bg-gray-900 border-gray-800 hover:border-violet-500/50 transition-all rounded-2xl overflow-hidden flex flex-col justify-between group shadow-lg"
+                    className="bg-white border border-zinc-200 hover:border-zinc-300 transition-all rounded-3xl overflow-hidden flex flex-col justify-between group shadow-xs"
                   >
                     {/* Top Ticket Header */}
-                    <div className="p-5 space-y-3">
+                    <div className="p-5 space-y-3 bg-zinc-50/50">
                       <div className="flex items-start justify-between gap-2">
-                        <Badge
-                          variant={isActive ? 'success' : isUsed ? 'secondary' : 'error'}
-                          className="text-[11px]"
+                        <span
+                          className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-full border ${
+                            isActive
+                              ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                              : isUsed
+                              ? 'bg-zinc-100 text-zinc-600 border-zinc-200'
+                              : 'bg-rose-50 text-rose-700 border-rose-200'
+                          }`}
                         >
                           {isActive ? 'Siap Digunakan' : isUsed ? 'Sudah Dipakai' : t.status}
-                        </Badge>
-                        <span className="text-xs font-mono text-gray-500">
+                        </span>
+                        <span className="text-xs font-mono text-zinc-500">
                           {t.ticket_type?.name || 'Tiket Masuk'}
                         </span>
                       </div>
 
-                      <h3 className="text-lg font-bold text-white line-clamp-2 group-hover:text-violet-300 transition-colors">
+                      <h3 className="text-base font-bold text-zinc-950 line-clamp-2 group-hover:text-zinc-700 transition-colors">
                         {t.event?.title || 'Event Entra'}
                       </h3>
 
-                      <div className="space-y-1.5 text-xs text-gray-400 pt-1">
+                      <div className="space-y-1.5 text-xs text-zinc-500 pt-1">
                         <div className="flex items-center gap-2">
-                          <Calendar className="h-3.5 w-3.5 text-violet-400 flex-shrink-0" />
+                          <Calendar className="h-3.5 w-3.5 text-zinc-400 flex-shrink-0" />
                           <span>
                             {t.event?.start_date ? formatDate(t.event.start_date) : 'Waktu menyusul'}
                           </span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <MapPin className="h-3.5 w-3.5 text-violet-400 flex-shrink-0" />
+                          <MapPin className="h-3.5 w-3.5 text-zinc-400 flex-shrink-0" />
                           <span className="truncate">
                             {t.event?.venue?.name || t.event?.venue?.address || 'Lokasi Acara'}
                           </span>
@@ -501,18 +506,18 @@ export default function MyTicketsPage() {
 
                     {/* Perforated Divider */}
                     <div className="relative flex items-center justify-between">
-                      <div className="w-4 h-6 bg-gray-950 rounded-r-full border-r border-gray-800"></div>
-                      <div className="w-full border-b border-dashed border-gray-800 mx-2"></div>
-                      <div className="w-4 h-6 bg-gray-950 rounded-l-full border-l border-gray-800"></div>
+                      <div className="w-4 h-6 bg-white rounded-r-full border-r border-zinc-200 -ml-1"></div>
+                      <div className="w-full border-b border-dashed border-zinc-200 mx-2"></div>
+                      <div className="w-4 h-6 bg-white rounded-l-full border-l border-zinc-200 -mr-1"></div>
                     </div>
 
                     {/* Ticket Code & Actions */}
-                    <div className="p-4 bg-gray-950/40 flex flex-col gap-3">
+                    <div className="p-4 bg-white flex flex-col gap-3">
                       <div className="flex items-center justify-between">
-                        <span className="text-[10px] text-gray-500 uppercase tracking-wider block">
+                        <span className="text-[10px] text-zinc-400 uppercase tracking-wider block font-semibold">
                           Kode Tiket
                         </span>
-                        <span className="font-mono text-sm font-bold text-violet-400">
+                        <span className="font-mono text-sm font-black text-zinc-950">
                           {t.ticket_code}
                         </span>
                       </div>
@@ -524,7 +529,7 @@ export default function MyTicketsPage() {
                             setSelectedTicket(t);
                             setIsModalOpen(true);
                           }}
-                          className="flex-1 bg-violet-600 hover:bg-violet-700 text-white flex items-center justify-center gap-1.5 text-xs font-bold py-2 rounded-xl"
+                          className="flex-1 bg-zinc-950 hover:bg-zinc-800 text-white flex items-center justify-center gap-1.5 text-xs font-semibold py-2 rounded-full"
                         >
                           <QrCode className="h-3.5 w-3.5" />
                           Buka E-Ticket
@@ -538,15 +543,15 @@ export default function MyTicketsPage() {
                               setTransferTicket(t);
                               setIsTransferOpen(true);
                             }}
-                            className="border-gray-800 hover:bg-gray-800 text-gray-300 text-xs px-2.5 rounded-xl"
+                            className="border-zinc-200 hover:bg-zinc-50 text-zinc-700 text-xs px-3 rounded-full"
                             title="Transfer Tiket ke Teman"
                           >
-                            <SendHorizontal className="h-3.5 w-3.5 text-violet-400" />
+                            <SendHorizontal className="h-3.5 w-3.5 text-zinc-600" />
                           </Button>
                         )}
                       </div>
                     </div>
-                  </Card>
+                  </div>
                 );
               })}
             </div>
@@ -556,61 +561,66 @@ export default function MyTicketsPage() {
 
       {/* TAB 2: ORDERS & INVOICE VIEW */}
       {activeTab === 'orders' && (
-        <div className="space-y-6">
+        <div className="space-y-4">
           {loading ? (
             <div className="space-y-4">
               {Array.from({ length: 3 }).map((_, i) => (
-                <Card key={i} className="bg-gray-900 border-gray-800 p-5 space-y-2">
-                  <Skeleton className="h-6 w-1/4" />
-                  <Skeleton className="h-4 w-1/2" />
-                </Card>
+                <div key={i} className="bg-white border border-zinc-200 p-5 space-y-2 rounded-2xl">
+                  <Skeleton className="h-6 w-1/4 bg-zinc-200/70" />
+                  <Skeleton className="h-4 w-1/2 bg-zinc-200/70" />
+                </div>
               ))}
             </div>
           ) : orders.length === 0 ? (
-            <div className="text-center py-16 bg-gray-900/50 border border-gray-800 rounded-2xl p-8 space-y-4">
-              <div className="p-4 bg-gray-800/60 rounded-full w-16 h-16 mx-auto flex items-center justify-center text-gray-500">
+            <div className="text-center py-16 bg-zinc-50 border border-zinc-200 rounded-3xl p-8 space-y-4">
+              <div className="p-4 bg-white rounded-full w-16 h-16 mx-auto flex items-center justify-center text-zinc-400 border border-zinc-200">
                 <CreditCard className="h-8 w-8" />
               </div>
               <div>
-                <h3 className="text-lg font-bold text-white">Belum Ada Riwayat Pesanan</h3>
-                <p className="text-gray-400 text-sm max-w-sm mx-auto mt-1">
+                <h3 className="text-lg font-bold text-zinc-950">Belum Ada Riwayat Pesanan</h3>
+                <p className="text-zinc-500 text-xs max-w-sm mx-auto mt-1">
                   Seluruh riwayat pembayaran dan status transaksi tiket Anda akan tercatat di sini.
                 </p>
               </div>
               <Link href="/events">
-                <Button className="bg-violet-600 hover:bg-violet-700 text-white mt-2">
+                <Button className="bg-zinc-950 hover:bg-zinc-800 text-white rounded-full text-xs mt-2 px-6">
                   Pesan Tiket Sekarang
                 </Button>
               </Link>
             </div>
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-3">
               {orders.map((order) => {
                 const isPaid = order.status?.toUpperCase() === 'PAID';
                 const isPending = order.status?.toUpperCase() === 'PENDING';
 
                 return (
-                  <Card
+                  <div
                     key={order.id}
-                    className="bg-gray-900 border-gray-800 p-5 hover:border-gray-700 transition-colors flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 rounded-xl"
+                    className="bg-white border border-zinc-200 p-5 hover:border-zinc-300 transition-colors flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 rounded-2xl shadow-xs"
                   >
                     <div className="space-y-1">
                       <div className="flex items-center gap-3">
-                        <span className="font-mono text-sm font-bold text-white">
+                        <span className="font-mono text-sm font-bold text-zinc-950">
                           Order #{order.id.substring(0, 8)}...
                         </span>
-                        <Badge
-                          variant={isPaid ? 'success' : isPending ? 'warning' : 'error'}
-                          className="text-xs"
+                        <span
+                          className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-full border ${
+                            isPaid
+                              ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                              : isPending
+                              ? 'bg-amber-50 text-amber-700 border-amber-200'
+                              : 'bg-rose-50 text-rose-700 border-rose-200'
+                          }`}
                         >
                           {isPaid ? 'LUNAS' : isPending ? 'MENUNGGU PEMBAYARAN' : order.status}
-                        </Badge>
+                        </span>
                       </div>
 
-                      <div className="flex flex-wrap items-center gap-4 text-xs text-gray-400 pt-1">
+                      <div className="flex flex-wrap items-center gap-4 text-xs text-zinc-500 pt-1">
                         <span>Waktu Pesan: {formatDate(order.created_at)}</span>
                         {isPending && order.expires_at && (
-                          <span className="text-amber-400 flex items-center gap-1">
+                          <span className="text-amber-600 flex items-center gap-1 font-medium">
                             <Clock className="h-3 w-3" />
                             Batas Bayar: {formatDate(order.expires_at)}
                           </span>
@@ -618,10 +628,10 @@ export default function MyTicketsPage() {
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end border-t sm:border-t-0 border-gray-800 pt-3 sm:pt-0">
+                    <div className="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end border-t sm:border-t-0 border-zinc-100 pt-3 sm:pt-0">
                       <div className="text-left sm:text-right">
-                        <span className="text-xs text-gray-500 block">Total Tagihan</span>
-                        <span className="text-lg font-extrabold text-white">
+                        <span className="text-[11px] text-zinc-400 block font-medium">Total Tagihan</span>
+                        <span className="text-lg font-black text-zinc-950 font-mono">
                           {formatCurrency(order.total_amount)}
                         </span>
                       </div>
@@ -635,9 +645,9 @@ export default function MyTicketsPage() {
                               setSelectedOrderForInvoice(order);
                               setIsInvoiceOpen(true);
                             }}
-                            className="border-gray-700 hover:bg-gray-800 text-gray-200 text-xs flex items-center gap-1.5"
+                            className="border-zinc-200 hover:bg-zinc-50 text-zinc-700 text-xs flex items-center gap-1.5 rounded-full"
                           >
-                            <FileText className="h-3.5 w-3.5 text-violet-400" />
+                            <FileText className="h-3.5 w-3.5 text-zinc-600" />
                             Lihat Invoice
                           </Button>
                         )}
@@ -649,7 +659,7 @@ export default function MyTicketsPage() {
                               size="sm"
                               onClick={() => handleSimulatePayment(order.id)}
                               disabled={payingOrderId === order.id}
-                              className="border-violet-700/60 hover:bg-violet-950/50 text-violet-300 text-xs font-semibold"
+                              className="border-zinc-300 hover:bg-zinc-50 text-zinc-800 text-xs font-semibold rounded-full"
                               title="Simulasikan pembayaran langsung di mode pengembangan"
                             >
                               {payingOrderId === order.id ? 'Memproses...' : 'Simulasi Bayar (Dev)'}
@@ -657,7 +667,7 @@ export default function MyTicketsPage() {
                             <Button
                               onClick={() => handlePayOrder(order.id)}
                               disabled={payingOrderId === order.id}
-                              className="bg-emerald-600 hover:bg-emerald-700 text-white flex items-center gap-1.5 text-xs font-bold"
+                              className="bg-zinc-950 hover:bg-zinc-800 text-white flex items-center gap-1.5 text-xs font-semibold rounded-full"
                             >
                               {payingOrderId === order.id ? 'Memuat...' : 'Bayar Sekarang'}
                               <ArrowRight className="h-3.5 w-3.5" />
@@ -666,7 +676,7 @@ export default function MyTicketsPage() {
                         )}
                       </div>
                     </div>
-                  </Card>
+                  </div>
                 );
               })}
             </div>
@@ -695,10 +705,10 @@ export default function MyTicketsPage() {
           onClose={() => !transferLoading && setIsTransferOpen(false)}
           title="Transfer Tiket ke Pengguna Lain"
         >
-          <form onSubmit={handleTransferSubmit} className="space-y-4">
-            <div className="p-3.5 bg-gray-950 border border-gray-800 rounded-xl text-xs text-gray-400 space-y-1">
-              <p className="text-white font-semibold flex items-center gap-1.5">
-                <SendHorizontal className="h-4 w-4 text-violet-400" />
+          <form onSubmit={handleTransferSubmit} className="space-y-4 text-zinc-900">
+            <div className="p-3.5 bg-zinc-50 border border-zinc-200 rounded-2xl text-xs text-zinc-600 space-y-1">
+              <p className="text-zinc-950 font-semibold flex items-center gap-1.5">
+                <SendHorizontal className="h-4 w-4 text-zinc-700" />
                 Pindah Kepemilikan Tiket
               </p>
               <p>
@@ -707,17 +717,17 @@ export default function MyTicketsPage() {
             </div>
 
             {/* Ticket Snapshot Card */}
-            <div className="p-3 bg-violet-950/30 border border-violet-500/30 rounded-xl space-y-1">
-              <p className="text-xs text-violet-300 font-bold">{transferTicket.event?.title || 'Event'}</p>
-              <div className="flex justify-between text-xs text-gray-400">
+            <div className="p-3.5 bg-zinc-100/70 border border-zinc-200 rounded-2xl space-y-1">
+              <p className="text-xs text-zinc-950 font-bold">{transferTicket.event?.title || 'Event'}</p>
+              <div className="flex justify-between text-xs text-zinc-500">
                 <span>{transferTicket.ticket_type?.name || 'Tiket'}</span>
-                <span className="font-mono text-violet-400 font-bold">{transferTicket.ticket_code}</span>
+                <span className="font-mono text-zinc-950 font-bold">{transferTicket.ticket_code}</span>
               </div>
             </div>
 
             {/* Recipient Email Input */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+              <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">
                 Email Penerima
               </label>
               <input
@@ -725,14 +735,14 @@ export default function MyTicketsPage() {
                 value={recipientEmail}
                 onChange={(e) => setRecipientEmail(e.target.value)}
                 placeholder="nama@email.com"
-                className="w-full px-4 py-2.5 bg-gray-950 border border-gray-800 rounded-xl text-white font-medium focus:outline-none focus:border-violet-500"
+                className="w-full px-4 py-2.5 bg-white border border-zinc-200 rounded-full text-zinc-900 font-medium focus:outline-none focus:border-zinc-900 text-sm"
                 required
               />
             </div>
 
             {/* Recipient Name Input */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+              <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">
                 Nama Penerima (Opsional)
               </label>
               <input
@@ -740,23 +750,24 @@ export default function MyTicketsPage() {
                 value={recipientName}
                 onChange={(e) => setRecipientName(e.target.value)}
                 placeholder="Nama Teman / Kerabat"
-                className="w-full px-4 py-2.5 bg-gray-950 border border-gray-800 rounded-xl text-white font-medium focus:outline-none focus:border-violet-500"
+                className="w-full px-4 py-2.5 bg-white border border-zinc-200 rounded-full text-zinc-900 font-medium focus:outline-none focus:border-zinc-900 text-sm"
               />
             </div>
 
-            <div className="flex justify-end gap-3 pt-2">
+            <div className="flex justify-end gap-2.5 pt-2">
               <Button
                 type="button"
                 variant="outline"
                 disabled={transferLoading}
                 onClick={() => setIsTransferOpen(false)}
+                className="rounded-full border-zinc-200 text-zinc-700 hover:bg-zinc-50 text-xs"
               >
                 Batal
               </Button>
               <Button
                 type="submit"
                 disabled={transferLoading || !recipientEmail.trim()}
-                className="bg-violet-600 hover:bg-violet-700 text-white px-6 font-bold flex items-center gap-1.5"
+                className="bg-zinc-950 hover:bg-zinc-800 text-white px-6 font-semibold flex items-center gap-1.5 rounded-full text-xs"
               >
                 {transferLoading ? 'Mentransfer...' : 'Kirim Tiket Sekarang'}
               </Button>
@@ -772,33 +783,33 @@ export default function MyTicketsPage() {
           onClose={() => setIsInvoiceOpen(false)}
           title="Invoice Pembayaran Resmi"
         >
-          <div className="space-y-5 print:p-0">
-            <div id="printable-invoice" className="p-6 bg-gray-950 border border-gray-800 rounded-2xl space-y-4">
-              <div className="flex justify-between items-start border-b border-gray-800 pb-4">
+          <div className="space-y-5 print:p-0 text-zinc-900">
+            <div id="printable-invoice" className="p-6 bg-zinc-50 border border-zinc-200 rounded-3xl space-y-4">
+              <div className="flex justify-between items-start border-b border-zinc-200 pb-4">
                 <div>
-                  <h3 className="text-lg font-black text-white">INVOICE ENTRA</h3>
-                  <p className="text-xs text-gray-400">Order #{selectedOrderForInvoice.id.substring(0, 16)}</p>
+                  <h3 className="text-lg font-black text-zinc-950">INVOICE ENTRA</h3>
+                  <p className="text-xs text-zinc-500">Order #{selectedOrderForInvoice.id.substring(0, 16)}</p>
                 </div>
-                <Badge variant="success" className="text-xs">
+                <span className="text-xs font-semibold px-3 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full">
                   LUNAS
-                </Badge>
+                </span>
               </div>
 
-              <div className="grid grid-cols-2 gap-3 text-xs text-gray-400">
+              <div className="grid grid-cols-2 gap-3 text-xs text-zinc-600">
                 <div>
-                  <span className="text-gray-500 block">Diterbitkan untuk:</span>
-                  <span className="text-white font-semibold">{user?.full_name || 'Pembeli Tiket'}</span>
-                  <span className="block text-[11px] text-gray-500">{user?.email}</span>
+                  <span className="text-zinc-400 block font-semibold uppercase tracking-wider text-[10px]">Diterbitkan untuk:</span>
+                  <span className="text-zinc-950 font-bold">{user?.full_name || 'Pembeli Tiket'}</span>
+                  <span className="block text-[11px] text-zinc-500">{user?.email}</span>
                 </div>
                 <div className="text-right">
-                  <span className="text-gray-500 block">Waktu Transaksi:</span>
-                  <span className="text-white font-semibold">{formatDate(selectedOrderForInvoice.created_at)}</span>
+                  <span className="text-zinc-400 block font-semibold uppercase tracking-wider text-[10px]">Waktu Transaksi:</span>
+                  <span className="text-zinc-950 font-bold">{formatDate(selectedOrderForInvoice.created_at)}</span>
                 </div>
               </div>
 
-              <div className="pt-3 border-t border-gray-800 flex justify-between items-center text-sm">
-                <span className="text-gray-300 font-bold">Total Pembayaran</span>
-                <span className="text-xl font-black text-emerald-400 font-mono">
+              <div className="pt-3 border-t border-zinc-200 flex justify-between items-center text-sm">
+                <span className="text-zinc-700 font-bold">Total Pembayaran</span>
+                <span className="text-xl font-black text-zinc-950 font-mono">
                   {formatCurrency(selectedOrderForInvoice.total_amount)}
                 </span>
               </div>
@@ -808,14 +819,14 @@ export default function MyTicketsPage() {
               <Button
                 variant="outline"
                 onClick={() => window.print()}
-                className="flex items-center gap-1.5 text-xs text-gray-300"
+                className="flex items-center gap-1.5 text-xs text-zinc-700 border-zinc-200 hover:bg-zinc-50 rounded-full"
               >
                 <Printer className="h-4 w-4" />
                 Cetak Invoice
               </Button>
               <Button
                 onClick={() => setIsInvoiceOpen(false)}
-                className="bg-violet-600 hover:bg-violet-700 text-white text-xs font-bold"
+                className="bg-zinc-950 hover:bg-zinc-800 text-white text-xs font-semibold rounded-full px-6"
               >
                 Tutup
               </Button>

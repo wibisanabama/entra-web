@@ -108,12 +108,12 @@ export function MediaUploader({ onUploadComplete }: MediaUploaderProps) {
   return (
     <div className="w-full">
       <div
-        className={`rounded-xl p-8 text-center transition-colors ${
+        className={`rounded-3xl p-8 text-center transition-all cursor-pointer border-2 border-dashed select-none ${
           isDragging 
-            ? 'bg-violet-500/10' 
+            ? 'border-zinc-950 bg-zinc-100' 
             : error 
-              ? 'bg-red-500/5' 
-              : 'bg-gray-800/50 hover:bg-gray-800'
+              ? 'border-red-300 bg-red-50/50' 
+              : 'border-zinc-200 bg-zinc-50 hover:bg-zinc-100/70 hover:border-zinc-300'
         }`}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
@@ -131,32 +131,34 @@ export function MediaUploader({ onUploadComplete }: MediaUploaderProps) {
         
         {isUploading ? (
           <div className="space-y-4">
-            <div className="w-12 h-12 rounded-full animate-spin mx-auto"></div>
+            <div className="w-8 h-8 rounded-full border-2 border-zinc-950 border-t-transparent animate-spin mx-auto"></div>
             <div>
-              <p className="text-sm font-medium text-white mb-2">Mengupload... {progress}%</p>
-              <div className="w-full bg-gray-700 rounded-full h-2">
+              <p className="text-xs font-bold text-zinc-950 mb-2">Mengupload... {progress}%</p>
+              <div className="w-full bg-zinc-200 rounded-full h-1.5 overflow-hidden">
                 <div 
-                  className="bg-violet-600 h-2 rounded-full transition-all duration-300"
+                  className="bg-zinc-950 h-1.5 rounded-full transition-all duration-300"
                   style={{ width: `${progress}%` }}
                 ></div>
               </div>
             </div>
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center pt-5 pb-6">
-            <Camera className="w-10 h-10 mb-3 text-gray-500" />
-            <p className="text-base font-medium text-white">
-              Klik atau tarik gambar ke sini
+          <div className="flex flex-col items-center justify-center py-2">
+            <div className="w-12 h-12 rounded-2xl bg-white border border-zinc-200 flex items-center justify-center mb-3 shadow-xs">
+              <Camera className="w-5 h-5 text-zinc-500" />
+            </div>
+            <p className="text-xs font-bold text-zinc-950 mb-1">
+              Klik atau tarik gambar banner ke sini
             </p>
-            <p className="text-sm text-gray-400">
-              Maksimal 5MB (JPG, PNG)
+            <p className="text-[11px] text-zinc-400">
+              Format JPG, PNG (Maksimal 5MB)
             </p>
           </div>
         )}
       </div>
       
       {error && (
-        <p className="mt-2 text-sm text-red-500 font-medium text-center">{error}</p>
+        <p className="mt-2 text-xs text-red-600 font-semibold text-center">{error}</p>
       )}
     </div>
   );

@@ -226,19 +226,19 @@ export default function CashlessPortalPage() {
 
   if (!authLoading && !user) {
     return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className="text-center max-w-md mx-auto space-y-6 bg-gray-900 border border-gray-800 p-8 rounded-2xl">
-          <div className="p-4 bg-violet-600/20 text-violet-400 rounded-full w-16 h-16 mx-auto flex items-center justify-center">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-zinc-900">
+        <div className="text-center max-w-md mx-auto space-y-6 bg-white border border-zinc-200 p-8 rounded-3xl shadow-sm">
+          <div className="p-4 bg-zinc-100 text-zinc-900 rounded-full w-16 h-16 mx-auto flex items-center justify-center border border-zinc-200">
             <CreditCard className="h-8 w-8" />
           </div>
           <div>
-            <h2 className="text-2xl font-bold text-white mb-2">Masuk ke Portal Cashless</h2>
-            <p className="text-gray-400 text-sm">
+            <h2 className="text-2xl font-black text-zinc-950 mb-2">Masuk ke Portal Cashless</h2>
+            <p className="text-zinc-500 text-sm">
               Silakan masuk ke akun Entra Anda untuk mengakses saldo gelang RFID festival dan riwayat transaksi.
             </p>
           </div>
           <Link href="/login" className="block w-full">
-            <Button className="w-full bg-violet-600 hover:bg-violet-700 text-white">
+            <Button className="w-full bg-zinc-950 hover:bg-zinc-800 text-white rounded-full py-3">
               Masuk Sekarang
             </Button>
           </Link>
@@ -251,22 +251,22 @@ export default function CashlessPortalPage() {
   const wristbandUid = wallet?.id ? `ENTRA-RFID-${wallet.id.substring(0, 8).toUpperCase()}` : 'ENTRA-RFID-PASS';
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8 text-zinc-900">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-2">
-            <div className="p-1.5 bg-violet-600/20 text-violet-400 rounded-lg">
+            <div className="p-1.5 bg-zinc-100 text-zinc-800 rounded-lg border border-zinc-200">
               <Sparkles className="h-4 w-4" />
             </div>
-            <span className="text-xs font-bold uppercase tracking-wider text-violet-400">
+            <span className="text-xs font-semibold uppercase tracking-wider text-zinc-600">
               NFC / RFID Digital Festival Pass
             </span>
           </div>
-          <h1 className="text-3xl font-extrabold text-white tracking-tight">
+          <h1 className="text-3xl font-black text-zinc-950 tracking-tight">
             Portal Gelang RFID Cashless
           </h1>
-          <p className="text-gray-400 text-sm mt-1">
+          <p className="text-zinc-500 text-sm mt-1">
             Cek saldo aktif gelang festival, top-up saldo instan, refund sisa dana, dan pantau transaksi tenant F&B.
           </p>
         </div>
@@ -276,7 +276,7 @@ export default function CashlessPortalPage() {
             variant="outline"
             onClick={fetchWalletAndTransactions}
             disabled={loading}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 text-zinc-700 border-zinc-200 hover:bg-zinc-50 rounded-full text-xs"
           >
             <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
             Refresh
@@ -287,19 +287,16 @@ export default function CashlessPortalPage() {
       {/* Hero Wristband Digital Pass & Quick Actions */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
         {/* RFID Wristband Pass Card */}
-        <div className="lg:col-span-2 relative bg-gradient-to-br from-violet-950/80 via-purple-900/40 to-gray-950 rounded-3xl p-6 sm:p-8 border border-violet-500/40 shadow-2xl overflow-hidden flex flex-col justify-between group">
-          {/* Background Ambient Glow */}
-          <div className="absolute -right-16 -top-16 w-64 h-64 bg-violet-600/20 rounded-full blur-3xl pointer-events-none"></div>
-
+        <div className="lg:col-span-2 relative bg-zinc-950 rounded-3xl p-6 sm:p-8 text-white shadow-sm overflow-hidden flex flex-col justify-between group">
           <div className="relative z-10 space-y-6">
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-3">
-                <div className="p-3 bg-violet-600/30 rounded-2xl text-violet-300 border border-violet-400/30">
+                <div className="p-3 bg-zinc-800 rounded-2xl text-white border border-zinc-700">
                   <CreditCard className="h-6 w-6" />
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-bold uppercase tracking-widest text-violet-300">
+                    <span className="text-xs font-bold uppercase tracking-widest text-zinc-400">
                       Entra Festival Wristband
                     </span>
                     <span className="flex h-2 w-2 relative">
@@ -313,55 +310,55 @@ export default function CashlessPortalPage() {
                 </div>
               </div>
 
-              <Badge variant="success" className="text-xs py-1 px-3">
+              <span className="text-xs py-1 px-3 bg-emerald-950/80 text-emerald-400 border border-emerald-700 rounded-full font-semibold">
                 RFID AKTIF
-              </Badge>
+              </span>
             </div>
 
             {/* Live Balance Counter */}
             <div className="space-y-1">
-              <span className="text-xs text-gray-400 uppercase tracking-wider block font-medium">
+              <span className="text-xs text-zinc-400 uppercase tracking-wider block font-medium">
                 Saldo Aktif Gelang
               </span>
               {loading ? (
-                <Skeleton className="h-12 w-48 bg-violet-950/60" />
+                <Skeleton className="h-12 w-48 bg-zinc-800" />
               ) : (
                 <h2 className="text-4xl sm:text-5xl font-black text-white tracking-tight">
                   {formatCurrency(balanceAmount)}
                 </h2>
               )}
-              <p className="text-xs text-violet-300/80">
+              <p className="text-xs text-zinc-400">
                 Dapat digunakan di seluruh tenant F&B dan Official Merch festival.
               </p>
             </div>
 
             {/* Wristband UID and QR Code Stub */}
-            <div className="pt-4 border-t border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="pt-4 border-t border-zinc-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="space-y-1">
-                <span className="text-[11px] text-gray-400 uppercase tracking-wider block">
+                <span className="text-[11px] text-zinc-400 uppercase tracking-wider block font-medium">
                   Wristband UID / Kode Kartu
                 </span>
                 <div className="flex items-center gap-2">
-                  <span className="font-mono text-sm font-bold text-violet-300 tracking-wider">
+                  <span className="font-mono text-sm font-bold text-zinc-200 tracking-wider">
                     {wristbandUid}
                   </span>
                   <button
                     type="button"
                     onClick={handleCopyWristbandCode}
-                    className="p-1 hover:bg-violet-800/40 rounded text-gray-400 hover:text-white transition-colors"
+                    className="p-1 hover:bg-zinc-800 rounded text-zinc-400 hover:text-white transition-colors"
                     title="Salin Kode UID"
                   >
-                    {copied ? <Check className="h-4 w-4 text-green-400" /> : <Copy className="h-4 w-4" />}
+                    {copied ? <Check className="h-4 w-4 text-emerald-400" /> : <Copy className="h-4 w-4" />}
                   </button>
                 </div>
               </div>
 
-              <div className="flex items-center gap-3 bg-black/40 px-3 py-2 rounded-xl border border-white/10 w-fit">
-                <div className="bg-white p-1 rounded-lg">
-                  <QRCodeSVG value={wallet?.id || 'entra-wristband'} size={40} />
+              <div className="flex items-center gap-3 bg-zinc-900 px-3.5 py-2 rounded-2xl border border-zinc-800 w-fit">
+                <div className="bg-white p-1 rounded-xl">
+                  <QRCodeSVG value={wallet?.id || 'entra-wristband'} size={38} />
                 </div>
                 <div className="text-left">
-                  <span className="text-[10px] text-gray-400 uppercase block font-bold">NFC TAP-READY</span>
+                  <span className="text-[10px] text-zinc-400 uppercase block font-bold">NFC TAP-READY</span>
                   <span className="text-xs font-mono text-white font-bold">0.05s SPEED</span>
                 </div>
               </div>
@@ -370,22 +367,22 @@ export default function CashlessPortalPage() {
         </div>
 
         {/* Quick Actions Panel */}
-        <div className="flex flex-col justify-between gap-4 bg-gray-900 border border-gray-800 rounded-3xl p-6">
+        <div className="flex flex-col justify-between gap-4 bg-white border border-zinc-200 rounded-3xl p-6 shadow-xs">
           <div>
-            <h3 className="text-lg font-bold text-white mb-1">Aksi Cepat Gelang</h3>
-            <p className="text-xs text-gray-400">
+            <h3 className="text-lg font-bold text-zinc-950 mb-1">Aksi Cepat Gelang</h3>
+            <p className="text-xs text-zinc-500">
               Isi ulang saldo instan, bayar di kasir, atau cairkan sisa saldo gelang Anda.
             </p>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-2.5">
             <Button
               onClick={() => {
                 setTopUpAmount(100000);
                 setCustomTopUpInput('100000');
                 setIsTopUpOpen(true);
               }}
-              className="w-full bg-violet-600 hover:bg-violet-700 text-white font-bold py-5 rounded-2xl flex items-center justify-center gap-3 text-sm shadow-lg shadow-violet-900/30"
+              className="w-full bg-zinc-950 hover:bg-zinc-800 text-white font-semibold py-3.5 rounded-full flex items-center justify-center gap-2.5 text-xs shadow-xs"
             >
               <Zap className="h-4 w-4" />
               Top-Up Saldo Gelang
@@ -398,9 +395,9 @@ export default function CashlessPortalPage() {
                 setCustomPosInput('35000');
                 setIsPosOpen(true);
               }}
-              className="w-full border-gray-700 hover:bg-gray-800 text-gray-200 font-semibold py-5 rounded-2xl flex items-center justify-center gap-3 text-xs"
+              className="w-full border-zinc-200 hover:bg-zinc-50 text-zinc-800 font-semibold py-3.5 rounded-full flex items-center justify-center gap-2.5 text-xs"
             >
-              <Store className="h-4 w-4 text-emerald-400" />
+              <Store className="h-4 w-4 text-emerald-600" />
               Simulasi Kasir POS (Tap to Pay)
             </Button>
 
@@ -413,60 +410,60 @@ export default function CashlessPortalPage() {
                 setIsRefundOpen(true);
               }}
               disabled={balanceAmount <= 0}
-              className="w-full border-rose-900/40 hover:bg-rose-950/30 text-rose-400 font-semibold py-5 rounded-2xl flex items-center justify-center gap-3 text-xs"
+              className="w-full border-rose-200 hover:bg-rose-50 text-rose-600 font-semibold py-3.5 rounded-full flex items-center justify-center gap-2.5 text-xs disabled:opacity-40"
             >
-              <ArrowDownToLine className="h-4 w-4 text-rose-400" />
+              <ArrowDownToLine className="h-4 w-4 text-rose-500" />
               Tarik Saldo Gelang (Refund)
             </Button>
           </div>
 
-          <div className="p-3.5 bg-gray-950 rounded-xl border border-gray-800 text-xs text-gray-400 flex items-start gap-2">
-            <CheckCircle2 className="h-4 w-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+          <div className="p-3.5 bg-zinc-50 rounded-2xl border border-zinc-200 text-xs text-zinc-600 flex items-start gap-2">
+            <CheckCircle2 className="h-4 w-4 text-emerald-600 flex-shrink-0 mt-0.5" />
             <span>Sisa saldo gelang dapat di-refund kapan saja setelah event festival berakhir.</span>
           </div>
         </div>
       </div>
 
       {/* Transaction History Section */}
-      <Card className="bg-gray-900 border-gray-800 p-6 space-y-6">
+      <div className="bg-white border border-zinc-200 p-6 space-y-6 rounded-3xl shadow-xs">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h2 className="text-xl font-bold text-white">Riwayat Transaksi Gelang</h2>
-            <p className="text-xs text-gray-400 mt-0.5">
+            <h2 className="text-xl font-bold text-zinc-950">Riwayat Transaksi Gelang</h2>
+            <p className="text-xs text-zinc-500 mt-0.5">
               Seluruh mutasi saldo top-up, belanja kasir, dan penarikan refund tercatat secara real-time.
             </p>
           </div>
 
           {/* Filter Tabs */}
-          <div className="flex flex-wrap bg-gray-950 p-1 rounded-xl border border-gray-800 text-xs w-fit gap-1">
+          <div className="flex flex-wrap bg-zinc-100 p-1 rounded-full border border-zinc-200 text-xs w-fit gap-1">
             <button
               onClick={() => setTxFilter('ALL')}
-              className={`px-3 py-1.5 rounded-lg font-medium transition-colors ${
-                txFilter === 'ALL' ? 'bg-violet-600 text-white' : 'text-gray-400 hover:text-white'
+              className={`px-3.5 py-1.5 rounded-full font-medium transition-colors ${
+                txFilter === 'ALL' ? 'bg-zinc-950 text-white shadow-xs' : 'text-zinc-600 hover:text-zinc-950'
               }`}
             >
               Semua ({transactions.length})
             </button>
             <button
               onClick={() => setTxFilter('TOPUP')}
-              className={`px-3 py-1.5 rounded-lg font-medium transition-colors ${
-                txFilter === 'TOPUP' ? 'bg-violet-600 text-white' : 'text-gray-400 hover:text-white'
+              className={`px-3.5 py-1.5 rounded-full font-medium transition-colors ${
+                txFilter === 'TOPUP' ? 'bg-zinc-950 text-white shadow-xs' : 'text-zinc-600 hover:text-zinc-950'
               }`}
             >
               Top-Up Saldo
             </button>
             <button
               onClick={() => setTxFilter('PURCHASE')}
-              className={`px-3 py-1.5 rounded-lg font-medium transition-colors ${
-                txFilter === 'PURCHASE' ? 'bg-violet-600 text-white' : 'text-gray-400 hover:text-white'
+              className={`px-3.5 py-1.5 rounded-full font-medium transition-colors ${
+                txFilter === 'PURCHASE' ? 'bg-zinc-950 text-white shadow-xs' : 'text-zinc-600 hover:text-zinc-950'
               }`}
             >
               Belanja Tenant
             </button>
             <button
               onClick={() => setTxFilter('REFUND')}
-              className={`px-3 py-1.5 rounded-lg font-medium transition-colors ${
-                txFilter === 'REFUND' ? 'bg-rose-600 text-white' : 'text-gray-400 hover:text-white'
+              className={`px-3.5 py-1.5 rounded-full font-medium transition-colors ${
+                txFilter === 'REFUND' ? 'bg-rose-600 text-white shadow-xs' : 'text-zinc-600 hover:text-zinc-950'
               }`}
             >
               Refund
@@ -478,16 +475,16 @@ export default function CashlessPortalPage() {
         {loading ? (
           <div className="space-y-3">
             {[1, 2, 3].map((i) => (
-              <Skeleton key={i} className="h-16 w-full bg-gray-800/60 rounded-xl" />
+              <Skeleton key={i} className="h-16 w-full bg-zinc-200/70 rounded-2xl" />
             ))}
           </div>
         ) : filteredTransactions.length === 0 ? (
-          <div className="py-12 text-center text-gray-500 space-y-3">
-            <CreditCard className="h-10 w-10 mx-auto text-gray-600" />
+          <div className="py-12 text-center text-zinc-400 space-y-3">
+            <CreditCard className="h-10 w-10 mx-auto text-zinc-300" />
             <p className="text-sm font-medium">Belum ada mutasi transaksi pada filter ini.</p>
           </div>
         ) : (
-          <div className="divide-y divide-gray-800">
+          <div className="divide-y divide-zinc-100">
             {filteredTransactions.map((tx) => {
               const isCredit = tx.type?.toUpperCase() === 'CREDIT' || tx.type?.toUpperCase() === 'TOPUP';
               const isRefund = tx.description?.toLowerCase().includes('refund');
@@ -497,12 +494,12 @@ export default function CashlessPortalPage() {
                 <div key={tx.id} className="py-4 flex items-center justify-between gap-4">
                   <div className="flex items-center gap-3">
                     <div
-                      className={`p-2.5 rounded-xl border ${
+                      className={`p-2.5 rounded-2xl border ${
                         isRefund
-                          ? 'bg-rose-500/10 border-rose-500/30 text-rose-400'
+                          ? 'bg-rose-50 border-rose-200 text-rose-600'
                           : isCredit
-                          ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
-                          : 'bg-orange-500/10 border-orange-500/30 text-orange-400'
+                          ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
+                          : 'bg-zinc-100 border-zinc-200 text-zinc-800'
                       }`}
                     >
                       {isRefund ? (
@@ -514,10 +511,10 @@ export default function CashlessPortalPage() {
                       )}
                     </div>
                     <div>
-                      <h4 className="text-sm font-bold text-white">
+                      <h4 className="text-sm font-bold text-zinc-950">
                         {tx.description || (isCredit ? 'Top-Up Saldo Gelang' : 'Pembayaran Tenant')}
                       </h4>
-                      <p className="text-xs text-gray-400">
+                      <p className="text-xs text-zinc-500">
                         {tx.created_at ? formatDate(tx.created_at) : 'Waktu transaksi'}
                       </p>
                     </div>
@@ -526,12 +523,12 @@ export default function CashlessPortalPage() {
                   <div className="text-right">
                     <span
                       className={`text-sm font-bold font-mono ${
-                        isRefund ? 'text-rose-400' : isCredit ? 'text-emerald-400' : 'text-gray-200'
+                        isRefund ? 'text-rose-600' : isCredit ? 'text-emerald-700' : 'text-zinc-950'
                       }`}
                     >
                       {isCredit ? '+' : '-'} {formatCurrency(amount)}
                     </span>
-                    <span className="block text-[10px] text-gray-500 uppercase tracking-wider">
+                    <span className="block text-[10px] text-zinc-400 uppercase tracking-wider font-semibold">
                       {isRefund ? 'REFUND DIKIRIM' : isCredit ? 'BERHASIL' : 'DIBAYAR'}
                     </span>
                   </div>
@@ -540,7 +537,7 @@ export default function CashlessPortalPage() {
             })}
           </div>
         )}
-      </Card>
+      </div>
 
       {/* MODAL 1: Top-Up Saldo Gelang */}
       {isTopUpOpen && (
@@ -549,10 +546,10 @@ export default function CashlessPortalPage() {
           onClose={() => !topUpLoading && setIsTopUpOpen(false)}
           title="Top-Up Saldo Gelang Festival"
         >
-          <form onSubmit={handleTopUpSubmit} className="space-y-5">
-            <div className="p-3.5 bg-gray-950 border border-gray-800 rounded-xl text-xs text-gray-400 space-y-1">
-              <p className="text-white font-semibold flex items-center gap-1.5">
-                <Zap className="h-4 w-4 text-violet-400" />
+          <form onSubmit={handleTopUpSubmit} className="space-y-5 text-zinc-900">
+            <div className="p-3.5 bg-zinc-50 border border-zinc-200 rounded-2xl text-xs text-zinc-600 space-y-1">
+              <p className="text-zinc-950 font-semibold flex items-center gap-1.5">
+                <Zap className="h-4 w-4 text-zinc-800" />
                 Isi Ulang Saldo Instan
               </p>
               <p>Saldo akan langsung masuk ke RFID wristband pass Anda dan siap ditap di merchant festival.</p>
@@ -560,7 +557,7 @@ export default function CashlessPortalPage() {
 
             {/* Quick Chips */}
             <div className="space-y-2">
-              <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+              <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">
                 Pilih Nominal Cepat
               </label>
               <div className="grid grid-cols-3 gap-2">
@@ -572,10 +569,10 @@ export default function CashlessPortalPage() {
                       setTopUpAmount(amt);
                       setCustomTopUpInput(amt.toString());
                     }}
-                    className={`py-2 px-3 rounded-xl text-xs font-bold border transition-colors ${
+                    className={`py-2 px-3 rounded-full text-xs font-bold border transition-colors ${
                       topUpAmount === amt
-                        ? 'bg-violet-600 text-white border-violet-500'
-                        : 'bg-gray-950 text-gray-300 border-gray-800 hover:border-gray-700'
+                        ? 'bg-zinc-950 text-white border-zinc-950'
+                        : 'bg-white text-zinc-700 border-zinc-200 hover:bg-zinc-50'
                     }`}
                   >
                     {formatCurrency(amt)}
@@ -586,7 +583,7 @@ export default function CashlessPortalPage() {
 
             {/* Custom Amount Input */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+              <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">
                 Nominal Lain (Rp)
               </label>
               <input
@@ -598,25 +595,26 @@ export default function CashlessPortalPage() {
                   setCustomTopUpInput(e.target.value);
                   setTopUpAmount(Number(e.target.value) || 0);
                 }}
-                className="w-full px-4 py-2.5 bg-gray-950 border border-gray-800 rounded-xl text-white font-bold focus:outline-none focus:border-violet-500"
+                className="w-full px-4 py-2.5 bg-white border border-zinc-200 rounded-full text-zinc-900 font-bold focus:outline-none focus:border-zinc-900 text-sm"
                 placeholder="Minimal Rp 10.000"
                 required
               />
             </div>
 
-            <div className="flex justify-end gap-3 pt-2">
+            <div className="flex justify-end gap-2.5 pt-2">
               <Button
                 type="button"
                 variant="outline"
                 disabled={topUpLoading}
                 onClick={() => setIsTopUpOpen(false)}
+                className="rounded-full border-zinc-200 text-zinc-700 hover:bg-zinc-50 text-xs"
               >
                 Batal
               </Button>
               <Button
                 type="submit"
                 disabled={topUpLoading || topUpAmount < 10000}
-                className="bg-violet-600 hover:bg-violet-700 text-white px-6 font-bold"
+                className="bg-zinc-950 hover:bg-zinc-800 text-white px-6 font-semibold rounded-full text-xs"
               >
                 {topUpLoading ? 'Memproses...' : `Top-Up ${formatCurrency(topUpAmount)}`}
               </Button>
@@ -632,10 +630,10 @@ export default function CashlessPortalPage() {
           onClose={() => !posLoading && setIsPosOpen(false)}
           title="Simulasi Kasir Merchant / Tap to Pay"
         >
-          <form onSubmit={handlePosPayment} className="space-y-5">
-            <div className="p-3.5 bg-gray-950 border border-gray-800 rounded-xl text-xs text-gray-400 space-y-1">
-              <p className="text-white font-semibold flex items-center gap-1.5">
-                <Store className="h-4 w-4 text-emerald-400" />
+          <form onSubmit={handlePosPayment} className="space-y-5 text-zinc-900">
+            <div className="p-3.5 bg-zinc-50 border border-zinc-200 rounded-2xl text-xs text-zinc-600 space-y-1">
+              <p className="text-zinc-950 font-semibold flex items-center gap-1.5">
+                <Store className="h-4 w-4 text-emerald-600" />
                 Simulasi Mesin POS Tenant Festival
               </p>
               <p>
@@ -645,7 +643,7 @@ export default function CashlessPortalPage() {
 
             {/* Select Merchant */}
             <div className="space-y-2">
-              <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+              <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">
                 Pilih Tenant / Merchant
               </label>
               <div className="space-y-2">
@@ -653,21 +651,21 @@ export default function CashlessPortalPage() {
                   <div
                     key={m.id}
                     onClick={() => setSelectedMerchant(m)}
-                    className={`p-3 rounded-xl border flex items-center justify-between cursor-pointer transition-colors ${
+                    className={`p-3 rounded-2xl border flex items-center justify-between cursor-pointer transition-colors ${
                       selectedMerchant.id === m.id
-                        ? 'bg-violet-950/40 border-violet-500 text-white'
-                        : 'bg-gray-950 border-gray-800 text-gray-400 hover:border-gray-700'
+                        ? 'bg-zinc-100 border-zinc-900 text-zinc-950'
+                        : 'bg-white border-zinc-200 text-zinc-600 hover:border-zinc-300'
                     }`}
                   >
                     <div className="flex items-center gap-3">
-                      <div className="p-2 bg-gray-800 rounded-lg text-violet-400">{m.icon}</div>
+                      <div className="p-2 bg-zinc-100 rounded-xl text-zinc-900">{m.icon}</div>
                       <div>
-                        <p className="text-xs font-bold text-white">{m.name}</p>
-                        <p className="text-[11px] text-gray-500">{m.category}</p>
+                        <p className="text-xs font-bold text-zinc-950">{m.name}</p>
+                        <p className="text-[11px] text-zinc-500">{m.category}</p>
                       </div>
                     </div>
                     {selectedMerchant.id === m.id && (
-                      <CheckCircle2 className="h-5 w-5 text-violet-400" />
+                      <CheckCircle2 className="h-5 w-5 text-zinc-950" />
                     )}
                   </div>
                 ))}
@@ -676,7 +674,7 @@ export default function CashlessPortalPage() {
 
             {/* Total Belanja Input */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+              <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">
                 Total Tagihan Belanja (Rp)
               </label>
               <input
@@ -688,24 +686,25 @@ export default function CashlessPortalPage() {
                   setCustomPosInput(e.target.value);
                   setPosAmount(Number(e.target.value) || 0);
                 }}
-                className="w-full px-4 py-2.5 bg-gray-950 border border-gray-800 rounded-xl text-white font-bold focus:outline-none focus:border-emerald-500"
+                className="w-full px-4 py-2.5 bg-white border border-zinc-200 rounded-full text-zinc-900 font-bold focus:outline-none focus:border-zinc-900 text-sm"
                 required
               />
             </div>
 
-            <div className="flex justify-end gap-3 pt-2">
+            <div className="flex justify-end gap-2.5 pt-2">
               <Button
                 type="button"
                 variant="outline"
                 disabled={posLoading}
                 onClick={() => setIsPosOpen(false)}
+                className="rounded-full border-zinc-200 text-zinc-700 hover:bg-zinc-50 text-xs"
               >
                 Batal
               </Button>
               <Button
                 type="submit"
                 disabled={posLoading || posAmount <= 0}
-                className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 font-bold flex items-center gap-1.5"
+                className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 font-semibold flex items-center gap-1.5 rounded-full text-xs"
               >
                 {posLoading ? 'Memproses...' : `Tap Gelang & Bayar (${formatCurrency(posAmount)})`}
               </Button>
@@ -721,10 +720,10 @@ export default function CashlessPortalPage() {
           onClose={() => !refundLoading && setIsRefundOpen(false)}
           title="Tarik Sisa Saldo Gelang (Refund)"
         >
-          <form onSubmit={handleRefundSubmit} className="space-y-4">
-            <div className="p-3.5 bg-gray-950 border border-gray-800 rounded-xl text-xs text-gray-400 space-y-1">
-              <p className="text-white font-semibold flex items-center gap-1.5">
-                <Landmark className="h-4 w-4 text-rose-400" />
+          <form onSubmit={handleRefundSubmit} className="space-y-4 text-zinc-900">
+            <div className="p-3.5 bg-zinc-50 border border-zinc-200 rounded-2xl text-xs text-zinc-600 space-y-1">
+              <p className="text-zinc-950 font-semibold flex items-center gap-1.5">
+                <Landmark className="h-4 w-4 text-rose-600" />
                 Pencairan Saldo ke Rekening / E-Wallet
               </p>
               <p>
@@ -734,9 +733,9 @@ export default function CashlessPortalPage() {
 
             {/* Quick Percentage Chips */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider flex justify-between">
+              <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wider flex justify-between">
                 <span>Nominal Refund (Rp)</span>
-                <span className="text-violet-400">Saldo: {formatCurrency(balanceAmount)}</span>
+                <span className="text-zinc-950 font-bold">Saldo: {formatCurrency(balanceAmount)}</span>
               </label>
               <div className="grid grid-cols-3 gap-2">
                 {[
@@ -752,10 +751,10 @@ export default function CashlessPortalPage() {
                       setRefundAmount(actual);
                       setCustomRefundInput(actual.toString());
                     }}
-                    className={`py-2 px-2.5 rounded-xl text-xs font-bold border transition-colors ${
+                    className={`py-2 px-2.5 rounded-full text-xs font-bold border transition-colors ${
                       refundAmount === preset.val
-                        ? 'bg-rose-600 text-white border-rose-500'
-                        : 'bg-gray-950 text-gray-300 border-gray-800 hover:border-gray-700'
+                        ? 'bg-rose-600 text-white border-rose-600'
+                        : 'bg-white text-zinc-700 border-zinc-200 hover:bg-zinc-50'
                     }`}
                   >
                     {preset.label}
@@ -772,7 +771,7 @@ export default function CashlessPortalPage() {
                   setCustomRefundInput(e.target.value);
                   setRefundAmount(Number(e.target.value) || 0);
                 }}
-                className="w-full px-4 py-2.5 bg-gray-950 border border-gray-800 rounded-xl text-white font-bold focus:outline-none focus:border-rose-500 mt-2"
+                className="w-full px-4 py-2.5 bg-white border border-zinc-200 rounded-full text-zinc-900 font-bold focus:outline-none focus:border-zinc-900 mt-2 text-sm"
                 placeholder="Nominal yang ditarik..."
                 required
               />
@@ -780,13 +779,13 @@ export default function CashlessPortalPage() {
 
             {/* Bank Select */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+              <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">
                 Bank / E-Wallet Tujuan
               </label>
               <select
                 value={refundBank}
                 onChange={(e) => setRefundBank(e.target.value)}
-                className="w-full px-4 py-2.5 bg-gray-950 border border-gray-800 rounded-xl text-white font-medium focus:outline-none focus:border-rose-500 cursor-pointer"
+                className="w-full px-4 py-2.5 bg-white border border-zinc-200 rounded-full text-zinc-900 font-medium focus:outline-none focus:border-zinc-900 cursor-pointer text-sm"
               >
                 {BANK_OPTIONS.map((bank) => (
                   <option key={bank} value={bank}>
@@ -798,14 +797,14 @@ export default function CashlessPortalPage() {
 
             {/* Account Number */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+              <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">
                 Nomor Rekening / No. HP E-Wallet
               </label>
               <input
                 type="text"
                 value={refundAccountNumber}
                 onChange={(e) => setRefundAccountNumber(e.target.value)}
-                className="w-full px-4 py-2.5 bg-gray-950 border border-gray-800 rounded-xl text-white font-medium focus:outline-none focus:border-rose-500"
+                className="w-full px-4 py-2.5 bg-white border border-zinc-200 rounded-full text-zinc-900 font-medium focus:outline-none focus:border-zinc-900 text-sm"
                 placeholder="Contoh: 1234567890"
                 required
               />
@@ -813,14 +812,14 @@ export default function CashlessPortalPage() {
 
             {/* Account Holder Name */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+              <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">
                 Nama Pemilik Rekening
               </label>
               <input
                 type="text"
                 value={refundAccountHolder}
                 onChange={(e) => setRefundAccountHolder(e.target.value)}
-                className="w-full px-4 py-2.5 bg-gray-950 border border-gray-800 rounded-xl text-white font-medium focus:outline-none focus:border-rose-500"
+                className="w-full px-4 py-2.5 bg-white border border-zinc-200 rounded-full text-zinc-900 font-medium focus:outline-none focus:border-zinc-900 text-sm"
                 placeholder="Nama sesuai buku tabungan"
                 required
               />
@@ -828,31 +827,32 @@ export default function CashlessPortalPage() {
 
             {/* Reason */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+              <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">
                 Alasan Refund
               </label>
               <input
                 type="text"
                 value={refundReason}
                 onChange={(e) => setRefundReason(e.target.value)}
-                className="w-full px-4 py-2.5 bg-gray-950 border border-gray-800 rounded-xl text-white font-medium focus:outline-none focus:border-rose-500"
+                className="w-full px-4 py-2.5 bg-white border border-zinc-200 rounded-full text-zinc-900 font-medium focus:outline-none focus:border-zinc-900 text-sm"
                 placeholder="Contoh: Selesai event festival"
               />
             </div>
 
-            <div className="flex justify-end gap-3 pt-2">
+            <div className="flex justify-end gap-2.5 pt-2">
               <Button
                 type="button"
                 variant="outline"
                 disabled={refundLoading}
                 onClick={() => setIsRefundOpen(false)}
+                className="rounded-full border-zinc-200 text-zinc-700 hover:bg-zinc-50 text-xs"
               >
                 Batal
               </Button>
               <Button
                 type="submit"
                 disabled={refundLoading || refundAmount <= 0 || refundAmount > balanceAmount}
-                className="bg-rose-600 hover:bg-rose-700 text-white px-6 font-bold flex items-center gap-1.5"
+                className="bg-rose-600 hover:bg-rose-700 text-white px-6 font-semibold flex items-center gap-1.5 rounded-full text-xs"
               >
                 {refundLoading ? 'Memproses...' : `Cairkan ${formatCurrency(refundAmount)}`}
               </Button>

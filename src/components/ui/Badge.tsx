@@ -10,16 +10,16 @@ export function Badge({ status = 'ACTIVE', variant, children, className = '', ..
     if (variant) {
       switch (variant) {
         case 'success':
-          return 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20';
+          return 'bg-emerald-50 text-emerald-700 border border-emerald-200/80';
         case 'warning':
-          return 'bg-amber-500/10 text-amber-400 border border-amber-500/20';
+          return 'bg-amber-50 text-amber-700 border border-amber-200/80';
         case 'error':
-          return 'bg-rose-500/10 text-rose-400 border border-rose-500/20';
+          return 'bg-rose-50 text-rose-700 border border-rose-200/80';
         case 'info':
-          return 'bg-blue-500/10 text-blue-400 border border-blue-500/20';
+          return 'bg-blue-50 text-blue-700 border border-blue-200/80';
         case 'secondary':
         default:
-          return 'bg-gray-500/10 text-gray-400 border border-gray-500/20';
+          return 'bg-zinc-100 text-zinc-700 border border-zinc-200';
       }
     }
 
@@ -30,23 +30,23 @@ export function Badge({ status = 'ACTIVE', variant, children, className = '', ..
       case 'SUCCESS':
       case 'SUKSES':
       case 'SELESAI':
-        return 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20';
+        return 'bg-emerald-50 text-emerald-700 border border-emerald-200/80';
       case 'APPROVED':
       case 'DISETUJUI':
-        return 'bg-blue-500/10 text-blue-400 border border-blue-500/20';
+        return 'bg-blue-50 text-blue-700 border border-blue-200/80';
       case 'PENDING':
       case 'MENUNGGU':
-        return 'bg-amber-500/10 text-amber-400 border border-amber-500/20';
+        return 'bg-amber-50 text-amber-700 border border-amber-200/80';
       case 'EXPIRED':
       case 'CANCELLED':
       case 'DIBATALKAN':
       case 'REJECTED':
       case 'DITOLAK':
-        return 'bg-rose-500/10 text-rose-400 border border-rose-500/20';
+        return 'bg-rose-50 text-rose-700 border border-rose-200/80';
       case 'USED':
       case 'DRAFT':
       default:
-        return 'bg-gray-500/10 text-gray-400 border border-gray-500/20';
+        return 'bg-zinc-100 text-zinc-700 border border-zinc-200';
     }
   };
 

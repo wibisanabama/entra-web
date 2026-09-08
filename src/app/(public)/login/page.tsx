@@ -38,35 +38,35 @@ function LoginForm() {
   };
 
   return (
-    <Card className="w-full max-w-md p-8 bg-gray-900 shadow-2xl">
+    <Card className="w-full max-w-md p-8 sm:p-10 bg-white border border-zinc-200 rounded-3xl shadow-sm">
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-white mb-2">Selamat Datang</h1>
-        <p className="text-gray-400">Masuk ke akun Entra Anda</p>
+        <h1 className="text-2xl sm:text-3xl font-black text-zinc-950 tracking-tight mb-2">Selamat Datang</h1>
+        <p className="text-sm text-zinc-500">Masuk ke akun Entra Anda</p>
       </div>
 
       {error && (
-        <div className="bg-red-500/10 text-red-500 p-3 rounded-md mb-6 text-sm text-center">
+        <div className="bg-red-50 border border-red-200 text-red-600 p-3 rounded-2xl mb-6 text-xs font-medium text-center">
           {error}
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-gray-300">Email</label>
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <div className="space-y-1.5">
+          <label className="text-xs font-bold text-zinc-700 uppercase tracking-wider">Email</label>
           <Input 
             type="email" 
             placeholder="nama@email.com" 
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="bg-gray-800 text-white"
+            className="bg-zinc-50 border-zinc-200 text-zinc-950 rounded-full px-4 py-2.5 focus:bg-white focus:border-zinc-950"
           />
         </div>
         
-        <div className="space-y-2">
+        <div className="space-y-1.5">
           <div className="flex justify-between items-center">
-            <label className="text-sm font-medium text-gray-300">Password</label>
-            <Link href="/forgot-password" className="text-xs text-[#7C3AED] hover:text-[#4F46E5]">Lupa Password?</Link>
+            <label className="text-xs font-bold text-zinc-700 uppercase tracking-wider">Password</label>
+            <Link href="/forgot-password" className="text-xs text-zinc-500 hover:text-zinc-950 font-medium">Lupa Password?</Link>
           </div>
           <Input 
             type="password" 
@@ -74,22 +74,22 @@ function LoginForm() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            className="bg-gray-800 text-white"
+            className="bg-zinc-50 border-zinc-200 text-zinc-950 rounded-full px-4 py-2.5 focus:bg-white focus:border-zinc-950"
           />
         </div>
 
         <Button 
           type="submit" 
-          className="w-full bg-[#7C3AED] hover:bg-[#4F46E5] text-white py-6"
+          className="w-full bg-zinc-950 hover:bg-zinc-800 text-white font-bold py-3 rounded-full shadow-sm"
           disabled={loading}
         >
           {loading ? 'Memproses...' : 'Masuk'}
         </Button>
       </form>
 
-      <div className="mt-8 text-center text-sm text-gray-400">
+      <div className="mt-8 text-center text-xs text-zinc-500">
         Belum punya akun?{' '}
-        <Link href="/register" className="text-[#7C3AED] hover:text-[#4F46E5] font-medium">
+        <Link href="/register" className="text-zinc-950 hover:underline font-bold">
           Daftar Sekarang
         </Link>
       </div>
@@ -100,7 +100,7 @@ function LoginForm() {
 export default function LoginPage() {
   return (
     <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
-      <Suspense fallback={<div className="text-white text-center">Memuat form login...</div>}>
+      <Suspense fallback={<div className="text-zinc-500 text-center text-sm">Memuat form login...</div>}>
         <LoginForm />
       </Suspense>
     </div>

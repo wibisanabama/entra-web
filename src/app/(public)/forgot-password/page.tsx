@@ -31,49 +31,49 @@ export default function ForgotPasswordPage() {
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
-      <Card className="w-full max-w-md p-8 bg-gray-900 shadow-2xl">
+      <Card className="w-full max-w-md p-8 sm:p-10 bg-white border border-zinc-200 rounded-3xl shadow-sm">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">Lupa Password?</h1>
-          <p className="text-gray-400">Masukkan email Anda untuk mereset password</p>
+          <h1 className="text-2xl sm:text-3xl font-black text-zinc-950 tracking-tight mb-2">Lupa Password?</h1>
+          <p className="text-sm text-zinc-500">Masukkan email Anda untuk mereset password</p>
         </div>
 
         {error && (
-          <div className="bg-red-500/10 text-red-500 p-3 rounded-md mb-6 text-sm text-center">
+          <div className="bg-red-50 border border-red-200 text-red-600 p-3 rounded-2xl mb-6 text-xs font-medium text-center">
             {error}
           </div>
         )}
         
         {success && (
-          <div className="bg-green-500/10 text-green-500 p-3 rounded-md mb-6 text-sm text-center">
-            Tautan reset password telah dikirim ke email Anda. (Silakan periksa email Anda)
+          <div className="bg-emerald-50 border border-emerald-200 text-emerald-700 p-3 rounded-2xl mb-6 text-xs font-medium text-center">
+            Tautan reset password telah dikirim ke email Anda. Silakan periksa kotak masuk atau folder spam.
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-300">Email</label>
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div className="space-y-1.5">
+            <label className="text-xs font-bold text-zinc-700 uppercase tracking-wider">Email</label>
             <Input 
               type="email" 
               placeholder="nama@email.com" 
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="bg-gray-800 text-white"
+              className="bg-zinc-50 border-zinc-200 text-zinc-950 rounded-full px-4 py-2.5 focus:bg-white focus:border-zinc-950"
             />
           </div>
 
           <Button 
             type="submit" 
-            className="w-full bg-[#7C3AED] hover:bg-[#4F46E5] text-white py-6"
+            className="w-full bg-zinc-950 hover:bg-zinc-800 text-white font-bold py-3 rounded-full shadow-sm"
             disabled={loading}
           >
             {loading ? 'Memproses...' : 'Kirim Link Reset'}
           </Button>
         </form>
 
-        <div className="mt-8 text-center text-sm text-gray-400">
+        <div className="mt-8 text-center text-xs text-zinc-500">
           Ingat password Anda?{' '}
-          <Link href="/login" className="text-[#7C3AED] hover:text-[#4F46E5] font-medium">
+          <Link href="/login" className="text-zinc-950 hover:underline font-bold">
             Masuk
           </Link>
         </div>

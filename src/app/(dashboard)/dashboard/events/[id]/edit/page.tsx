@@ -79,14 +79,14 @@ export default function EditEventPage() {
   };
 
   if (loading) {
-    return <div className="text-white text-center py-10">Memuat data event...</div>;
+    return <div className="text-zinc-500 text-center py-10 text-sm font-medium">Memuat data event...</div>;
   }
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-white mb-2">Edit Event</h1>
-        <p className="text-gray-400">Perbarui detail event Anda.</p>
+        <h1 className="text-2xl sm:text-3xl font-black text-zinc-950 tracking-tight mb-1">Edit Event</h1>
+        <p className="text-xs sm:text-sm text-zinc-500">Perbarui detail event Anda.</p>
       </div>
 
       <EventForm 

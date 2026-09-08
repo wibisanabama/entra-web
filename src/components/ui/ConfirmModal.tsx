@@ -28,14 +28,14 @@ export function ConfirmModal({
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={title}>
       <div className="space-y-4">
-        <p className="text-gray-300">{message}</p>
-        <div className="flex justify-end gap-3 pt-4 border-t border-gray-800">
-          <Button variant="outline" onClick={onClose}>
+        <p className="text-zinc-600 text-sm leading-relaxed">{message}</p>
+        <div className="flex justify-end gap-2.5 pt-4 border-t border-zinc-100">
+          <Button variant="outline" onClick={onClose} className="rounded-full border-zinc-200 text-zinc-700 hover:bg-zinc-100 text-xs px-4 py-2 font-bold">
             {cancelText}
           </Button>
           <Button 
-            variant={isDestructive ? 'primary' : 'primary'} // can add danger variant later if needed, but primary is fine
-            className={isDestructive ? 'bg-red-600 hover:bg-red-700 text-white' : ''}
+            variant={isDestructive ? 'primary' : 'primary'}
+            className={`rounded-full text-xs px-5 py-2 font-bold shadow-sm ${isDestructive ? 'bg-red-600 hover:bg-red-700 text-white' : 'bg-zinc-950 hover:bg-zinc-800 text-white'}`}
             onClick={() => {
               onConfirm();
               onClose();

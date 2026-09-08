@@ -24,20 +24,24 @@ export default function DashboardLayout({
   }, [isAuthenticated, loading, user, router]);
 
   if (loading || !isAuthenticated) {
-    return <div className="min-h-screen bg-gray-950 flex items-center justify-center">Loading...</div>;
+    return (
+      <div className="min-h-screen bg-white text-zinc-500 flex items-center justify-center text-sm font-medium">
+        Memuat dashboard...
+      </div>
+    );
   }
 
   return (
-    <div className="h-screen overflow-hidden bg-gray-950 text-white flex">
+    <div className="h-screen overflow-hidden bg-white text-zinc-950 flex">
       {/* Sidebar - fixed on desktop */}
-      <div className="hidden md:block w-64 flex-shrink-0">
+      <div className="hidden md:block w-64 flex-shrink-0 border-r border-zinc-200">
         <Sidebar />
       </div>
 
       {/* Main Content area */}
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0 bg-zinc-50/50">
         <Topbar />
-        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-950 p-4 md:p-6 lg:p-8">
+        <main className="flex-1 overflow-x-hidden overflow-y-auto p-6 md:p-8 lg:p-10">
           {children}
         </main>
       </div>

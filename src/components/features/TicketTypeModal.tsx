@@ -107,18 +107,19 @@ export function TicketTypeModal({ isOpen, onClose, onSubmit, initialData, isLoad
     <Modal isOpen={isOpen} onClose={onClose} title={initialData ? "Edit Tipe Tiket" : "Buat Tipe Tiket Baru"}>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-400 mb-1">Nama Tiket <span className="text-red-500">*</span></label>
+          <label className="block text-xs font-bold text-zinc-700 uppercase tracking-wider mb-1">Nama Tiket <span className="text-red-500">*</span></label>
           <Input 
             name="name" 
             value={formData.name} 
             onChange={handleChange} 
             placeholder="Contoh: VIP, Reguler, Early Bird"
             required
+            className="bg-zinc-50 border-zinc-200 text-zinc-950 rounded-full px-4 py-2 text-xs focus:bg-white focus:border-zinc-950"
           />
         </div>
         
         <div>
-          <label className="block text-sm font-medium text-gray-400 mb-1">Harga (Rp) <span className="text-red-500">*</span></label>
+          <label className="block text-xs font-bold text-zinc-700 uppercase tracking-wider mb-1">Harga (Rp) <span className="text-red-500">*</span></label>
           <Input 
             type="number"
             name="price" 
@@ -127,72 +128,79 @@ export function TicketTypeModal({ isOpen, onClose, onSubmit, initialData, isLoad
             placeholder="0 jika gratis"
             min="0"
             required
+            className="bg-zinc-50 border-zinc-200 text-zinc-950 rounded-full px-4 py-2 text-xs focus:bg-white focus:border-zinc-950"
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">Kuota Total <span className="text-red-500">*</span></label>
+            <label className="block text-xs font-bold text-zinc-700 uppercase tracking-wider mb-1">Kuota Total <span className="text-red-500">*</span></label>
             <Input 
               type="number"
               name="quantity" 
               value={formData.quantity} 
               onChange={handleChange} 
-              placeholder="Jumlah tiket tersedia"
+              placeholder="Jumlah tiket"
               min="1"
               required
+              className="bg-zinc-50 border-zinc-200 text-zinc-950 rounded-full px-4 py-2 text-xs focus:bg-white focus:border-zinc-950"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">Maks. per Orang</label>
+            <label className="block text-xs font-bold text-zinc-700 uppercase tracking-wider mb-1">Maks. per Orang</label>
             <Input 
               type="number"
               name="max_per_order" 
               value={formData.max_per_order} 
               onChange={handleChange} 
               min="1"
+              className="bg-zinc-50 border-zinc-200 text-zinc-950 rounded-full px-4 py-2 text-xs focus:bg-white focus:border-zinc-950"
             />
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">Mulai Dijual <span className="text-red-500">*</span></label>
+            <label className="block text-xs font-bold text-zinc-700 uppercase tracking-wider mb-1">Mulai Dijual <span className="text-red-500">*</span></label>
             <Input 
               type="datetime-local"
               name="sale_start" 
               value={formData.sale_start} 
               onChange={handleChange} 
               required
+              className="bg-zinc-50 border-zinc-200 text-zinc-950 rounded-full px-4 py-2 text-xs focus:bg-white focus:border-zinc-950"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">Selesai Dijual <span className="text-red-500">*</span></label>
+            <label className="block text-xs font-bold text-zinc-700 uppercase tracking-wider mb-1">Selesai Dijual <span className="text-red-500">*</span></label>
             <Input 
               type="datetime-local"
               name="sale_end" 
               value={formData.sale_end} 
               onChange={handleChange} 
               required
+              className="bg-zinc-50 border-zinc-200 text-zinc-950 rounded-full px-4 py-2 text-xs focus:bg-white focus:border-zinc-950"
             />
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-400 mb-1">Deskripsi (Opsional)</label>
+          <label className="block text-xs font-bold text-zinc-700 uppercase tracking-wider mb-1">Deskripsi (Opsional)</label>
           <textarea
             name="description"
             value={formData.description}
             onChange={handleChange}
-            className="w-full bg-gray-800 border border-gray-700 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-[#7C3AED] focus:border-transparent transition-all"
+            className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl py-2.5 px-4 text-zinc-950 text-xs focus:outline-none focus:border-zinc-950 focus:bg-white transition-all font-medium placeholder:text-zinc-400"
             rows={3}
             placeholder="Fasilitas yang didapat (misal: Akses VIP Lounge, dsb)"
           />
         </div>
 
-        <div className="pt-4 flex justify-end gap-3 border-t border-gray-800">
-          <Button type="button" variant="outline" onClick={onClose} disabled={isLoading}>Batal</Button>
-          <Button type="submit" variant="primary" disabled={isLoading}>
+        <div className="pt-3 flex justify-end gap-2.5 border-t border-zinc-100">
+          <Button type="button" variant="outline" onClick={onClose} disabled={isLoading} className="rounded-full border-zinc-200 text-zinc-700 hover:bg-zinc-100 text-xs px-4 py-2 font-bold">
+            Batal
+          </Button>
+          <Button type="submit" variant="primary" disabled={isLoading} className="rounded-full bg-zinc-950 hover:bg-zinc-800 text-white font-bold text-xs px-5 py-2 shadow-sm">
             {isLoading ? 'Menyimpan...' : 'Simpan Tiket'}
           </Button>
         </div>

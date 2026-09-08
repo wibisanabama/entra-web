@@ -56,31 +56,31 @@ function ResetPasswordForm() {
   return (
     <>
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-white mb-2">Reset Password</h1>
-        <p className="text-gray-400">Masukkan password baru Anda</p>
+        <h1 className="text-2xl sm:text-3xl font-black text-zinc-950 tracking-tight mb-2">Reset Password</h1>
+        <p className="text-sm text-zinc-500">Masukkan password baru Anda</p>
       </div>
 
       {error && (
-        <div className="bg-red-500/10 text-red-500 p-3 rounded-md mb-6 text-sm text-center">
+        <div className="bg-red-50 border border-red-200 text-red-600 p-3 rounded-2xl mb-6 text-xs font-medium text-center">
           {error}
         </div>
       )}
       
       {success ? (
-        <div className="text-center">
-          <div className="bg-green-500/10 text-green-500 p-4 rounded-md mb-6 text-sm">
+        <div className="text-center space-y-4">
+          <div className="bg-emerald-50 border border-emerald-200 text-emerald-700 p-4 rounded-2xl text-xs font-medium">
             Password berhasil direset! Mengalihkan ke halaman login...
           </div>
           <Link href="/login">
-            <Button className="w-full bg-[#7C3AED] hover:bg-[#4F46E5] text-white py-6">
+            <Button className="w-full bg-zinc-950 hover:bg-zinc-800 text-white font-bold py-3 rounded-full shadow-sm">
               Kembali ke Login
             </Button>
           </Link>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-300">Password Baru</label>
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div className="space-y-1.5">
+            <label className="text-xs font-bold text-zinc-700 uppercase tracking-wider">Password Baru</label>
             <Input 
               type="password" 
               placeholder="Minimal 8 karakter" 
@@ -89,12 +89,12 @@ function ResetPasswordForm() {
               required
               minLength={8}
               disabled={!token}
-              className="bg-gray-800 text-white"
+              className="bg-zinc-50 border-zinc-200 text-zinc-950 rounded-full px-4 py-2.5 focus:bg-white focus:border-zinc-950"
             />
           </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-300">Konfirmasi Password</label>
+          <div className="space-y-1.5">
+            <label className="text-xs font-bold text-zinc-700 uppercase tracking-wider">Konfirmasi Password</label>
             <Input 
               type="password" 
               placeholder="Ulangi password baru" 
@@ -103,13 +103,13 @@ function ResetPasswordForm() {
               required
               minLength={8}
               disabled={!token}
-              className="bg-gray-800 text-white"
+              className="bg-zinc-50 border-zinc-200 text-zinc-950 rounded-full px-4 py-2.5 focus:bg-white focus:border-zinc-950"
             />
           </div>
 
           <Button 
             type="submit" 
-            className="w-full bg-[#7C3AED] hover:bg-[#4F46E5] text-white py-6"
+            className="w-full bg-zinc-950 hover:bg-zinc-800 text-white font-bold py-3 rounded-full shadow-sm"
             disabled={loading || !token}
           >
             {loading ? 'Memproses...' : 'Simpan Password Baru'}
@@ -123,8 +123,8 @@ function ResetPasswordForm() {
 export default function ResetPasswordPage() {
   return (
     <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
-      <Card className="w-full max-w-md p-8 bg-gray-900 shadow-2xl">
-        <Suspense fallback={<div className="text-center text-white">Memuat form...</div>}>
+      <Card className="w-full max-w-md p-8 sm:p-10 bg-white border border-zinc-200 rounded-3xl shadow-sm">
+        <Suspense fallback={<div className="text-center text-zinc-500 text-sm">Memuat form...</div>}>
           <ResetPasswordForm />
         </Suspense>
       </Card>

@@ -185,100 +185,128 @@ export default function EventDetailPage() {
 
   if (loading) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <Skeleton className="w-full h-[400px] rounded-2xl bg-gray-900 mb-8" />
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 space-y-4">
-            <Skeleton className="w-24 h-8 rounded-full bg-gray-900" />
-            <Skeleton className="w-3/4 h-12 bg-gray-900" />
-            <Skeleton className="w-full h-32 bg-gray-900 mt-6" />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        <Skeleton className="w-full aspect-[21/9] max-h-[440px] rounded-3xl bg-zinc-200/70" />
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          <div className="lg:col-span-8 space-y-6">
+            <Skeleton className="w-28 h-8 rounded-full bg-zinc-200/70" />
+            <Skeleton className="w-3/4 h-12 bg-zinc-200/70" />
+            <Skeleton className="w-full h-36 rounded-2xl bg-zinc-200/70 mt-6" />
           </div>
-          <div>
-            <Skeleton className="w-full h-80 rounded-xl bg-gray-900" />
+          <div className="lg:col-span-4">
+            <Skeleton className="w-full h-96 rounded-3xl bg-zinc-200/70" />
           </div>
         </div>
       </div>
     );
   }
 
-  if (!event) return <div className="text-center py-20 text-white">Event tidak ditemukan.</div>;
+  if (!event) {
+    return (
+      <div className="min-h-[50vh] flex flex-col items-center justify-center text-center p-8">
+        <h2 className="text-xl font-bold text-zinc-950 mb-2">Event Tidak Ditemukan</h2>
+        <p className="text-sm text-zinc-500 mb-6">Event yang Anda cari mungkin sudah tidak tersedia atau telah dihapus.</p>
+        <Button onClick={() => router.push('/events')} className="bg-zinc-950 text-white rounded-full px-6">
+          Kembali ke Direktori Event
+        </Button>
+      </div>
+    );
+  }
 
   return (
-    <div className="bg-gray-950 pb-20">
-      {/* Banner */}
-      <div className="w-full h-[300px] md:h-[500px] relative">
-        <img src={event.image} alt={event.title} className="w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-gray-950/80"></div>
+    <div className="bg-white pb-24 text-zinc-900">
+      {/* Banner Showcase */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+        <div className="relative w-full aspect-[16/9] sm:aspect-[21/9] max-h-[460px] rounded-3xl overflow-hidden border border-zinc-200 shadow-xs bg-zinc-100">
+          <img src={event.image} alt={event.title} className="w-full h-full object-cover" />
+        </div>
       </div>
 
-      <div className="container mx-auto px-4 -mt-32 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      {/* Mobbin Split-Screen Layout */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
-          {/* Main Info */}
-          <div className="lg:col-span-2 space-y-8">
-            <div className="bg-gray-900 p-6 md:p-8 rounded-2xl shadow-xl">
-              <Badge status={event.category} className="bg-[#7C3AED] text-white mb-4 rounded-full px-3 py-1" />
-              <h1 className="text-3xl md:text-5xl font-bold text-white mb-4 leading-tight">{event.title}</h1>
-              
-              <div className="flex flex-col sm:flex-row gap-6 mt-8 text-gray-300">
-                <div className="flex items-start gap-3">
-                  <div className="p-3 bg-gray-800 rounded-lg text-[#7C3AED]">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+          {/* Left Column: Banner info, Date/Time/Venue, Description, Organizer */}
+          <div className="lg:col-span-7 xl:col-span-8 space-y-6">
+            {/* Header Card */}
+            <div className="bg-white p-6 sm:p-8 rounded-3xl border border-zinc-200 shadow-xs space-y-6">
+              <div>
+                <span className="inline-flex items-center px-3.5 py-1 rounded-full text-xs font-semibold bg-zinc-100 text-zinc-800 border border-zinc-200 mb-3">
+                  {event.category}
+                </span>
+                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-zinc-950 tracking-tight leading-tight">
+                  {event.title}
+                </h1>
+              </div>
+
+              {/* Event Info Details Pills */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+                <div className="p-3.5 bg-zinc-50 rounded-2xl border border-zinc-200 flex items-start gap-3">
+                  <div className="p-2 bg-white rounded-xl text-zinc-900 border border-zinc-200/80 shadow-xs flex-shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
                   </div>
                   <div>
-                    <p className="font-semibold text-white">Tanggal</p>
-                    <p>{event.date}</p>
+                    <p className="text-[11px] font-medium text-zinc-500 uppercase tracking-wider">Tanggal</p>
+                    <p className="font-bold text-zinc-950 text-xs sm:text-sm mt-0.5">{event.date}</p>
                   </div>
                 </div>
 
-                <div className="flex items-start gap-3">
-                  <div className="p-3 bg-gray-800 rounded-lg text-[#7C3AED]">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                <div className="p-3.5 bg-zinc-50 rounded-2xl border border-zinc-200 flex items-start gap-3">
+                  <div className="p-2 bg-white rounded-xl text-zinc-900 border border-zinc-200/80 shadow-xs flex-shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
                   </div>
                   <div>
-                    <p className="font-semibold text-white">Waktu</p>
-                    <p>{event.time}</p>
+                    <p className="text-[11px] font-medium text-zinc-500 uppercase tracking-wider">Waktu</p>
+                    <p className="font-bold text-zinc-950 text-xs sm:text-sm mt-0.5">{event.time}</p>
                   </div>
                 </div>
-                
-                <div className="flex items-start gap-3">
-                  <div className="p-3 bg-gray-800 rounded-lg text-[#7C3AED]">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+
+                <div className="p-3.5 bg-zinc-50 rounded-2xl border border-zinc-200 flex items-start gap-3">
+                  <div className="p-2 bg-white rounded-xl text-zinc-900 border border-zinc-200/80 shadow-xs flex-shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
                   </div>
                   <div>
-                    <p className="font-semibold text-white">Lokasi</p>
-                    <p>{event.venue}</p>
+                    <p className="text-[11px] font-medium text-zinc-500 uppercase tracking-wider">Lokasi Venue</p>
+                    <p className="font-bold text-zinc-950 text-xs sm:text-sm mt-0.5 line-clamp-1">{event.venue}</p>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="bg-gray-900 p-6 md:p-8 rounded-2xl ">
-              <h2 className="text-2xl font-bold text-white mb-4">Deskripsi Event</h2>
-              <div className="text-gray-300 leading-relaxed space-y-4">
+            {/* Description Card */}
+            <div className="bg-white p-6 sm:p-8 rounded-3xl border border-zinc-200 shadow-xs space-y-4">
+              <h2 className="text-xl font-bold text-zinc-950">Tentang Acara</h2>
+              <div className="text-zinc-600 leading-relaxed text-sm whitespace-pre-line space-y-3">
                 <p>{event.description}</p>
               </div>
-              
-              <div className="mt-8 pt-8 ">
-                <h3 className="text-lg font-bold text-white mb-2">Diselenggarakan oleh</h3>
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center font-bold text-xl text-[#7C3AED]">
-                    {event.organizer.charAt(0)}
-                  </div>
-                  <span className="font-medium text-gray-200">{event.organizer}</span>
+            </div>
+
+            {/* Organizer Card */}
+            <div className="bg-white p-6 sm:p-8 rounded-3xl border border-zinc-200 shadow-xs space-y-4">
+              <h3 className="text-sm font-bold text-zinc-500 uppercase tracking-wider">Penyelenggara Acara</h3>
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-zinc-100 border border-zinc-200 rounded-full flex items-center justify-center font-black text-lg text-zinc-950 flex-shrink-0">
+                  {event.organizer.charAt(0)}
+                </div>
+                <div>
+                  <h4 className="font-bold text-zinc-950 text-base">{event.organizer}</h4>
+                  <p className="text-xs text-zinc-500">Verified Event Organizer • Entra Partner</p>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Ticket Section */}
-          <div className="lg:col-span-1">
+          {/* Right Column: Sticky Ticket Purchase Card */}
+          <div className="lg:col-span-5 xl:col-span-4">
             <div className="sticky top-24">
-              <Card className="bg-gray-900 shadow-xl overflow-hidden">
-                <div className="p-6 bg-[#7C3AED]/20 ">
-                  <h3 className="text-xl font-bold text-white">Pilih Tiket</h3>
+              <div className="bg-white rounded-3xl border border-zinc-200 shadow-sm overflow-hidden">
+                <div className="p-5 sm:p-6 border-b border-zinc-100 flex items-center justify-between">
+                  <h3 className="text-lg font-black text-zinc-950">Pilih Tiket</h3>
+                  <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                    Garansi Resmi
+                  </span>
                 </div>
-                <div className="p-6">
+                <div className="p-5 sm:p-6">
                   <TicketSelector 
                     ticketTypes={event.tickets as unknown as TicketType[]} 
                     eventId={String(event.id)}
@@ -342,15 +370,16 @@ export default function EventDetailPage() {
                       }
                     }} 
                   />
-                  {checkoutLoading && <p className="text-sm text-violet-400 mt-4 text-center animate-pulse">Memproses pesanan...</p>}
+                  {checkoutLoading && <p className="text-xs text-zinc-500 mt-3 text-center animate-pulse">Memproses pesanan tiket...</p>}
                 </div>
-              </Card>
+              </div>
             </div>
           </div>
           
         </div>
       </div>
 
+      {/* Checkout Modal */}
       <Modal 
         isOpen={modalData.isOpen} 
         onClose={() => {
@@ -361,24 +390,24 @@ export default function EventDetailPage() {
         }} 
         title={modalData.title}
       >
-        <div className="text-center py-4">
-          <div className={`mx-auto flex items-center justify-center h-16 w-16 rounded-full ${modalData.type === 'success' ? 'bg-green-100' : 'bg-red-100'} mb-6`}>
+        <div className="text-center py-4 space-y-5">
+          <div className={`mx-auto flex items-center justify-center h-16 w-16 rounded-full ${modalData.type === 'success' ? 'bg-emerald-50 text-emerald-600 border border-emerald-200' : 'bg-rose-50 text-rose-600 border border-rose-200'}`}>
             {modalData.type === 'success' ? (
-              <svg className="h-8 w-8 text-green-600" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
+              <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
               </svg>
             ) : (
-              <svg className="h-8 w-8 text-red-600" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
+              <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
             )}
           </div>
-          <p className="text-gray-300 text-lg mb-8">{modalData.message}</p>
+          <p className="text-zinc-600 text-sm leading-relaxed max-w-sm mx-auto">{modalData.message}</p>
           {modalData.type === 'success' ? (
-            <div className="space-y-3">
+            <div className="space-y-2 pt-2">
               {createdOrderId && (
                 <Button 
-                  className="w-full bg-[#7C3AED] hover:bg-[#6D28D9] text-white font-bold py-3"
+                  className="w-full bg-zinc-950 hover:bg-zinc-800 text-white font-semibold py-3 rounded-full"
                   onClick={() => handlePayOrder(createdOrderId)}
                   disabled={isPaying}
                 >
@@ -387,7 +416,7 @@ export default function EventDetailPage() {
               )}
               <Button 
                 variant="outline"
-                className="w-full border-gray-700 text-gray-300 hover:bg-gray-800"
+                className="w-full border-zinc-200 text-zinc-800 hover:bg-zinc-50 rounded-full"
                 onClick={() => {
                   setModalData({...modalData, isOpen: false});
                   router.push('/my-tickets');
@@ -398,7 +427,7 @@ export default function EventDetailPage() {
             </div>
           ) : (
             <Button 
-              className="w-full bg-gray-800 hover:bg-gray-700 text-white"
+              className="w-full bg-zinc-950 hover:bg-zinc-800 text-white rounded-full"
               onClick={() => setModalData({...modalData, isOpen: false})}
             >
               Tutup

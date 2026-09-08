@@ -185,12 +185,16 @@ export default function WithdrawalsPage() {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 max-w-7xl mx-auto">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-white mb-2">Keuangan & Penarikan Dana</h1>
-          <p className="text-gray-400">
+          <div className="inline-flex items-center gap-2 mb-2 px-3 py-1 rounded-full bg-zinc-100 text-zinc-800">
+            <Wallet className="h-3.5 w-3.5 text-zinc-600" />
+            <span className="text-xs font-bold uppercase tracking-wider">Financial Management</span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-bold text-zinc-950 tracking-tight">Keuangan & Penarikan Dana</h1>
+          <p className="text-zinc-500 text-sm mt-1">
             Kelola saldo pendapatan tiket event dan ajukan pencairan dana langsung ke rekening bank Anda.
           </p>
         </div>
@@ -199,131 +203,131 @@ export default function WithdrawalsPage() {
             variant="outline"
             onClick={fetchData}
             disabled={loading}
-            className="flex items-center gap-2"
+            className="rounded-full border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-700 text-xs font-semibold px-4 py-2 flex items-center gap-2"
           >
-            <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+            <RefreshCw className={`h-3.5 w-3.5 ${loading ? 'animate-spin' : ''}`} />
             Refresh
           </Button>
           <Button
             onClick={handleOpenRequestModal}
             disabled={balance.available_balance < 10000}
-            className="bg-violet-600 hover:bg-violet-700 text-white flex items-center gap-2"
+            className="rounded-full bg-zinc-950 hover:bg-zinc-800 text-white text-xs font-semibold px-5 py-2 flex items-center gap-2 shadow-sm disabled:opacity-50"
           >
-            <ArrowUpRight className="h-4 w-4" />
+            <ArrowUpRight className="h-3.5 w-3.5" />
             Tarik Dana
           </Button>
         </div>
       </div>
 
       {/* Balance Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
         {/* Available Balance Card (Main Highlight) */}
-        <Card className="bg-gradient-to-br from-violet-950/60 via-gray-900 to-gray-900 border-violet-500/30 p-6 relative overflow-hidden">
+        <Card className="bg-white border border-zinc-200/90 rounded-2xl p-5 shadow-[0_2px_8px_rgba(0,0,0,0.03)] relative overflow-hidden">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-violet-400 text-sm font-semibold mb-1 uppercase tracking-wider">
+              <p className="text-zinc-400 text-xs font-semibold mb-1 uppercase tracking-wider">
                 Saldo Tersedia
               </p>
               {loading ? (
-                <Skeleton className="h-9 w-36 mb-2" />
+                <Skeleton className="h-8 w-36 mb-1 rounded-lg" />
               ) : (
-                <h3 className="text-2xl font-bold text-white mb-1">
+                <h3 className="text-2xl font-bold tracking-tight text-zinc-950 mb-1">
                   {formatCurrency(balance.available_balance)}
                 </h3>
               )}
-              <p className="text-xs text-gray-400">Siap dicairkan ke rekening bank</p>
+              <p className="text-xs text-zinc-400">Siap dicairkan ke rekening</p>
             </div>
-            <div className="p-3 bg-violet-600/20 text-violet-400 rounded-xl">
-              <Wallet className="h-6 w-6" />
+            <div className="w-10 h-10 rounded-full bg-zinc-100 flex items-center justify-center text-zinc-700">
+              <Wallet className="h-5 w-5" />
             </div>
           </div>
         </Card>
 
         {/* Total Revenue */}
-        <Card className="bg-gray-900 border-gray-800 p-6">
+        <Card className="bg-white border border-zinc-200/90 rounded-2xl p-5 shadow-[0_2px_8px_rgba(0,0,0,0.03)]">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-gray-400 text-sm font-medium mb-1">Total Omset Penjualan</p>
+              <p className="text-zinc-400 text-xs font-semibold mb-1 uppercase tracking-wider">Total Omset</p>
               {loading ? (
-                <Skeleton className="h-8 w-32 mb-2" />
+                <Skeleton className="h-8 w-32 mb-1 rounded-lg" />
               ) : (
-                <h3 className="text-xl font-bold text-white mb-1">
+                <h3 className="text-2xl font-bold tracking-tight text-zinc-950 mb-1">
                   {formatCurrency(balance.total_revenue)}
                 </h3>
               )}
-              <p className="text-xs text-gray-500">Akumulasi seluruh tiket lunas</p>
+              <p className="text-xs text-zinc-400">Akumulasi seluruh tiket lunas</p>
             </div>
-            <div className="p-3 bg-emerald-500/10 text-emerald-400 rounded-xl">
-              <TrendingUp className="h-6 w-6" />
+            <div className="w-10 h-10 rounded-full bg-zinc-100 flex items-center justify-center text-zinc-700">
+              <TrendingUp className="h-5 w-5" />
             </div>
           </div>
         </Card>
 
         {/* Pending Withdrawals */}
-        <Card className="bg-gray-900 border-gray-800 p-6">
+        <Card className="bg-white border border-zinc-200/90 rounded-2xl p-5 shadow-[0_2px_8px_rgba(0,0,0,0.03)]">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-gray-400 text-sm font-medium mb-1">Sedang Diproses</p>
+              <p className="text-zinc-400 text-xs font-semibold mb-1 uppercase tracking-wider">Sedang Diproses</p>
               {loading ? (
-                <Skeleton className="h-8 w-32 mb-2" />
+                <Skeleton className="h-8 w-32 mb-1 rounded-lg" />
               ) : (
-                <h3 className="text-xl font-bold text-amber-400 mb-1">
+                <h3 className="text-2xl font-bold tracking-tight text-amber-600 mb-1">
                   {formatCurrency(balance.pending_amount)}
                 </h3>
               )}
-              <p className="text-xs text-gray-500">Menunggu transfer dari admin</p>
+              <p className="text-xs text-zinc-400">Menunggu transfer admin</p>
             </div>
-            <div className="p-3 bg-amber-500/10 text-amber-400 rounded-xl">
-              <Clock className="h-6 w-6" />
+            <div className="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center text-amber-600">
+              <Clock className="h-5 w-5" />
             </div>
           </div>
         </Card>
 
         {/* Total Paid / Settled */}
-        <Card className="bg-gray-900 border-gray-800 p-6">
+        <Card className="bg-white border border-zinc-200/90 rounded-2xl p-5 shadow-[0_2px_8px_rgba(0,0,0,0.03)]">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-gray-400 text-sm font-medium mb-1">Berhasil Dicairkan</p>
+              <p className="text-zinc-400 text-xs font-semibold mb-1 uppercase tracking-wider">Berhasil Dicairkan</p>
               {loading ? (
-                <Skeleton className="h-8 w-32 mb-2" />
+                <Skeleton className="h-8 w-32 mb-1 rounded-lg" />
               ) : (
-                <h3 className="text-xl font-bold text-emerald-400 mb-1">
+                <h3 className="text-2xl font-bold tracking-tight text-emerald-600 mb-1">
                   {formatCurrency(balance.paid_amount)}
                 </h3>
               )}
-              <p className="text-xs text-gray-500">{balance.total_requests} kali penarikan</p>
+              <p className="text-xs text-zinc-400">{balance.total_requests} kali penarikan</p>
             </div>
-            <div className="p-3 bg-blue-500/10 text-blue-400 rounded-xl">
-              <CheckCircle2 className="h-6 w-6" />
+            <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600">
+              <CheckCircle2 className="h-5 w-5" />
             </div>
           </div>
         </Card>
       </div>
 
       {/* History and Transactions Section */}
-      <Card className="bg-gray-900 border-gray-800 p-6 space-y-6">
+      <div className="bg-white border border-zinc-200/90 rounded-2xl p-6 space-y-6 shadow-[0_2px_8px_rgba(0,0,0,0.03)]">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h2 className="text-xl font-bold text-white">Riwayat Pengajuan Penarikan</h2>
-            <p className="text-sm text-gray-400">Daftar mutasi permohonan transfer dana ke rekening bank Anda.</p>
+            <h2 className="text-lg font-bold text-zinc-950">Riwayat Pengajuan Penarikan</h2>
+            <p className="text-xs text-zinc-500 mt-0.5">Daftar mutasi permohonan transfer dana ke rekening bank Anda.</p>
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
             {/* Search Input */}
             <div className="relative w-full sm:w-64">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-400" />
               <input
                 type="text"
                 placeholder="Cari bank, nomor rek, nama..."
                 aria-label="Cari bank, nomor rekening, atau nama penerima"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 bg-gray-950 border border-gray-800 rounded-lg text-sm text-white placeholder-gray-500 focus:outline-none focus:border-violet-500"
+                className="w-full pl-9 pr-4 py-2 bg-zinc-50/80 border border-zinc-200 rounded-full text-xs font-medium text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:bg-white focus:border-zinc-400 transition-colors"
               />
             </div>
 
             {/* Status Filter Tabs */}
-            <div className="flex bg-gray-950 p-1 rounded-lg border border-gray-800 text-xs">
+            <div className="flex bg-zinc-100 p-1 rounded-full text-xs">
               {[
                 { id: 'ALL', label: 'Semua' },
                 { id: 'PENDING', label: 'Menunggu' },
@@ -334,10 +338,10 @@ export default function WithdrawalsPage() {
                 <button
                   key={tab.id}
                   onClick={() => setStatusFilter(tab.id)}
-                  className={`px-3 py-1.5 rounded-md font-medium transition-colors ${
+                  className={`px-3 py-1 rounded-full text-xs font-semibold transition-all ${
                     statusFilter === tab.id
-                      ? 'bg-violet-600 text-white'
-                      : 'text-gray-400 hover:text-white'
+                      ? 'bg-zinc-950 text-white shadow-sm'
+                      : 'text-zinc-600 hover:text-zinc-900'
                   }`}
                 >
                   {tab.label}
@@ -348,37 +352,37 @@ export default function WithdrawalsPage() {
         </div>
 
         {/* Withdrawals Table */}
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm text-gray-300">
-            <thead className="bg-gray-950/80 text-gray-400 uppercase text-xs border-b border-gray-800">
+        <div className="overflow-x-auto border border-zinc-100 rounded-xl">
+          <table className="w-full text-left text-sm">
+            <thead className="bg-zinc-50/75 text-zinc-500 uppercase text-xs font-semibold border-b border-zinc-200">
               <tr>
-                <th className="py-3.5 px-4">Tanggal Pengajuan</th>
-                <th className="py-3.5 px-4">Nominal Penarikan</th>
-                <th className="py-3.5 px-4">Rekening Tujuan</th>
-                <th className="py-3.5 px-4">Status</th>
-                <th className="py-3.5 px-4 text-right">Aksi</th>
+                <th className="py-3.5 px-5">Tanggal Pengajuan</th>
+                <th className="py-3.5 px-5">Nominal Penarikan</th>
+                <th className="py-3.5 px-5">Rekening Tujuan</th>
+                <th className="py-3.5 px-5">Status</th>
+                <th className="py-3.5 px-5 text-right">Aksi</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-800">
+            <tbody className="divide-y divide-zinc-100">
               {loading ? (
                 Array.from({ length: 4 }).map((_, idx) => (
                   <tr key={idx}>
-                    <td className="py-4 px-4"><Skeleton className="h-4 w-28" /></td>
-                    <td className="py-4 px-4"><Skeleton className="h-4 w-24" /></td>
-                    <td className="py-4 px-4"><Skeleton className="h-4 w-40" /></td>
-                    <td className="py-4 px-4"><Skeleton className="h-6 w-20" /></td>
-                    <td className="py-4 px-4 text-right"><Skeleton className="h-8 w-16 ml-auto" /></td>
+                    <td className="py-4 px-5"><Skeleton className="h-4 w-28 rounded-md" /></td>
+                    <td className="py-4 px-5"><Skeleton className="h-4 w-24 rounded-md" /></td>
+                    <td className="py-4 px-5"><Skeleton className="h-4 w-40 rounded-md" /></td>
+                    <td className="py-4 px-5"><Skeleton className="h-6 w-20 rounded-full" /></td>
+                    <td className="py-4 px-5 text-right"><Skeleton className="h-8 w-16 ml-auto rounded-full" /></td>
                   </tr>
                 ))
               ) : filteredWithdrawals.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="py-12 text-center text-gray-500">
-                    <div className="flex flex-col items-center justify-center space-y-3">
-                      <div className="p-4 bg-gray-800/50 rounded-full text-gray-400">
-                        <Wallet className="h-8 w-8" />
+                  <td colSpan={5} className="py-12 text-center text-zinc-400">
+                    <div className="flex flex-col items-center justify-center space-y-2">
+                      <div className="w-12 h-12 bg-zinc-100 rounded-full flex items-center justify-center text-zinc-400">
+                        <Wallet className="h-6 w-6" />
                       </div>
-                      <p className="font-medium text-gray-400">Belum ada riwayat penarikan dana.</p>
-                      <p className="text-xs text-gray-500 max-w-sm">
+                      <p className="font-semibold text-sm text-zinc-900">Belum ada riwayat penarikan dana.</p>
+                      <p className="text-xs text-zinc-500 max-w-sm">
                         {statusFilter !== 'ALL'
                           ? `Tidak ada transaksi dengan status ${statusFilter}.`
                           : 'Pendapatan dari tiket yang lunas dapat langsung ditarik ke rekening bank Anda.'}
@@ -392,36 +396,37 @@ export default function WithdrawalsPage() {
                   return (
                     <tr
                       key={w.id}
-                      className="hover:bg-gray-800/50 transition-colors cursor-pointer"
+                      className="hover:bg-zinc-50/60 transition-colors cursor-pointer"
                       onClick={() => setSelectedWithdrawal(w)}
                     >
-                      <td className="py-4 px-4">
-                        <div className="font-medium text-white">{formatDate(w.created_at)}</div>
-                        <div className="text-xs text-gray-500 font-mono">ID: {w.id.substring(0, 8)}...</div>
+                      <td className="py-4 px-5">
+                        <div className="font-semibold text-zinc-950 text-sm">{formatDate(w.created_at)}</div>
+                        <div className="text-xs text-zinc-400 font-mono mt-0.5">ID: {w.id.substring(0, 8)}...</div>
                       </td>
-                      <td className="py-4 px-4">
-                        <div className="font-bold text-white text-base">{formatCurrency(amountNum)}</div>
-                        <div className="text-xs text-gray-500">Biaya Admin: Rp 0</div>
+                      <td className="py-4 px-5">
+                        <div className="font-bold text-zinc-950 text-base">{formatCurrency(amountNum)}</div>
+                        <div className="text-xs text-zinc-400">Biaya Admin: Rp 0</div>
                       </td>
-                      <td className="py-4 px-4">
-                        <div className="font-medium text-white flex items-center gap-1.5">
-                          <Building2 className="h-3.5 w-3.5 text-gray-400" />
+                      <td className="py-4 px-5">
+                        <div className="font-semibold text-zinc-900 flex items-center gap-1.5 text-sm">
+                          <Building2 className="h-3.5 w-3.5 text-zinc-400" />
                           {w.bank_name}
                         </div>
-                        <div className="text-xs text-gray-400 font-mono">{w.account_number} a.n {w.account_name}</div>
+                        <div className="text-xs text-zinc-500 font-mono mt-0.5">{w.account_number} a.n {w.account_name}</div>
                       </td>
-                      <td className="py-4 px-4">
+                      <td className="py-4 px-5">
                         {getStatusBadge(w.status)}
                         {w.status?.toUpperCase() === 'REJECTED' && getPgText(w.rejection_reason) && (
-                          <div className="text-xs text-rose-400 mt-1 max-w-xs truncate">
+                          <div className="text-xs text-rose-600 mt-1 max-w-xs truncate font-medium">
                             Alasan: {getPgText(w.rejection_reason)}
                           </div>
                         )}
                       </td>
-                      <td className="py-4 px-4 text-right">
+                      <td className="py-4 px-5 text-right">
                         <Button
                           variant="outline"
                           size="sm"
+                          className="rounded-full border-zinc-200 bg-white hover:bg-zinc-100 text-zinc-700 text-xs px-3.5 py-1 font-medium"
                           onClick={(e) => {
                             e.stopPropagation();
                             setSelectedWithdrawal(w);
@@ -437,7 +442,7 @@ export default function WithdrawalsPage() {
             </tbody>
           </table>
         </div>
-      </Card>
+      </div>
 
       {/* MODAL: Request Withdrawal Form */}
       <Modal
@@ -445,24 +450,24 @@ export default function WithdrawalsPage() {
         onClose={() => !submitting && setIsRequestModalOpen(false)}
         title="Ajukan Penarikan Dana"
       >
-        <form onSubmit={handleSubmitWithdrawal} className="space-y-5">
+        <form onSubmit={handleSubmitWithdrawal} className="space-y-4">
           {/* Balance info banner */}
-          <div className="p-4 bg-violet-950/40 border border-violet-500/20 rounded-xl flex items-center justify-between">
+          <div className="p-4 bg-zinc-50 border border-zinc-200 rounded-2xl flex items-center justify-between">
             <div>
-              <p className="text-xs text-violet-300 font-medium">Saldo Tersedia Saat Ini</p>
-              <p className="text-xl font-bold text-white">{formatCurrency(balance.available_balance)}</p>
+              <p className="text-xs text-zinc-500 font-medium">Saldo Tersedia Saat Ini</p>
+              <p className="text-xl font-bold text-zinc-950">{formatCurrency(balance.available_balance)}</p>
             </div>
             <div className="text-right">
-              <span className="text-xs text-gray-400">Minimal Penarikan</span>
-              <p className="text-xs font-semibold text-gray-200">Rp 10.000</p>
+              <span className="text-xs text-zinc-400">Minimal Penarikan</span>
+              <p className="text-xs font-semibold text-zinc-800">Rp 10.000</p>
             </div>
           </div>
 
           {/* Amount Input */}
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-300">Nominal Penarikan (Rp)</label>
+            <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Nominal Penarikan (Rp)</label>
             <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-semibold text-sm">
+              <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400 font-bold text-sm">
                 Rp
               </span>
               <Input
@@ -471,53 +476,53 @@ export default function WithdrawalsPage() {
                 max={balance.available_balance}
                 value={formData.amount || ''}
                 onChange={(e) => setFormData({ ...formData, amount: Number(e.target.value) })}
-                className="pl-10 text-lg font-bold"
+                className="pl-11 text-lg font-bold bg-zinc-50 border-zinc-200 focus:bg-white text-zinc-950 rounded-xl"
                 placeholder="0"
                 required
               />
             </div>
 
             {/* Quick Amount Chips */}
-            <div className="flex flex-wrap gap-2 pt-1">
+            <div className="flex flex-wrap gap-1.5 pt-1">
               <button
                 type="button"
                 onClick={() => handleQuickAmount(25)}
-                className="px-2.5 py-1 text-xs bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-md border border-gray-700"
+                className="px-3 py-1 text-xs bg-zinc-100 hover:bg-zinc-200 text-zinc-700 rounded-full font-medium transition-colors"
               >
                 25%
               </button>
               <button
                 type="button"
                 onClick={() => handleQuickAmount(50)}
-                className="px-2.5 py-1 text-xs bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-md border border-gray-700"
+                className="px-3 py-1 text-xs bg-zinc-100 hover:bg-zinc-200 text-zinc-700 rounded-full font-medium transition-colors"
               >
                 50%
               </button>
               <button
                 type="button"
                 onClick={() => handleQuickAmount(100)}
-                className="px-2.5 py-1 text-xs bg-violet-900/60 hover:bg-violet-800 text-violet-200 rounded-md border border-violet-700/50"
+                className="px-3 py-1 text-xs bg-zinc-950 hover:bg-zinc-800 text-white rounded-full font-semibold transition-colors"
               >
                 Tarik Semua (100%)
               </button>
               <button
                 type="button"
                 onClick={() => handleFixedAmount(100000)}
-                className="px-2.5 py-1 text-xs bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-md border border-gray-700"
+                className="px-3 py-1 text-xs bg-zinc-100 hover:bg-zinc-200 text-zinc-700 rounded-full font-medium transition-colors"
               >
                 100rb
               </button>
               <button
                 type="button"
                 onClick={() => handleFixedAmount(500000)}
-                className="px-2.5 py-1 text-xs bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-md border border-gray-700"
+                className="px-3 py-1 text-xs bg-zinc-100 hover:bg-zinc-200 text-zinc-700 rounded-full font-medium transition-colors"
               >
                 500rb
               </button>
               <button
                 type="button"
                 onClick={() => handleFixedAmount(1000000)}
-                className="px-2.5 py-1 text-xs bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-md border border-gray-700"
+                className="px-3 py-1 text-xs bg-zinc-100 hover:bg-zinc-200 text-zinc-700 rounded-full font-medium transition-colors"
               >
                 1 Juta
               </button>
@@ -525,15 +530,15 @@ export default function WithdrawalsPage() {
           </div>
 
           {/* Bank Select */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-300 flex items-center gap-1.5">
-              <Building2 className="h-4 w-4 text-gray-400" />
+          <div className="space-y-1.5">
+            <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wider flex items-center gap-1.5">
+              <Building2 className="h-3.5 w-3.5 text-zinc-400" />
               Bank Tujuan
             </label>
             <select
               value={formData.bank_name}
               onChange={(e) => setFormData({ ...formData, bank_name: e.target.value })}
-              className="w-full px-3 py-2 bg-gray-900 border border-gray-800 rounded-xl text-sm text-white focus:outline-none focus:border-violet-500"
+              className="w-full px-3.5 py-2.5 bg-zinc-50 border border-zinc-200 rounded-xl text-sm font-medium text-zinc-900 focus:outline-none focus:bg-white focus:border-zinc-400 transition-colors"
               required
             >
               {BANK_OPTIONS.map((bank) => (
@@ -545,9 +550,9 @@ export default function WithdrawalsPage() {
           </div>
 
           {/* Account Number */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-300 flex items-center gap-1.5">
-              <CreditCard className="h-4 w-4 text-gray-400" />
+          <div className="space-y-1.5">
+            <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wider flex items-center gap-1.5">
+              <CreditCard className="h-3.5 w-3.5 text-zinc-400" />
               Nomor Rekening
             </label>
             <Input
@@ -555,14 +560,15 @@ export default function WithdrawalsPage() {
               placeholder="Contoh: 1234567890"
               value={formData.account_number}
               onChange={(e) => setFormData({ ...formData, account_number: e.target.value })}
+              className="bg-zinc-50 border-zinc-200 focus:bg-white text-zinc-950 rounded-xl"
               required
             />
           </div>
 
           {/* Account Name */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-300 flex items-center gap-1.5">
-              <User className="h-4 w-4 text-gray-400" />
+          <div className="space-y-1.5">
+            <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wider flex items-center gap-1.5">
+              <User className="h-3.5 w-3.5 text-zinc-400" />
               Nama Pemilik Rekening
             </label>
             <Input
@@ -570,14 +576,15 @@ export default function WithdrawalsPage() {
               placeholder="Sesuai nama yang tertera di buku tabungan"
               value={formData.account_name}
               onChange={(e) => setFormData({ ...formData, account_name: e.target.value })}
+              className="bg-zinc-50 border-zinc-200 focus:bg-white text-zinc-950 rounded-xl"
               required
             />
           </div>
 
           {/* Notes */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-300 flex items-center gap-1.5">
-              <FileText className="h-4 w-4 text-gray-400" />
+          <div className="space-y-1.5">
+            <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wider flex items-center gap-1.5">
+              <FileText className="h-3.5 w-3.5 text-zinc-400" />
               Catatan Penarikan (Opsional)
             </label>
             <Input
@@ -585,39 +592,41 @@ export default function WithdrawalsPage() {
               placeholder="Contoh: Pencairan tiket Batch 1 Konser Musik"
               value={formData.notes}
               onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+              className="bg-zinc-50 border-zinc-200 focus:bg-white text-zinc-950 rounded-xl text-xs"
             />
           </div>
 
           {/* Fee & Final Settlement notice */}
-          <div className="p-3 bg-gray-950 border border-gray-800 rounded-xl space-y-1.5 text-xs text-gray-400">
+          <div className="p-3.5 bg-zinc-50 border border-zinc-200 rounded-xl space-y-1.5 text-xs text-zinc-600">
             <div className="flex justify-between">
               <span>Nominal Dicairkan:</span>
-              <span className="font-semibold text-white">{formatCurrency(formData.amount || 0)}</span>
+              <span className="font-semibold text-zinc-950">{formatCurrency(formData.amount || 0)}</span>
             </div>
             <div className="flex justify-between">
               <span>Biaya Layanan Admin:</span>
-              <span className="font-semibold text-emerald-400">Gratis (Rp 0)</span>
+              <span className="font-semibold text-emerald-600">Gratis (Rp 0)</span>
             </div>
-            <div className="flex justify-between border-t border-gray-800 pt-1.5 text-sm">
-              <span className="font-medium text-gray-200">Total Ditransfer:</span>
-              <span className="font-bold text-violet-400">{formatCurrency(formData.amount || 0)}</span>
+            <div className="flex justify-between border-t border-zinc-200 pt-1.5 text-sm">
+              <span className="font-semibold text-zinc-950">Total Ditransfer:</span>
+              <span className="font-bold text-zinc-950">{formatCurrency(formData.amount || 0)}</span>
             </div>
           </div>
 
           {/* Actions */}
-          <div className="flex justify-end gap-3 pt-2">
+          <div className="flex justify-end gap-2.5 pt-2">
             <Button
               type="button"
               variant="outline"
               onClick={() => setIsRequestModalOpen(false)}
               disabled={submitting}
+              className="rounded-full border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-700 text-xs font-medium px-4 py-2"
             >
               Batal
             </Button>
             <Button
               type="submit"
               disabled={submitting || formData.amount < 10000 || formData.amount > balance.available_balance}
-              className="bg-violet-600 hover:bg-violet-700 text-white"
+              className="rounded-full bg-zinc-950 hover:bg-zinc-800 text-white text-xs font-semibold px-5 py-2"
             >
               {submitting ? 'Memproses...' : 'Konfirmasi & Tarik Dana'}
             </Button>
@@ -634,11 +643,11 @@ export default function WithdrawalsPage() {
         >
           <div className="space-y-6">
             {/* Header info */}
-            <div className="text-center py-3 border-b border-gray-800">
-              <p className="text-xs text-gray-500 uppercase tracking-widest mb-1 font-mono">
+            <div className="text-center py-3 border-b border-zinc-100">
+              <p className="text-xs text-zinc-400 uppercase tracking-widest mb-1 font-mono">
                 ID: {selectedWithdrawal.id}
               </p>
-              <h3 className="text-3xl font-extrabold text-white">
+              <h3 className="text-3xl font-extrabold text-zinc-950">
                 {formatCurrency(
                   typeof selectedWithdrawal.amount === 'string'
                     ? parseFloat(selectedWithdrawal.amount)
@@ -649,48 +658,52 @@ export default function WithdrawalsPage() {
             </div>
 
             {/* Account & Bank details */}
-            <div className="space-y-3 bg-gray-950 p-4 rounded-xl border border-gray-800 text-sm">
+            <div className="space-y-3 bg-zinc-50 p-4 rounded-2xl border border-zinc-200 text-sm">
               <div className="flex justify-between">
-                <span className="text-gray-400">Bank Tujuan:</span>
-                <span className="font-semibold text-white">{selectedWithdrawal.bank_name}</span>
+                <span className="text-zinc-500 text-xs">Bank Tujuan:</span>
+                <span className="font-semibold text-zinc-900 text-xs">{selectedWithdrawal.bank_name}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-400">Nomor Rekening:</span>
-                <span className="font-mono font-bold text-white">{selectedWithdrawal.account_number}</span>
+                <span className="text-zinc-500 text-xs">Nomor Rekening:</span>
+                <span className="font-mono font-bold text-zinc-900 text-xs">{selectedWithdrawal.account_number}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-400">Nama Penerima:</span>
-                <span className="font-semibold text-white">{selectedWithdrawal.account_name}</span>
+                <span className="text-zinc-500 text-xs">Nama Penerima:</span>
+                <span className="font-semibold text-zinc-900 text-xs">{selectedWithdrawal.account_name}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-400">Waktu Pengajuan:</span>
-                <span className="text-gray-200">{formatDate(selectedWithdrawal.created_at)}</span>
+                <span className="text-zinc-500 text-xs">Waktu Pengajuan:</span>
+                <span className="text-zinc-700 text-xs">{formatDate(selectedWithdrawal.created_at)}</span>
               </div>
               {getPgText(selectedWithdrawal.notes) && (
-                <div className="border-t border-gray-800 pt-2 flex justify-between">
-                  <span className="text-gray-400">Catatan:</span>
-                  <span className="text-gray-200">{getPgText(selectedWithdrawal.notes)}</span>
+                <div className="border-t border-zinc-200 pt-2 flex justify-between">
+                  <span className="text-zinc-500 text-xs">Catatan:</span>
+                  <span className="text-zinc-700 text-xs">{getPgText(selectedWithdrawal.notes)}</span>
                 </div>
               )}
             </div>
 
             {/* Rejection Alert if any */}
             {selectedWithdrawal.status?.toUpperCase() === 'REJECTED' && (
-              <div className="p-4 bg-rose-950/40 border border-rose-500/30 rounded-xl flex items-start gap-3 text-sm text-rose-300">
-                <AlertCircle className="h-5 w-5 text-rose-400 flex-shrink-0 mt-0.5" />
+              <div className="p-4 bg-red-50 border border-red-200 rounded-2xl flex items-start gap-3 text-sm text-red-900">
+                <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
                 <div>
-                  <p className="font-semibold text-rose-200">Pengajuan Penarikan Ditolak</p>
-                  <p className="text-xs mt-1 text-rose-300">
+                  <p className="font-semibold text-xs text-red-950">Pengajuan Penarikan Ditolak</p>
+                  <p className="text-xs mt-1 text-red-700">
                     Alasan: {getPgText(selectedWithdrawal.rejection_reason) || 'Data rekening tidak valid atau kendala perbankan.'}
                   </p>
-                  <p className="text-xs mt-2 text-gray-400">Saldo telah dikembalikan ke Saldo Tersedia Anda.</p>
+                  <p className="text-xs mt-2 text-zinc-500">Saldo telah dikembalikan ke Saldo Tersedia Anda.</p>
                 </div>
               </div>
             )}
 
             {/* Close Button */}
             <div className="flex justify-end">
-              <Button variant="outline" onClick={() => setSelectedWithdrawal(null)}>
+              <Button
+                variant="outline"
+                className="rounded-full border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-700 text-xs font-semibold px-5 py-2"
+                onClick={() => setSelectedWithdrawal(null)}
+              >
                 Tutup
               </Button>
             </div>

@@ -20,20 +20,20 @@ export function Button({
   children,
   ...props
 }: ButtonProps) {
-  const baseStyles = 'inline-flex items-center justify-center rounded-lg font-medium transition-colors focus:outline-none disabled:opacity-50 disabled:pointer-events-none';
+  const baseStyles = 'inline-flex items-center justify-center rounded-full font-medium transition-all duration-200 focus:outline-none disabled:opacity-50 disabled:pointer-events-none cursor-pointer select-none';
   
   const variants = {
-    primary: 'bg-violet-600 text-white hover:bg-violet-700 shadow-sm',
-    secondary: 'bg-gray-800 text-gray-100 hover:bg-gray-700 ',
-    outline: 'bg-transparent text-gray-200 hover:bg-gray-800',
-    ghost: 'bg-transparent text-gray-300 hover:text-white hover:bg-gray-800 ',
-    danger: 'bg-red-600 text-white hover:bg-red-700 shadow-sm',
+    primary: 'bg-zinc-950 text-white hover:bg-zinc-800 active:scale-[0.98] shadow-xs',
+    secondary: 'bg-zinc-100 text-zinc-900 hover:bg-zinc-200/80 active:scale-[0.98] border border-zinc-200/60',
+    outline: 'bg-white text-zinc-900 border border-zinc-200 hover:bg-zinc-50 active:scale-[0.98] shadow-xs',
+    ghost: 'bg-transparent text-zinc-600 hover:text-zinc-950 hover:bg-zinc-100',
+    danger: 'bg-rose-600 text-white hover:bg-rose-700 active:scale-[0.98] shadow-xs',
   };
 
   const sizes = {
-    sm: 'h-8 px-3 text-xs',
-    md: 'h-10 px-4 py-2 text-sm',
-    lg: 'h-12 px-6 text-base',
+    sm: 'h-8 px-3.5 text-xs tracking-tight',
+    md: 'h-10 px-5 py-2 text-sm tracking-tight',
+    lg: 'h-12 px-7 text-base tracking-tight',
   };
 
   return (

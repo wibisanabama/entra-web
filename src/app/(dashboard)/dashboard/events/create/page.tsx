@@ -44,8 +44,8 @@ export default function CreateEventPage() {
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-white mb-2">Buat Event Baru</h1>
-        <p className="text-gray-400">Isi detail di bawah ini untuk membuat event baru dan mulai menjual tiket.</p>
+        <h1 className="text-2xl sm:text-3xl font-black text-zinc-950 tracking-tight mb-1">Buat Event Baru</h1>
+        <p className="text-xs sm:text-sm text-zinc-500">Isi detail di bawah ini untuk membuat event baru dan mulai menjual tiket.</p>
       </div>
 
       <EventForm 

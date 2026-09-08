@@ -123,11 +123,11 @@ export default function DashboardOverviewPage() {
     <div className="space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-white mb-2">Dashboard Overview</h1>
-          <p className="text-gray-400">Ringkasan performa event dan penjualan tiket Anda.</p>
+          <h1 className="text-2xl sm:text-3xl font-black text-zinc-950 tracking-tight mb-1">Dashboard Overview</h1>
+          <p className="text-xs sm:text-sm text-zinc-500">Ringkasan performa event dan penjualan tiket Anda.</p>
         </div>
         <Link href="/dashboard/withdrawals">
-          <Button className="bg-violet-600 hover:bg-violet-700 text-white flex items-center gap-2">
+          <Button className="bg-zinc-950 hover:bg-zinc-800 text-white rounded-full font-bold text-xs px-5 py-2.5 flex items-center gap-2 shadow-sm">
             <Wallet className="h-4 w-4" />
             Tarik Saldo
           </Button>
@@ -135,17 +135,19 @@ export default function DashboardOverviewPage() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
         {stats.map((stat, index) => (
-          <Card key={index} className={`p-6 relative overflow-hidden ${stat.highlight ? 'bg-gradient-to-br from-violet-950/50 via-gray-900 to-gray-900 border-violet-500/30' : 'bg-gray-900 border-gray-800'}`}>
+          <Card key={index} className="p-6 bg-white border border-zinc-200 rounded-2xl shadow-sm hover:shadow-md transition-all">
             <div className="flex items-start justify-between">
               <div>
-                <p className={`text-sm font-medium mb-1 ${stat.highlight ? 'text-violet-400 font-semibold' : 'text-gray-400'}`}>{stat.title}</p>
-                {loading ? <Skeleton className="h-8 w-24 mb-2 bg-gray-800" /> : <h3 className="text-2xl font-bold text-white mb-2">{stat.value}</h3>}
-                <p className="text-xs text-green-400">{stat.change}</p>
+                <p className="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-1.5">{stat.title}</p>
+                {loading ? <Skeleton className="h-8 w-24 mb-2 bg-zinc-100 rounded-lg" /> : <h3 className="text-2xl font-black text-zinc-950 mb-2 tracking-tight">{stat.value}</h3>}
+                <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-zinc-100 text-zinc-700 border border-zinc-200">
+                  {stat.change}
+                </span>
               </div>
-              <div className={`p-3 rounded-lg ${stat.highlight ? 'bg-violet-600/20 text-violet-400' : 'bg-gray-800 text-[#7C3AED]'}`}>
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <div className="p-3 rounded-2xl bg-zinc-50 border border-zinc-200 text-zinc-900">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={stat.icon} />
                 </svg>
               </div>
@@ -157,25 +159,25 @@ export default function DashboardOverviewPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Chart Area */}
         <div className="lg:col-span-2">
-          <Card className="bg-gray-900 p-6 h-full min-h-[400px]">
-            <h3 className="text-xl font-bold text-white mb-6">Tren Penjualan (Riwayat)</h3>
+          <Card className="bg-white border border-zinc-200 rounded-2xl p-6 sm:p-7 shadow-sm h-full min-h-[400px]">
+            <h3 className="text-base font-bold text-zinc-950 mb-6">Tren Penjualan (Riwayat)</h3>
             <div className="flex h-64 items-end gap-2 mt-8">
               {loading ? (
-                <div className="w-full h-full flex items-center justify-center text-gray-500">Memuat grafik...</div>
+                <div className="w-full h-full flex items-center justify-center text-zinc-400 text-xs">Memuat grafik...</div>
               ) : chartData.every((d) => d === 0 || d.tickets === 0) ? (
-                 <div className="w-full h-full flex items-center justify-center text-gray-500">Belum ada data penjualan</div>
+                 <div className="w-full h-full flex items-center justify-center text-zinc-400 text-xs">Belum ada data penjualan</div>
               ) : (
                 chartData.map((data, i) => (
                   <div key={i} className="flex-1 flex flex-col justify-end group">
                     <div 
-                      className="w-full bg-[#7C3AED]/50 hover:bg-[#7C3AED] rounded-t-sm transition-all relative"
+                      className="w-full bg-zinc-200 group-hover:bg-zinc-950 rounded-t-md transition-all relative"
                       style={{ height: `${data.height}%` }}
                     >
-                      <div className="opacity-0 group-hover:opacity-100 absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-800 text-xs py-1 px-2 rounded whitespace-nowrap z-10">
+                      <div className="opacity-0 group-hover:opacity-100 absolute -top-8 left-1/2 -translate-x-1/2 bg-zinc-950 text-white text-[10px] font-bold py-1 px-2 rounded-full whitespace-nowrap z-10 shadow-sm">
                         {data.tickets} Tiket
                       </div>
                     </div>
-                    <div className="text-[10px] text-gray-500 text-center mt-2 truncate">{data.label}</div>
+                    <div className="text-[10px] font-medium text-zinc-400 text-center mt-2 truncate">{data.label}</div>
                   </div>
                 ))
               )}
@@ -185,30 +187,30 @@ export default function DashboardOverviewPage() {
 
         {/* Recent Orders */}
         <div className="lg:col-span-1">
-          <Card className="bg-gray-900 p-6 h-full">
-            <h3 className="text-xl font-bold text-white mb-6">Pesanan Terbaru</h3>
-            <div className="space-y-6">
+          <Card className="bg-white border border-zinc-200 rounded-2xl p-6 sm:p-7 shadow-sm h-full">
+            <h3 className="text-base font-bold text-zinc-950 mb-6">Pesanan Terbaru</h3>
+            <div className="space-y-4">
               {loading ? (
-                Array(5).fill(0).map((_, i) => <Skeleton key={i} className="h-12 w-full bg-gray-800" />)
+                Array(5).fill(0).map((_, i) => <Skeleton key={i} className="h-12 w-full bg-zinc-100 rounded-xl" />)
               ) : recentOrders.length === 0 ? (
-                <div className="text-gray-500 text-sm text-center py-4">Belum ada pesanan</div>
+                <div className="text-zinc-400 text-xs text-center py-8">Belum ada pesanan</div>
               ) : (
                 recentOrders.slice(0, 5).map((order) => {
                   const isPaid = order.status?.toUpperCase() === 'PAID' || order.status?.toUpperCase() === 'SUCCESS' || order.status === 'SUKSES';
                   return (
-                    <div key={order.id} className="flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-[#7C3AED] font-bold shrink-0">
+                    <div key={order.id} className="flex items-center gap-3.5 p-2 rounded-xl hover:bg-zinc-50 transition-colors">
+                      <div className="w-9 h-9 rounded-full bg-zinc-100 border border-zinc-200 flex items-center justify-center text-zinc-900 font-bold text-xs shrink-0">
                         {(order.user?.name || "U")[0].toUpperCase()}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-white truncate">{order.user?.name || 'User'}</p>
-                        <p className="text-xs text-gray-400 truncate">{order.event?.title || 'Event Tiket'}</p>
+                        <p className="text-xs font-bold text-zinc-950 truncate">{order.user?.name || 'User'}</p>
+                        <p className="text-[11px] text-zinc-500 truncate">{order.event?.title || 'Event Tiket'}</p>
                       </div>
                       <div className="text-right shrink-0">
-                        <p className="text-sm font-medium text-white">{formatCurrency(Number(order.total_amount))}</p>
-                        <p className={`text-xs ${isPaid ? 'text-green-400' : 'text-yellow-400'}`}>
+                        <p className="text-xs font-black text-zinc-950">{formatCurrency(Number(order.total_amount))}</p>
+                        <span className={`inline-block text-[10px] font-bold px-2 py-0.5 rounded-full border ${isPaid ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200'}`}>
                           {isPaid ? 'LUNAS' : order.status}
-                        </p>
+                        </span>
                       </div>
                     </div>
                   );

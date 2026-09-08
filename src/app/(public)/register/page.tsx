@@ -59,36 +59,34 @@ function RegisterForm() {
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
-      <Card className="w-full max-w-lg p-8 bg-gray-900 shadow-2xl">
+      <Card className="w-full max-w-lg p-8 sm:p-10 bg-white border border-zinc-200 rounded-3xl shadow-sm">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">Buat Akun Baru</h1>
-          <p className="text-gray-400">Bergabung dengan Entra sekarang</p>
+          <h1 className="text-2xl sm:text-3xl font-black text-zinc-950 tracking-tight mb-2">Buat Akun Baru</h1>
+          <p className="text-sm text-zinc-500">Bergabung dengan Entra sekarang</p>
         </div>
 
-        {/* Role Selector Removed */}
-
         {error && (
-          <div className="bg-red-500/10 text-red-500 p-3 rounded-md mb-6 text-sm text-center">
+          <div className="bg-red-50 border border-red-200 text-red-600 p-3 rounded-2xl mb-6 text-xs font-medium text-center">
             {error}
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-300">Nama Lengkap</label>
+          <div className="space-y-1.5">
+            <label className="text-xs font-bold text-zinc-700 uppercase tracking-wider">Nama Lengkap</label>
             <Input 
               name="fullName"
               placeholder="John Doe" 
               value={formData.fullName}
               onChange={handleChange}
               required
-              className="bg-gray-800 text-white"
+              className="bg-zinc-50 border-zinc-200 text-zinc-950 rounded-full px-4 py-2.5 focus:bg-white focus:border-zinc-950"
             />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-300">Email</label>
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-zinc-700 uppercase tracking-wider">Email</label>
               <Input 
                 type="email" 
                 name="email"
@@ -96,11 +94,11 @@ function RegisterForm() {
                 value={formData.email}
                 onChange={handleChange}
                 required
-                className="bg-gray-800 text-white"
+                className="bg-zinc-50 border-zinc-200 text-zinc-950 rounded-full px-4 py-2.5 focus:bg-white focus:border-zinc-950"
               />
             </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-300">No. HP</label>
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-zinc-700 uppercase tracking-wider">No. HP</label>
               <Input 
                 type="tel" 
                 name="phone"
@@ -108,14 +106,14 @@ function RegisterForm() {
                 value={formData.phone}
                 onChange={handleChange}
                 required
-                className="bg-gray-800 text-white"
+                className="bg-zinc-50 border-zinc-200 text-zinc-950 rounded-full px-4 py-2.5 focus:bg-white focus:border-zinc-950"
               />
             </div>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-300">Password</label>
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-zinc-700 uppercase tracking-wider">Password</label>
               <Input 
                 type="password" 
                 name="password"
@@ -123,11 +121,11 @@ function RegisterForm() {
                 value={formData.password}
                 onChange={handleChange}
                 required
-                className="bg-gray-800 text-white"
+                className="bg-zinc-50 border-zinc-200 text-zinc-950 rounded-full px-4 py-2.5 focus:bg-white focus:border-zinc-950"
               />
             </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-300">Konfirmasi Password</label>
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-zinc-700 uppercase tracking-wider">Konfirmasi Password</label>
               <Input 
                 type="password" 
                 name="confirmPassword"
@@ -135,7 +133,7 @@ function RegisterForm() {
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 required
-                className="bg-gray-800 text-white"
+                className="bg-zinc-50 border-zinc-200 text-zinc-950 rounded-full px-4 py-2.5 focus:bg-white focus:border-zinc-950"
               />
             </div>
           </div>
@@ -143,7 +141,7 @@ function RegisterForm() {
           <div className="pt-4">
             <Button 
               type="submit" 
-              className="w-full bg-[#7C3AED] hover:bg-[#4F46E5] text-white py-6"
+              className="w-full bg-zinc-950 hover:bg-zinc-800 text-white font-bold py-3 rounded-full shadow-sm"
               disabled={loading}
             >
               {loading ? 'Memproses...' : 'Daftar Sekarang'}
@@ -151,9 +149,9 @@ function RegisterForm() {
           </div>
         </form>
 
-        <div className="mt-8 text-center text-sm text-gray-400">
+        <div className="mt-8 text-center text-xs text-zinc-500">
           Sudah punya akun?{' '}
-          <Link href="/login" className="text-[#7C3AED] hover:text-[#4F46E5] font-medium">
+          <Link href="/login" className="text-zinc-950 hover:underline font-bold">
             Masuk
           </Link>
         </div>
@@ -164,7 +162,7 @@ function RegisterForm() {
 
 export default function RegisterPage() {
   return (
-    <Suspense fallback={<div className="min-h-[80vh] flex items-center justify-center text-white">Loading...</div>}>
+    <Suspense fallback={<div className="min-h-[80vh] flex items-center justify-center text-zinc-500 text-sm">Loading...</div>}>
       <RegisterForm />
     </Suspense>
   );

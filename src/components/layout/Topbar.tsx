@@ -23,37 +23,46 @@ export function Topbar() {
   }, []);
 
   return (
-    <header className="bg-gray-900 h-16 flex items-center justify-between px-6 z-10 w-full">
+    <header className="bg-white border-b border-zinc-200 h-16 flex items-center justify-between px-6 z-10 w-full">
       <div className="flex items-center flex-1">
-        {/* Search bar removed */}
+        {/* Workspace status / breadcrumb placeholder */}
+        <span className="text-xs font-medium text-zinc-400">Panel Manajemen Organizer</span>
       </div>
       <div className="flex items-center gap-4">
         <div className="relative" ref={dropdownRef}>
           <button
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            className="flex items-center gap-2 focus:outline-none"
+            className="flex items-center gap-2.5 p-1 pr-3 rounded-full border border-zinc-200 hover:border-zinc-300 hover:bg-zinc-50 transition-all cursor-pointer select-none"
           >
-            <div className="h-9 w-9 rounded-full bg-violet-600 flex items-center justify-center text-white font-bold">
+            <div className="h-7 w-7 rounded-full bg-zinc-950 flex items-center justify-center text-white font-bold text-xs shadow-xs">
               {user?.full_name?.charAt(0) || 'U'}
             </div>
-            <span className="text-sm font-medium text-gray-200 hidden sm:block">
-              {user?.full_name || 'User'}
+            <span className="text-xs font-bold text-zinc-900 hidden sm:block">
+              {user?.full_name || 'Organizer'}
             </span>
           </button>
           
           {isDropdownOpen && (
-            <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-gray-800 ring-1 ring-black ring-opacity-5 overflow-hidden">
+            <div className="absolute right-0 mt-2 w-48 rounded-2xl shadow-xl bg-white border border-zinc-200 p-1.5 z-50">
               <div className="flex flex-col">
                 <Link
                   href="/profile"
                   onClick={() => setIsDropdownOpen(false)}
-                  className="block px-4 py-3 text-sm text-gray-200 hover:bg-gray-700 transition-colors"
+                  className="block px-3.5 py-2 text-xs font-semibold text-zinc-700 hover:text-zinc-950 hover:bg-zinc-100 rounded-xl transition-colors"
                 >
                   Profil Saya
                 </Link>
+                <Link
+                  href="/"
+                  onClick={() => setIsDropdownOpen(false)}
+                  className="block px-3.5 py-2 text-xs font-semibold text-zinc-700 hover:text-zinc-950 hover:bg-zinc-100 rounded-xl transition-colors"
+                >
+                  Halaman Utama
+                </Link>
+                <div className="my-1 border-t border-zinc-100"></div>
                 <button
                   onClick={logout}
-                  className="block w-full text-left px-4 py-3 text-sm text-red-400 hover:bg-gray-700 transition-colors"
+                  className="block w-full text-left px-3.5 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 rounded-xl transition-colors cursor-pointer"
                 >
                   Keluar
                 </button>

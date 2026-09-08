@@ -175,16 +175,14 @@ export default function VenuesManagementPage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 mb-2">
-            <div className="p-1.5 bg-violet-600/20 text-violet-400 rounded-lg">
-              <Building2 className="h-4 w-4" />
-            </div>
-            <span className="text-xs font-bold uppercase tracking-wider text-violet-400">
+          <div className="inline-flex items-center gap-2 mb-2 px-3 py-1 rounded-full bg-zinc-100 text-zinc-800">
+            <Building2 className="h-3.5 w-3.5 text-zinc-600" />
+            <span className="text-xs font-bold uppercase tracking-wider">
               Organizer Space
             </span>
           </div>
-          <h1 className="text-3xl font-extrabold text-white tracking-tight">Manajemen Venue & Lokasi</h1>
-          <p className="text-gray-400 text-sm mt-1">
+          <h1 className="text-2xl sm:text-3xl font-bold text-zinc-950 tracking-tight">Manajemen Venue & Lokasi</h1>
+          <p className="text-zinc-500 text-sm mt-1">
             Kelola lokasi acara, alamat lengkap, denah kapasitas penonton, dan koordinat peta.
           </p>
         </div>
@@ -194,79 +192,79 @@ export default function VenuesManagementPage() {
             variant="outline"
             onClick={fetchVenues}
             disabled={loading}
-            className="flex items-center gap-2"
+            className="rounded-full border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-700 text-xs font-semibold px-4 py-2 flex items-center gap-2"
           >
-            <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+            <RefreshCw className={`h-3.5 w-3.5 ${loading ? 'animate-spin' : ''}`} />
             Refresh
           </Button>
 
           <Button
             onClick={handleOpenCreate}
-            className="bg-violet-600 hover:bg-violet-700 text-white flex items-center gap-2 font-bold"
+            className="rounded-full bg-zinc-950 hover:bg-zinc-800 text-white text-xs font-semibold px-5 py-2 flex items-center gap-2 shadow-sm"
           >
-            <Plus className="h-4 w-4" />
+            <Plus className="h-3.5 w-3.5" />
             Tambah Venue Baru
           </Button>
         </div>
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-        <Card className="bg-gray-900 border-gray-800 p-5">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+        <Card className="bg-white border border-zinc-200/90 rounded-2xl p-5 shadow-[0_2px_8px_rgba(0,0,0,0.03)]">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-gray-400 text-xs font-medium uppercase tracking-wider mb-1">
+              <p className="text-zinc-400 text-xs font-semibold uppercase tracking-wider mb-1">
                 Total Venue Terdaftar
               </p>
               {loading ? (
-                <Skeleton className="h-8 w-16 mb-1" />
+                <Skeleton className="h-8 w-16 mb-1 rounded-lg" />
               ) : (
-                <h3 className="text-3xl font-bold text-white mb-1">{venues.length}</h3>
+                <h3 className="text-3xl font-bold tracking-tight text-zinc-950 mb-1">{venues.length}</h3>
               )}
-              <p className="text-xs text-gray-500">Stadion, Hall & Ballroom</p>
+              <p className="text-xs text-zinc-400">Stadion, Hall & Ballroom</p>
             </div>
-            <div className="p-3 bg-violet-600/20 text-violet-400 rounded-xl">
-              <Building2 className="h-6 w-6" />
+            <div className="w-10 h-10 rounded-full bg-zinc-100 flex items-center justify-center text-zinc-700">
+              <Building2 className="h-5 w-5" />
             </div>
           </div>
         </Card>
 
-        <Card className="bg-gray-900 border-gray-800 p-5">
+        <Card className="bg-white border border-zinc-200/90 rounded-2xl p-5 shadow-[0_2px_8px_rgba(0,0,0,0.03)]">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-gray-400 text-xs font-medium uppercase tracking-wider mb-1">
+              <p className="text-zinc-400 text-xs font-semibold uppercase tracking-wider mb-1">
                 Kota Terjangkau
               </p>
               {loading ? (
-                <Skeleton className="h-8 w-16 mb-1" />
+                <Skeleton className="h-8 w-16 mb-1 rounded-lg" />
               ) : (
-                <h3 className="text-3xl font-bold text-white mb-1">{availableCities.length}</h3>
+                <h3 className="text-3xl font-bold tracking-tight text-zinc-950 mb-1">{availableCities.length}</h3>
               )}
-              <p className="text-xs text-gray-500">Sebaran wilayah acara</p>
+              <p className="text-xs text-zinc-400">Sebaran wilayah acara</p>
             </div>
-            <div className="p-3 bg-emerald-500/10 text-emerald-400 rounded-xl">
-              <Globe className="h-6 w-6" />
+            <div className="w-10 h-10 rounded-full bg-zinc-100 flex items-center justify-center text-zinc-700">
+              <Globe className="h-5 w-5" />
             </div>
           </div>
         </Card>
 
-        <Card className="bg-gray-900 border-gray-800 p-5">
+        <Card className="bg-white border border-zinc-200/90 rounded-2xl p-5 shadow-[0_2px_8px_rgba(0,0,0,0.03)]">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-gray-400 text-xs font-medium uppercase tracking-wider mb-1">
+              <p className="text-zinc-400 text-xs font-semibold uppercase tracking-wider mb-1">
                 Total Kapasitas Gabungan
               </p>
               {loading ? (
-                <Skeleton className="h-8 w-16 mb-1" />
+                <Skeleton className="h-8 w-16 mb-1 rounded-lg" />
               ) : (
-                <h3 className="text-3xl font-bold text-white mb-1">
+                <h3 className="text-3xl font-bold tracking-tight text-zinc-950 mb-1">
                   {venues.reduce((acc, v) => acc + (v.capacity || 0), 0).toLocaleString('id-ID')}
                 </h3>
               )}
-              <p className="text-xs text-gray-500">Penonton & peserta</p>
+              <p className="text-xs text-zinc-400">Penonton & peserta</p>
             </div>
-            <div className="p-3 bg-blue-500/10 text-blue-400 rounded-xl">
-              <Users className="h-6 w-6" />
+            <div className="w-10 h-10 rounded-full bg-zinc-100 flex items-center justify-center text-zinc-700">
+              <Users className="h-5 w-5" />
             </div>
           </div>
         </Card>
@@ -278,10 +276,10 @@ export default function VenuesManagementPage() {
         <div className="flex flex-wrap gap-2 text-xs">
           <button
             onClick={() => setSelectedCity('ALL')}
-            className={`px-3 py-1.5 rounded-lg font-medium transition-colors ${
+            className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-colors ${
               selectedCity === 'ALL'
-                ? 'bg-violet-600 text-white'
-                : 'bg-gray-900 text-gray-400 hover:text-white border border-gray-800'
+                ? 'bg-zinc-950 text-white shadow-sm'
+                : 'bg-white text-zinc-600 hover:text-zinc-900 border border-zinc-200 hover:bg-zinc-50'
             }`}
           >
             Semua Kota ({venues.length})
@@ -290,10 +288,10 @@ export default function VenuesManagementPage() {
             <button
               key={city}
               onClick={() => setSelectedCity(city)}
-              className={`px-3 py-1.5 rounded-lg font-medium transition-colors ${
+              className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-colors ${
                 selectedCity === city
-                  ? 'bg-violet-600 text-white'
-                  : 'bg-gray-900 text-gray-400 hover:text-white border border-gray-800'
+                  ? 'bg-zinc-950 text-white shadow-sm'
+                  : 'bg-white text-zinc-600 hover:text-zinc-900 border border-zinc-200 hover:bg-zinc-50'
               }`}
             >
               {city} ({venues.filter((v) => v.city === city).length})
@@ -303,14 +301,14 @@ export default function VenuesManagementPage() {
 
         {/* Search Input */}
         <div className="relative w-full sm:w-72">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
           <input
             type="text"
             placeholder="Cari nama venue, alamat..."
             aria-label="Cari nama venue atau alamat"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 bg-gray-900 border border-gray-800 rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none focus:border-violet-500"
+            className="w-full pl-10 pr-4 py-2 bg-zinc-50/80 border border-zinc-200 rounded-full text-xs font-medium text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:bg-white focus:border-zinc-400 transition-colors"
           />
         </div>
       </div>
@@ -319,21 +317,21 @@ export default function VenuesManagementPage() {
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {Array.from({ length: 3 }).map((_, i) => (
-            <Card key={i} className="bg-gray-900 border-gray-800 p-6 space-y-4">
-              <Skeleton className="h-6 w-3/4" />
-              <Skeleton className="h-4 w-1/2" />
-              <Skeleton className="h-16 w-full" />
+            <Card key={i} className="bg-white border border-zinc-200/90 rounded-2xl p-6 space-y-4">
+              <Skeleton className="h-6 w-3/4 rounded-md" />
+              <Skeleton className="h-4 w-1/2 rounded-md" />
+              <Skeleton className="h-16 w-full rounded-md" />
             </Card>
           ))}
         </div>
       ) : filteredVenues.length === 0 ? (
-        <div className="text-center py-16 bg-gray-900/50 border border-gray-800 rounded-2xl p-8 space-y-4">
-          <div className="p-4 bg-gray-800/60 rounded-full w-16 h-16 mx-auto flex items-center justify-center text-gray-500">
-            <Building2 className="h-8 w-8" />
+        <div className="text-center py-16 bg-white border border-zinc-200 rounded-3xl p-8 space-y-4 shadow-sm">
+          <div className="w-14 h-14 bg-zinc-100 rounded-full mx-auto flex items-center justify-center text-zinc-400">
+            <Building2 className="h-7 w-7" />
           </div>
           <div>
-            <h3 className="text-lg font-bold text-white">Tidak ada venue ditemukan</h3>
-            <p className="text-gray-400 text-sm max-w-sm mx-auto mt-1">
+            <h3 className="text-base font-bold text-zinc-950">Tidak ada venue ditemukan</h3>
+            <p className="text-zinc-500 text-xs max-w-sm mx-auto mt-1">
               {searchQuery || selectedCity !== 'ALL'
                 ? 'Coba ubah kata kunci pencarian atau filter kota.'
                 : 'Belum ada venue yang terdaftar. Tambahkan lokasi venue pertama Anda sekarang!'}
@@ -341,9 +339,9 @@ export default function VenuesManagementPage() {
           </div>
           <Button
             onClick={handleOpenCreate}
-            className="bg-violet-600 hover:bg-violet-700 text-white font-bold mt-2"
+            className="rounded-full bg-zinc-950 hover:bg-zinc-800 text-white text-xs font-semibold px-5 py-2 mt-2 inline-flex items-center gap-1.5"
           >
-            <Plus className="h-4 w-4 mr-1.5" />
+            <Plus className="h-3.5 w-3.5" />
             Tambah Venue
           </Button>
         </div>
@@ -352,26 +350,26 @@ export default function VenuesManagementPage() {
           {filteredVenues.map((venue) => (
             <Card
               key={venue.id}
-              className="bg-gray-900 border-gray-800 hover:border-violet-500/50 transition-all rounded-2xl overflow-hidden flex flex-col justify-between group shadow-lg"
+              className="bg-white border border-zinc-200/90 hover:border-zinc-300 transition-all rounded-2xl overflow-hidden flex flex-col justify-between group shadow-[0_2px_8px_rgba(0,0,0,0.03)]"
             >
-              <div className="p-6 space-y-4">
+              <div className="p-5 space-y-3.5">
                 <div className="flex items-start justify-between gap-2">
-                  <Badge variant="secondary" className="text-[11px]">
+                  <span className="px-2.5 py-0.5 rounded-full bg-zinc-100 text-zinc-700 text-[11px] font-semibold">
                     {venue.city || 'Indonesia'}
-                  </Badge>
+                  </span>
 
-                  <div className="flex items-center gap-1 text-xs text-violet-400 font-semibold">
-                    <Users className="h-3.5 w-3.5" />
+                  <div className="flex items-center gap-1 text-xs text-zinc-600 font-semibold">
+                    <Users className="h-3.5 w-3.5 text-zinc-400" />
                     <span>{(venue.capacity || 0).toLocaleString('id-ID')} pax</span>
                   </div>
                 </div>
 
                 <div>
-                  <h3 className="text-lg font-bold text-white group-hover:text-violet-300 transition-colors">
+                  <h3 className="text-base font-bold text-zinc-950 group-hover:text-zinc-800 transition-colors">
                     {venue.name}
                   </h3>
-                  <div className="flex items-start gap-2 text-xs text-gray-400 mt-2">
-                    <MapPin className="h-4 w-4 text-violet-400 flex-shrink-0 mt-0.5" />
+                  <div className="flex items-start gap-1.5 text-xs text-zinc-500 mt-1.5">
+                    <MapPin className="h-3.5 w-3.5 text-zinc-400 flex-shrink-0 mt-0.5" />
                     <p className="line-clamp-2 leading-relaxed">
                       {venue.address}
                       {venue.province ? `, ${venue.province}` : ''}
@@ -380,37 +378,37 @@ export default function VenuesManagementPage() {
                 </div>
 
                 {venue.description && (
-                  <p className="text-xs text-gray-500 line-clamp-2 border-t border-gray-800/80 pt-3">
+                  <p className="text-xs text-zinc-400 line-clamp-2 border-t border-zinc-100 pt-2.5">
                     {venue.description}
                   </p>
                 )}
               </div>
 
               {/* Action Buttons Footer */}
-              <div className="p-4 bg-gray-950/60 border-t border-gray-800 flex items-center justify-between gap-2">
+              <div className="p-3.5 bg-zinc-50/60 border-t border-zinc-100 flex items-center justify-between gap-2">
                 {venue.latitude && venue.longitude ? (
                   <a
                     href={`https://www.google.com/maps/search/?api=1&query=${venue.latitude},${venue.longitude}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-xs text-violet-400 hover:text-violet-300 flex items-center gap-1 font-medium transition-colors"
+                    className="text-xs text-zinc-700 hover:text-zinc-950 flex items-center gap-1 font-semibold hover:underline transition-colors"
                   >
-                    <MapPinned className="h-3.5 w-3.5" />
+                    <MapPinned className="h-3.5 w-3.5 text-zinc-500" />
                     Buka Peta
                   </a>
                 ) : (
-                  <span className="text-[11px] text-gray-600 font-mono">ID: {venue.id.substring(0, 8)}</span>
+                  <span className="text-[11px] text-zinc-400 font-mono">ID: {venue.id.substring(0, 8)}</span>
                 )}
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5">
                   <Button
                     size="sm"
                     variant="outline"
                     onClick={() => handleOpenEdit(venue)}
-                    className="border-gray-800 hover:bg-gray-800 text-gray-300 text-xs px-2.5"
+                    className="rounded-full border-zinc-200 hover:bg-zinc-100 text-zinc-700 text-xs px-3 py-1 font-medium"
                     title="Edit Venue"
                   >
-                    <Edit2 className="h-3.5 w-3.5 text-violet-400 mr-1" />
+                    <Edit2 className="h-3 w-3 mr-1 text-zinc-500" />
                     Edit
                   </Button>
 
@@ -421,10 +419,10 @@ export default function VenuesManagementPage() {
                       setVenueToDelete(venue);
                       setIsDeleteOpen(true);
                     }}
-                    className="border-gray-800 hover:bg-red-950/40 hover:border-red-800/50 text-red-400 text-xs px-2.5"
+                    className="rounded-full border-zinc-200 hover:bg-red-50 hover:border-red-200 text-red-600 text-xs px-2.5 py-1"
                     title="Hapus Venue"
                   >
-                    <Trash2 className="h-3.5 w-3.5" />
+                    <Trash2 className="h-3 w-3" />
                   </Button>
                 </div>
               </div>
@@ -443,30 +441,30 @@ export default function VenuesManagementPage() {
           <form onSubmit={handleFormSubmit} className="space-y-4">
             {/* Nama Venue */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                Nama Venue <span className="text-red-400">*</span>
+              <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">
+                Nama Venue <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 placeholder="Contoh: Istora Senayan / Jakarta Convention Center"
-                className="w-full px-4 py-2.5 bg-gray-950 border border-gray-800 rounded-xl text-white font-medium focus:outline-none focus:border-violet-500"
+                className="w-full px-4 py-2.5 bg-zinc-50 border border-zinc-200 rounded-xl text-zinc-950 font-medium text-sm focus:outline-none focus:bg-white focus:border-zinc-400 transition-colors"
                 required
               />
             </div>
 
             {/* Alamat Lengkap */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                Alamat Lengkap <span className="text-red-400">*</span>
+              <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">
+                Alamat Lengkap <span className="text-red-500">*</span>
               </label>
               <textarea
                 value={formData.address}
                 onChange={(e) => setFormData({ ...formData, address: e.target.value })}
                 rows={2}
                 placeholder="Jl. Pintu Satu Senayan, Gelora, Tanah Abang"
-                className="w-full px-4 py-2.5 bg-gray-950 border border-gray-800 rounded-xl text-white font-medium focus:outline-none focus:border-violet-500 resize-none text-sm"
+                className="w-full px-4 py-2.5 bg-zinc-50 border border-zinc-200 rounded-xl text-zinc-950 font-medium text-sm focus:outline-none focus:bg-white focus:border-zinc-400 resize-none transition-colors"
                 required
               />
             </div>
@@ -474,7 +472,7 @@ export default function VenuesManagementPage() {
             {/* Kota & Provinsi Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">
                   Kota / Kabupaten
                 </label>
                 <input
@@ -482,12 +480,12 @@ export default function VenuesManagementPage() {
                   value={formData.city}
                   onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                   placeholder="Jakarta Pusat"
-                  className="w-full px-4 py-2.5 bg-gray-950 border border-gray-800 rounded-xl text-white font-medium focus:outline-none focus:border-violet-500 text-sm"
+                  className="w-full px-4 py-2 bg-zinc-50 border border-zinc-200 rounded-xl text-zinc-950 font-medium text-sm focus:outline-none focus:bg-white focus:border-zinc-400 transition-colors"
                 />
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">
                   Provinsi
                 </label>
                 <input
@@ -495,14 +493,14 @@ export default function VenuesManagementPage() {
                   value={formData.province}
                   onChange={(e) => setFormData({ ...formData, province: e.target.value })}
                   placeholder="DKI Jakarta"
-                  className="w-full px-4 py-2.5 bg-gray-950 border border-gray-800 rounded-xl text-white font-medium focus:outline-none focus:border-violet-500 text-sm"
+                  className="w-full px-4 py-2 bg-zinc-50 border border-zinc-200 rounded-xl text-zinc-950 font-medium text-sm focus:outline-none focus:bg-white focus:border-zinc-400 transition-colors"
                 />
               </div>
             </div>
 
             {/* Kapasitas Penonton */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+              <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">
                 Kapasitas Maksimal (Orang)
               </label>
               <input
@@ -511,14 +509,14 @@ export default function VenuesManagementPage() {
                 value={formData.capacity}
                 onChange={(e) => setFormData({ ...formData, capacity: parseInt(e.target.value) || 0 })}
                 placeholder="1000"
-                className="w-full px-4 py-2.5 bg-gray-950 border border-gray-800 rounded-xl text-white font-medium focus:outline-none focus:border-violet-500"
+                className="w-full px-4 py-2 bg-zinc-50 border border-zinc-200 rounded-xl text-zinc-950 font-medium text-sm focus:outline-none focus:bg-white focus:border-zinc-400 transition-colors"
               />
             </div>
 
             {/* Koordinat Peta */}
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">
                   Latitude
                 </label>
                 <input
@@ -527,12 +525,12 @@ export default function VenuesManagementPage() {
                   value={formData.latitude}
                   onChange={(e) => setFormData({ ...formData, latitude: parseFloat(e.target.value) || 0 })}
                   placeholder="-6.2088"
-                  className="w-full px-3 py-2 bg-gray-950 border border-gray-800 rounded-xl text-white text-xs font-mono focus:outline-none focus:border-violet-500"
+                  className="w-full px-3 py-2 bg-zinc-50 border border-zinc-200 rounded-xl text-zinc-950 text-xs font-mono focus:outline-none focus:bg-white focus:border-zinc-400 transition-colors"
                 />
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">
                   Longitude
                 </label>
                 <input
@@ -541,14 +539,14 @@ export default function VenuesManagementPage() {
                   value={formData.longitude}
                   onChange={(e) => setFormData({ ...formData, longitude: parseFloat(e.target.value) || 0 })}
                   placeholder="106.8456"
-                  className="w-full px-3 py-2 bg-gray-950 border border-gray-800 rounded-xl text-white text-xs font-mono focus:outline-none focus:border-violet-500"
+                  className="w-full px-3 py-2 bg-zinc-50 border border-zinc-200 rounded-xl text-zinc-950 text-xs font-mono focus:outline-none focus:bg-white focus:border-zinc-400 transition-colors"
                 />
               </div>
             </div>
 
             {/* Deskripsi */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+              <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">
                 Catatan Fasilitas / Deskripsi (Opsional)
               </label>
               <textarea
@@ -556,23 +554,24 @@ export default function VenuesManagementPage() {
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 rows={2}
                 placeholder="Fasilitas AC sentral, sound system akustik, area parkir luas..."
-                className="w-full px-4 py-2.5 bg-gray-950 border border-gray-800 rounded-xl text-white font-medium focus:outline-none focus:border-violet-500 resize-none text-xs"
+                className="w-full px-4 py-2 bg-zinc-50 border border-zinc-200 rounded-xl text-zinc-950 font-medium text-xs focus:outline-none focus:bg-white focus:border-zinc-400 resize-none transition-colors"
               />
             </div>
 
-            <div className="flex justify-end gap-3 pt-2">
+            <div className="flex justify-end gap-2.5 pt-2">
               <Button
                 type="button"
                 variant="outline"
                 disabled={submitting}
                 onClick={() => setIsModalOpen(false)}
+                className="rounded-full border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-700 text-xs font-medium px-4 py-2"
               >
                 Batal
               </Button>
               <Button
                 type="submit"
                 disabled={submitting}
-                className="bg-violet-600 hover:bg-violet-700 text-white px-6 font-bold"
+                className="rounded-full bg-zinc-950 hover:bg-zinc-800 text-white px-5 py-2 text-xs font-semibold"
               >
                 {submitting ? 'Menyimpan...' : isEditing ? 'Simpan Perubahan' : 'Buat Venue'}
               </Button>
@@ -589,29 +588,30 @@ export default function VenuesManagementPage() {
           title="Konfirmasi Hapus Venue"
         >
           <div className="space-y-4">
-            <div className="p-4 bg-red-950/30 border border-red-800/40 rounded-xl flex items-start gap-3 text-red-300 text-sm">
-              <AlertCircle className="h-5 w-5 text-red-400 flex-shrink-0 mt-0.5" />
+            <div className="p-4 bg-red-50 border border-red-200/80 rounded-2xl flex items-start gap-3 text-red-900 text-sm">
+              <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
               <div>
-                <p className="font-semibold">Apakah Anda yakin ingin menghapus venue ini?</p>
-                <p className="text-xs text-red-400/80 mt-1">
+                <p className="font-semibold text-xs">Apakah Anda yakin ingin menghapus venue ini?</p>
+                <p className="text-xs text-red-700 mt-1">
                   Venue &quot;{venueToDelete.name}&quot; ({venueToDelete.city}) akan dihapus secara permanen. Pastikan tidak ada event aktif yang mengaitkan venue ini.
                 </p>
               </div>
             </div>
 
-            <div className="flex justify-end gap-3 pt-2">
+            <div className="flex justify-end gap-2.5 pt-2">
               <Button
                 type="button"
                 variant="outline"
                 disabled={deleting}
                 onClick={() => setIsDeleteOpen(false)}
+                className="rounded-full border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-700 text-xs font-medium px-4 py-2"
               >
                 Batal
               </Button>
               <Button
                 onClick={handleDeleteSubmit}
                 disabled={deleting}
-                className="bg-red-600 hover:bg-red-700 text-white font-bold"
+                className="rounded-full bg-red-600 hover:bg-red-700 text-white text-xs font-semibold px-4 py-2"
               >
                 {deleting ? 'Menghapus...' : 'Hapus Venue'}
               </Button>

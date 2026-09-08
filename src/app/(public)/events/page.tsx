@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
+import { Search, X } from 'lucide-react';
 import { EventCard } from '@/components/features/EventCard';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { eventApi } from '@/lib/api';
@@ -12,6 +13,7 @@ export default function EventsPage() {
   const [venues, setVenues] = useState<Venue[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [searchQuery, setSearchQuery] = useState('');
 
   const containerRef = useRef<HTMLDivElement>(null);
   const tabsRef = useRef<Record<string, HTMLButtonElement | null>>({});
@@ -103,14 +105,28 @@ export default function EventsPage() {
     fetchData();
   }, []);
 
-  // Filter events by selected category
+  // Filter events by selected category and search query
   const filteredEvents = events.filter((ev) => {
     const matchCategory =
       selectedCategory === 'all' ||
       ev.category_id === selectedCategory ||
       ev.category?.id === selectedCategory ||
       ev.category?.name?.toLowerCase().replace(/\s+/g, '-') === selectedCategory;
-    return matchCategory;
+
+    if (!matchCategory) return false;
+
+    if (searchQuery.trim().length > 0) {
+      const q = searchQuery.toLowerCase().trim();
+      const matchTitle = ev.title?.toLowerCase().includes(q);
+      const matchDesc = ev.description?.toLowerCase().includes(q);
+      const matchVenueName = ev.venue?.name?.toLowerCase().includes(q);
+      const matchVenueCity = ev.venue?.city?.toLowerCase().includes(q);
+      const matchCategoryName = ev.category?.name?.toLowerCase().includes(q);
+
+      return matchTitle || matchDesc || matchVenueName || matchVenueCity || matchCategoryName;
+    }
+
+    return true;
   });
 
   return (
@@ -124,8 +140,33 @@ export default function EventsPage() {
           Temukan tiket festival musik, seminar teknologi, workshop seni, dan turnamen olahraga terbaik di Indonesia.
         </p>
 
+        {/* Search Bar (Above Categories) */}
+        <div className="pt-3 pb-1 max-w-md mx-auto w-full">
+          <div className="relative flex items-center">
+            <Search className="absolute left-4 h-4 w-4 text-zinc-400 pointer-events-none" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Cari event, artis, atau venue..."
+              aria-label="Cari event"
+              className="w-full h-11 sm:h-12 pl-11 pr-10 bg-zinc-100/80 hover:bg-zinc-100 focus:bg-white text-zinc-950 placeholder-zinc-400 text-sm font-medium rounded-full border border-transparent focus:border-zinc-300 focus:outline-none focus:ring-2 focus:ring-zinc-900/10 transition-all shadow-none"
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => setSearchQuery('')}
+                className="absolute right-3.5 p-1 text-zinc-400 hover:text-zinc-700 cursor-pointer rounded-full"
+                aria-label="Hapus pencarian"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            )}
+          </div>
+        </div>
+
         {/* Segmented Category Pill Tabs ala Mobbin */}
-        <div className="pt-4 flex justify-center w-full">
+        <div className="pt-2 flex justify-center w-full">
           <div
             ref={containerRef}
             className="relative inline-flex items-center p-1 sm:p-1.5 bg-zinc-200/80 rounded-full gap-1 overflow-x-auto no-scrollbar max-w-full"
@@ -206,15 +247,22 @@ export default function EventsPage() {
         ) : (
           <div className="col-span-full flex flex-col items-center justify-center min-h-[320px] text-center p-8 bg-zinc-50/50 rounded-3xl border border-zinc-200 space-y-4">
             <div>
-              <h3 className="text-lg font-bold text-zinc-950 mb-1">Tidak Ada Event untuk Kategori Ini</h3>
+              <h3 className="text-lg font-bold text-zinc-950 mb-1">
+                {searchQuery ? 'Tidak Ada Event yang Sesuai' : 'Tidak Ada Event untuk Kategori Ini'}
+              </h3>
               <p className="text-zinc-500 text-xs max-w-md mx-auto">
-                Coba pilih kategori lain atau kembali ke semua event.
+                {searchQuery
+                  ? `Tidak menemukan event dengan kata kunci "${searchQuery}". Coba gunakan kata kunci lain atau reset filter.`
+                  : 'Coba pilih kategori lain atau kembali ke semua event.'}
               </p>
               <button
-                onClick={() => setSelectedCategory('all')}
+                onClick={() => {
+                  setSelectedCategory('all');
+                  setSearchQuery('');
+                }}
                 className="mt-4 px-5 py-2 rounded-full text-xs font-semibold bg-zinc-950 text-white hover:bg-zinc-800 transition-colors cursor-pointer"
               >
-                Reset Pilihan
+                Reset Pencarian & Kategori
               </button>
             </div>
           </div>

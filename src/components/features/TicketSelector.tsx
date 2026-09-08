@@ -35,8 +35,6 @@ interface PromoValidateResponse {
   message: string;
 }
 
-const SUGGESTED_PROMOS = ['ENTRA20', 'FESTIVAL50', 'WELCOME10'];
-
 export function TicketSelector({ ticketTypes, eventId, onSelect }: TicketSelectorProps) {
   const [quantities, setQuantities] = useState<Record<string, number>>({});
   const [promoInput, setPromoInput] = useState('');
@@ -213,7 +211,7 @@ export function TicketSelector({ ticketTypes, eventId, onSelect }: TicketSelecto
                 type="text"
                 value={promoInput}
                 onChange={(e) => setPromoInput(e.target.value.toUpperCase())}
-                placeholder="Contoh: ENTRA20, FESTIVAL50"
+                placeholder="Masukkan kode promo"
                 aria-label="Kode kupon promo"
                 disabled={appliedPromo !== null || promoLoading}
                 className="w-full px-3.5 py-2 bg-zinc-100 rounded-full text-xs text-zinc-900 font-mono uppercase focus:outline-none disabled:opacity-60 border-none"
@@ -258,26 +256,6 @@ export function TicketSelector({ ticketTypes, eventId, onSelect }: TicketSelecto
                   Potongan harga sebesar {formatCurrency(appliedPromo.discountAmount)} diterapkan.
                 </p>
               </div>
-            </div>
-          )}
-
-          {/* Quick Suggestion Chips */}
-          {!appliedPromo && (
-            <div className="flex items-center gap-1.5 flex-wrap pt-1">
-              <span className="text-[10px] text-zinc-400 uppercase font-semibold">Coba:</span>
-              {SUGGESTED_PROMOS.map((code) => (
-                <button
-                  key={code}
-                  type="button"
-                  onClick={() => {
-                    setPromoInput(code);
-                    handleApplyPromo(code);
-                  }}
-                  className="px-2.5 py-0.5 bg-zinc-100 hover:bg-zinc-200 text-zinc-700 rounded-full text-[10px] font-mono font-semibold transition-colors border-none"
-                >
-                  {code}
-                </button>
-              ))}
             </div>
           )}
         </div>

@@ -163,7 +163,7 @@ export default function EventsPage() {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Cari event, artis, atau venue..."
                 aria-label="Cari event"
-                className="w-full h-11 sm:h-12 pl-11 pr-10 bg-white text-zinc-950 placeholder-zinc-400 text-sm font-medium rounded-full border border-zinc-200/70 focus:border-zinc-300 focus:outline-none focus:ring-2 focus:ring-zinc-900/10 transition-all shadow-none"
+                className="w-full h-11 sm:h-12 pl-11 pr-10 bg-white text-zinc-950 placeholder-zinc-400 text-sm font-medium rounded-full border-none outline-none ring-0 focus:outline-none focus:ring-0 focus:border-none transition-all shadow-none"
               />
               {searchQuery && (
                 <button

@@ -215,7 +215,7 @@ export function TicketSelector({ ticketTypes, eventId, onSelect }: TicketSelecto
                 placeholder="Contoh: ENTRA20, FESTIVAL50"
                 aria-label="Kode kupon promo"
                 disabled={appliedPromo !== null || promoLoading}
-                className="w-full px-3.5 py-2 bg-white border border-zinc-200 rounded-full text-xs text-zinc-900 font-mono uppercase focus:outline-none focus:ring-2 focus:ring-zinc-900/10 focus:border-zinc-900 disabled:opacity-60"
+                className="w-full px-3.5 py-2 bg-white border border-zinc-200 rounded-full text-xs text-zinc-900 font-mono uppercase focus:outline-none focus:ring-0 disabled:opacity-60"
               />
             </div>
             {appliedPromo ? (

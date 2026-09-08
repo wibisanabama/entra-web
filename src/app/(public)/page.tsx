@@ -99,7 +99,7 @@ export default function HomePage() {
   return (
     <div className="w-full bg-white text-zinc-900 min-h-screen">
       
-      <section className="border-b border-zinc-200 px-6 sm:px-8 min-h-[calc(100vh-5rem)] flex flex-col justify-center items-center py-12 sm:py-16">
+      <section className="px-6 sm:px-8 min-h-[calc(100vh-5rem)] flex flex-col justify-center items-center py-12 sm:py-16">
         <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
           <h1 className="max-w-3xl text-4xl sm:text-5xl lg:text-[60px] font-semibold leading-[1.1] tracking-[-0.035em] text-zinc-950">
             Temukan pengalaman nyata <br className="hidden sm:inline" />di sekitar Anda.
@@ -245,7 +245,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="border-t border-zinc-200 bg-zinc-50 px-4 py-20 sm:py-24">
+      <section className="bg-zinc-50 px-4 py-20 sm:py-24">
         <div className="mx-auto max-w-7xl">
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-zinc-500">Cara kerja</p>
           <h2 className="mt-3 max-w-2xl text-3xl font-black tracking-tight text-zinc-950 sm:text-5xl">Dari pencarian sampai pintu masuk.</h2>

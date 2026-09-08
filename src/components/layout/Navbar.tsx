@@ -26,8 +26,8 @@ export function Navbar() {
   }, []);
 
   return (
-    <header className="sticky top-0 z-50 w-full pt-3 sm:pt-5 pb-2 px-4 flex justify-center pointer-events-none">
-      <div className="pointer-events-auto w-full max-w-[480px] h-11 sm:h-12 bg-[#f3f3f3]/95 backdrop-blur-md rounded-full pl-5 sm:pl-6 pr-1.5 sm:pr-2 flex items-center justify-between transition-all">
+    <header className="sticky top-0 z-50 w-full pt-4 sm:pt-6 pb-2 px-4 flex justify-center pointer-events-none">
+      <div className="pointer-events-auto w-full max-w-[620px] h-13 sm:h-14 bg-[#f3f3f3]/95 backdrop-blur-md rounded-full pl-6 sm:pl-7 pr-2 sm:pr-2.5 flex items-center justify-between transition-all">
         
         {/* Left: Black Entra Logo */}
         <Link 
@@ -38,7 +38,7 @@ export function Navbar() {
           <img 
             src="/assets/black-logo.png" 
             alt="Entra" 
-            className="h-6 sm:h-7 w-auto object-contain transition-transform group-hover:scale-105" 
+            className="h-7 sm:h-8 w-auto object-contain transition-transform group-hover:scale-105" 
           />
         </Link>
 
@@ -83,7 +83,7 @@ export function Navbar() {
                 className="flex items-center p-0.5 rounded-full hover:ring-2 hover:ring-zinc-950/10 focus:outline-none transition-all cursor-pointer"
                 aria-label="Menu Pengguna"
               >
-                <div className="h-7 w-7 rounded-full bg-zinc-950 text-white font-semibold text-xs flex items-center justify-center overflow-hidden">
+                <div className="h-8 w-8 rounded-full bg-zinc-950 text-white font-semibold text-xs flex items-center justify-center overflow-hidden">
                   {user.avatar_url ? (
                     <img
                       src={user.avatar_url}
@@ -157,10 +157,10 @@ export function Navbar() {
             </div>
           </div>
         ) : (
-          <nav className="flex items-center gap-3.5 sm:gap-4">
+          <nav className="flex items-center gap-4 sm:gap-6">
             <Link 
               href="/events" 
-              className={`text-xs sm:text-sm transition-colors ${
+              className={`text-sm transition-colors ${
                 pathname.startsWith('/events') 
                   ? 'text-zinc-950 font-semibold' 
                   : 'text-zinc-800 hover:text-zinc-950 font-medium'
@@ -170,7 +170,7 @@ export function Navbar() {
             </Link>
             <Link 
               href="/login" 
-              className={`text-xs sm:text-sm transition-colors ${
+              className={`text-sm transition-colors ${
                 pathname === '/login' 
                   ? 'text-zinc-950 font-semibold' 
                   : 'text-zinc-800 hover:text-zinc-950 font-medium'
@@ -180,7 +180,7 @@ export function Navbar() {
             </Link>
             <Link 
               href="/register" 
-              className="inline-flex items-center justify-center h-8 px-4 rounded-full bg-zinc-950 hover:bg-zinc-800 text-white text-xs sm:text-[13px] font-semibold transition-all shadow-xs active:scale-95"
+              className="inline-flex items-center justify-center h-9 sm:h-9.5 px-5 rounded-full bg-zinc-950 hover:bg-zinc-800 text-white text-xs sm:text-sm font-semibold transition-all shadow-xs active:scale-95"
             >
               Daftar
             </Link>

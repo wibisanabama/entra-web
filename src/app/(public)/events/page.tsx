@@ -6,6 +6,7 @@ import { EventCard } from '@/components/features/EventCard';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { eventApi } from '@/lib/api';
 import { Event, Category, Venue } from '@/types';
+import { getPgText } from '@/lib/utils';
 
 export default function EventsPage() {
   const [events, setEvents] = useState<Event[]>([]);
@@ -22,7 +23,8 @@ export default function EventsPage() {
         (ev) =>
           ev.category_id === cat.id ||
           ev.category?.id === cat.id ||
-          ev.category?.name?.toLowerCase().replace(/\s+/g, '-') === cat.id
+          (typeof ev.category?.name === 'string' &&
+            ev.category.name.toLowerCase().replace(/\s+/g, '-') === cat.id)
       )
     );
   }, [categories, events]);
@@ -123,17 +125,19 @@ export default function EventsPage() {
       selectedCategory === 'all' ||
       ev.category_id === selectedCategory ||
       ev.category?.id === selectedCategory ||
-      ev.category?.name?.toLowerCase().replace(/\s+/g, '-') === selectedCategory;
+      (typeof ev.category?.name === 'string' &&
+        ev.category.name.toLowerCase().replace(/\s+/g, '-') === selectedCategory);
 
     if (!matchCategory) return false;
 
     if (searchQuery.trim().length > 0) {
       const q = searchQuery.toLowerCase().trim();
-      const matchTitle = ev.title?.toLowerCase().includes(q);
-      const matchDesc = ev.description?.toLowerCase().includes(q);
-      const matchVenueName = ev.venue?.name?.toLowerCase().includes(q);
-      const matchVenueCity = ev.venue?.city?.toLowerCase().includes(q);
-      const matchCategoryName = ev.category?.name?.toLowerCase().includes(q);
+      const matchTitle = typeof ev.title === 'string' ? ev.title.toLowerCase().includes(q) : false;
+      const descText = getPgText(ev.description);
+      const matchDesc = descText ? descText.toLowerCase().includes(q) : false;
+      const matchVenueName = typeof ev.venue?.name === 'string' ? ev.venue.name.toLowerCase().includes(q) : false;
+      const matchVenueCity = typeof ev.venue?.city === 'string' ? ev.venue.city.toLowerCase().includes(q) : false;
+      const matchCategoryName = typeof ev.category?.name === 'string' ? ev.category.name.toLowerCase().includes(q) : false;
 
       return matchTitle || matchDesc || matchVenueName || matchVenueCity || matchCategoryName;
     }

@@ -31,7 +31,7 @@ export default function NotFound() {
             </Link>
             <Link
               href="/events"
-              className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-zinc-200 bg-white px-7 text-[15px] font-semibold text-zinc-950 hover:bg-zinc-50 transition-all shadow-xs tracking-[-0.01em]"
+              className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-zinc-100 px-7 text-[15px] font-semibold text-zinc-950 hover:bg-zinc-200 transition-all border-0 shadow-none tracking-[-0.01em]"
             >
               Jelajahi event <ArrowRight className="h-4 w-4 stroke-[2]" />
             </Link>

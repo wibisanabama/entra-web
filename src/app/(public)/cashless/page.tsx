@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useAuth } from '@/providers/auth-provider';
 import { cashlessApi } from '@/lib/api';
 import { Wallet, Transaction } from '@/types';
-import { formatCurrency, formatDate } from '@/lib/utils';
+import { formatCurrency, formatDate, getPgText } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
 import { Skeleton } from '@/components/ui/Skeleton';
@@ -215,7 +215,7 @@ export default function CashlessPortalPage() {
   // Filter transactions
   const filteredTransactions = transactions.filter((tx) => {
     const isTopUp = tx.type?.toUpperCase() === 'TOPUP' || tx.type?.toUpperCase() === 'CREDIT';
-    const isRefund = tx.description?.toLowerCase().includes('refund');
+    const isRefund = getPgText(tx.description).toLowerCase().includes('refund');
     if (txFilter === 'TOPUP') return isTopUp && !isRefund;
     if (txFilter === 'REFUND') return isRefund;
     if (txFilter === 'PURCHASE') return !isTopUp && !isRefund;
@@ -485,7 +485,7 @@ export default function CashlessPortalPage() {
           <div className="divide-y divide-zinc-100">
             {filteredTransactions.map((tx) => {
               const isCredit = tx.type?.toUpperCase() === 'CREDIT' || tx.type?.toUpperCase() === 'TOPUP';
-              const isRefund = tx.description?.toLowerCase().includes('refund');
+              const isRefund = getPgText(tx.description).toLowerCase().includes('refund');
               const amount = parseAmount(tx.amount);
 
               return (

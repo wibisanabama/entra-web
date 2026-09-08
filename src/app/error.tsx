@@ -19,20 +19,20 @@ export default function GlobalError({
 
   return (
     <div className="min-h-[75vh] flex items-center justify-center px-4 py-12">
-      <div className="max-w-md w-full text-center bg-gray-900 border border-gray-800 rounded-3xl p-8 shadow-2xl space-y-6">
-        <div className="w-16 h-16 bg-rose-500/10 border border-rose-500/20 text-rose-400 rounded-2xl flex items-center justify-center mx-auto shadow-lg shadow-rose-950/30">
-          <AlertTriangle className="h-8 w-8" />
+      <div className="max-w-md w-full text-center bg-zinc-100 rounded-3xl p-8 sm:p-10 space-y-6">
+        <div className="w-14 h-14 bg-rose-50 text-rose-600 rounded-2xl flex items-center justify-center mx-auto">
+          <AlertTriangle className="h-7 w-7" />
         </div>
 
         <div className="space-y-2">
-          <h1 className="text-2xl font-black text-white tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-black text-zinc-950 tracking-tight">
             Terjadi Kesalahan Sistem
           </h1>
-          <p className="text-sm text-gray-400 leading-relaxed">
+          <p className="text-sm text-zinc-500 leading-relaxed">
             Mohon maaf, terjadi kendala saat memproses permintaan Anda. Silakan coba muat ulang halaman ini.
           </p>
           {error.digest && (
-            <p className="text-[11px] font-mono text-gray-600">
+            <p className="text-[11px] font-mono text-zinc-400">
               Error Digest: {error.digest}
             </p>
           )}
@@ -41,7 +41,7 @@ export default function GlobalError({
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
           <Button
             onClick={() => reset()}
-            className="w-full sm:w-auto bg-violet-600 hover:bg-violet-700 text-white font-bold text-xs py-2.5 px-5 rounded-xl flex items-center justify-center gap-2"
+            className="w-full sm:w-auto bg-zinc-950 hover:bg-zinc-800 text-white font-bold text-xs py-3 px-6 rounded-full flex items-center justify-center gap-2 border-0 shadow-none"
           >
             <RefreshCw className="h-4 w-4" />
             Coba Lagi
@@ -50,7 +50,7 @@ export default function GlobalError({
           <Link href="/" className="w-full sm:w-auto">
             <Button
               variant="outline"
-              className="w-full text-gray-300 hover:text-white border-gray-800 text-xs py-2.5 px-5 rounded-xl flex items-center justify-center gap-2"
+              className="w-full bg-white hover:bg-zinc-200 text-zinc-900 font-bold text-xs py-3 px-6 rounded-full flex items-center justify-center gap-2 border-0 shadow-none"
             >
               <Home className="h-4 w-4" />
               Kembali ke Beranda

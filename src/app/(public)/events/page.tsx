@@ -20,8 +20,7 @@ import {
   MapPin,
   ArrowUpDown,
   X,
-  RotateCcw,
-  Sparkles
+  RotateCcw
 } from 'lucide-react';
 
 export default function EventsPage() {
@@ -252,10 +251,6 @@ export default function EventsPage() {
     <div className="container mx-auto px-4 py-12 max-w-7xl space-y-8 text-zinc-900">
       {/* Header Banner */}
       <div className="text-center max-w-3xl mx-auto space-y-3">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-100 text-zinc-800 text-xs font-semibold uppercase tracking-wider border border-zinc-200">
-          <Sparkles className="h-3.5 w-3.5 text-zinc-700" />
-          Direktori Acara & Festival
-        </div>
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-zinc-950 tracking-tight">
           Jelajahi Event & Konser Spektakuler
         </h1>

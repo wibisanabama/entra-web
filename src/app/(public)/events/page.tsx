@@ -89,16 +89,28 @@ export default function EventsPage() {
         setCategories(rawCategories);
         setVenues(rawVenues);
 
-        // Enrich events with venue & category models
-        const enrichedEvents = rawEvents.map((ev) => {
-          const matchedVenue = rawVenues.find((v) => v.id === ev.venue_id);
-          const matchedCat = rawCategories.find((c) => c.id === ev.category_id);
-          return {
-            ...ev,
-            venue: matchedVenue || ev.venue,
-            category: matchedCat || ev.category,
-          };
-        });
+        // Enrich events with venue, category & ticket_types models
+        const enrichedEvents = await Promise.all(
+          rawEvents.map(async (ev) => {
+            const matchedVenue = rawVenues.find((v) => v.id === ev.venue_id);
+            const matchedCat = rawCategories.find((c) => c.id === ev.category_id);
+            let ticketTypes = ev.ticket_types || [];
+            try {
+              const ticketRes = await eventApi.get<any[]>(`/api/v1/events/${ev.id}/tickets`);
+              if (ticketRes.data && Array.isArray(ticketRes.data)) {
+                ticketTypes = ticketRes.data;
+              }
+            } catch {
+              // ignore
+            }
+            return {
+              ...ev,
+              venue: matchedVenue || ev.venue,
+              category: matchedCat || ev.category,
+              ticket_types: ticketTypes,
+            };
+          })
+        );
 
         setEvents(enrichedEvents);
       } catch (error) {

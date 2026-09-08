@@ -63,17 +63,33 @@ export default function HomePage() {
           eventApi.get<Venue[]>('/api/v1/venues').catch(() => ({ success: false, data: [] as Venue[] }))
         ]);
 
-        if (catRes.data && Array.isArray(catRes.data)) {
-          setCategories(catRes.data);
-        }
+        const rawCategories = catRes.data && Array.isArray(catRes.data) ? catRes.data : [];
+        const rawVenues = venueRes.data && Array.isArray(venueRes.data) ? venueRes.data : [];
+        setCategories(rawCategories);
 
         if (eventRes.data && Array.isArray(eventRes.data)) {
-          const venues: Venue[] = Array.isArray(venueRes.data) ? venueRes.data : [];
-          const eventsWithVenues: EventType[] = eventRes.data.map((ev) => {
-            const venue = venues.find((v) => v.id === ev.venue_id);
-            return { ...ev, venue: venue || ev.venue };
-          });
-          setEvents(eventsWithVenues);
+          const eventsWithDetails: EventType[] = await Promise.all(
+            eventRes.data.map(async (ev) => {
+              const venue = rawVenues.find((v) => v.id === ev.venue_id);
+              const category = rawCategories.find((c) => c.id === ev.category_id);
+              let ticketTypes = ev.ticket_types || [];
+              try {
+                const ticketRes = await eventApi.get<any[]>(`/api/v1/events/${ev.id}/tickets`);
+                if (ticketRes.data && Array.isArray(ticketRes.data)) {
+                  ticketTypes = ticketRes.data;
+                }
+              } catch {
+                // ignore
+              }
+              return {
+                ...ev,
+                venue: venue || ev.venue,
+                category: category || ev.category,
+                ticket_types: ticketTypes,
+              };
+            })
+          );
+          setEvents(eventsWithDetails);
         }
       } catch {
         setLoadError(true);

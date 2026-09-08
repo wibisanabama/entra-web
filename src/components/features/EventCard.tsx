@@ -1,5 +1,5 @@
 import React from 'react';
-import { Calendar, MapPin } from 'lucide-react';
+import { Calendar, Clock, MapPin } from 'lucide-react';
 import Link from 'next/link';
 import { Event } from '@/types';
 import { format } from 'date-fns';
@@ -78,12 +78,16 @@ export function EventCard({ event }: EventCardProps) {
               {event.title}
             </h3>
 
-            <div className="mt-2 space-y-1 text-xs text-zinc-500">
-              <div className="flex items-center gap-1.5">
-                <Calendar className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
-                <span>{formattedDate}</span>
-                <span className="text-zinc-300">•</span>
-                <span>{formattedTime}</span>
+            <div className="mt-2 space-y-1.5 text-xs text-zinc-500">
+              <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
+                <div className="flex items-center gap-1.5">
+                  <Calendar className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
+                  <span>{formattedDate}</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <Clock className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
+                  <span>{formattedTime}</span>
+                </div>
               </div>
               <div className="flex items-center gap-1.5 truncate">
                 <MapPin className="w-3.5 h-3.5 text-zinc-400 shrink-0" />

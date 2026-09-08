@@ -264,7 +264,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="bg-white px-4 py-20 sm:py-24">
+      <section className="bg-white px-4 pt-20 sm:pt-28 pb-0">
         <div className="mx-auto max-w-7xl">
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-zinc-500">Cara kerja</p>
           <h2 className="mt-3 max-w-2xl text-3xl font-black tracking-tight text-zinc-950 sm:text-5xl">Dari pencarian sampai pintu masuk.</h2>
@@ -284,7 +284,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="px-4 py-20 sm:py-28">
+      <section className="px-4 pt-8 sm:pt-12 pb-20 sm:pb-28">
         <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-8 rounded-[2rem] bg-zinc-950 p-8 text-white sm:p-12 lg:flex-row lg:items-end">
           <div className="max-w-2xl">
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-zinc-400">Untuk organizer</p>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { EventCard } from '@/components/features/EventCard';
 import { Skeleton } from '@/components/ui/Skeleton';
@@ -14,6 +14,44 @@ export default function HomePage() {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
+
+  const containerRef = useRef<HTMLDivElement>(null);
+  const tabsRef = useRef<Record<string, HTMLButtonElement | null>>({});
+  const [indicatorStyle, setIndicatorStyle] = useState<{ left: number; width: number }>({ left: 0, width: 0 });
+  const [isReady, setIsReady] = useState(false);
+
+  useEffect(() => {
+    const activeEl = tabsRef.current[selectedCategory];
+    if (activeEl) {
+      setIndicatorStyle({
+        left: activeEl.offsetLeft,
+        width: activeEl.offsetWidth,
+      });
+
+      if (!isReady) {
+        const timer = setTimeout(() => setIsReady(true), 50);
+        return () => clearTimeout(timer);
+      } else if (containerRef.current) {
+        const container = containerRef.current;
+        const targetScrollLeft = activeEl.offsetLeft - container.offsetWidth / 2 + activeEl.offsetWidth / 2;
+        container.scrollTo({ left: targetScrollLeft, behavior: 'smooth' });
+      }
+    }
+  }, [selectedCategory, categories, isReady]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const activeEl = tabsRef.current[selectedCategory];
+      if (activeEl) {
+        setIndicatorStyle({
+          left: activeEl.offsetLeft,
+          width: activeEl.offsetWidth,
+        });
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [selectedCategory]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -98,13 +136,33 @@ export default function HomePage() {
 
             {/* Segmented Control Pill ala Mobbin */}
             <div className="mt-8 sm:mt-10 flex justify-center w-full">
-              <div className="inline-flex p-1 sm:p-1.5 bg-[#f3f3f3] rounded-full gap-1 overflow-x-auto no-scrollbar max-w-full">
+              <div
+                ref={containerRef}
+                className="relative inline-flex items-center p-1 sm:p-1.5 bg-[#f3f3f3] rounded-full gap-1 overflow-x-auto no-scrollbar max-w-full"
+              >
+                {/* Sliding Capsule Highlight */}
+                <div
+                  className={`absolute top-1 sm:top-1.5 bottom-1 sm:bottom-1.5 rounded-full bg-white shadow-[0_1px_2px_rgba(0,0,0,0.08)] pointer-events-none ${
+                    isReady
+                      ? 'transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]'
+                      : 'transition-none'
+                  }`}
+                  style={{
+                    left: `${indicatorStyle.left}px`,
+                    width: `${indicatorStyle.width}px`,
+                    opacity: indicatorStyle.width > 0 ? 1 : 0,
+                  }}
+                />
+
                 <button
+                  ref={(el) => {
+                    tabsRef.current['all'] = el;
+                  }}
                   onClick={() => setSelectedCategory('all')}
-                  className={`px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm transition-all whitespace-nowrap cursor-pointer ${
+                  className={`relative z-10 px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-medium transition-colors duration-200 whitespace-nowrap cursor-pointer ${
                     selectedCategory === 'all'
-                      ? 'bg-white text-zinc-950 font-semibold shadow-[0_1px_2px_rgba(0,0,0,0.06)]'
-                      : 'text-zinc-500 hover:text-zinc-900 font-medium'
+                      ? 'text-zinc-950'
+                      : 'text-zinc-500 hover:text-zinc-900'
                   }`}
                 >
                   Semua Event
@@ -114,11 +172,14 @@ export default function HomePage() {
                   return (
                     <button
                       key={cat.id}
-                      onClick={() => setSelectedCategory(isSelected ? 'all' : cat.id)}
-                      className={`px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm transition-all whitespace-nowrap cursor-pointer ${
+                      ref={(el) => {
+                        tabsRef.current[cat.id] = el;
+                      }}
+                      onClick={() => setSelectedCategory(cat.id)}
+                      className={`relative z-10 px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-medium transition-colors duration-200 whitespace-nowrap cursor-pointer ${
                         isSelected
-                          ? 'bg-white text-zinc-950 font-semibold shadow-[0_1px_2px_rgba(0,0,0,0.06)]'
-                          : 'text-zinc-500 hover:text-zinc-900 font-medium'
+                          ? 'text-zinc-950'
+                          : 'text-zinc-500 hover:text-zinc-900'
                       }`}
                     >
                       {cat.name}

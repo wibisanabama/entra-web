@@ -215,7 +215,7 @@ export default function EventDetailPage() {
     <div className="bg-white pb-24 text-zinc-900">
       {/* Banner Showcase */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
-        <div className="relative w-full aspect-[16/9] sm:aspect-[21/9] max-h-[460px] rounded-3xl overflow-hidden border border-zinc-200 shadow-xs bg-zinc-100">
+        <div className="relative w-full aspect-[16/9] sm:aspect-[21/9] max-h-[460px] rounded-3xl overflow-hidden bg-zinc-100">
           <img src={event.image} alt={event.title} className="w-full h-full object-cover" />
         </div>
       </div>
@@ -227,9 +227,9 @@ export default function EventDetailPage() {
           {/* Left Column: Banner info, Date/Time/Venue, Description, Organizer */}
           <div className="lg:col-span-7 xl:col-span-8 space-y-6">
             {/* Header Card */}
-            <div className="bg-white p-6 sm:p-8 rounded-3xl border border-zinc-200 shadow-xs space-y-6">
+            <div className="bg-zinc-100 p-6 sm:p-8 rounded-3xl space-y-6">
               <div>
-                <span className="inline-flex items-center px-3.5 py-1 rounded-full text-xs font-semibold bg-zinc-100 text-zinc-800 border border-zinc-200 mb-3">
+                <span className="inline-flex items-center px-3.5 py-1 rounded-full text-xs font-semibold bg-white text-zinc-900 mb-3">
                   {event.category}
                 </span>
                 <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-zinc-950 tracking-tight leading-tight">
@@ -239,8 +239,8 @@ export default function EventDetailPage() {
 
               {/* Event Info Details Pills */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
-                <div className="p-3.5 bg-zinc-50 rounded-2xl border border-zinc-200 flex items-start gap-3">
-                  <div className="p-2 bg-white rounded-xl text-zinc-900 border border-zinc-200/80 shadow-xs flex-shrink-0">
+                <div className="p-3.5 bg-white rounded-2xl flex items-start gap-3">
+                  <div className="p-2 bg-zinc-100 rounded-xl text-zinc-900 flex-shrink-0">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
                   </div>
                   <div>
@@ -249,8 +249,8 @@ export default function EventDetailPage() {
                   </div>
                 </div>
 
-                <div className="p-3.5 bg-zinc-50 rounded-2xl border border-zinc-200 flex items-start gap-3">
-                  <div className="p-2 bg-white rounded-xl text-zinc-900 border border-zinc-200/80 shadow-xs flex-shrink-0">
+                <div className="p-3.5 bg-white rounded-2xl flex items-start gap-3">
+                  <div className="p-2 bg-zinc-100 rounded-xl text-zinc-900 flex-shrink-0">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
                   </div>
                   <div>
@@ -259,8 +259,8 @@ export default function EventDetailPage() {
                   </div>
                 </div>
 
-                <div className="p-3.5 bg-zinc-50 rounded-2xl border border-zinc-200 flex items-start gap-3">
-                  <div className="p-2 bg-white rounded-xl text-zinc-900 border border-zinc-200/80 shadow-xs flex-shrink-0">
+                <div className="p-3.5 bg-white rounded-2xl flex items-start gap-3">
+                  <div className="p-2 bg-zinc-100 rounded-xl text-zinc-900 flex-shrink-0">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
                   </div>
                   <div>
@@ -272,7 +272,7 @@ export default function EventDetailPage() {
             </div>
 
             {/* Description Card */}
-            <div className="bg-white p-6 sm:p-8 rounded-3xl border border-zinc-200 shadow-xs space-y-4">
+            <div className="bg-zinc-100 p-6 sm:p-8 rounded-3xl space-y-4">
               <h2 className="text-xl font-bold text-zinc-950">Tentang Acara</h2>
               <div className="text-zinc-600 leading-relaxed text-sm whitespace-pre-line space-y-3">
                 <p>{event.description}</p>
@@ -280,10 +280,10 @@ export default function EventDetailPage() {
             </div>
 
             {/* Organizer Card */}
-            <div className="bg-white p-6 sm:p-8 rounded-3xl border border-zinc-200 shadow-xs space-y-4">
+            <div className="bg-zinc-100 p-6 sm:p-8 rounded-3xl space-y-4">
               <h3 className="text-sm font-bold text-zinc-500 uppercase tracking-wider">Penyelenggara Acara</h3>
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-zinc-100 border border-zinc-200 rounded-full flex items-center justify-center font-black text-lg text-zinc-950 flex-shrink-0">
+                <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center font-black text-lg text-zinc-950 flex-shrink-0">
                   {event.organizer.charAt(0)}
                 </div>
                 <div>
@@ -297,14 +297,14 @@ export default function EventDetailPage() {
           {/* Right Column: Sticky Ticket Purchase Card */}
           <div className="lg:col-span-5 xl:col-span-4">
             <div className="sticky top-24">
-              <div className="bg-white rounded-3xl border border-zinc-200 shadow-sm overflow-hidden">
-                <div className="p-5 sm:p-6 border-b border-zinc-100 flex items-center justify-between">
+              <div className="bg-zinc-100 rounded-3xl overflow-hidden">
+                <div className="p-5 sm:p-6 flex items-center justify-between">
                   <h3 className="text-lg font-black text-zinc-950">Pilih Tiket</h3>
-                  <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                  <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full">
                     Garansi Resmi
                   </span>
                 </div>
-                <div className="p-5 sm:p-6">
+                <div className="p-5 sm:p-6 pt-0">
                   <TicketSelector 
                     ticketTypes={event.tickets as unknown as TicketType[]} 
                     eventId={String(event.id)}
@@ -389,7 +389,7 @@ export default function EventDetailPage() {
         title={modalData.title}
       >
         <div className="text-center py-4 space-y-5">
-          <div className={`mx-auto flex items-center justify-center h-16 w-16 rounded-full ${modalData.type === 'success' ? 'bg-emerald-50 text-emerald-600 border border-emerald-200' : 'bg-rose-50 text-rose-600 border border-rose-200'}`}>
+          <div className={`mx-auto flex items-center justify-center h-16 w-16 rounded-full ${modalData.type === 'success' ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}`}>
             {modalData.type === 'success' ? (
               <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
@@ -414,7 +414,7 @@ export default function EventDetailPage() {
               )}
               <Button 
                 variant="outline"
-                className="w-full border-zinc-200 text-zinc-800 hover:bg-zinc-50 rounded-full"
+                className="w-full bg-zinc-100 hover:bg-zinc-200 border-none text-zinc-800 rounded-full"
                 onClick={() => {
                   setModalData({...modalData, isOpen: false});
                   router.push('/my-tickets');

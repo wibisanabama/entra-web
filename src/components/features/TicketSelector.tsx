@@ -141,11 +141,11 @@ export function TicketSelector({ ticketTypes, eventId, onSelect }: TicketSelecto
   };
 
   if (!ticketTypes || ticketTypes.length === 0) {
-    return <div className="text-zinc-500 p-4 text-center rounded-2xl bg-zinc-50 border border-zinc-200 text-sm">Belum ada tiket yang tersedia.</div>;
+    return <div className="text-zinc-500 p-4 text-center rounded-2xl bg-white text-sm">Belum ada tiket yang tersedia.</div>;
   }
 
   return (
-    <div className="space-y-6 text-zinc-900">
+    <div className="space-y-4 text-zinc-900">
       {/* Ticket List */}
       <div className="space-y-3">
         {ticketTypes.map(ticket => {
@@ -156,7 +156,7 @@ export function TicketSelector({ ticketTypes, eventId, onSelect }: TicketSelecto
           const desc = getPgText(ticket.description);
 
           return (
-            <div key={ticket.id} className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 bg-zinc-50/80 rounded-2xl border border-zinc-200 hover:border-zinc-300 transition-colors">
+            <div key={ticket.id} className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 bg-white rounded-2xl">
               <div className="mb-3 sm:mb-0">
                 <h4 className="text-base font-bold text-zinc-950">{ticket.name}</h4>
                 {desc && <p className="text-xs text-zinc-500 mt-0.5 line-clamp-1">{desc}</p>}
@@ -172,7 +172,7 @@ export function TicketSelector({ ticketTypes, eventId, onSelect }: TicketSelecto
                 <button
                   onClick={() => handleQuantityChange(ticket.id, -1, quota)}
                   disabled={qty === 0 || !isAvailable}
-                  className="w-8 h-8 rounded-full bg-zinc-200 text-zinc-800 flex items-center justify-center disabled:opacity-30 hover:bg-zinc-950 hover:text-white transition-colors font-bold text-base"
+                  className="w-8 h-8 rounded-full bg-zinc-100 text-zinc-800 flex items-center justify-center disabled:opacity-30 hover:bg-zinc-950 hover:text-white transition-colors font-bold text-base"
                 >
                   -
                 </button>
@@ -180,7 +180,7 @@ export function TicketSelector({ ticketTypes, eventId, onSelect }: TicketSelecto
                 <button
                   onClick={() => handleQuantityChange(ticket.id, 1, quota)}
                   disabled={qty >= quota || qty >= 10 || !isAvailable}
-                  className="w-8 h-8 rounded-full bg-zinc-200 text-zinc-800 flex items-center justify-center disabled:opacity-30 hover:bg-zinc-950 hover:text-white transition-colors font-bold text-base"
+                  className="w-8 h-8 rounded-full bg-zinc-100 text-zinc-800 flex items-center justify-center disabled:opacity-30 hover:bg-zinc-950 hover:text-white transition-colors font-bold text-base"
                 >
                   +
                 </button>
@@ -192,14 +192,14 @@ export function TicketSelector({ ticketTypes, eventId, onSelect }: TicketSelecto
 
       {/* Promo Code Section */}
       {subtotalPrice > 0 && (
-        <div className="p-4 bg-zinc-50/70 rounded-2xl border border-zinc-200 space-y-3">
+        <div className="p-4 bg-white rounded-2xl space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1.5 text-xs font-bold text-zinc-800">
               <Tag className="h-3.5 w-3.5 text-zinc-600" />
               <span>Kupon Promo & Diskon</span>
             </div>
             {appliedPromo && (
-              <span className="text-[11px] text-emerald-700 font-bold bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+              <span className="text-[11px] text-emerald-700 font-bold bg-emerald-50 px-2.5 py-0.5 rounded-full">
                 PROMO AKTIF
               </span>
             )}
@@ -215,16 +215,15 @@ export function TicketSelector({ ticketTypes, eventId, onSelect }: TicketSelecto
                 placeholder="Contoh: ENTRA20, FESTIVAL50"
                 aria-label="Kode kupon promo"
                 disabled={appliedPromo !== null || promoLoading}
-                className="w-full px-3.5 py-2 bg-white border border-zinc-200 rounded-full text-xs text-zinc-900 font-mono uppercase focus:outline-none focus:ring-0 disabled:opacity-60"
+                className="w-full px-3.5 py-2 bg-zinc-100 rounded-full text-xs text-zinc-900 font-mono uppercase focus:outline-none disabled:opacity-60 border-none"
               />
             </div>
             {appliedPromo ? (
               <Button
                 type="button"
-                variant="outline"
                 size="sm"
                 onClick={handleRemovePromo}
-                className="text-xs text-rose-600 border-rose-200 hover:bg-rose-50 rounded-full"
+                className="text-xs text-rose-600 bg-rose-50 hover:bg-rose-100 rounded-full border-none"
               >
                 <X className="h-3.5 w-3.5 mr-1" />
                 Hapus
@@ -235,7 +234,7 @@ export function TicketSelector({ ticketTypes, eventId, onSelect }: TicketSelecto
                 size="sm"
                 onClick={() => handleApplyPromo()}
                 disabled={promoLoading || !promoInput.trim()}
-                className="bg-zinc-950 hover:bg-zinc-800 text-white text-xs font-semibold px-4 rounded-full"
+                className="bg-zinc-950 hover:bg-zinc-800 text-white text-xs font-semibold px-4 rounded-full border-none"
               >
                 {promoLoading ? 'Cek...' : 'Terapkan'}
               </Button>
@@ -244,7 +243,7 @@ export function TicketSelector({ ticketTypes, eventId, onSelect }: TicketSelecto
 
           {/* Applied Promo Banner */}
           {appliedPromo && (
-            <div className="p-2.5 bg-emerald-50 border border-emerald-200 rounded-xl flex items-start gap-2 text-xs text-emerald-800">
+            <div className="p-2.5 bg-emerald-50 rounded-xl flex items-start gap-2 text-xs text-emerald-800">
               <Check className="h-4 w-4 text-emerald-600 flex-shrink-0 mt-0.5" />
               <div>
                 <p className="font-bold">{appliedPromo.message}</p>
@@ -267,7 +266,7 @@ export function TicketSelector({ ticketTypes, eventId, onSelect }: TicketSelecto
                     setPromoInput(code);
                     handleApplyPromo(code);
                   }}
-                  className="px-2.5 py-0.5 bg-white hover:bg-zinc-100 text-zinc-700 border border-zinc-200 rounded-full text-[10px] font-mono font-semibold transition-colors"
+                  className="px-2.5 py-0.5 bg-zinc-100 hover:bg-zinc-200 text-zinc-700 rounded-full text-[10px] font-mono font-semibold transition-colors border-none"
                 >
                   {code}
                 </button>
@@ -278,7 +277,7 @@ export function TicketSelector({ ticketTypes, eventId, onSelect }: TicketSelecto
       )}
 
       {/* Checkout Summary & Action */}
-      <div className="pt-3 border-t border-zinc-200 space-y-3">
+      <div className="pt-2 space-y-3">
         <div className="space-y-1.5 text-xs text-zinc-500">
           <div className="flex justify-between items-center">
             <span>Subtotal Tiket ({totalTickets} tiket)</span>
@@ -295,7 +294,7 @@ export function TicketSelector({ ticketTypes, eventId, onSelect }: TicketSelecto
             </div>
           )}
 
-          <div className="flex justify-between items-center pt-2 border-t border-zinc-100 text-sm">
+          <div className="flex justify-between items-center pt-2 text-sm">
             <span className="text-zinc-800 font-bold">Total Pembayaran</span>
             <span className="text-2xl font-black text-zinc-950 font-mono">
               {formatCurrency(finalPrice)}
@@ -306,7 +305,7 @@ export function TicketSelector({ ticketTypes, eventId, onSelect }: TicketSelecto
         <Button 
           variant="primary" 
           size="lg" 
-          className="w-full bg-zinc-950 hover:bg-zinc-800 text-white font-semibold py-3.5 rounded-full text-base shadow-sm"
+          className="w-full bg-zinc-950 hover:bg-zinc-800 text-white font-semibold py-3.5 rounded-full text-base border-none"
           disabled={totalTickets === 0}
           onClick={handleCheckout}
         >

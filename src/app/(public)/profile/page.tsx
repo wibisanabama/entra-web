@@ -27,7 +27,10 @@ import {
   ArrowRight,
   Mail,
   Phone,
-  Lock
+  Lock,
+  Eye,
+  EyeOff,
+  KeyRound
 } from 'lucide-react';
 
 export default function ProfilePage() {
@@ -49,6 +52,15 @@ export default function ProfilePage() {
   // Password reset request state
   const [isRequestingReset, setIsRequestingReset] = useState(false);
   const [resetRequested, setResetRequested] = useState(false);
+
+  // Direct change password state
+  const [oldPassword, setOldPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showOldPassword, setShowOldPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -168,6 +180,40 @@ export default function ProfilePage() {
       toast.error(errMsg);
     } finally {
       setIsRequestingReset(false);
+    }
+  };
+
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!oldPassword || !newPassword || !confirmPassword) {
+      toast.error('Semua kolom kata sandi wajib diisi.');
+      return;
+    }
+    if (newPassword.length < 8) {
+      toast.error('Kata sandi baru minimal 8 karakter.');
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      toast.error('Konfirmasi kata sandi baru tidak cocok.');
+      return;
+    }
+
+    try {
+      setIsChangingPassword(true);
+      await authApi.post('/api/v1/auth/change-password', {
+        old_password: oldPassword,
+        new_password: newPassword,
+      });
+      toast.success('Kata sandi berhasil diperbarui.');
+      setOldPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+    } catch (error: unknown) {
+      console.error('Change password error:', error);
+      const errMsg = error instanceof Error ? error.message : 'Gagal memperbarui kata sandi.';
+      toast.error(errMsg);
+    } finally {
+      setIsChangingPassword(false);
     }
   };
 
@@ -490,6 +536,99 @@ export default function ProfilePage() {
                 Kelola kata sandi akun untuk memastikan keamanan akses transaksi dan tiket Anda.
               </p>
             </div>
+
+            {/* Direct Password Change Form */}
+            <form onSubmit={handleChangePassword} className="p-5 bg-gray-950 border border-gray-800 rounded-2xl space-y-4">
+              <div className="flex items-center gap-3 border-b border-gray-800 pb-3">
+                <div className="p-2.5 bg-violet-600/20 text-violet-400 rounded-xl">
+                  <KeyRound className="h-5 w-5" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-bold text-white">Ubah Kata Sandi Langsung</h3>
+                  <p className="text-xs text-gray-400">
+                    Masukkan kata sandi saat ini dan tentukan kata sandi baru Anda.
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <div>
+                  <label className="text-xs font-semibold text-gray-300 mb-1 block">Kata Sandi Saat Ini</label>
+                  <div className="relative">
+                    <input
+                      type={showOldPassword ? "text" : "password"}
+                      value={oldPassword}
+                      onChange={(e) => setOldPassword(e.target.value)}
+                      placeholder="Masukkan kata sandi lama"
+                      className="w-full bg-gray-900 border border-gray-800 rounded-xl px-3 py-2 text-sm text-white placeholder:text-gray-500 pr-10 focus:outline-none focus:border-violet-500"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowOldPassword(!showOldPassword)}
+                      className="absolute right-3 top-2.5 text-gray-400 hover:text-white"
+                      title={showOldPassword ? "Sembunyikan" : "Tampilkan"}
+                    >
+                      {showOldPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-xs font-semibold text-gray-300 mb-1 block">Kata Sandi Baru</label>
+                    <div className="relative">
+                      <input
+                        type={showNewPassword ? "text" : "password"}
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        placeholder="Minimal 8 karakter"
+                        className="w-full bg-gray-900 border border-gray-800 rounded-xl px-3 py-2 text-sm text-white placeholder:text-gray-500 pr-10 focus:outline-none focus:border-violet-500"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowNewPassword(!showNewPassword)}
+                        className="absolute right-3 top-2.5 text-gray-400 hover:text-white"
+                        title={showNewPassword ? "Sembunyikan" : "Tampilkan"}
+                      >
+                        {showNewPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      </button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-semibold text-gray-300 mb-1 block">Konfirmasi Kata Sandi Baru</label>
+                    <div className="relative">
+                      <input
+                        type={showConfirmPassword ? "text" : "password"}
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        placeholder="Ulangi kata sandi baru"
+                        className="w-full bg-gray-900 border border-gray-800 rounded-xl px-3 py-2 text-sm text-white placeholder:text-gray-500 pr-10 focus:outline-none focus:border-violet-500"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        className="absolute right-3 top-2.5 text-gray-400 hover:text-white"
+                        title={showConfirmPassword ? "Sembunyikan" : "Tampilkan"}
+                      >
+                        {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-1 flex justify-end">
+                <Button
+                  type="submit"
+                  disabled={isChangingPassword}
+                  className="bg-violet-600 hover:bg-violet-700 text-white font-bold text-xs py-2 px-4 rounded-xl flex items-center gap-2"
+                >
+                  <Lock className="h-3.5 w-3.5" />
+                  {isChangingPassword ? 'Memperbarui...' : 'Simpan Kata Sandi Baru'}
+                </Button>
+              </div>
+            </form>
 
             <div className="p-4 bg-gray-950 border border-gray-800 rounded-2xl space-y-3">
               <div className="flex items-start gap-3">

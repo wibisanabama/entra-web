@@ -87,7 +87,7 @@ export default function HomePage() {
             Temukan pengalaman nyata di sekitar Anda.
           </h1>
           <p className="mt-4 sm:mt-5 max-w-xl text-base sm:text-lg text-zinc-500 font-normal leading-relaxed">
-            Cari event, pilih tiket, lalu masuk dengan QR — praktis, aman, dan instan untuk semua pengunjung.
+            Cari event, pilih tiket, lalu masuk dengan QR. Praktis, aman, dan instan untuk semua pengunjung.
           </p>
           <div className="mt-7 sm:mt-8 flex flex-wrap items-center justify-center gap-3">
             <Link 

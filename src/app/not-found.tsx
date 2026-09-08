@@ -1,47 +1,102 @@
 import React from 'react';
 import Link from 'next/link';
-import { Button } from '@/components/ui/Button';
-import { Compass, Home, Search } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
+import { Navbar } from '@/components/layout/Navbar';
+import { Footer } from '@/components/layout/Footer';
 
 export default function NotFound() {
   return (
-    <div className="min-h-[75vh] flex items-center justify-center px-4 py-16">
-      <div className="max-w-md w-full text-center bg-gray-900 border border-gray-800 rounded-3xl p-8 shadow-2xl space-y-6">
-        <div className="w-16 h-16 bg-violet-500/10 border border-violet-500/20 text-violet-400 rounded-2xl flex items-center justify-center mx-auto shadow-lg shadow-violet-950/30">
-          <Compass className="h-8 w-8 animate-pulse" />
-        </div>
+    <div className="min-h-screen flex flex-col bg-white text-zinc-900">
+      <Navbar />
 
-        <div className="space-y-2">
-          <span className="text-xs font-bold uppercase tracking-widest text-violet-400 bg-violet-950/50 border border-violet-500/30 px-3 py-1 rounded-full inline-block">
-            404 NOT FOUND
-          </span>
-          <h1 className="text-3xl font-black text-white tracking-tight pt-1">
-            Halaman Tidak Ditemukan
+      <main className="flex-grow flex flex-col justify-center items-center px-6 sm:px-8 py-16 sm:py-24">
+        <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
+          {/* Status Badge */}
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-zinc-100 text-xs font-semibold text-zinc-600 mb-6">
+            <span className="w-1.5 h-1.5 rounded-full bg-zinc-400" />
+            <span>Error 404 &bull; Halaman Tidak Ditemukan</span>
+          </div>
+
+          {/* Heading */}
+          <h1 className="max-w-2xl text-4xl sm:text-5xl lg:text-[60px] font-semibold leading-[1.1] tracking-[-0.035em] text-zinc-950">
+            Halaman yang Anda cari tidak ada.
           </h1>
-          <p className="text-sm text-gray-400 leading-relaxed">
-            Halaman yang Anda tuju mungkin telah dipindahkan, dihapus, atau tautan yang Anda masukkan tidak valid.
+
+          {/* Description */}
+          <p className="mt-5 max-w-[540px] text-base sm:text-lg text-zinc-500 font-normal leading-relaxed">
+            Mungkin tautan yang Anda tuju sudah kadaluarsa, telah dipindahkan, atau alamat URL yang Anda masukkan salah.
           </p>
-        </div>
 
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
-          <Link href="/" className="w-full sm:w-auto">
-            <Button className="w-full bg-violet-600 hover:bg-violet-700 text-white font-bold text-xs py-2.5 px-5 rounded-xl flex items-center justify-center gap-2">
-              <Home className="h-4 w-4" />
-              Ke Beranda
-            </Button>
-          </Link>
-
-          <Link href="/events" className="w-full sm:w-auto">
-            <Button
-              variant="outline"
-              className="w-full text-gray-300 hover:text-white border-gray-800 text-xs py-2.5 px-5 rounded-xl flex items-center justify-center gap-2"
+          {/* Action CTA Buttons */}
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <Link
+              href="/"
+              className="inline-flex h-12 items-center justify-center rounded-full bg-zinc-950 px-7 text-[15px] font-semibold text-white hover:bg-zinc-800 transition-all shadow-xs active:scale-95 tracking-[-0.01em]"
             >
-              <Search className="h-4 w-4" />
-              Jelajahi Event
-            </Button>
+              Kembali ke beranda
+            </Link>
+            <Link
+              href="/events"
+              className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-zinc-200 bg-white px-7 text-[15px] font-semibold text-zinc-950 hover:bg-zinc-50 transition-all shadow-xs active:scale-95 tracking-[-0.01em]"
+            >
+              Jelajahi event <ArrowRight className="h-4 w-4 stroke-[2]" />
+            </Link>
+          </div>
+        </div>
+
+        {/* Quick Help Cards */}
+        <div className="mt-16 sm:mt-20 w-full max-w-4xl grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6">
+          <Link
+            href="/events"
+            className="group bg-zinc-100 hover:bg-zinc-200/70 transition-all active:scale-[0.99] rounded-3xl p-7 sm:p-8 flex flex-col justify-between text-left"
+          >
+            <div>
+              <span className="text-xs font-bold text-zinc-400 uppercase tracking-[0.18em]">01 &bull; Katalog</span>
+              <h3 className="mt-4 text-lg sm:text-xl font-bold text-zinc-950 flex items-center justify-between">
+                Jelajahi Event
+                <ArrowRight className="h-4 w-4 text-zinc-400 group-hover:text-zinc-950 group-hover:translate-x-0.5 transition-all" />
+              </h3>
+              <p className="mt-2 text-sm leading-6 text-zinc-500">
+                Temukan konser, festival musik, pameran, dan berbagai acara seru lainnya.
+              </p>
+            </div>
+          </Link>
+
+          <Link
+            href="/my-tickets"
+            className="group bg-zinc-100 hover:bg-zinc-200/70 transition-all active:scale-[0.99] rounded-3xl p-7 sm:p-8 flex flex-col justify-between text-left"
+          >
+            <div>
+              <span className="text-xs font-bold text-zinc-400 uppercase tracking-[0.18em]">02 &bull; Tiket</span>
+              <h3 className="mt-4 text-lg sm:text-xl font-bold text-zinc-950 flex items-center justify-between">
+                Tiket Saya
+                <ArrowRight className="h-4 w-4 text-zinc-400 group-hover:text-zinc-950 group-hover:translate-x-0.5 transition-all" />
+              </h3>
+              <p className="mt-2 text-sm leading-6 text-zinc-500">
+                Cek tiket aktif dan barcode digital Anda untuk kemudahan validasi di gate.
+              </p>
+            </div>
+          </Link>
+
+          <Link
+            href="/register"
+            className="group bg-zinc-100 hover:bg-zinc-200/70 transition-all active:scale-[0.99] rounded-3xl p-7 sm:p-8 flex flex-col justify-between text-left"
+          >
+            <div>
+              <span className="text-xs font-bold text-zinc-400 uppercase tracking-[0.18em]">03 &bull; Organizer</span>
+              <h3 className="mt-4 text-lg sm:text-xl font-bold text-zinc-950 flex items-center justify-between">
+                Buat Event
+                <ArrowRight className="h-4 w-4 text-zinc-400 group-hover:text-zinc-950 group-hover:translate-x-0.5 transition-all" />
+              </h3>
+              <p className="mt-2 text-sm leading-6 text-zinc-500">
+                Daftarkan diri Anda sebagai organizer dan kelola penjualan tiket secara terintegrasi.
+              </p>
+            </div>
           </Link>
         </div>
-      </div>
+      </main>
+
+      <Footer />
     </div>
   );
 }

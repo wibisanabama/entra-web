@@ -27,7 +27,7 @@ export function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 w-full pt-3 sm:pt-5 pb-2 px-4 flex justify-center pointer-events-none">
-      <div className="pointer-events-auto w-full max-w-[480px] h-11 sm:h-12 bg-[#f3f3f3]/95 backdrop-blur-md rounded-full px-5 sm:px-6 flex items-center justify-between transition-all">
+      <div className="pointer-events-auto w-full max-w-[480px] h-11 sm:h-12 bg-[#f3f3f3]/95 backdrop-blur-md rounded-full pl-5 sm:pl-6 pr-1.5 sm:pr-2 flex items-center justify-between transition-all">
         
         {/* Left: Black Entra Logo */}
         <Link 
@@ -157,7 +157,7 @@ export function Navbar() {
             </div>
           </div>
         ) : (
-          <nav className="flex items-center gap-5 sm:gap-7">
+          <nav className="flex items-center gap-3.5 sm:gap-4">
             <Link 
               href="/events" 
               className={`text-xs sm:text-sm transition-colors ${
@@ -180,11 +180,7 @@ export function Navbar() {
             </Link>
             <Link 
               href="/register" 
-              className={`text-xs sm:text-sm transition-colors ${
-                pathname === '/register' 
-                  ? 'text-zinc-950 font-semibold' 
-                  : 'text-zinc-800 hover:text-zinc-950 font-medium'
-              }`}
+              className="inline-flex items-center justify-center h-8 px-4 rounded-full bg-zinc-950 hover:bg-zinc-800 text-white text-xs sm:text-[13px] font-semibold transition-all shadow-xs active:scale-95"
             >
               Daftar
             </Link>

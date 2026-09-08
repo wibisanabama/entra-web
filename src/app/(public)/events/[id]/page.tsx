@@ -14,6 +14,7 @@ import { id as localeId } from 'date-fns/locale';
 import { useAuth } from '@/providers/auth-provider';
 import { getPgText } from '@/lib/utils';
 import { Event as EventType, Category, Venue, User, TicketType } from '@/types';
+import { toast } from 'sonner';
 
 interface EventDetail {
   id: string;
@@ -42,6 +43,60 @@ export default function EventDetailPage() {
   const [loading, setLoading] = useState(true);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [modalData, setModalData] = useState<{isOpen: boolean, title: string, message: string, type: 'success' | 'error'}>({isOpen: false, title: '', message: '', type: 'success'});
+  const [createdOrderId, setCreatedOrderId] = useState<string | null>(null);
+  const [isPaying, setIsPaying] = useState(false);
+
+  const handlePayOrder = async (orderId: string) => {
+    try {
+      setIsPaying(true);
+      const res = await ticketApi.post<{ token?: string } | string>(`/api/v1/tickets/orders/${orderId}/pay`);
+      const token = typeof res.data === 'string' ? res.data : res.data?.token;
+
+      if (!token) {
+        throw new Error('Token pembayaran tidak ditemukan.');
+      }
+
+      // If mock token or no snap instance, trigger simulate
+      if (token.startsWith('MOCK_') || typeof window === 'undefined' || !window.snap) {
+        try {
+          await ticketApi.post(`/api/v1/tickets/orders/${orderId}/simulate`);
+          toast.success('Pembayaran simulasi dev berhasil! Tiket Anda telah aktif.');
+          router.push('/my-tickets');
+          return;
+        } catch {
+          // If simulate fails, fall through
+        }
+      }
+
+      if (typeof window !== 'undefined' && window.snap) {
+        window.snap.pay(token, {
+          onSuccess: () => {
+            toast.success('Pembayaran berhasil! E-Ticket Anda telah aktif.');
+            router.push('/my-tickets');
+          },
+          onPending: () => {
+            toast.info('Menunggu penyelesaian pembayaran.');
+            router.push('/my-tickets');
+          },
+          onError: () => {
+            toast.error('Pembayaran gagal atau dibatalkan.');
+          },
+          onClose: () => {
+            toast.info('Jendela pembayaran ditutup. Anda dapat membayar di halaman Tiket Saya.');
+            router.push('/my-tickets');
+          },
+        });
+      } else {
+        toast.info('Silakan lanjutkan pembayaran di halaman Tiket Saya.');
+        router.push('/my-tickets');
+      }
+    } catch (err: unknown) {
+      const errMsg = err instanceof Error ? err.message : 'Gagal memproses pembayaran';
+      toast.error(errMsg);
+    } finally {
+      setIsPaying(false);
+    }
+  };
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -241,6 +296,7 @@ export default function EventDetailPage() {
                           return sum + (t?.price || 0) * item.quantity;
                         }, 0);
 
+                        let lastOrderId = '';
                         for (const item of selected) {
                           const ticketData = event.tickets.find((t) => t.id === item.ticketTypeId);
                           const basePrice = ticketData?.price || 0;
@@ -252,20 +308,25 @@ export default function EventDetailPage() {
                             unitPrice = item.quantity > 0 ? Math.round((finalItemSubtotal / item.quantity) * 100) / 100 : basePrice;
                           }
 
-                          await ticketApi.post('/api/v1/tickets/orders', {
+                          const orderRes = await ticketApi.post<{ id: string }>('/api/v1/tickets/orders', {
                             event_id: event.id,
                             ticket_type_id: item.ticketTypeId,
                             quantity: item.quantity,
                             price: unitPrice
                           });
+                          if (orderRes?.data?.id) {
+                            lastOrderId = orderRes.data.id;
+                          }
                         }
+
+                        setCreatedOrderId(lastOrderId);
 
                         setModalData({
                           isOpen: true,
                           title: 'Pemesanan Berhasil',
                           message: appliedPromo 
-                            ? `Pesanan tiket berhasil dibuat dengan kupon ${appliedPromo.promoCode}! Silakan selesaikan pembayaran di halaman Tiket Saya.`
-                            : 'Pesanan tiket Anda berhasil dibuat dan berstatus PENDING. Silakan selesaikan pembayaran di halaman Tiket Saya.',
+                            ? `Pesanan tiket berhasil dibuat dengan kupon ${appliedPromo.promoCode}! Anda dapat langsung membayar sekarang atau melanjutkannya di halaman Tiket Saya.`
+                            : 'Pesanan tiket Anda berhasil dibuat dan berstatus PENDING. Silakan selesaikan pembayaran untuk menerbitkan tiket.',
                           type: 'success'
                         });
                       } catch (error: unknown) {
@@ -295,7 +356,7 @@ export default function EventDetailPage() {
         onClose={() => {
           setModalData({...modalData, isOpen: false});
           if (modalData.type === 'success') {
-            router.push('/profile');
+            router.push('/my-tickets');
           }
         }} 
         title={modalData.title}
@@ -313,17 +374,36 @@ export default function EventDetailPage() {
             )}
           </div>
           <p className="text-gray-300 text-lg mb-8">{modalData.message}</p>
-          <Button 
-            className="w-full bg-[#7C3AED] hover:bg-[#6D28D9] text-white"
-            onClick={() => {
-              setModalData({...modalData, isOpen: false});
-              if (modalData.type === 'success') {
-                router.push('/profile');
-              }
-            }}
-          >
-            {modalData.type === 'success' ? 'Lanjut ke Pembayaran' : 'Tutup'}
-          </Button>
+          {modalData.type === 'success' ? (
+            <div className="space-y-3">
+              {createdOrderId && (
+                <Button 
+                  className="w-full bg-[#7C3AED] hover:bg-[#6D28D9] text-white font-bold py-3"
+                  onClick={() => handlePayOrder(createdOrderId)}
+                  disabled={isPaying}
+                >
+                  {isPaying ? 'Menghubungkan Gateway...' : 'Bayar Sekarang Langsung'}
+                </Button>
+              )}
+              <Button 
+                variant="outline"
+                className="w-full border-gray-700 text-gray-300 hover:bg-gray-800"
+                onClick={() => {
+                  setModalData({...modalData, isOpen: false});
+                  router.push('/my-tickets');
+                }}
+              >
+                Lihat di Tiket Saya
+              </Button>
+            </div>
+          ) : (
+            <Button 
+              className="w-full bg-gray-800 hover:bg-gray-700 text-white"
+              onClick={() => setModalData({...modalData, isOpen: false})}
+            >
+              Tutup
+            </Button>
+          )}
         </div>
       </Modal>
     </div>

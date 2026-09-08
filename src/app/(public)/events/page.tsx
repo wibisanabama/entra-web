@@ -258,12 +258,12 @@ export default function EventsPage() {
         ) : filteredEvents.length > 0 ? (
           filteredEvents.map((event) => <EventCard key={event.id} event={event} />)
         ) : (
-          <div className="col-span-full flex flex-col items-center justify-center min-h-[320px] text-center p-8 bg-white rounded-3xl space-y-4">
-            <div>
+          <div className="col-span-full flex flex-col items-center justify-center h-[352px] lg:h-[371px] xl:h-[312px] text-center p-6 sm:p-8 bg-white rounded-2xl">
+            <div className="max-w-md mx-auto">
               <h3 className="text-lg font-bold text-zinc-950 mb-1">
                 {searchQuery ? 'Tidak Ada Event yang Sesuai' : 'Tidak Ada Event untuk Kategori Ini'}
               </h3>
-              <p className="text-zinc-500 text-xs max-w-md mx-auto">
+              <p className="text-zinc-500 text-xs">
                 {searchQuery
                   ? `Tidak menemukan event dengan kata kunci "${searchQuery}". Coba gunakan kata kunci lain atau reset filter.`
                   : 'Coba pilih kategori lain atau kembali ke semua event.'}

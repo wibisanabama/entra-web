@@ -32,13 +32,13 @@ export function Navbar() {
         {/* Left: Black Entra Logo */}
         <Link 
           href="/" 
-          className="flex items-center select-none group"
+          className="flex items-center select-none"
           aria-label="Entra Home"
         >
           <img 
             src="/assets/black-logo.png" 
             alt="Entra" 
-            className="h-7 sm:h-8 w-auto object-contain transition-transform group-hover:scale-105" 
+            className="h-7 sm:h-8 w-auto object-contain" 
           />
         </Link>
 

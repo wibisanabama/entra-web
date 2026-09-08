@@ -6,14 +6,12 @@ import { EventCard } from '@/components/features/EventCard';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { eventApi } from '@/lib/api';
 import { Event as EventType, Category, Venue } from '@/types';
-import { ArrowRight, Compass, Music, Laptop, Briefcase, Users, Palette, Utensils, Trophy, Globe2, Ticket } from 'lucide-react';
-import { BrandLogo } from '@/components/brand/BrandLogo';
+import { ArrowRight, Compass, Music, Laptop, Briefcase, Users, Palette, Utensils, Trophy } from 'lucide-react';
 
 export default function HomePage() {
   const [events, setEvents] = useState<EventType[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [selectedFilter, setSelectedFilter] = useState<'all' | 'online' | 'free'>('all');
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
 
@@ -70,23 +68,14 @@ export default function HomePage() {
     }
   };
 
-  // Filter events by category and status
+  // Filter events by category
   const filteredEvents = events.filter((ev) => {
     const matchCategory =
       selectedCategory === 'all' ||
       ev.category_id === selectedCategory ||
       ev.category?.id === selectedCategory ||
       ev.category?.name?.toLowerCase().replace(/\s+/g, '-') === selectedCategory;
-    if (!matchCategory) return false;
-
-    if (selectedFilter === 'online') {
-      return ev.is_online === true;
-    }
-    if (selectedFilter === 'free') {
-      const minPrice = ev.ticket_types?.length ? Math.min(...ev.ticket_types.map(t => Number(t.price) || 0)) : null;
-      return minPrice === 0;
-    }
-    return true;
+    return matchCategory;
   });
 
   return (
@@ -94,8 +83,6 @@ export default function HomePage() {
       
       <section className="border-b border-zinc-200 px-4 py-20 sm:py-28 lg:py-36">
         <div className="mx-auto flex max-w-4xl flex-col items-center text-center">
-          <BrandLogo className="mb-8" markClassName="h-16 w-16 shadow-[0_8px_30px_rgba(0,0,0,0.12)]" showWordmark={false} />
-          <p className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-zinc-500">Event yang layak dikenang</p>
           <h1 className="max-w-4xl text-4xl font-black leading-[1.02] tracking-[-0.055em] text-zinc-950 sm:text-6xl lg:text-7xl">
             Temukan pengalaman nyata di sekitar Anda.
           </h1>
@@ -109,28 +96,6 @@ export default function HomePage() {
             <Link href="/register" className="inline-flex h-12 items-center justify-center rounded-full border border-zinc-200 bg-white px-7 text-sm font-semibold text-zinc-950 hover:bg-zinc-50">
               Mulai sebagai organizer
             </Link>
-          </div>
-          <div className="mt-10 flex items-center gap-2">
-            <button
-              onClick={() => setSelectedFilter(selectedFilter === 'online' ? 'all' : 'online')}
-              className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer ${
-                selectedFilter === 'online'
-                  ? 'bg-zinc-950 text-white shadow-xs'
-                  : 'bg-white text-zinc-600 border border-zinc-200 hover:bg-zinc-50 hover:text-zinc-950'
-              }`}
-            >
-              <span className="inline-flex items-center gap-1.5"><Globe2 className="h-3.5 w-3.5" /> Online saja</span>
-            </button>
-            <button
-              onClick={() => setSelectedFilter(selectedFilter === 'free' ? 'all' : 'free')}
-              className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer ${
-                selectedFilter === 'free'
-                  ? 'bg-zinc-950 text-white shadow-xs'
-                  : 'bg-white text-zinc-600 border border-zinc-200 hover:bg-zinc-50 hover:text-zinc-950'
-              }`}
-            >
-              <span className="inline-flex items-center gap-1.5"><Ticket className="h-3.5 w-3.5" /> Gratis</span>
-            </button>
           </div>
         </div>
       </section>
@@ -216,7 +181,7 @@ export default function HomePage() {
                 <p className="text-sm font-semibold text-zinc-800">Tidak ada event untuk filter ini</p>
                 <p className="text-xs text-zinc-500 mt-1">Coba pilih kategori lain atau reset filter pilihan Anda.</p>
                 <button
-                  onClick={() => { setSelectedCategory('all'); setSelectedFilter('all'); }}
+                  onClick={() => setSelectedCategory('all')}
                   className="mt-4 px-4 py-1.5 rounded-full text-xs font-semibold bg-zinc-950 text-white hover:bg-zinc-800 transition-colors cursor-pointer"
                 >
                   Reset Filter

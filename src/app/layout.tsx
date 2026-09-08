@@ -18,11 +18,11 @@ export const metadata: Metadata = {
   description: "Your modern and reliable event ticketing platform.",
   icons: {
     icon: [
-      { url: "/assets/icon.png", type: "image/png" },
+      { url: "/assets/white-icon.png", type: "image/png" },
       { url: "/favicon.ico", sizes: "any" },
     ],
-    shortcut: "/assets/icon.png",
-    apple: "/assets/icon.png",
+    shortcut: "/assets/white-icon.png",
+    apple: "/assets/white-icon.png",
   },
 };
 

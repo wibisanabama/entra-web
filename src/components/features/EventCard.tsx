@@ -36,15 +36,15 @@ export function EventCard({ event }: EventCardProps) {
   const banner = getPgText(event.banner_url);
 
   return (
-    <Link href={`/events/${event.id}`} className="block h-full group">
-      <div className="h-full flex flex-col rounded-2xl bg-zinc-100 p-3 hover:bg-zinc-200/70 transition-colors">
+    <Link href={`/events/${event.id}`} className="block h-full">
+      <div className="h-full flex flex-col rounded-2xl bg-zinc-100 p-3">
         {/* Banner Thumbnail (16:10 aspect ratio) */}
         <div className="relative aspect-[16/10] w-full overflow-hidden rounded-xl bg-zinc-200/80">
           {banner ? (
             <img 
               src={banner} 
               alt={event.title} 
-              className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300"
+              className="w-full h-full object-cover"
             />
           ) : (
             <div className="w-full h-full bg-zinc-200/80 flex items-center justify-center text-zinc-400">

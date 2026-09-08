@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/Button';
 import { eventApi } from '@/lib/api';
 import { toast } from 'sonner';
 import { getPgText } from '@/lib/utils';
+import { MediaUploader } from '@/components/features/MediaUploader';
 
 export interface EventFormProps {
   initialData?: Event;
@@ -226,14 +227,52 @@ export function EventForm({ initialData, onSubmit, onCancel, isLoading = false }
           </div>
         )}
         
-        <Input
-          label="URL Banner"
-          name="banner_url"
-          type="url"
-          value={formData.banner_url || ''}
-          onChange={handleChange}
-          placeholder="https://... atau gunakan uploader"
-        />
+        <div className="w-full space-y-2">
+          <label className="block text-sm font-medium text-gray-200">
+            Banner Event
+          </label>
+          
+          {formData.banner_url ? (
+            <div className="relative rounded-xl overflow-hidden border border-gray-700 bg-gray-900 group">
+              <img
+                src={formData.banner_url}
+                alt="Event Banner Preview"
+                className="w-full h-48 sm:h-64 object-cover"
+              />
+              <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  className="bg-black/70 border-gray-600 text-white hover:bg-black"
+                  onClick={() => setFormData(prev => ({ ...prev, banner_url: '' }))}
+                >
+                  Hapus / Ganti Banner
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              <MediaUploader
+                onUploadComplete={(url) => {
+                  setFormData(prev => ({ ...prev, banner_url: url }));
+                  toast.success('Banner berhasil diunggah!');
+                }}
+              />
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-gray-400 whitespace-nowrap">Atau masukkan URL:</span>
+                <Input
+                  name="banner_url"
+                  type="url"
+                  value={formData.banner_url || ''}
+                  onChange={handleChange}
+                  placeholder="https://..."
+                  className="text-xs"
+                />
+              </div>
+            </div>
+          )}
+        </div>
 
         <div className="w-full">
           <label className="block text-sm font-medium text-gray-200 mb-1">

@@ -77,11 +77,11 @@ export function Navbar() {
               </button>
 
               {isAvatarDropdownOpen && (
-                <div className="absolute right-0 mt-3 w-56 rounded-2xl shadow-xl bg-white border border-zinc-200 py-1.5 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+                <div className="absolute right-0 mt-3 w-56 rounded-2xl shadow-xl bg-white border-0 py-1.5 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-150">
                   <div className="px-4 py-2.5 border-b border-zinc-100">
                     <p className="text-xs font-medium text-zinc-500">Masuk sebagai</p>
                     <p className="text-sm font-semibold text-zinc-950 truncate">{user.full_name || user.email}</p>
-                    <span className="inline-block mt-1 px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-zinc-100 text-zinc-700 border border-zinc-200">
+                    <span className="inline-block mt-1 px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-zinc-100 text-zinc-700 border-0">
                       {user.role}
                     </span>
                   </div>

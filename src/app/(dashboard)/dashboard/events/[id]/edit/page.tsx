@@ -5,7 +5,7 @@ import { useRouter, useParams } from 'next/navigation';
 import { EventForm } from '@/components/features/EventForm';
 import { Event } from '@/types';
 import { eventApi } from '@/lib/api';
-import { toast } from 'sonner';
+import { toast } from '@/lib/toast';
 
 export default function EditEventPage() {
   const router = useRouter();

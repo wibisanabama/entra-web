@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/Button';
 import { ticketApi, eventApi } from '@/lib/api';
 import { formatCurrency } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/Skeleton';
-import { toast } from 'sonner';
+import { toast } from '@/lib/toast';
 import { Wallet } from 'lucide-react';
 import { Event as EventType } from '@/types';
 

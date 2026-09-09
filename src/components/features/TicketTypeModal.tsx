@@ -3,7 +3,7 @@ import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { TicketType } from '@/types';
-import { toast } from 'sonner';
+import { toast } from '@/lib/toast';
 
 interface TicketTypeModalProps {
   isOpen: boolean;

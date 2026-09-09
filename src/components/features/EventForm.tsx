@@ -5,7 +5,7 @@ import { Event, Category, Venue } from '@/types';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { eventApi } from '@/lib/api';
-import { toast } from 'sonner';
+import { toast } from '@/lib/toast';
 import { getPgText } from '@/lib/utils';
 import { MediaUploader } from '@/components/features/MediaUploader';
 

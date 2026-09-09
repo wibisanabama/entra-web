@@ -9,7 +9,7 @@ import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Skeleton } from '@/components/ui/Skeleton';
-import { toast } from 'sonner';
+import { toast } from '@/lib/toast';
 import {
   User as UserIcon,
   Shield,

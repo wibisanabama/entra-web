@@ -27,7 +27,7 @@ import {
   Landmark,
   ArrowDownToLine
 } from 'lucide-react';
-import { toast } from 'sonner';
+import { toast } from '@/lib/toast';
 
 const PRESET_TOPUP_AMOUNTS = [25000, 50000, 100000, 200000, 500000];
 

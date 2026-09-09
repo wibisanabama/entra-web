@@ -5,7 +5,7 @@ import { MediaUploader } from '@/components/features/MediaUploader';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { storageApi } from '@/lib/api';
-import { toast } from 'sonner';
+import { toast } from '@/lib/toast';
 import { MediaFile } from '@/types';
 
 export default function DashboardMediaPage() {

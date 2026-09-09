@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { EventForm } from '@/components/features/EventForm';
 import { eventApi } from '@/lib/api';
-import { toast } from 'sonner';
+import { toast } from '@/lib/toast';
 
 export default function CreateEventPage() {
   const router = useRouter();

@@ -9,7 +9,7 @@ import { Skeleton } from '@/components/ui/Skeleton';
 import { ticketApi } from '@/lib/api';
 import { formatCurrency, formatDate, getPgText } from '@/lib/utils';
 import { Withdrawal } from '@/types';
-import { toast } from 'sonner';
+import { toast } from '@/lib/toast';
 import {
   ShieldCheck,
   Building2,

@@ -9,7 +9,7 @@ import { Skeleton } from '@/components/ui/Skeleton';
 import { ticketApi, eventApi } from '@/lib/api';
 import { exportOrdersToCsv } from '@/lib/export-csv';
 import { formatCurrency, formatDate } from '@/lib/utils';
-import { toast } from 'sonner';
+import { toast } from '@/lib/toast';
 import {
   Download,
   Search,

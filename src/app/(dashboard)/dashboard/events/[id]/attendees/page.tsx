@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/Badge';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { ticketApi, authApi, eventApi } from '@/lib/api';
 import { exportAttendeesToCsv } from '@/lib/export-csv';
-import { toast } from 'sonner';
+import { toast } from '@/lib/toast';
 import {
   Download,
   Search,

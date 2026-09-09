@@ -83,6 +83,19 @@ button,
   box-shadow: none !important;
 }
 
+/* Strict Zero-Toast / Zero-Popup Notification Policy */
+[data-sonner-toaster],
+[data-sonner-toast],
+.toaster,
+.toast,
+[role="status"][class*="toast"],
+[role="alert"][class*="toast"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
 :focus-visible {
   outline: 2px solid var(--ring);
   outline-offset: 2px;

@@ -20,7 +20,7 @@ import {
   AlertCircle,
   MapPinned
 } from 'lucide-react';
-import { toast } from 'sonner';
+import { toast } from '@/lib/toast';
 
 interface VenueFormData {
   id?: string;

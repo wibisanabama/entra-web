@@ -17,7 +17,7 @@ import {
   Ticket as TicketIcon,
   SendHorizontal
 } from 'lucide-react';
-import { toast } from 'sonner';
+import { toast } from '@/lib/toast';
 
 interface ETicketModalProps {
   isOpen: boolean;

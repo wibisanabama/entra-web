@@ -10,7 +10,7 @@ import { TicketTypeModal } from '@/components/features/TicketTypeModal';
 import { TicketType, Event } from '@/types';
 import { eventApi } from '@/lib/api';
 import { formatCurrency } from '@/lib/utils';
-import { toast } from 'sonner';
+import { toast } from '@/lib/toast';
 
 export default function EventTicketsPage() {
   const router = useRouter();

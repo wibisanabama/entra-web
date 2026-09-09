@@ -24,6 +24,7 @@ import {
   SendHorizontal,
   Printer,
   FileText,
+  AlertCircle,
   X
 } from 'lucide-react';
 import { toast } from 'sonner';
@@ -62,6 +63,7 @@ export default function MyTicketsPage() {
   const [recipientEmail, setRecipientEmail] = useState('');
   const [recipientName, setRecipientName] = useState('');
   const [transferLoading, setTransferLoading] = useState(false);
+  const [transferError, setTransferError] = useState<string | null>(null);
 
   // Invoice Modal State
   const [selectedOrderForInvoice, setSelectedOrderForInvoice] = useState<Order | null>(null);
@@ -181,9 +183,12 @@ export default function MyTicketsPage() {
 
   const handleTransferSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setTransferError(null);
     if (!transferTicket) return;
     if (!recipientEmail.trim() || !recipientEmail.includes('@')) {
-      toast.error('Masukkan alamat email penerima yang valid');
+      const msg = 'Masukkan alamat email penerima yang valid';
+      setTransferError(msg);
+      toast.error(msg);
       return;
     }
 
@@ -199,13 +204,14 @@ export default function MyTicketsPage() {
       setTransferTicket(null);
       setRecipientEmail('');
       setRecipientName('');
+      setTransferError(null);
       fetchUserTicketsAndOrders();
     } catch (error: any) {
-      console.error('Transfer error:', error);
       const errMsg =
         error?.response?.data?.message ||
         error?.response?.data?.error ||
         (error instanceof Error ? error.message : 'Gagal mentransfer tiket.');
+      setTransferError(errMsg);
       toast.error(errMsg);
     } finally {
       setTransferLoading(false);
@@ -658,6 +664,7 @@ export default function MyTicketsPage() {
                             variant="outline"
                             onClick={() => {
                               setTransferTicket(t);
+                              setTransferError(null);
                               setIsTransferOpen(true);
                             }}
                             className="bg-white hover:bg-zinc-200 text-zinc-800 text-xs px-3.5 py-2.5 rounded-full border-0 shadow-none font-semibold"
@@ -812,6 +819,7 @@ export default function MyTicketsPage() {
         ticket={selectedTicket}
         onOpenTransfer={(t) => {
           setTransferTicket(t);
+          setTransferError(null);
           setIsTransferOpen(true);
         }}
       />
@@ -843,6 +851,17 @@ export default function MyTicketsPage() {
               </div>
             </div>
 
+            {/* Error Feedback Banner */}
+            {transferError && (
+              <div className="p-3.5 bg-rose-50 border border-rose-200/80 text-rose-800 rounded-2xl text-xs flex items-start gap-2.5 animate-in fade-in duration-150">
+                <AlertCircle className="h-4 w-4 shrink-0 text-rose-600 mt-0.5" />
+                <div className="space-y-0.5">
+                  <p className="font-bold text-rose-950">Gagal Mentransfer Tiket</p>
+                  <p className="text-rose-700 leading-relaxed">{transferError}</p>
+                </div>
+              </div>
+            )}
+
             {/* Recipient Email Input */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">
@@ -851,7 +870,10 @@ export default function MyTicketsPage() {
               <input
                 type="email"
                 value={recipientEmail}
-                onChange={(e) => setRecipientEmail(e.target.value)}
+                onChange={(e) => {
+                  setRecipientEmail(e.target.value);
+                  if (transferError) setTransferError(null);
+                }}
                 placeholder="nama@email.com"
                 className="w-full px-4 py-3 bg-zinc-100 rounded-full text-zinc-900 font-medium text-sm border-0 outline-none ring-0 focus:outline-none focus:ring-0 shadow-none placeholder-zinc-400"
                 required

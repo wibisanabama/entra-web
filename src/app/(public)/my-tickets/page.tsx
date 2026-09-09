@@ -23,7 +23,8 @@ import {
   ShoppingBag,
   SendHorizontal,
   Printer,
-  FileText
+  FileText,
+  X
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -502,16 +503,26 @@ export default function MyTicketsPage() {
               </button>
             </div>
 
-            <div className="relative w-full sm:w-72">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400 pointer-events-none" />
+            <div className="relative flex items-center p-1 sm:p-1.5 bg-zinc-200/80 rounded-full w-full sm:w-72">
+              <Search className="absolute left-3.5 sm:left-4 h-4 w-4 text-zinc-500 pointer-events-none" />
               <input
                 type="text"
                 placeholder="Cari event, kode tiket..."
                 aria-label="Cari event, kode tiket"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 bg-zinc-100 rounded-full text-xs text-zinc-900 placeholder-zinc-400 border-0 outline-none ring-0 focus:outline-none focus:ring-0 shadow-none font-medium"
+                className="w-full pl-8 sm:pl-9 pr-8 py-1.5 bg-transparent rounded-full text-xs font-medium text-zinc-950 placeholder-zinc-500 border-0 outline-none ring-0 focus:outline-none focus:ring-0 shadow-none"
               />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-2 p-1 text-zinc-400 hover:text-zinc-700 cursor-pointer rounded-full"
+                  aria-label="Hapus pencarian"
+                >
+                  <X className="h-3.5 w-3.5" />
+                </button>
+              )}
             </div>
           </div>
 

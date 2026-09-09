@@ -90,17 +90,17 @@ export function ETicketModal({ isOpen, onClose, ticket, onOpenTransfer }: ETicke
               </div>
             </div>
 
-            {/* Event Date, Time & Location Pill Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-5 p-3.5 bg-white/70 rounded-2xl border-0 text-xs text-zinc-600">
-              <div className="flex items-center gap-2 min-w-0" title={event?.start_date ? formatDate(event.start_date) : undefined}>
+            {/* Event Date, Time & Location Pill */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mt-5 px-4 sm:px-5 py-3 bg-white/70 rounded-2xl border-0 text-xs text-zinc-600">
+              <div className="flex items-center gap-2 flex-shrink-0" title={event?.start_date ? formatDate(event.start_date) : undefined}>
                 <Calendar className="h-4 w-4 text-zinc-500 flex-shrink-0" />
-                <span className="truncate">
+                <span>
                   {event?.start_date ? formatDate(event.start_date) : 'Waktu menyusul'}
                 </span>
               </div>
-              <div className="flex items-center gap-2 min-w-0" title={event?.start_date ? formatTime(event.start_date, event.end_date) : undefined}>
+              <div className="flex items-center gap-2 flex-shrink-0" title={event?.start_date ? formatTime(event.start_date, event.end_date) : undefined}>
                 <Clock className="h-4 w-4 text-zinc-500 flex-shrink-0" />
-                <span className="truncate">
+                <span>
                   {event?.start_date ? formatTime(event.start_date, event.end_date) : 'Waktu menyusul'}
                 </span>
               </div>

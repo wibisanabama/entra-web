@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useAuth } from '@/providers/auth-provider';
 import { ticketApi, eventApi } from '@/lib/api';
 import { EnrichedTicket, Order, Event as EventType, Ticket } from '@/types';
-import { formatCurrency, formatDate } from '@/lib/utils';
+import { formatCurrency, formatDate, formatTime } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { Modal } from '@/components/ui/Modal';
@@ -592,13 +592,23 @@ export default function MyTicketsPage() {
                       </h3>
 
                       <div className="space-y-1.5 text-xs text-zinc-500 pt-1">
-                        <div className="flex items-center gap-2">
-                          <Calendar className="h-3.5 w-3.5 text-zinc-400 flex-shrink-0" />
-                          <span>
-                            {t.event?.start_date ? formatDate(t.event.start_date) : 'Waktu menyusul'}
-                          </span>
+                        <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
+                          <div className="flex items-center gap-1.5">
+                            <Calendar className="h-3.5 w-3.5 text-zinc-400 flex-shrink-0" />
+                            <span>
+                              {t.event?.start_date ? formatDate(t.event.start_date) : 'Waktu menyusul'}
+                            </span>
+                          </div>
+                          {t.event?.start_date && (
+                            <div className="flex items-center gap-1.5">
+                              <Clock className="h-3.5 w-3.5 text-zinc-400 flex-shrink-0" />
+                              <span>
+                                {formatTime(t.event.start_date, t.event.end_date)}
+                              </span>
+                            </div>
+                          )}
                         </div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1.5">
                           <MapPin className="h-3.5 w-3.5 text-zinc-400 flex-shrink-0" />
                           <span className="truncate">
                             {t.event?.venue?.name || t.event?.venue?.address || 'Lokasi Acara'}

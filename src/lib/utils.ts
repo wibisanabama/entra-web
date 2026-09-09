@@ -18,6 +18,37 @@ export function formatDate(dateStr: string): string {
   }
 }
 
+export function formatTime(dateStr?: string, endDateStr?: string): string {
+  if (!dateStr) return '';
+  try {
+    const start = new Date(dateStr);
+    if (isNaN(start.getTime())) return '';
+    const startTime = new Intl.DateTimeFormat('id-ID', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    }).format(start).replace('.', ':');
+
+    if (endDateStr) {
+      const end = new Date(endDateStr);
+      if (!isNaN(end.getTime())) {
+        const endTime = new Intl.DateTimeFormat('id-ID', {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false,
+        }).format(end).replace('.', ':');
+        if (startTime !== endTime) {
+          return `${startTime} - ${endTime} WIB`;
+        }
+      }
+    }
+
+    return `${startTime} WIB`;
+  } catch {
+    return '';
+  }
+}
+
 export function formatCurrency(amount: number): string {
   return new Intl.NumberFormat('id-ID', {
     style: 'currency',

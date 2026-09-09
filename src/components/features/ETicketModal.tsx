@@ -6,9 +6,10 @@ import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { EnrichedTicket } from '@/types';
-import { formatDate, getPgText } from '@/lib/utils';
+import { formatDate, formatTime, getPgText } from '@/lib/utils';
 import {
   Calendar,
+  Clock,
   MapPin,
   Printer,
   Copy,
@@ -91,15 +92,21 @@ export function ETicketModal({ isOpen, onClose, ticket, onOpenTransfer }: ETicke
               </div>
             </div>
 
-            {/* Event Date & Location Pill Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-5 p-3.5 bg-white/70 rounded-2xl border-0 text-xs text-zinc-600">
-              <div className="flex items-center gap-2">
+            {/* Event Date, Time & Location Pill Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-5 p-3.5 bg-white/70 rounded-2xl border-0 text-xs text-zinc-600">
+              <div className="flex items-center gap-2 min-w-0" title={event?.start_date ? formatDate(event.start_date) : undefined}>
                 <Calendar className="h-4 w-4 text-zinc-500 flex-shrink-0" />
-                <span>
+                <span className="truncate">
                   {event?.start_date ? formatDate(event.start_date) : 'Waktu menyusul'}
                 </span>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 min-w-0" title={event?.start_date ? formatTime(event.start_date, event.end_date) : undefined}>
+                <Clock className="h-4 w-4 text-zinc-500 flex-shrink-0" />
+                <span className="truncate">
+                  {event?.start_date ? formatTime(event.start_date, event.end_date) : 'Waktu menyusul'}
+                </span>
+              </div>
+              <div className="flex items-center gap-2 min-w-0" title={event?.venue?.name || event?.venue?.address || 'Lokasi Acara'}>
                 <MapPin className="h-4 w-4 text-zinc-500 flex-shrink-0" />
                 <span className="truncate">
                   {event?.venue?.name || event?.venue?.address || 'Lokasi Acara'}

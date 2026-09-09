@@ -116,8 +116,9 @@ export default function MyTicketsPage() {
   const handlePayOrder = async (orderId: string) => {
     try {
       setPayingOrderId(orderId);
-      const res = await ticketApi.post<{ token?: string } | string>(`/api/v1/tickets/orders/${orderId}/pay`);
+      const res = await ticketApi.post<{ token?: string; midtrans_order_id?: string } | string>(`/api/v1/tickets/orders/${orderId}/pay`);
       const token = typeof res.data === 'string' ? res.data : res.data?.token;
+      const midtransOrderId = typeof res.data === 'object' ? res.data?.midtrans_order_id : undefined;
 
       if (!token) {
         throw new Error('Token pembayaran tidak ditemukan.');
@@ -136,17 +137,36 @@ export default function MyTicketsPage() {
 
       if (typeof window !== 'undefined' && window.snap) {
         window.snap.pay(token, {
-          onSuccess: () => {
-            fetchUserTicketsAndOrders();
+          onSuccess: async (result: any) => {
+            try {
+              const payload = result && result.order_id ? result : { order_id: midtransOrderId || orderId };
+              await ticketApi.post('/api/v1/tickets/midtrans/webhook', payload);
+            } catch (err) {
+              console.error('Payment webhook sync error:', err);
+            }
+            await fetchUserTicketsAndOrders();
           },
-          onPending: () => {
-            fetchUserTicketsAndOrders();
+          onPending: async (result: any) => {
+            try {
+              const payload = result && result.order_id ? result : { order_id: midtransOrderId || orderId };
+              await ticketApi.post('/api/v1/tickets/midtrans/webhook', payload);
+            } catch (err) {
+              console.error('Payment pending sync error:', err);
+            }
+            await fetchUserTicketsAndOrders();
           },
           onError: () => {
             fetchUserTicketsAndOrders();
           },
-          onClose: () => {
-            fetchUserTicketsAndOrders();
+          onClose: async () => {
+            try {
+              if (midtransOrderId) {
+                await ticketApi.post('/api/v1/tickets/midtrans/webhook', { order_id: midtransOrderId });
+              }
+            } catch {
+              // ignore
+            }
+            await fetchUserTicketsAndOrders();
           },
         });
       }

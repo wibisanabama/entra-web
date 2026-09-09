@@ -41,8 +41,9 @@ export default function EventDetailPage() {
   const handlePayOrder = async (orderId: string) => {
     try {
       setIsPaying(true);
-      const res = await ticketApi.post<{ token?: string } | string>(`/api/v1/tickets/orders/${orderId}/pay`);
+      const res = await ticketApi.post<{ token?: string; midtrans_order_id?: string } | string>(`/api/v1/tickets/orders/${orderId}/pay`);
       const token = typeof res.data === 'string' ? res.data : res.data?.token;
+      const midtransOrderId = typeof res.data === 'object' ? res.data?.midtrans_order_id : undefined;
 
       if (!token) {
         throw new Error('Token pembayaran tidak ditemukan.');
@@ -61,16 +62,35 @@ export default function EventDetailPage() {
 
       if (typeof window !== 'undefined' && window.snap) {
         window.snap.pay(token, {
-          onSuccess: () => {
+          onSuccess: async (result: any) => {
+            try {
+              const payload = result && result.order_id ? result : { order_id: midtransOrderId || orderId };
+              await ticketApi.post('/api/v1/tickets/midtrans/webhook', payload);
+            } catch (err) {
+              console.error('Payment webhook sync error:', err);
+            }
             router.push('/my-tickets');
           },
-          onPending: () => {
+          onPending: async (result: any) => {
+            try {
+              const payload = result && result.order_id ? result : { order_id: midtransOrderId || orderId };
+              await ticketApi.post('/api/v1/tickets/midtrans/webhook', payload);
+            } catch (err) {
+              console.error('Payment pending sync error:', err);
+            }
             router.push('/my-tickets');
           },
           onError: () => {
             // User can review order in my-tickets
           },
-          onClose: () => {
+          onClose: async () => {
+            try {
+              if (midtransOrderId) {
+                await ticketApi.post('/api/v1/tickets/midtrans/webhook', { order_id: midtransOrderId });
+              }
+            } catch {
+              // ignore
+            }
             router.push('/my-tickets');
           },
         });

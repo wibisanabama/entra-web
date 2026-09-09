@@ -162,7 +162,7 @@ export default function AttendeeListPage() {
           <Button
             onClick={handleExportCsv}
             disabled={attendees.length === 0}
-            className="rounded-full bg-zinc-950 hover:bg-zinc-800 text-white flex items-center gap-2 text-xs font-bold px-5 py-2 shadow-sm"
+            className="rounded-full bg-zinc-950 hover:bg-zinc-800 text-white flex items-center gap-2 text-xs font-bold px-5 py-2 shadow-none"
           >
             <Download className="h-3.5 w-3.5" />
             Ekspor Manifest (CSV)
@@ -234,7 +234,7 @@ export default function AttendeeListPage() {
             <button
               onClick={() => setStatusFilter('ALL')}
               className={`px-3 py-1.5 rounded-full font-bold transition-all cursor-pointer ${
-                statusFilter === 'ALL' ? 'bg-zinc-950 text-white shadow-xs' : 'text-zinc-600 hover:text-zinc-950'
+                statusFilter === 'ALL' ? 'bg-zinc-950 text-white shadow-none' : 'text-zinc-600 hover:text-zinc-950'
               }`}
             >
               Semua ({attendees.length})
@@ -242,7 +242,7 @@ export default function AttendeeListPage() {
             <button
               onClick={() => setStatusFilter('HADIR')}
               className={`px-3 py-1.5 rounded-full font-bold transition-all cursor-pointer ${
-                statusFilter === 'HADIR' ? 'bg-zinc-950 text-white shadow-xs' : 'text-zinc-600 hover:text-zinc-950'
+                statusFilter === 'HADIR' ? 'bg-zinc-950 text-white shadow-none' : 'text-zinc-600 hover:text-zinc-950'
               }`}
             >
               Hadir ({checkedInCount})
@@ -250,7 +250,7 @@ export default function AttendeeListPage() {
             <button
               onClick={() => setStatusFilter('BELUM')}
               className={`px-3 py-1.5 rounded-full font-bold transition-all cursor-pointer ${
-                statusFilter === 'BELUM' ? 'bg-zinc-950 text-white shadow-xs' : 'text-zinc-600 hover:text-zinc-950'
+                statusFilter === 'BELUM' ? 'bg-zinc-950 text-white shadow-none' : 'text-zinc-600 hover:text-zinc-950'
               }`}
             >
               Belum Hadir ({attendees.length - checkedInCount})

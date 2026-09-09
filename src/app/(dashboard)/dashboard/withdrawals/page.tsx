@@ -211,7 +211,7 @@ export default function WithdrawalsPage() {
           <Button
             onClick={handleOpenRequestModal}
             disabled={balance.available_balance < 10000}
-            className="rounded-full bg-zinc-950 hover:bg-zinc-800 text-white text-xs font-semibold px-5 py-2 flex items-center gap-2 shadow-sm disabled:opacity-50"
+            className="rounded-full bg-zinc-950 hover:bg-zinc-800 text-white text-xs font-semibold px-5 py-2 flex items-center gap-2 shadow-none disabled:opacity-50"
           >
             <ArrowUpRight className="h-3.5 w-3.5" />
             Tarik Dana

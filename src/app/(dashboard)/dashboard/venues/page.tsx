@@ -199,7 +199,7 @@ export default function VenuesManagementPage() {
 
           <Button
             onClick={handleOpenCreate}
-            className="rounded-full bg-zinc-950 hover:bg-zinc-800 text-white text-xs font-semibold px-5 py-2 flex items-center gap-2 shadow-sm"
+            className="rounded-full bg-zinc-950 hover:bg-zinc-800 text-white text-xs font-semibold px-5 py-2 flex items-center gap-2 shadow-none"
           >
             <Plus className="h-3.5 w-3.5" />
             Tambah Venue Baru

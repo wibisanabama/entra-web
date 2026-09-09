@@ -76,6 +76,13 @@ textarea {
   transition-duration: var(--motion-base);
 }
 
+/* Strict No-Shadow Policy for all buttons across the application */
+button,
+[role="button"],
+.btn {
+  box-shadow: none !important;
+}
+
 :focus-visible {
   outline: 2px solid var(--ring);
   outline-offset: 2px;

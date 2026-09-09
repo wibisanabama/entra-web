@@ -84,7 +84,7 @@ export default function DashboardMediaPage() {
                   <div className="absolute inset-0 bg-zinc-950/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-3">
                     <Button 
                       size="sm" 
-                      className="rounded-full bg-white hover:bg-zinc-100 text-zinc-950 text-xs font-semibold px-4 py-2 shadow-lg"
+                      className="rounded-full bg-white hover:bg-zinc-100 text-zinc-950 text-xs font-semibold px-4 py-2 shadow-none"
                       onClick={() => copyToClipboard(image.url)}
                     >
                       Salin URL

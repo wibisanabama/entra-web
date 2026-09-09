@@ -138,13 +138,13 @@ export default function HomePage() {
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <Link 
               href="/events" 
-              className="inline-flex h-12 items-center justify-center rounded-full bg-zinc-950 px-6 text-[15px] font-semibold text-white hover:bg-zinc-800 transition-all shadow-xs tracking-[-0.01em]"
+              className="inline-flex h-12 items-center justify-center rounded-full bg-zinc-950 px-6 text-[15px] font-semibold text-white hover:bg-zinc-800 transition-all shadow-none tracking-[-0.01em]"
             >
               Jelajahi event
             </Link>
             <Link 
               href="/register" 
-              className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-zinc-200 bg-white px-6 text-[15px] font-semibold text-zinc-950 hover:bg-zinc-50 transition-all shadow-xs tracking-[-0.01em]"
+              className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-zinc-200 bg-white px-6 text-[15px] font-semibold text-zinc-950 hover:bg-zinc-50 transition-all shadow-none tracking-[-0.01em]"
             >
               Mulai sebagai organizer <ArrowRight className="h-4 w-4 stroke-[2]" />
             </Link>

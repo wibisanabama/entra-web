@@ -35,7 +35,7 @@ export function ConfirmModal({
           </Button>
           <Button 
             variant={isDestructive ? 'primary' : 'primary'}
-            className={`rounded-full text-xs px-5 py-2 font-bold shadow-sm ${isDestructive ? 'bg-red-600 hover:bg-red-700 text-white' : 'bg-zinc-950 hover:bg-zinc-800 text-white'}`}
+            className={`rounded-full text-xs px-5 py-2 font-bold shadow-none ${isDestructive ? 'bg-red-600 hover:bg-red-700 text-white' : 'bg-zinc-950 hover:bg-zinc-800 text-white'}`}
             onClick={() => {
               onConfirm();
               onClose();

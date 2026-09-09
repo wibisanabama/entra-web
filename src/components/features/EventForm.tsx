@@ -302,7 +302,7 @@ export function EventForm({ initialData, onSubmit, onCancel, isLoading = false }
             Batal
           </Button>
         )}
-        <Button type="submit" variant="primary" isLoading={isLoading || loadingData} className="bg-zinc-950 hover:bg-zinc-800 text-white rounded-full font-bold text-xs px-6 py-2.5 shadow-sm">
+        <Button type="submit" variant="primary" isLoading={isLoading || loadingData} className="bg-zinc-950 hover:bg-zinc-800 text-white rounded-full font-bold text-xs px-6 py-2.5 shadow-none">
           {initialData ? 'Simpan Perubahan' : 'Buat Event'}
         </Button>
       </div>

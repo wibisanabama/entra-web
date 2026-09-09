@@ -119,7 +119,7 @@ export default function EventTicketsPage() {
         </div>
         <Button 
           variant="primary" 
-          className="bg-zinc-950 hover:bg-zinc-800 text-white rounded-full font-bold text-xs px-5 py-2.5 shadow-sm flex items-center gap-2"
+          className="bg-zinc-950 hover:bg-zinc-800 text-white rounded-full font-bold text-xs px-5 py-2.5 shadow-none flex items-center gap-2"
           onClick={() => {
             setSelectedTicket(undefined);
             setIsModalOpen(true);

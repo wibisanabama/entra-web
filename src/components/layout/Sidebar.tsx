@@ -51,7 +51,7 @@ export function Sidebar() {
                   href={item.path}
                   className={`flex items-center px-3.5 py-2.5 rounded-full transition-all group ${
                     isActive 
-                      ? 'bg-zinc-950 text-white font-bold shadow-xs' 
+                      ? 'bg-zinc-950 text-white font-bold shadow-none' 
                       : 'text-zinc-600 hover:bg-zinc-100 hover:text-zinc-950 font-medium'
                   }`}
                 >
@@ -69,7 +69,7 @@ export function Sidebar() {
       <div className="p-4 border-t border-zinc-200">
         <Link
           href="/"
-          className="flex items-center justify-between w-full py-2.5 px-4 rounded-full text-xs font-bold text-zinc-600 hover:text-zinc-950 hover:bg-zinc-100 transition-all border border-zinc-200"
+          className="flex items-center justify-between w-full py-2.5 px-4 rounded-full text-xs font-bold text-zinc-600 hover:text-zinc-950 hover:bg-zinc-100 transition-all border border-zinc-200 shadow-none"
         >
           <span>Buka Portal Publik</span>
           <ArrowUpRight className="w-3.5 h-3.5 text-zinc-400" />

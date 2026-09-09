@@ -200,7 +200,7 @@ export function TicketTypeModal({ isOpen, onClose, onSubmit, initialData, isLoad
           <Button type="button" variant="outline" onClick={onClose} disabled={isLoading} className="rounded-full border-zinc-200 text-zinc-700 hover:bg-zinc-100 text-xs px-4 py-2 font-bold">
             Batal
           </Button>
-          <Button type="submit" variant="primary" disabled={isLoading} className="rounded-full bg-zinc-950 hover:bg-zinc-800 text-white font-bold text-xs px-5 py-2 shadow-sm">
+          <Button type="submit" variant="primary" disabled={isLoading} className="rounded-full bg-zinc-950 hover:bg-zinc-800 text-white font-bold text-xs px-5 py-2 shadow-none">
             {isLoading ? 'Menyimpan...' : 'Simpan Tiket'}
           </Button>
         </div>

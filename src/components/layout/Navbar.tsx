@@ -160,7 +160,7 @@ export function Navbar() {
             </Link>
             <Link 
               href="/register" 
-              className="inline-flex items-center justify-center h-9 sm:h-9.5 px-5 rounded-full bg-zinc-950 hover:bg-zinc-800 text-white text-xs sm:text-sm font-semibold transition-all shadow-xs"
+              className="inline-flex items-center justify-center h-9 sm:h-9.5 px-5 rounded-full bg-zinc-950 hover:bg-zinc-800 text-white text-xs sm:text-sm font-semibold transition-all shadow-none"
             >
               Daftar
             </Link>

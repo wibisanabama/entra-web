@@ -136,7 +136,7 @@ export default function DashboardOrdersPage() {
           <Button
             onClick={handleExportCsv}
             disabled={orders.length === 0}
-            className="rounded-full bg-zinc-950 hover:bg-zinc-800 text-white flex items-center gap-2 text-xs font-bold px-5 py-2 shadow-sm"
+            className="rounded-full bg-zinc-950 hover:bg-zinc-800 text-white flex items-center gap-2 text-xs font-bold px-5 py-2 shadow-none"
           >
             <Download className="h-3.5 w-3.5" />
             Ekspor Rekap (CSV)

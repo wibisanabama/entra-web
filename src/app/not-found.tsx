@@ -25,7 +25,7 @@ export default function NotFound() {
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <Link
               href="/"
-              className="inline-flex h-12 items-center justify-center rounded-full bg-zinc-950 px-7 text-[15px] font-semibold text-white hover:bg-zinc-800 transition-all shadow-xs tracking-[-0.01em]"
+              className="inline-flex h-12 items-center justify-center rounded-full bg-zinc-950 px-7 text-[15px] font-semibold text-white hover:bg-zinc-800 transition-all shadow-none tracking-[-0.01em]"
             >
               Kembali ke beranda
             </Link>

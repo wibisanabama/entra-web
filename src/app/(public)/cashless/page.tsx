@@ -380,7 +380,7 @@ export default function CashlessPortalPage() {
                 setCustomTopUpInput('100000');
                 setIsTopUpOpen(true);
               }}
-              className="w-full bg-zinc-950 hover:bg-zinc-800 text-white font-semibold py-3.5 rounded-full flex items-center justify-center gap-2.5 text-xs shadow-xs"
+              className="w-full bg-zinc-950 hover:bg-zinc-800 text-white font-semibold py-3.5 rounded-full flex items-center justify-center gap-2.5 text-xs shadow-none"
             >
               <Zap className="h-4 w-4" />
               Top-Up Saldo Gelang

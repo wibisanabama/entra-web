@@ -294,7 +294,7 @@ export default function AdminWithdrawalsPage() {
                   onClick={() => setStatusFilter(tab.id)}
                   className={`px-3 py-1 rounded-full text-xs font-semibold transition-all ${
                     statusFilter === tab.id
-                      ? 'bg-zinc-950 text-white shadow-sm'
+                      ? 'bg-zinc-950 text-white shadow-none'
                       : 'text-zinc-600 hover:text-zinc-900'
                   }`}
                 >

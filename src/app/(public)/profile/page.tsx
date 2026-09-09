@@ -468,7 +468,7 @@ export default function ProfilePage() {
                 <Button
                   type="submit"
                   disabled={isSavingProfile || isUploadingAvatar}
-                  className="bg-zinc-950 hover:bg-zinc-800 text-white font-bold text-sm px-6 py-2.5 rounded-full flex items-center gap-2 shadow-sm"
+                  className="bg-zinc-950 hover:bg-zinc-800 text-white font-bold text-sm px-6 py-2.5 rounded-full flex items-center gap-2 shadow-none"
                 >
                   <Save className="h-4 w-4" />
                   {isSavingProfile ? 'Menyimpan...' : 'Simpan Perubahan Profil'}
@@ -618,7 +618,7 @@ export default function ProfilePage() {
                 <Button
                   type="submit"
                   disabled={isChangingPassword}
-                  className="bg-zinc-950 hover:bg-zinc-800 text-white font-bold text-xs py-2.5 px-5 rounded-full flex items-center gap-2 shadow-sm"
+                  className="bg-zinc-950 hover:bg-zinc-800 text-white font-bold text-xs py-2.5 px-5 rounded-full flex items-center gap-2 shadow-none"
                 >
                   <Lock className="h-3.5 w-3.5" />
                   {isChangingPassword ? 'Memperbarui...' : 'Simpan Kata Sandi Baru'}
@@ -648,7 +648,7 @@ export default function ProfilePage() {
                 <Button
                   onClick={handleRequestPasswordReset}
                   disabled={isRequestingReset}
-                  className="bg-zinc-950 hover:bg-zinc-800 text-white font-bold text-xs py-2.5 px-5 rounded-full flex items-center gap-2 shadow-sm"
+                  className="bg-zinc-950 hover:bg-zinc-800 text-white font-bold text-xs py-2.5 px-5 rounded-full flex items-center gap-2 shadow-none"
                 >
                   <Lock className="h-3.5 w-3.5" />
                   {isRequestingReset ? 'Mengirim Permintaan...' : 'Kirim Tautan Reset Kata Sandi'}

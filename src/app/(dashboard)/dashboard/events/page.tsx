@@ -44,7 +44,7 @@ export default function DashboardEventsPage() {
           <p className="text-xs sm:text-sm text-zinc-500">Kelola semua event yang Anda buat.</p>
         </div>
         <Link href="/dashboard/events/create">
-          <Button className="bg-zinc-950 hover:bg-zinc-800 text-white rounded-full font-bold text-xs px-5 py-2.5 shadow-sm flex items-center gap-1.5">
+          <Button className="bg-zinc-950 hover:bg-zinc-800 text-white rounded-full font-bold text-xs px-5 py-2.5 shadow-none flex items-center gap-1.5">
             <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 4v16m8-8H4"></path></svg>
             Buat Event Baru
           </Button>

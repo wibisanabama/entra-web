@@ -127,7 +127,7 @@ export default function DashboardOverviewPage() {
           <p className="text-xs sm:text-sm text-zinc-500">Ringkasan performa event dan penjualan tiket Anda.</p>
         </div>
         <Link href="/dashboard/withdrawals">
-          <Button className="bg-zinc-950 hover:bg-zinc-800 text-white rounded-full font-bold text-xs px-5 py-2.5 flex items-center gap-2 shadow-sm">
+          <Button className="bg-zinc-950 hover:bg-zinc-800 text-white rounded-full font-bold text-xs px-5 py-2.5 flex items-center gap-2 shadow-none">
             <Wallet className="h-4 w-4" />
             Tarik Saldo
           </Button>

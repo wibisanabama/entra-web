@@ -14,8 +14,6 @@ import {
   Printer,
   Copy,
   Check,
-  ShieldCheck,
-  Sparkles,
   Ticket as TicketIcon,
   SendHorizontal
 } from 'lucide-react';
@@ -173,18 +171,6 @@ export function ETicketModal({ isOpen, onClose, ticket, onOpenTransfer }: ETicke
               <span className="text-[10px] font-bold text-zinc-700 tracking-wider uppercase mt-2 font-mono">
                 SCAN AT GATE
               </span>
-            </div>
-          </div>
-
-          {/* Security Notice */}
-          <div className="px-6 py-3 bg-white/70 border-0 flex items-center justify-between text-xs text-zinc-500">
-            <div className="flex items-center gap-1.5">
-              <ShieldCheck className="h-4 w-4 text-emerald-600" />
-              <span>Verifikasi Keaslian Entra Security Gate</span>
-            </div>
-            <div className="flex items-center gap-1 text-zinc-400">
-              <Sparkles className="h-3 w-3 text-zinc-600" />
-              <span>Digital Pass</span>
             </div>
           </div>
         </div>

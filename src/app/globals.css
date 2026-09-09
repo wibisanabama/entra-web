@@ -122,24 +122,6 @@ select:focus-visible {
   }
 }
 
-/* Mobbin-style sleek custom scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #e4e4e7;
-  border-radius: 9999px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #d4d4d8;
-}
 
 /* Hide scrollbar for category pills bar while allowing smooth scroll */
 .no-scrollbar::-webkit-scrollbar {

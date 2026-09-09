@@ -39,7 +39,6 @@ const mSaans = localFont({
 });
 
 import Script from "next/script";
-import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: "Entra - Event Ticketing Platform",
@@ -65,7 +64,6 @@ export default function RootLayout({
           <ThemeProvider>
             <AuthProvider>
               {children}
-              <Toaster richColors position="top-center" closeButton />
             </AuthProvider>
           </ThemeProvider>
         </QueryProvider>

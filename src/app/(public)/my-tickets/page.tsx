@@ -27,7 +27,6 @@ import {
   AlertCircle,
   X
 } from 'lucide-react';
-import { toast } from 'sonner';
 
 declare global {
   interface Window {
@@ -101,7 +100,6 @@ export default function MyTicketsPage() {
       setOrders(rawOrders as Order[]);
     } catch (error) {
       console.error('Failed to fetch user tickets:', error);
-      toast.error('Gagal memuat daftar tiket Anda.');
     } finally {
       setDataLoading(false);
     }
@@ -129,7 +127,6 @@ export default function MyTicketsPage() {
       if (token.startsWith('MOCK_') || typeof window === 'undefined' || !window.snap) {
         try {
           await ticketApi.post(`/api/v1/tickets/orders/${orderId}/simulate`);
-          toast.success('Pembayaran simulasi dev berhasil! Tiket Anda telah aktif.');
           fetchUserTicketsAndOrders();
           return;
         } catch {
@@ -140,27 +137,21 @@ export default function MyTicketsPage() {
       if (typeof window !== 'undefined' && window.snap) {
         window.snap.pay(token, {
           onSuccess: () => {
-            toast.success('Pembayaran berhasil! E-Ticket Anda telah aktif.');
             fetchUserTicketsAndOrders();
           },
           onPending: () => {
-            toast.info('Menunggu penyelesaian pembayaran.');
             fetchUserTicketsAndOrders();
           },
           onError: () => {
-            toast.error('Pembayaran gagal atau dibatalkan.');
+            fetchUserTicketsAndOrders();
           },
           onClose: () => {
-            toast.info('Jendela pembayaran ditutup.');
+            fetchUserTicketsAndOrders();
           },
         });
-      } else {
-        toast.error('Midtrans Snap gateway belum siap.');
       }
     } catch (error: unknown) {
       console.error('Payment error:', error);
-      const errMsg = error instanceof Error ? error.message : 'Gagal memulai transaksi pembayaran.';
-      toast.error(errMsg);
     } finally {
       setPayingOrderId(null);
     }
@@ -170,12 +161,9 @@ export default function MyTicketsPage() {
     try {
       setPayingOrderId(orderId);
       await ticketApi.post(`/api/v1/tickets/orders/${orderId}/simulate`);
-      toast.success('Pembayaran simulasi dev berhasil! Tiket Anda telah aktif.');
       await fetchUserTicketsAndOrders();
     } catch (error: unknown) {
       console.error('Simulate payment error:', error);
-      const errMsg = error instanceof Error ? error.message : 'Gagal simulasi pembayaran';
-      toast.error(errMsg);
     } finally {
       setPayingOrderId(null);
     }

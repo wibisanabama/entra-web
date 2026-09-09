@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/providers/auth-provider';
 import { ticketApi, eventApi } from '@/lib/api';
@@ -227,6 +227,68 @@ export default function MyTicketsPage() {
   const activeTicketsCount = tickets.filter((t) => t.status?.toUpperCase() === 'ACTIVE').length;
   const distinctEventsCount = new Set(tickets.map((t) => t.event_id)).size;
 
+  // Slider indicators for Main Tabs & Filter Tabs ala Category Selector
+  const mainTabsRef = useRef<Record<string, HTMLButtonElement | null>>({});
+  const [mainIndicatorStyle, setMainIndicatorStyle] = useState<{ left: number; width: number }>({ left: 0, width: 0 });
+  const [mainTabsReady, setMainTabsReady] = useState(false);
+
+  const filterTabsRef = useRef<Record<string, HTMLButtonElement | null>>({});
+  const [filterIndicatorStyle, setFilterIndicatorStyle] = useState<{ left: number; width: number }>({ left: 0, width: 0 });
+  const [filterTabsReady, setFilterTabsReady] = useState(false);
+
+  // Update Main Tabs Indicator
+  useEffect(() => {
+    const activeEl = mainTabsRef.current[activeTab];
+    if (activeEl) {
+      setMainIndicatorStyle({
+        left: activeEl.offsetLeft,
+        width: activeEl.offsetWidth,
+      });
+      if (!mainTabsReady) {
+        const timer = setTimeout(() => setMainTabsReady(true), 50);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [activeTab, tickets.length, orders.length, mainTabsReady]);
+
+  // Update Filter Tabs Indicator
+  useEffect(() => {
+    if (activeTab !== 'tickets') return;
+    const activeEl = filterTabsRef.current[ticketFilter];
+    if (activeEl) {
+      setFilterIndicatorStyle({
+        left: activeEl.offsetLeft,
+        width: activeEl.offsetWidth,
+      });
+      if (!filterTabsReady) {
+        const timer = setTimeout(() => setFilterTabsReady(true), 50);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [ticketFilter, activeTab, tickets.length, activeTicketsCount, filterTabsReady]);
+
+  // Handle Window Resize
+  useEffect(() => {
+    const handleResize = () => {
+      const activeMainEl = mainTabsRef.current[activeTab];
+      if (activeMainEl) {
+        setMainIndicatorStyle({
+          left: activeMainEl.offsetLeft,
+          width: activeMainEl.offsetWidth,
+        });
+      }
+      const activeFilterEl = filterTabsRef.current[ticketFilter];
+      if (activeFilterEl) {
+        setFilterIndicatorStyle({
+          left: activeFilterEl.offsetLeft,
+          width: activeFilterEl.offsetWidth,
+        });
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [activeTab, ticketFilter]);
+
   if (!authLoading && !user) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-zinc-900">
@@ -341,13 +403,28 @@ export default function MyTicketsPage() {
       </div>
 
       {/* Main Tabs Navigation */}
-      <div className="inline-flex bg-zinc-100 p-1.5 rounded-full border-0">
+      <div className="relative inline-flex items-center p-1 sm:p-1.5 bg-zinc-200/80 rounded-full gap-1 overflow-x-auto no-scrollbar max-w-full">
+        {/* Sliding Capsule Highlight */}
+        <div
+          className={`absolute top-1 sm:top-1.5 bottom-1 sm:bottom-1.5 rounded-full bg-white pointer-events-none shadow-xs ${
+            mainTabsReady
+              ? 'transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]'
+              : 'transition-none'
+          }`}
+          style={{
+            left: `${mainIndicatorStyle.left}px`,
+            width: `${mainIndicatorStyle.width}px`,
+            opacity: mainIndicatorStyle.width > 0 ? 1 : 0,
+          }}
+        />
+
         <button
+          ref={(el) => {
+            mainTabsRef.current['tickets'] = el;
+          }}
           onClick={() => setActiveTab('tickets')}
-          className={`px-5 py-2.5 rounded-full text-xs sm:text-sm font-semibold flex items-center gap-2 transition-all cursor-pointer border-0 ${
-            activeTab === 'tickets'
-              ? 'bg-zinc-950 text-white shadow-none'
-              : 'text-zinc-600 hover:text-zinc-950'
+          className={`relative z-10 px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-medium transition-colors duration-200 whitespace-nowrap cursor-pointer flex items-center gap-2 ${
+            activeTab === 'tickets' ? 'text-zinc-950 font-semibold' : 'text-zinc-500 hover:text-zinc-900'
           }`}
         >
           <TicketIcon className="h-4 w-4" />
@@ -355,11 +432,12 @@ export default function MyTicketsPage() {
         </button>
 
         <button
+          ref={(el) => {
+            mainTabsRef.current['orders'] = el;
+          }}
           onClick={() => setActiveTab('orders')}
-          className={`px-5 py-2.5 rounded-full text-xs sm:text-sm font-semibold flex items-center gap-2 transition-all cursor-pointer border-0 ${
-            activeTab === 'orders'
-              ? 'bg-zinc-950 text-white shadow-none'
-              : 'text-zinc-600 hover:text-zinc-950'
+          className={`relative z-10 px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-medium transition-colors duration-200 whitespace-nowrap cursor-pointer flex items-center gap-2 ${
+            activeTab === 'orders' ? 'text-zinc-950 font-semibold' : 'text-zinc-500 hover:text-zinc-900'
           }`}
         >
           <CreditCard className="h-4 w-4" />
@@ -372,27 +450,50 @@ export default function MyTicketsPage() {
         <div className="space-y-6">
           {/* Filter Bar */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div className="flex bg-zinc-100 p-1 rounded-full text-xs w-fit border-0">
+            <div className="relative inline-flex items-center p-1 sm:p-1.5 bg-zinc-200/80 rounded-full gap-1 overflow-x-auto no-scrollbar max-w-full">
+              {/* Sliding Capsule Highlight */}
+              <div
+                className={`absolute top-1 sm:top-1.5 bottom-1 sm:bottom-1.5 rounded-full bg-white pointer-events-none shadow-xs ${
+                  filterTabsReady
+                    ? 'transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]'
+                    : 'transition-none'
+                }`}
+                style={{
+                  left: `${filterIndicatorStyle.left}px`,
+                  width: `${filterIndicatorStyle.width}px`,
+                  opacity: filterIndicatorStyle.width > 0 ? 1 : 0,
+                }}
+              />
+
               <button
+                ref={(el) => {
+                  filterTabsRef.current['ALL'] = el;
+                }}
                 onClick={() => setTicketFilter('ALL')}
-                className={`px-3.5 py-1.5 rounded-full font-medium transition-colors border-0 cursor-pointer ${
-                  ticketFilter === 'ALL' ? 'bg-zinc-950 text-white shadow-none' : 'text-zinc-600 hover:text-zinc-950'
+                className={`relative z-10 px-3.5 sm:px-4 py-1.5 rounded-full text-xs font-medium transition-colors duration-200 whitespace-nowrap cursor-pointer ${
+                  ticketFilter === 'ALL' ? 'text-zinc-950 font-semibold' : 'text-zinc-500 hover:text-zinc-900'
                 }`}
               >
                 Semua ({tickets.length})
               </button>
               <button
+                ref={(el) => {
+                  filterTabsRef.current['ACTIVE'] = el;
+                }}
                 onClick={() => setTicketFilter('ACTIVE')}
-                className={`px-3.5 py-1.5 rounded-full font-medium transition-colors border-0 cursor-pointer ${
-                  ticketFilter === 'ACTIVE' ? 'bg-zinc-950 text-white shadow-none' : 'text-zinc-600 hover:text-zinc-950'
+                className={`relative z-10 px-3.5 sm:px-4 py-1.5 rounded-full text-xs font-medium transition-colors duration-200 whitespace-nowrap cursor-pointer ${
+                  ticketFilter === 'ACTIVE' ? 'text-zinc-950 font-semibold' : 'text-zinc-500 hover:text-zinc-900'
                 }`}
               >
                 Siap Digunakan ({activeTicketsCount})
               </button>
               <button
+                ref={(el) => {
+                  filterTabsRef.current['USED'] = el;
+                }}
                 onClick={() => setTicketFilter('USED')}
-                className={`px-3.5 py-1.5 rounded-full font-medium transition-colors border-0 cursor-pointer ${
-                  ticketFilter === 'USED' ? 'bg-zinc-950 text-white shadow-none' : 'text-zinc-600 hover:text-zinc-950'
+                className={`relative z-10 px-3.5 sm:px-4 py-1.5 rounded-full text-xs font-medium transition-colors duration-200 whitespace-nowrap cursor-pointer ${
+                  ticketFilter === 'USED' ? 'text-zinc-950 font-semibold' : 'text-zinc-500 hover:text-zinc-950'
                 }`}
               >
                 Sudah Digunakan ({tickets.length - activeTicketsCount})

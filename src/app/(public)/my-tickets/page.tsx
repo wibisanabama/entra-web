@@ -403,46 +403,48 @@ export default function MyTicketsPage() {
       </div>
 
       {/* Main Tabs Navigation */}
-      <div className="relative inline-flex items-center p-1 sm:p-1.5 bg-zinc-200/80 rounded-full gap-1 overflow-x-auto no-scrollbar max-w-full">
-        {/* Sliding Capsule Highlight */}
-        <div
-          className={`absolute top-1 sm:top-1.5 bottom-1 sm:bottom-1.5 rounded-full bg-white pointer-events-none shadow-xs ${
-            mainTabsReady
-              ? 'transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]'
-              : 'transition-none'
-          }`}
-          style={{
-            left: `${mainIndicatorStyle.left}px`,
-            width: `${mainIndicatorStyle.width}px`,
-            opacity: mainIndicatorStyle.width > 0 ? 1 : 0,
-          }}
-        />
+      <div className="flex justify-center w-full">
+        <div className="relative inline-flex items-center p-1 sm:p-1.5 bg-zinc-200/80 rounded-full gap-1 overflow-x-auto no-scrollbar max-w-full">
+          {/* Sliding Capsule Highlight */}
+          <div
+            className={`absolute top-1 sm:top-1.5 bottom-1 sm:bottom-1.5 rounded-full bg-white pointer-events-none shadow-xs ${
+              mainTabsReady
+                ? 'transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]'
+                : 'transition-none'
+            }`}
+            style={{
+              left: `${mainIndicatorStyle.left}px`,
+              width: `${mainIndicatorStyle.width}px`,
+              opacity: mainIndicatorStyle.width > 0 ? 1 : 0,
+            }}
+          />
 
-        <button
-          ref={(el) => {
-            mainTabsRef.current['tickets'] = el;
-          }}
-          onClick={() => setActiveTab('tickets')}
-          className={`relative z-10 px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-medium transition-colors duration-200 whitespace-nowrap cursor-pointer flex items-center gap-2 ${
-            activeTab === 'tickets' ? 'text-zinc-950' : 'text-zinc-500 hover:text-zinc-900'
-          }`}
-        >
-          <TicketIcon className="h-4 w-4" />
-          E-Ticket Digital ({tickets.length})
-        </button>
+          <button
+            ref={(el) => {
+              mainTabsRef.current['tickets'] = el;
+            }}
+            onClick={() => setActiveTab('tickets')}
+            className={`relative z-10 px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-medium transition-colors duration-200 whitespace-nowrap cursor-pointer flex items-center gap-2 ${
+              activeTab === 'tickets' ? 'text-zinc-950' : 'text-zinc-500 hover:text-zinc-900'
+            }`}
+          >
+            <TicketIcon className="h-4 w-4" />
+            E-Ticket Digital ({tickets.length})
+          </button>
 
-        <button
-          ref={(el) => {
-            mainTabsRef.current['orders'] = el;
-          }}
-          onClick={() => setActiveTab('orders')}
-          className={`relative z-10 px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-medium transition-colors duration-200 whitespace-nowrap cursor-pointer flex items-center gap-2 ${
-            activeTab === 'orders' ? 'text-zinc-950' : 'text-zinc-500 hover:text-zinc-900'
-          }`}
-        >
-          <CreditCard className="h-4 w-4" />
-          Riwayat Pesanan & Invoice ({orders.length})
-        </button>
+          <button
+            ref={(el) => {
+              mainTabsRef.current['orders'] = el;
+            }}
+            onClick={() => setActiveTab('orders')}
+            className={`relative z-10 px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-medium transition-colors duration-200 whitespace-nowrap cursor-pointer flex items-center gap-2 ${
+              activeTab === 'orders' ? 'text-zinc-950' : 'text-zinc-500 hover:text-zinc-900'
+            }`}
+          >
+            <CreditCard className="h-4 w-4" />
+            Riwayat Pesanan & Invoice ({orders.length})
+          </button>
+        </div>
       </div>
 
       {/* TAB 1: E-TICKETS DIGITAL VIEW */}

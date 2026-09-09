@@ -405,7 +405,7 @@ export default function MyTicketsPage() {
 
       {/* Main Tabs Navigation */}
       <div className="flex justify-center w-full">
-        <div className="relative inline-flex items-center p-1 sm:p-1.5 bg-zinc-200/80 rounded-full gap-1 overflow-x-auto no-scrollbar max-w-full">
+        <div className="relative inline-flex items-center p-1 sm:p-1.5 bg-zinc-200/80 rounded-full gap-1 w-full max-w-md lg:w-[calc((100%-3rem)/3)]">
           {/* Sliding Capsule Highlight */}
           <div
             className={`absolute top-1 sm:top-1.5 bottom-1 sm:bottom-1.5 rounded-full bg-white pointer-events-none shadow-xs ${
@@ -425,12 +425,12 @@ export default function MyTicketsPage() {
               mainTabsRef.current['tickets'] = el;
             }}
             onClick={() => setActiveTab('tickets')}
-            className={`relative z-10 px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-medium transition-colors duration-200 whitespace-nowrap cursor-pointer flex items-center gap-2 ${
+            className={`relative z-10 flex-1 px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium transition-colors duration-200 whitespace-nowrap cursor-pointer flex items-center justify-center gap-2 ${
               activeTab === 'tickets' ? 'text-zinc-950' : 'text-zinc-500 hover:text-zinc-900'
             }`}
           >
-            <TicketIcon className="h-4 w-4" />
-            E-Ticket Digital ({tickets.length})
+            <TicketIcon className="h-4 w-4 flex-shrink-0" />
+            <span>E-Ticket Digital ({tickets.length})</span>
           </button>
 
           <button
@@ -438,12 +438,12 @@ export default function MyTicketsPage() {
               mainTabsRef.current['orders'] = el;
             }}
             onClick={() => setActiveTab('orders')}
-            className={`relative z-10 px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-medium transition-colors duration-200 whitespace-nowrap cursor-pointer flex items-center gap-2 ${
+            className={`relative z-10 flex-1 px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium transition-colors duration-200 whitespace-nowrap cursor-pointer flex items-center justify-center gap-2 ${
               activeTab === 'orders' ? 'text-zinc-950' : 'text-zinc-500 hover:text-zinc-900'
             }`}
           >
-            <CreditCard className="h-4 w-4" />
-            Riwayat Pesanan & Invoice ({orders.length})
+            <CreditCard className="h-4 w-4 flex-shrink-0" />
+            <span>Riwayat Pesanan ({orders.length})</span>
           </button>
         </div>
       </div>
@@ -452,8 +452,8 @@ export default function MyTicketsPage() {
       {activeTab === 'tickets' && (
         <div className="space-y-6">
           {/* Filter Bar */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div className="relative inline-flex items-center p-1 sm:p-1.5 bg-zinc-200/80 rounded-full gap-1 overflow-x-auto no-scrollbar max-w-full">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div className="relative inline-flex items-center p-1 sm:p-1.5 bg-zinc-200/80 rounded-full gap-1 w-full max-w-md lg:w-[calc((100%-3rem)/3)]">
               {/* Sliding Capsule Highlight */}
               <div
                 className={`absolute top-1 sm:top-1.5 bottom-1 sm:bottom-1.5 rounded-full bg-white pointer-events-none shadow-xs ${
@@ -473,7 +473,7 @@ export default function MyTicketsPage() {
                   filterTabsRef.current['ALL'] = el;
                 }}
                 onClick={() => setTicketFilter('ALL')}
-                className={`relative z-10 px-3.5 sm:px-4 py-1.5 rounded-full text-xs font-medium transition-colors duration-200 whitespace-nowrap cursor-pointer ${
+                className={`relative z-10 flex-1 px-2.5 sm:px-3 py-1.5 rounded-full text-xs font-medium transition-colors duration-200 whitespace-nowrap cursor-pointer text-center ${
                   ticketFilter === 'ALL' ? 'text-zinc-950' : 'text-zinc-500 hover:text-zinc-900'
                 }`}
               >
@@ -484,7 +484,7 @@ export default function MyTicketsPage() {
                   filterTabsRef.current['ACTIVE'] = el;
                 }}
                 onClick={() => setTicketFilter('ACTIVE')}
-                className={`relative z-10 px-3.5 sm:px-4 py-1.5 rounded-full text-xs font-medium transition-colors duration-200 whitespace-nowrap cursor-pointer ${
+                className={`relative z-10 flex-1 px-2.5 sm:px-3 py-1.5 rounded-full text-xs font-medium transition-colors duration-200 whitespace-nowrap cursor-pointer text-center ${
                   ticketFilter === 'ACTIVE' ? 'text-zinc-950' : 'text-zinc-500 hover:text-zinc-900'
                 }`}
               >
@@ -495,7 +495,7 @@ export default function MyTicketsPage() {
                   filterTabsRef.current['USED'] = el;
                 }}
                 onClick={() => setTicketFilter('USED')}
-                className={`relative z-10 px-3.5 sm:px-4 py-1.5 rounded-full text-xs font-medium transition-colors duration-200 whitespace-nowrap cursor-pointer ${
+                className={`relative z-10 flex-1 px-2.5 sm:px-3 py-1.5 rounded-full text-xs font-medium transition-colors duration-200 whitespace-nowrap cursor-pointer text-center ${
                   ticketFilter === 'USED' ? 'text-zinc-950' : 'text-zinc-500 hover:text-zinc-950'
                 }`}
               >
@@ -503,7 +503,7 @@ export default function MyTicketsPage() {
               </button>
             </div>
 
-            <div className="relative flex items-center p-1 sm:p-1.5 bg-zinc-200/80 rounded-full w-full sm:w-72">
+            <div className="relative flex items-center p-1 sm:p-1.5 bg-zinc-200/80 rounded-full w-full max-w-md lg:w-[calc((100%-3rem)/3)]">
               <Search className="absolute left-3.5 sm:left-4 h-4 w-4 text-zinc-500 pointer-events-none" />
               <input
                 type="text"

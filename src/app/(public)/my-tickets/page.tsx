@@ -200,9 +200,12 @@ export default function MyTicketsPage() {
       setRecipientEmail('');
       setRecipientName('');
       fetchUserTicketsAndOrders();
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error('Transfer error:', error);
-      const errMsg = error instanceof Error ? error.message : 'Gagal mentransfer tiket.';
+      const errMsg =
+        error?.response?.data?.message ||
+        error?.response?.data?.error ||
+        (error instanceof Error ? error.message : 'Gagal mentransfer tiket.');
       toast.error(errMsg);
     } finally {
       setTransferLoading(false);

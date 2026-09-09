@@ -186,9 +186,7 @@ export default function MyTicketsPage() {
     setTransferError(null);
     if (!transferTicket) return;
     if (!recipientEmail.trim() || !recipientEmail.includes('@')) {
-      const msg = 'Masukkan alamat email penerima yang valid';
-      setTransferError(msg);
-      toast.error(msg);
+      setTransferError('Masukkan alamat email penerima yang valid');
       return;
     }
 
@@ -212,7 +210,6 @@ export default function MyTicketsPage() {
         error?.response?.data?.error ||
         (error instanceof Error ? error.message : 'Gagal mentransfer tiket.');
       setTransferError(errMsg);
-      toast.error(errMsg);
     } finally {
       setTransferLoading(false);
     }

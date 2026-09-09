@@ -197,7 +197,6 @@ export default function MyTicketsPage() {
         recipient_name: recipientName.trim() || 'Teman / Kerabat',
       });
 
-      toast.success(`Tiket ${transferTicket.ticket_code} berhasil ditransfer ke ${recipientEmail.trim()}!`);
       setIsTransferOpen(false);
       setTransferTicket(null);
       setRecipientEmail('');

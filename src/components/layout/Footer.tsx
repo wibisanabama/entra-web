@@ -5,7 +5,7 @@ export function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-[#0c0c0c] text-white mt-auto border-none">
+    <footer className="bg-[#0c0c0c] text-white mt-auto border-none print:hidden">
       <div className="max-w-7xl mx-auto px-6 sm:px-8 py-12 sm:py-16 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6">
         <div>
           <Link href="/" className="inline-block">

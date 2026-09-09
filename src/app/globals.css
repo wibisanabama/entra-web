@@ -129,3 +129,80 @@ select:focus-visible {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* ==========================================================================
+   Print / PDF Stylesheet for E-Tickets & Official Documents
+   ========================================================================== */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 1.5cm;
+  }
+
+  html,
+  body {
+    background-color: #ffffff !important;
+    background: #ffffff !important;
+    color: #09090b !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Hide navigation, footers, and general page chrome */
+  header,
+  footer,
+  nav,
+  aside,
+  .print\:hidden {
+    display: none !important;
+  }
+
+  /* When printing from ticket or invoice modals, hide underlying page content */
+  body:has(#printable-ticket) main,
+  body:has(#printable-invoice) main {
+    display: none !important;
+  }
+
+  /* Ensure ticket pass card prints with 100% fidelity matching on-screen design */
+  #printable-ticket,
+  #printable-ticket * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  #printable-ticket {
+    display: block !important;
+    margin: 1.5cm auto 0 auto !important;
+    max-width: 540px !important;
+    width: 100% !important;
+    background-color: #f4f4f5 !important;
+    border-radius: 1.5rem !important;
+    overflow: hidden !important;
+    box-shadow: none !important;
+    border: none !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  #printable-invoice,
+  #printable-invoice * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  #printable-invoice {
+    display: block !important;
+    margin: 1.5cm auto 0 auto !important;
+    max-width: 580px !important;
+    width: 100% !important;
+    background-color: #f4f4f5 !important;
+    border-radius: 1.5rem !important;
+    overflow: hidden !important;
+    box-shadow: none !important;
+    border: none !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+}

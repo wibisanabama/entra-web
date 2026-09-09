@@ -54,18 +54,19 @@ export function ETicketModal({ isOpen, onClose, ticket, onOpenTransfer }: ETicke
       title="E-Ticket Digital & Invoice"
       className="max-w-xl p-0 overflow-hidden"
     >
-      <div className="p-6 space-y-6 print:p-0 text-zinc-900">
+      <div className="p-6 space-y-6 print:p-0 print:space-y-0 text-zinc-900">
         {/* Printable Ticket Pass Container */}
         <div
           id="printable-ticket"
-          className="relative bg-zinc-100 rounded-3xl border-0 shadow-none overflow-hidden print:border-none print:shadow-none"
+          className="relative bg-zinc-100 rounded-3xl border-0 shadow-none overflow-hidden print:border-none print:shadow-none print:max-w-xl print:mx-auto"
+          style={{ WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact' }}
         >
           {/* Top Event Banner / Header */}
-          <div className="relative p-6 bg-zinc-100 border-0">
+          <div className="relative p-6 bg-zinc-100 border-0" style={{ WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact' }}>
             <div className="flex items-start justify-between gap-4">
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <div className="p-1.5 bg-white rounded-lg text-zinc-900 border-0 shadow-none">
+                  <div className="p-1.5 bg-white rounded-lg text-zinc-900 border-0 shadow-none" style={{ WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact' }}>
                     <TicketIcon className="h-4 w-4" />
                   </div>
                   <span className="text-xs font-semibold uppercase tracking-wider text-zinc-500">
@@ -84,6 +85,7 @@ export function ETicketModal({ isOpen, onClose, ticket, onOpenTransfer }: ETicke
                 <Badge
                   variant={isActive ? 'success' : isUsed ? 'secondary' : 'error'}
                   className="text-xs py-1 px-3 border-0"
+                  style={{ WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact' }}
                 >
                   {isActive ? 'SIAP DIGUNAKAN' : isUsed ? 'SUDAH DIPAKAI' : ticket.status}
                 </Badge>
@@ -91,7 +93,10 @@ export function ETicketModal({ isOpen, onClose, ticket, onOpenTransfer }: ETicke
             </div>
 
             {/* Event Date, Time & Location Pill */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mt-5 px-4 sm:px-5 py-3 bg-white/70 rounded-2xl border-0 text-xs text-zinc-600">
+            <div
+              className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mt-5 px-4 sm:px-5 py-3 bg-white/70 rounded-2xl border-0 text-xs text-zinc-600 print:flex-row print:items-center print:justify-between"
+              style={{ WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact' }}
+            >
               <div className="flex items-center gap-2 flex-shrink-0" title={event?.start_date ? formatDate(event.start_date) : undefined}>
                 <Calendar className="h-4 w-4 text-zinc-500 flex-shrink-0" />
                 <span>
@@ -115,13 +120,16 @@ export function ETicketModal({ isOpen, onClose, ticket, onOpenTransfer }: ETicke
 
           {/* Perforated Divider with Semicircle Notches */}
           <div className="relative flex items-center justify-between my-1">
-            <div className="w-5 h-8 bg-white rounded-r-full -ml-1"></div>
-            <div className="w-full h-px bg-zinc-200 mx-2"></div>
-            <div className="w-5 h-8 bg-white rounded-l-full -mr-1"></div>
+            <div className="w-5 h-8 bg-white rounded-r-full -ml-1" style={{ WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact' }}></div>
+            <div className="w-full h-px bg-zinc-200 mx-2" style={{ WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact' }}></div>
+            <div className="w-5 h-8 bg-white rounded-l-full -mr-1" style={{ WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact' }}></div>
           </div>
 
           {/* Bottom QR Code & Ticket Stub Section */}
-          <div className="p-6 bg-zinc-100 flex flex-col sm:flex-row items-center justify-between gap-6">
+          <div
+            className="p-6 bg-zinc-100 flex flex-col sm:flex-row items-center justify-between gap-6 print:flex-row print:items-center print:justify-between"
+            style={{ WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact' }}
+          >
             {/* Ticket Details */}
             <div className="space-y-3 w-full sm:w-auto text-left">
               <div>
@@ -147,7 +155,7 @@ export function ETicketModal({ isOpen, onClose, ticket, onOpenTransfer }: ETicke
                   <button
                     type="button"
                     onClick={handleCopyCode}
-                    className="p-1 hover:bg-zinc-200 rounded-full text-zinc-400 hover:text-zinc-900 transition-colors"
+                    className="p-1 hover:bg-zinc-200 rounded-full text-zinc-400 hover:text-zinc-900 transition-colors print:hidden"
                     title="Salin Kode Tiket"
                   >
                     {copied ? <Check className="h-4 w-4 text-emerald-600" /> : <Copy className="h-4 w-4" />}
@@ -161,7 +169,10 @@ export function ETicketModal({ isOpen, onClose, ticket, onOpenTransfer }: ETicke
             </div>
 
             {/* Live QR Code Stub */}
-            <div className="flex flex-col items-center justify-center p-3.5 bg-white rounded-2xl shadow-none border-0 flex-shrink-0">
+            <div
+              className="flex flex-col items-center justify-center p-3.5 bg-white rounded-2xl shadow-none border-0 flex-shrink-0"
+              style={{ WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact' }}
+            >
               <QRCodeSVG
                 value={ticket.ticket_code}
                 size={135}

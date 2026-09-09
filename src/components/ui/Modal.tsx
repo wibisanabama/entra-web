@@ -32,14 +32,14 @@ export function Modal({ isOpen, onClose, title, className = '', children }: Moda
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 print:static print:p-0 print:block print:bg-transparent">
       <div 
-        className="fixed inset-0 bg-black/40 backdrop-blur-sm transition-opacity"
+        className="fixed inset-0 bg-black/40 backdrop-blur-sm transition-opacity print:hidden"
         onClick={onClose}
         aria-hidden="true"
       />
-      <div className={`relative bg-white border-0 rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden transform transition-all ${className}`}>
-        <div className="px-6 pt-5 pb-2 flex items-center justify-between">
+      <div className={`relative bg-white border-0 rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden transform transition-all print:shadow-none print:bg-transparent print:max-w-none print:w-full print:p-0 print:border-none ${className}`}>
+        <div className="px-6 pt-5 pb-2 flex items-center justify-between print:hidden">
           <h3 className="text-base font-semibold text-zinc-950">{title}</h3>
           <button 
             onClick={onClose} 
@@ -49,7 +49,7 @@ export function Modal({ isOpen, onClose, title, className = '', children }: Moda
             &times;
           </button>
         </div>
-        <div className="px-6 py-5 text-zinc-900">
+        <div className="px-6 py-5 text-zinc-900 print:p-0">
           {children}
         </div>
       </div>

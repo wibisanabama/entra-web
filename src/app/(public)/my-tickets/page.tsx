@@ -897,13 +897,20 @@ export default function MyTicketsPage() {
           title="Invoice Pembayaran Resmi"
         >
           <div className="space-y-5 print:p-0 text-zinc-900">
-            <div id="printable-invoice" className="p-6 bg-zinc-100 rounded-3xl space-y-4 border-0 shadow-none">
+            <div
+              id="printable-invoice"
+              className="p-6 bg-zinc-100 rounded-3xl space-y-4 border-0 shadow-none print:max-w-xl print:mx-auto"
+              style={{ WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact' }}
+            >
               <div className="flex justify-between items-start pb-4 border-0">
                 <div>
                   <h3 className="text-lg font-black text-zinc-950">INVOICE ENTRA</h3>
                   <p className="text-xs text-zinc-500">Order #{selectedOrderForInvoice.id.substring(0, 16)}</p>
                 </div>
-                <span className="text-xs font-semibold px-3 py-1 bg-emerald-200/70 text-emerald-800 border-0 rounded-full">
+                <span
+                  className="text-xs font-semibold px-3 py-1 bg-emerald-200/70 text-emerald-800 border-0 rounded-full"
+                  style={{ WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact' }}
+                >
                   LUNAS
                 </span>
               </div>
@@ -920,7 +927,10 @@ export default function MyTicketsPage() {
                 </div>
               </div>
 
-              <div className="pt-3 flex justify-between items-center text-sm bg-white/70 p-4 rounded-2xl border-0">
+              <div
+                className="pt-3 flex justify-between items-center text-sm bg-white/70 p-4 rounded-2xl border-0"
+                style={{ WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact' }}
+              >
                 <span className="text-zinc-700 font-bold">Total Pembayaran</span>
                 <span className="text-xl font-black text-zinc-950 font-mono">
                   {formatCurrency(selectedOrderForInvoice.total_amount)}

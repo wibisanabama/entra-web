@@ -633,7 +633,7 @@ export default function MyTicketsPage() {
                         {isActive && (
                           <Button
                             size="sm"
-                            variant="outline"
+                            variant="ghost"
                             onClick={() => {
                               setTransferTicket(t);
                               setTransferError(null);
@@ -735,7 +735,7 @@ export default function MyTicketsPage() {
                       <div className="flex items-center gap-2">
                         {isPaid && (
                           <Button
-                            variant="outline"
+                            variant="ghost"
                             size="sm"
                             onClick={() => {
                               setSelectedOrderForInvoice(order);

@@ -314,8 +314,9 @@ export default function MyTicketsPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8 text-zinc-900">
-      {/* Header */}
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8 text-zinc-900 print:p-0 print:m-0 print:max-w-none">
+      <div className="space-y-8 print:hidden">
+        {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-black text-zinc-950 tracking-tight">Tiket & Pesanan Saya</h1>
@@ -796,6 +797,7 @@ export default function MyTicketsPage() {
           )}
         </div>
       )}
+      </div>
 
       {/* Interactive ETicket Modal */}
       <ETicketModal

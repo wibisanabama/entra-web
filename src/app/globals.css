@@ -148,6 +148,21 @@ select:focus-visible {
     print-color-adjust: exact !important;
     margin: 0 !important;
     padding: 0 !important;
+    overflow: visible !important;
+    height: auto !important;
+  }
+
+  /* Reset fixed modal overlay for print */
+  .fixed.inset-0.z-50 {
+    position: static !important;
+    inset: auto !important;
+    overflow: visible !important;
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: transparent !important;
   }
 
   /* Hide navigation, footers, and general page chrome */
@@ -156,12 +171,6 @@ select:focus-visible {
   nav,
   aside,
   .print\:hidden {
-    display: none !important;
-  }
-
-  /* When printing from ticket or invoice modals, hide underlying page content */
-  body:has(#printable-ticket) main,
-  body:has(#printable-invoice) main {
     display: none !important;
   }
 

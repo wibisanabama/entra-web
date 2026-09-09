@@ -225,8 +225,8 @@ export default function CashlessPortalPage() {
   if (!authLoading && !user) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-zinc-900">
-        <div className="text-center max-w-md mx-auto space-y-6 bg-white border border-zinc-200 p-8 rounded-3xl shadow-sm">
-          <div className="p-4 bg-zinc-100 text-zinc-900 rounded-full w-16 h-16 mx-auto flex items-center justify-center border border-zinc-200">
+        <div className="text-center max-w-md mx-auto space-y-6 bg-zinc-100 p-8 sm:p-10 rounded-3xl border-0 shadow-none">
+          <div className="p-4 bg-white text-zinc-900 rounded-full w-16 h-16 mx-auto flex items-center justify-center border-0 shadow-none">
             <CreditCard className="h-8 w-8" />
           </div>
           <div>
@@ -236,7 +236,7 @@ export default function CashlessPortalPage() {
             </p>
           </div>
           <Link href="/login" className="block w-full">
-            <Button className="w-full bg-zinc-950 hover:bg-zinc-800 text-white rounded-full py-3">
+            <Button className="w-full bg-zinc-950 hover:bg-zinc-800 text-white rounded-full py-3 border-0 shadow-none">
               Masuk Sekarang
             </Button>
           </Link>

@@ -38,8 +38,8 @@ export function Modal({ isOpen, onClose, title, className = '', children }: Moda
         onClick={onClose}
         aria-hidden="true"
       />
-      <div className={`relative bg-white border border-zinc-200 rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden transform transition-all ${className}`}>
-        <div className="px-6 py-4 flex items-center justify-between border-b border-zinc-100">
+      <div className={`relative bg-white border-0 rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden transform transition-all ${className}`}>
+        <div className="px-6 pt-5 pb-2 flex items-center justify-between">
           <h3 className="text-base font-semibold text-zinc-950">{title}</h3>
           <button 
             onClick={onClose} 

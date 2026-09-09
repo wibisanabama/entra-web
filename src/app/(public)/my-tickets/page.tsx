@@ -230,8 +230,8 @@ export default function MyTicketsPage() {
   if (!authLoading && !user) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-zinc-900">
-        <div className="text-center max-w-md mx-auto space-y-6 bg-white border border-zinc-200 p-8 rounded-3xl shadow-sm">
-          <div className="p-4 bg-zinc-100 text-zinc-900 rounded-full w-16 h-16 mx-auto flex items-center justify-center border border-zinc-200">
+        <div className="text-center max-w-md mx-auto space-y-6 bg-zinc-100 p-8 sm:p-10 rounded-3xl border-0 shadow-none">
+          <div className="p-4 bg-white text-zinc-900 rounded-full w-16 h-16 mx-auto flex items-center justify-center border-0 shadow-none">
             <TicketIcon className="h-8 w-8" />
           </div>
           <div>
@@ -241,7 +241,7 @@ export default function MyTicketsPage() {
             </p>
           </div>
           <Link href="/login" className="block w-full">
-            <Button className="w-full bg-zinc-950 hover:bg-zinc-800 text-white rounded-full py-3">
+            <Button className="w-full bg-zinc-950 hover:bg-zinc-800 text-white rounded-full py-3 border-0 shadow-none">
               Masuk ke Akun
             </Button>
           </Link>
@@ -266,13 +266,13 @@ export default function MyTicketsPage() {
             variant="outline"
             onClick={fetchUserTicketsAndOrders}
             disabled={loading}
-            className="flex items-center gap-2 text-zinc-700 border-zinc-200 hover:bg-zinc-50 rounded-full text-xs"
+            className="flex items-center gap-2 text-zinc-800 bg-zinc-100 hover:bg-zinc-200 border-0 rounded-full text-xs font-semibold px-4 py-2.5 shadow-none"
           >
             <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
             Refresh
           </Button>
           <Link href="/events">
-            <Button className="bg-zinc-950 hover:bg-zinc-800 text-white flex items-center gap-2 rounded-full text-xs">
+            <Button className="bg-zinc-950 hover:bg-zinc-800 text-white flex items-center gap-2 rounded-full text-xs font-semibold px-4 py-2.5 border-0 shadow-none">
               <ShoppingBag className="h-4 w-4" />
               Beli Tiket Baru
             </Button>
@@ -282,7 +282,7 @@ export default function MyTicketsPage() {
 
       {/* Summary Metrics Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-        <div className="bg-zinc-50 border border-zinc-200 rounded-3xl p-5 shadow-xs">
+        <div className="bg-zinc-100 rounded-3xl p-6 border-0 shadow-none">
           <div className="flex items-start justify-between">
             <div>
               <p className="text-zinc-500 text-xs font-semibold uppercase tracking-wider mb-1">
@@ -295,13 +295,13 @@ export default function MyTicketsPage() {
               )}
               <p className="text-xs text-zinc-500">Gunakan QR code di pintu masuk</p>
             </div>
-            <div className="p-3 bg-white border border-zinc-200 text-zinc-900 rounded-2xl shadow-xs">
+            <div className="p-3 bg-white text-zinc-900 rounded-2xl border-0 shadow-none">
               <QrCode className="h-6 w-6" />
             </div>
           </div>
         </div>
 
-        <div className="bg-zinc-50 border border-zinc-200 rounded-3xl p-5 shadow-xs">
+        <div className="bg-zinc-100 rounded-3xl p-6 border-0 shadow-none">
           <div className="flex items-start justify-between">
             <div>
               <p className="text-zinc-500 text-xs font-semibold uppercase tracking-wider mb-1">
@@ -314,13 +314,13 @@ export default function MyTicketsPage() {
               )}
               <p className="text-xs text-zinc-500">Semua riwayat tiket</p>
             </div>
-            <div className="p-3 bg-white border border-zinc-200 text-zinc-900 rounded-2xl shadow-xs">
+            <div className="p-3 bg-white text-zinc-900 rounded-2xl border-0 shadow-none">
               <TicketIcon className="h-6 w-6" />
             </div>
           </div>
         </div>
 
-        <div className="bg-zinc-50 border border-zinc-200 rounded-3xl p-5 shadow-xs">
+        <div className="bg-zinc-100 rounded-3xl p-6 border-0 shadow-none">
           <div className="flex items-start justify-between">
             <div>
               <p className="text-zinc-500 text-xs font-semibold uppercase tracking-wider mb-1">
@@ -333,7 +333,7 @@ export default function MyTicketsPage() {
               )}
               <p className="text-xs text-zinc-500">Acara konser, festival & seminar</p>
             </div>
-            <div className="p-3 bg-white border border-zinc-200 text-zinc-900 rounded-2xl shadow-xs">
+            <div className="p-3 bg-white text-zinc-900 rounded-2xl border-0 shadow-none">
               <Calendar className="h-6 w-6" />
             </div>
           </div>
@@ -341,13 +341,13 @@ export default function MyTicketsPage() {
       </div>
 
       {/* Main Tabs Navigation */}
-      <div className="flex border-b border-zinc-200 space-x-6">
+      <div className="inline-flex bg-zinc-100 p-1.5 rounded-full border-0">
         <button
           onClick={() => setActiveTab('tickets')}
-          className={`pb-3.5 text-sm font-semibold flex items-center gap-2 border-b-2 transition-colors ${
+          className={`px-5 py-2.5 rounded-full text-xs sm:text-sm font-semibold flex items-center gap-2 transition-all cursor-pointer border-0 ${
             activeTab === 'tickets'
-              ? 'border-zinc-950 text-zinc-950'
-              : 'border-transparent text-zinc-500 hover:text-zinc-950'
+              ? 'bg-zinc-950 text-white shadow-none'
+              : 'text-zinc-600 hover:text-zinc-950'
           }`}
         >
           <TicketIcon className="h-4 w-4" />
@@ -356,10 +356,10 @@ export default function MyTicketsPage() {
 
         <button
           onClick={() => setActiveTab('orders')}
-          className={`pb-3.5 text-sm font-semibold flex items-center gap-2 border-b-2 transition-colors ${
+          className={`px-5 py-2.5 rounded-full text-xs sm:text-sm font-semibold flex items-center gap-2 transition-all cursor-pointer border-0 ${
             activeTab === 'orders'
-              ? 'border-zinc-950 text-zinc-950'
-              : 'border-transparent text-zinc-500 hover:text-zinc-950'
+              ? 'bg-zinc-950 text-white shadow-none'
+              : 'text-zinc-600 hover:text-zinc-950'
           }`}
         >
           <CreditCard className="h-4 w-4" />
@@ -372,27 +372,27 @@ export default function MyTicketsPage() {
         <div className="space-y-6">
           {/* Filter Bar */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div className="flex bg-zinc-100 p-1 rounded-full border border-zinc-200 text-xs w-fit">
+            <div className="flex bg-zinc-100 p-1 rounded-full text-xs w-fit border-0">
               <button
                 onClick={() => setTicketFilter('ALL')}
-                className={`px-3.5 py-1.5 rounded-full font-medium transition-colors ${
-                  ticketFilter === 'ALL' ? 'bg-zinc-950 text-white shadow-xs' : 'text-zinc-600 hover:text-zinc-950'
+                className={`px-3.5 py-1.5 rounded-full font-medium transition-colors border-0 cursor-pointer ${
+                  ticketFilter === 'ALL' ? 'bg-zinc-950 text-white shadow-none' : 'text-zinc-600 hover:text-zinc-950'
                 }`}
               >
                 Semua ({tickets.length})
               </button>
               <button
                 onClick={() => setTicketFilter('ACTIVE')}
-                className={`px-3.5 py-1.5 rounded-full font-medium transition-colors ${
-                  ticketFilter === 'ACTIVE' ? 'bg-zinc-950 text-white shadow-xs' : 'text-zinc-600 hover:text-zinc-950'
+                className={`px-3.5 py-1.5 rounded-full font-medium transition-colors border-0 cursor-pointer ${
+                  ticketFilter === 'ACTIVE' ? 'bg-zinc-950 text-white shadow-none' : 'text-zinc-600 hover:text-zinc-950'
                 }`}
               >
                 Siap Digunakan ({activeTicketsCount})
               </button>
               <button
                 onClick={() => setTicketFilter('USED')}
-                className={`px-3.5 py-1.5 rounded-full font-medium transition-colors ${
-                  ticketFilter === 'USED' ? 'bg-zinc-950 text-white shadow-xs' : 'text-zinc-600 hover:text-zinc-950'
+                className={`px-3.5 py-1.5 rounded-full font-medium transition-colors border-0 cursor-pointer ${
+                  ticketFilter === 'USED' ? 'bg-zinc-950 text-white shadow-none' : 'text-zinc-600 hover:text-zinc-950'
                 }`}
               >
                 Sudah Digunakan ({tickets.length - activeTicketsCount})
@@ -400,14 +400,14 @@ export default function MyTicketsPage() {
             </div>
 
             <div className="relative w-full sm:w-72">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400 pointer-events-none" />
               <input
                 type="text"
                 placeholder="Cari event, kode tiket..."
                 aria-label="Cari event, kode tiket"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bg-white border border-zinc-200 rounded-full text-xs text-zinc-900 placeholder-zinc-400 focus:outline-none focus:border-zinc-900"
+                className="w-full pl-10 pr-4 py-2.5 bg-zinc-100 rounded-full text-xs text-zinc-900 placeholder-zinc-400 border-0 outline-none ring-0 focus:outline-none focus:ring-0 shadow-none font-medium"
               />
             </div>
           </div>
@@ -416,7 +416,7 @@ export default function MyTicketsPage() {
           {loading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {Array.from({ length: 3 }).map((_, i) => (
-                <div key={i} className="bg-white border border-zinc-200 p-6 rounded-3xl space-y-4 shadow-xs">
+                <div key={i} className="bg-zinc-100 p-6 rounded-3xl space-y-4 border-0 shadow-none">
                   <Skeleton className="h-6 w-3/4 bg-zinc-200/70" />
                   <Skeleton className="h-4 w-1/2 bg-zinc-200/70" />
                   <Skeleton className="h-20 w-full bg-zinc-200/70" />
@@ -425,8 +425,8 @@ export default function MyTicketsPage() {
               ))}
             </div>
           ) : filteredTickets.length === 0 ? (
-            <div className="text-center py-16 bg-zinc-50 border border-zinc-200 rounded-3xl p-8 space-y-4">
-              <div className="p-4 bg-white rounded-full w-16 h-16 mx-auto flex items-center justify-center text-zinc-400 border border-zinc-200">
+            <div className="text-center py-16 bg-zinc-100 rounded-3xl p-8 space-y-4 border-0 shadow-none">
+              <div className="p-4 bg-white rounded-full w-16 h-16 mx-auto flex items-center justify-center text-zinc-400 border-0 shadow-none">
                 <TicketIcon className="h-8 w-8" />
               </div>
               <div>
@@ -438,7 +438,7 @@ export default function MyTicketsPage() {
                 </p>
               </div>
               <Link href="/events">
-                <Button className="bg-zinc-950 hover:bg-zinc-800 text-white rounded-full text-xs mt-2 px-6">
+                <Button className="bg-zinc-950 hover:bg-zinc-800 text-white rounded-full text-xs mt-2 px-6 py-2.5 border-0 shadow-none">
                   Jelajahi Event
                 </Button>
               </Link>
@@ -452,18 +452,18 @@ export default function MyTicketsPage() {
                 return (
                   <div
                     key={t.id}
-                    className="bg-white border border-zinc-200 hover:border-zinc-300 transition-all rounded-3xl overflow-hidden flex flex-col justify-between group shadow-xs"
+                    className="bg-zinc-100 rounded-3xl overflow-hidden flex flex-col justify-between group border-0 shadow-none transition-all"
                   >
                     {/* Top Ticket Header */}
-                    <div className="p-5 space-y-3 bg-zinc-50/50">
+                    <div className="p-5 space-y-3">
                       <div className="flex items-start justify-between gap-2">
                         <span
-                          className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-full border ${
+                          className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-full border-0 ${
                             isActive
-                              ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                              ? 'bg-emerald-200/70 text-emerald-800'
                               : isUsed
-                              ? 'bg-zinc-100 text-zinc-600 border-zinc-200'
-                              : 'bg-rose-50 text-rose-700 border-rose-200'
+                              ? 'bg-zinc-200 text-zinc-700'
+                              : 'bg-rose-200/70 text-rose-800'
                           }`}
                         >
                           {isActive ? 'Siap Digunakan' : isUsed ? 'Sudah Dipakai' : t.status}
@@ -493,15 +493,15 @@ export default function MyTicketsPage() {
                       </div>
                     </div>
 
-                    {/* Perforated Divider */}
+                    {/* Perforated Divider (Seamless cutouts without borders) */}
                     <div className="relative flex items-center justify-between">
-                      <div className="w-4 h-6 bg-white rounded-r-full border-r border-zinc-200 -ml-1"></div>
-                      <div className="w-full border-b border-dashed border-zinc-200 mx-2"></div>
-                      <div className="w-4 h-6 bg-white rounded-l-full border-l border-zinc-200 -mr-1"></div>
+                      <div className="w-4 h-6 bg-white rounded-r-full -ml-1"></div>
+                      <div className="w-full h-px bg-zinc-200 mx-2"></div>
+                      <div className="w-4 h-6 bg-white rounded-l-full -mr-1"></div>
                     </div>
 
                     {/* Ticket Code & Actions */}
-                    <div className="p-4 bg-white flex flex-col gap-3">
+                    <div className="p-5 flex flex-col gap-3">
                       <div className="flex items-center justify-between">
                         <span className="text-[10px] text-zinc-400 uppercase tracking-wider block font-semibold">
                           Kode Tiket
@@ -518,7 +518,7 @@ export default function MyTicketsPage() {
                             setSelectedTicket(t);
                             setIsModalOpen(true);
                           }}
-                          className="flex-1 bg-zinc-950 hover:bg-zinc-800 text-white flex items-center justify-center gap-1.5 text-xs font-semibold py-2 rounded-full"
+                          className="flex-1 bg-zinc-950 hover:bg-zinc-800 text-white flex items-center justify-center gap-1.5 text-xs font-semibold py-2.5 rounded-full border-0 shadow-none"
                         >
                           <QrCode className="h-3.5 w-3.5" />
                           Buka E-Ticket
@@ -532,10 +532,10 @@ export default function MyTicketsPage() {
                               setTransferTicket(t);
                               setIsTransferOpen(true);
                             }}
-                            className="border-zinc-200 hover:bg-zinc-50 text-zinc-700 text-xs px-3 rounded-full"
+                            className="bg-white hover:bg-zinc-200 text-zinc-800 text-xs px-3.5 py-2.5 rounded-full border-0 shadow-none font-semibold"
                             title="Transfer Tiket ke Teman"
                           >
-                            <SendHorizontal className="h-3.5 w-3.5 text-zinc-600" />
+                            <SendHorizontal className="h-3.5 w-3.5 text-zinc-700" />
                           </Button>
                         )}
                       </div>
@@ -554,15 +554,15 @@ export default function MyTicketsPage() {
           {loading ? (
             <div className="space-y-4">
               {Array.from({ length: 3 }).map((_, i) => (
-                <div key={i} className="bg-white border border-zinc-200 p-5 space-y-2 rounded-2xl">
+                <div key={i} className="bg-zinc-100 p-5 space-y-2 rounded-3xl border-0 shadow-none">
                   <Skeleton className="h-6 w-1/4 bg-zinc-200/70" />
                   <Skeleton className="h-4 w-1/2 bg-zinc-200/70" />
                 </div>
               ))}
             </div>
           ) : orders.length === 0 ? (
-            <div className="text-center py-16 bg-zinc-50 border border-zinc-200 rounded-3xl p-8 space-y-4">
-              <div className="p-4 bg-white rounded-full w-16 h-16 mx-auto flex items-center justify-center text-zinc-400 border border-zinc-200">
+            <div className="text-center py-16 bg-zinc-100 rounded-3xl p-8 space-y-4 border-0 shadow-none">
+              <div className="p-4 bg-white rounded-full w-16 h-16 mx-auto flex items-center justify-center text-zinc-400 border-0 shadow-none">
                 <CreditCard className="h-8 w-8" />
               </div>
               <div>
@@ -572,7 +572,7 @@ export default function MyTicketsPage() {
                 </p>
               </div>
               <Link href="/events">
-                <Button className="bg-zinc-950 hover:bg-zinc-800 text-white rounded-full text-xs mt-2 px-6">
+                <Button className="bg-zinc-950 hover:bg-zinc-800 text-white rounded-full text-xs mt-2 px-6 py-2.5 border-0 shadow-none">
                   Pesan Tiket Sekarang
                 </Button>
               </Link>
@@ -586,7 +586,7 @@ export default function MyTicketsPage() {
                 return (
                   <div
                     key={order.id}
-                    className="bg-white border border-zinc-200 p-5 hover:border-zinc-300 transition-colors flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 rounded-2xl shadow-xs"
+                    className="bg-zinc-100 p-5 sm:p-6 transition-colors flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 rounded-3xl border-0 shadow-none"
                   >
                     <div className="space-y-1">
                       <div className="flex items-center gap-3">
@@ -594,12 +594,12 @@ export default function MyTicketsPage() {
                           Order #{order.id.substring(0, 8)}...
                         </span>
                         <span
-                          className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-full border ${
+                          className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-full border-0 ${
                             isPaid
-                              ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                              ? 'bg-emerald-200/70 text-emerald-800'
                               : isPending
-                              ? 'bg-amber-50 text-amber-700 border-amber-200'
-                              : 'bg-rose-50 text-rose-700 border-rose-200'
+                              ? 'bg-amber-200/70 text-amber-800'
+                              : 'bg-rose-200/70 text-rose-800'
                           }`}
                         >
                           {isPaid ? 'LUNAS' : isPending ? 'MENUNGGU PEMBAYARAN' : order.status}
@@ -617,7 +617,7 @@ export default function MyTicketsPage() {
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end border-t sm:border-t-0 border-zinc-100 pt-3 sm:pt-0">
+                    <div className="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end pt-3 sm:pt-0">
                       <div className="text-left sm:text-right">
                         <span className="text-[11px] text-zinc-400 block font-medium">Total Tagihan</span>
                         <span className="text-lg font-black text-zinc-950 font-mono">
@@ -634,7 +634,7 @@ export default function MyTicketsPage() {
                               setSelectedOrderForInvoice(order);
                               setIsInvoiceOpen(true);
                             }}
-                            className="border-zinc-200 hover:bg-zinc-50 text-zinc-700 text-xs flex items-center gap-1.5 rounded-full"
+                            className="bg-white hover:bg-zinc-200 text-zinc-800 text-xs flex items-center gap-1.5 rounded-full border-0 shadow-none font-semibold px-4 py-2.5"
                           >
                             <FileText className="h-3.5 w-3.5 text-zinc-600" />
                             Lihat Invoice
@@ -648,7 +648,7 @@ export default function MyTicketsPage() {
                               size="sm"
                               onClick={() => handleSimulatePayment(order.id)}
                               disabled={payingOrderId === order.id}
-                              className="border-zinc-300 hover:bg-zinc-50 text-zinc-800 text-xs font-semibold rounded-full"
+                              className="bg-white hover:bg-zinc-200 text-zinc-800 text-xs font-semibold rounded-full border-0 shadow-none px-4 py-2.5"
                               title="Simulasikan pembayaran langsung di mode pengembangan"
                             >
                               {payingOrderId === order.id ? 'Memproses...' : 'Simulasi Bayar (Dev)'}
@@ -656,7 +656,7 @@ export default function MyTicketsPage() {
                             <Button
                               onClick={() => handlePayOrder(order.id)}
                               disabled={payingOrderId === order.id}
-                              className="bg-zinc-950 hover:bg-zinc-800 text-white flex items-center gap-1.5 text-xs font-semibold rounded-full"
+                              className="bg-zinc-950 hover:bg-zinc-800 text-white flex items-center gap-1.5 text-xs font-semibold rounded-full border-0 shadow-none px-5 py-2.5"
                             >
                               {payingOrderId === order.id ? 'Memuat...' : 'Bayar Sekarang'}
                               <ArrowRight className="h-3.5 w-3.5" />
@@ -695,7 +695,7 @@ export default function MyTicketsPage() {
           title="Transfer Tiket ke Pengguna Lain"
         >
           <form onSubmit={handleTransferSubmit} className="space-y-4 text-zinc-900">
-            <div className="p-3.5 bg-zinc-50 border border-zinc-200 rounded-2xl text-xs text-zinc-600 space-y-1">
+            <div className="p-4 bg-zinc-100 rounded-2xl text-xs text-zinc-600 space-y-1 border-0">
               <p className="text-zinc-950 font-semibold flex items-center gap-1.5">
                 <SendHorizontal className="h-4 w-4 text-zinc-700" />
                 Pindah Kepemilikan Tiket
@@ -706,7 +706,7 @@ export default function MyTicketsPage() {
             </div>
 
             {/* Ticket Snapshot Card */}
-            <div className="p-3.5 bg-zinc-100/70 border border-zinc-200 rounded-2xl space-y-1">
+            <div className="p-4 bg-zinc-100 rounded-2xl space-y-1 border-0">
               <p className="text-xs text-zinc-950 font-bold">{transferTicket.event?.title || 'Event'}</p>
               <div className="flex justify-between text-xs text-zinc-500">
                 <span>{transferTicket.ticket_type?.name || 'Tiket'}</span>
@@ -724,7 +724,7 @@ export default function MyTicketsPage() {
                 value={recipientEmail}
                 onChange={(e) => setRecipientEmail(e.target.value)}
                 placeholder="nama@email.com"
-                className="w-full px-4 py-2.5 bg-white border border-zinc-200 rounded-full text-zinc-900 font-medium focus:outline-none focus:border-zinc-900 text-sm"
+                className="w-full px-4 py-3 bg-zinc-100 rounded-full text-zinc-900 font-medium text-sm border-0 outline-none ring-0 focus:outline-none focus:ring-0 shadow-none placeholder-zinc-400"
                 required
               />
             </div>
@@ -739,7 +739,7 @@ export default function MyTicketsPage() {
                 value={recipientName}
                 onChange={(e) => setRecipientName(e.target.value)}
                 placeholder="Nama Teman / Kerabat"
-                className="w-full px-4 py-2.5 bg-white border border-zinc-200 rounded-full text-zinc-900 font-medium focus:outline-none focus:border-zinc-900 text-sm"
+                className="w-full px-4 py-3 bg-zinc-100 rounded-full text-zinc-900 font-medium text-sm border-0 outline-none ring-0 focus:outline-none focus:ring-0 shadow-none placeholder-zinc-400"
               />
             </div>
 
@@ -749,14 +749,14 @@ export default function MyTicketsPage() {
                 variant="outline"
                 disabled={transferLoading}
                 onClick={() => setIsTransferOpen(false)}
-                className="rounded-full border-zinc-200 text-zinc-700 hover:bg-zinc-50 text-xs"
+                className="rounded-full bg-zinc-100 text-zinc-700 hover:bg-zinc-200 text-xs border-0 shadow-none font-semibold px-5 py-2.5"
               >
                 Batal
               </Button>
               <Button
                 type="submit"
                 disabled={transferLoading || !recipientEmail.trim()}
-                className="bg-zinc-950 hover:bg-zinc-800 text-white px-6 font-semibold flex items-center gap-1.5 rounded-full text-xs"
+                className="bg-zinc-950 hover:bg-zinc-800 text-white px-6 font-semibold flex items-center gap-1.5 rounded-full text-xs border-0 shadow-none py-2.5"
               >
                 {transferLoading ? 'Mentransfer...' : 'Kirim Tiket Sekarang'}
               </Button>
@@ -773,13 +773,13 @@ export default function MyTicketsPage() {
           title="Invoice Pembayaran Resmi"
         >
           <div className="space-y-5 print:p-0 text-zinc-900">
-            <div id="printable-invoice" className="p-6 bg-zinc-50 border border-zinc-200 rounded-3xl space-y-4">
-              <div className="flex justify-between items-start border-b border-zinc-200 pb-4">
+            <div id="printable-invoice" className="p-6 bg-zinc-100 rounded-3xl space-y-4 border-0 shadow-none">
+              <div className="flex justify-between items-start pb-4 border-0">
                 <div>
                   <h3 className="text-lg font-black text-zinc-950">INVOICE ENTRA</h3>
                   <p className="text-xs text-zinc-500">Order #{selectedOrderForInvoice.id.substring(0, 16)}</p>
                 </div>
-                <span className="text-xs font-semibold px-3 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full">
+                <span className="text-xs font-semibold px-3 py-1 bg-emerald-200/70 text-emerald-800 border-0 rounded-full">
                   LUNAS
                 </span>
               </div>
@@ -796,7 +796,7 @@ export default function MyTicketsPage() {
                 </div>
               </div>
 
-              <div className="pt-3 border-t border-zinc-200 flex justify-between items-center text-sm">
+              <div className="pt-3 flex justify-between items-center text-sm bg-white/70 p-4 rounded-2xl border-0">
                 <span className="text-zinc-700 font-bold">Total Pembayaran</span>
                 <span className="text-xl font-black text-zinc-950 font-mono">
                   {formatCurrency(selectedOrderForInvoice.total_amount)}
@@ -808,14 +808,14 @@ export default function MyTicketsPage() {
               <Button
                 variant="outline"
                 onClick={() => window.print()}
-                className="flex items-center gap-1.5 text-xs text-zinc-700 border-zinc-200 hover:bg-zinc-50 rounded-full"
+                className="flex items-center gap-1.5 text-xs text-zinc-800 bg-zinc-100 hover:bg-zinc-200 rounded-full border-0 font-semibold px-4 py-2.5 shadow-none"
               >
                 <Printer className="h-4 w-4" />
                 Cetak Invoice
               </Button>
               <Button
                 onClick={() => setIsInvoiceOpen(false)}
-                className="bg-zinc-950 hover:bg-zinc-800 text-white text-xs font-semibold rounded-full px-6"
+                className="bg-zinc-950 hover:bg-zinc-800 text-white text-xs font-semibold rounded-full px-6 py-2.5 border-0 shadow-none"
               >
                 Tutup
               </Button>

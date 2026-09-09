@@ -850,7 +850,7 @@ export default function MyTicketsPage() {
 
             {/* Error Feedback Banner */}
             {transferError && (
-              <div className="p-3.5 bg-rose-50 border border-rose-200/80 text-rose-800 rounded-2xl text-xs flex items-start gap-2.5 animate-in fade-in duration-150">
+              <div className="p-3.5 bg-rose-50 text-rose-800 rounded-2xl text-xs flex items-start gap-2.5 animate-in fade-in duration-150 border-0 shadow-none">
                 <AlertCircle className="h-4 w-4 shrink-0 text-rose-600 mt-0.5" />
                 <div className="space-y-0.5">
                   <p className="font-bold text-rose-950">Gagal Mentransfer Tiket</p>

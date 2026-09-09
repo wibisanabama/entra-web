@@ -424,7 +424,7 @@ export default function MyTicketsPage() {
           }}
           onClick={() => setActiveTab('tickets')}
           className={`relative z-10 px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-medium transition-colors duration-200 whitespace-nowrap cursor-pointer flex items-center gap-2 ${
-            activeTab === 'tickets' ? 'text-zinc-950 font-semibold' : 'text-zinc-500 hover:text-zinc-900'
+            activeTab === 'tickets' ? 'text-zinc-950' : 'text-zinc-500 hover:text-zinc-900'
           }`}
         >
           <TicketIcon className="h-4 w-4" />
@@ -437,7 +437,7 @@ export default function MyTicketsPage() {
           }}
           onClick={() => setActiveTab('orders')}
           className={`relative z-10 px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-medium transition-colors duration-200 whitespace-nowrap cursor-pointer flex items-center gap-2 ${
-            activeTab === 'orders' ? 'text-zinc-950 font-semibold' : 'text-zinc-500 hover:text-zinc-900'
+            activeTab === 'orders' ? 'text-zinc-950' : 'text-zinc-500 hover:text-zinc-900'
           }`}
         >
           <CreditCard className="h-4 w-4" />
@@ -471,7 +471,7 @@ export default function MyTicketsPage() {
                 }}
                 onClick={() => setTicketFilter('ALL')}
                 className={`relative z-10 px-3.5 sm:px-4 py-1.5 rounded-full text-xs font-medium transition-colors duration-200 whitespace-nowrap cursor-pointer ${
-                  ticketFilter === 'ALL' ? 'text-zinc-950 font-semibold' : 'text-zinc-500 hover:text-zinc-900'
+                  ticketFilter === 'ALL' ? 'text-zinc-950' : 'text-zinc-500 hover:text-zinc-900'
                 }`}
               >
                 Semua ({tickets.length})
@@ -482,7 +482,7 @@ export default function MyTicketsPage() {
                 }}
                 onClick={() => setTicketFilter('ACTIVE')}
                 className={`relative z-10 px-3.5 sm:px-4 py-1.5 rounded-full text-xs font-medium transition-colors duration-200 whitespace-nowrap cursor-pointer ${
-                  ticketFilter === 'ACTIVE' ? 'text-zinc-950 font-semibold' : 'text-zinc-500 hover:text-zinc-900'
+                  ticketFilter === 'ACTIVE' ? 'text-zinc-950' : 'text-zinc-500 hover:text-zinc-900'
                 }`}
               >
                 Siap Digunakan ({activeTicketsCount})
@@ -493,7 +493,7 @@ export default function MyTicketsPage() {
                 }}
                 onClick={() => setTicketFilter('USED')}
                 className={`relative z-10 px-3.5 sm:px-4 py-1.5 rounded-full text-xs font-medium transition-colors duration-200 whitespace-nowrap cursor-pointer ${
-                  ticketFilter === 'USED' ? 'text-zinc-950 font-semibold' : 'text-zinc-500 hover:text-zinc-950'
+                  ticketFilter === 'USED' ? 'text-zinc-950' : 'text-zinc-500 hover:text-zinc-950'
                 }`}
               >
                 Sudah Digunakan ({tickets.length - activeTicketsCount})

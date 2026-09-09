@@ -34,7 +34,7 @@ export default function EventDetailPage() {
   const [event, setEvent] = useState<EventDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
-  const [modalData, setModalData] = useState<{isOpen: boolean, title: string, message: string, type: 'success' | 'error'}>({isOpen: false, title: '', message: '', type: 'success'});
+  const [modalData, setModalData] = useState<{isOpen: boolean, title: string, message: string, type: 'success' | 'error', isAuthError?: boolean}>({isOpen: false, title: '', message: '', type: 'success'});
   const [createdOrderId, setCreatedOrderId] = useState<string | null>(null);
   const [isPaying, setIsPaying] = useState(false);
 
@@ -358,11 +358,19 @@ export default function EventDetailPage() {
                         });
                       } catch (error: unknown) {
                         const errMsg = error instanceof Error ? error.message : 'Terjadi kesalahan saat memesan tiket';
+                        const isAuthError =
+                          errMsg.toLowerCase().includes('authorization') ||
+                          errMsg.toLowerCase().includes('unauthorized') ||
+                          errMsg.toLowerCase().includes('401');
+
                         setModalData({
                           isOpen: true,
-                          title: 'Gagal Memesan Tiket',
-                          message: 'Terjadi kesalahan: ' + errMsg,
-                          type: 'error'
+                          title: isAuthError ? 'Sesi Masuk Telah Berakhir' : 'Gagal Memesan Tiket',
+                          message: isAuthError
+                            ? 'Sesi masuk Anda telah berakhir demi keamanan. Silakan masuk kembali ke akun Anda untuk menyelesaikan pemesanan tiket.'
+                            : 'Terjadi kesalahan: ' + errMsg,
+                          type: 'error',
+                          isAuthError,
                         });
                       } finally {
                         setCheckoutLoading(false);
@@ -425,12 +433,26 @@ export default function EventDetailPage() {
               </Button>
             </div>
           ) : (
-            <Button 
-              className="w-full bg-zinc-950 hover:bg-zinc-800 text-white rounded-full"
-              onClick={() => setModalData({...modalData, isOpen: false})}
-            >
-              Tutup
-            </Button>
+            <div className="space-y-2 pt-2">
+              {modalData.isAuthError && (
+                <Button 
+                  className="w-full bg-zinc-950 hover:bg-zinc-800 text-white rounded-full py-3 font-semibold"
+                  onClick={() => {
+                    setModalData({...modalData, isOpen: false});
+                    router.push('/login');
+                  }}
+                >
+                  Masuk Kembali
+                </Button>
+              )}
+              <Button 
+                variant={modalData.isAuthError ? 'outline' : 'primary'}
+                className={`w-full rounded-full py-3 ${modalData.isAuthError ? 'bg-zinc-100 hover:bg-zinc-200 border-none text-zinc-800 font-semibold' : 'bg-zinc-950 hover:bg-zinc-800 text-white font-semibold'}`}
+                onClick={() => setModalData({...modalData, isOpen: false})}
+              >
+                Tutup
+              </Button>
+            </div>
           )}
         </div>
       </Modal>

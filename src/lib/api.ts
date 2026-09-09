@@ -127,6 +127,14 @@ export class ApiClient {
       token = await getAuthTokenAsync();
     }
 
+    // Proactive silent refresh: if access token is missing/expired but refresh token exists
+    if (!token && typeof document !== 'undefined') {
+      const refreshToken = getCookie('entra_refresh');
+      if (refreshToken && !endpoint.includes('/auth/refresh') && !endpoint.includes('/auth/login')) {
+        token = await refreshAccessToken();
+      }
+    }
+
     const headers = new Headers(options.headers || {});
     if (!headers.has('Content-Type') && !(options.body instanceof FormData)) {
       headers.set('Content-Type', 'application/json');

@@ -21,11 +21,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   const setCookies = (accessToken: string, refreshToken: string, expiresAt: number) => {
-    const date = new Date(expiresAt * 1000).toUTCString();
     const isSecure = typeof window !== 'undefined' && window.location.protocol === 'https:';
     const secureFlag = isSecure ? '; SameSite=Strict; Secure' : '; SameSite=Lax';
-    document.cookie = `entra_token=${accessToken}; path=/; expires=${date}${secureFlag}`;
-    document.cookie = `entra_refresh=${refreshToken}; path=/; expires=${date}${secureFlag}`;
+    const accessDate = new Date(expiresAt * 1000).toUTCString();
+    const refreshDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toUTCString();
+    document.cookie = `entra_token=${accessToken}; path=/; expires=${accessDate}${secureFlag}`;
+    document.cookie = `entra_refresh=${refreshToken}; path=/; expires=${refreshDate}${secureFlag}`;
   };
 
   const clearCookies = () => {

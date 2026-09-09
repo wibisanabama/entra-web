@@ -20,7 +20,6 @@ import {
   Search,
   RefreshCw,
   Clock,
-  Sparkles,
   ShoppingBag,
   SendHorizontal,
   Printer,
@@ -256,14 +255,6 @@ export default function MyTicketsPage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 mb-2">
-            <div className="p-1.5 bg-zinc-100 text-zinc-800 rounded-lg border border-zinc-200">
-              <Sparkles className="h-4 w-4" />
-            </div>
-            <span className="text-xs font-semibold uppercase tracking-wider text-zinc-600">
-              Customer Portal
-            </span>
-          </div>
           <h1 className="text-3xl font-black text-zinc-950 tracking-tight">Tiket & Pesanan Saya</h1>
           <p className="text-zinc-500 text-sm mt-1">
             Kelola e-ticket digital Anda, transfer ke teman, cetak PDF resmi, dan pantau riwayat transaksi.

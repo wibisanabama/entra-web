@@ -19,7 +19,7 @@ export function Badge({ status = 'ACTIVE', variant, children, className = '', ..
           return 'bg-blue-50 text-blue-700';
         case 'secondary':
         default:
-          return 'bg-zinc-100 text-zinc-700';
+          return 'bg-zinc-200 text-zinc-700';
       }
     }
 
@@ -46,7 +46,7 @@ export function Badge({ status = 'ACTIVE', variant, children, className = '', ..
       case 'USED':
       case 'DRAFT':
       default:
-        return 'bg-zinc-100 text-zinc-700';
+        return 'bg-zinc-200 text-zinc-700';
     }
   };
 

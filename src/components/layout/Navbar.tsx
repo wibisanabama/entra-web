@@ -44,7 +44,7 @@ export function Navbar() {
 
         {/* Right: Navigation items */}
         {user ? (
-          <div className="flex items-center gap-4 sm:gap-7">
+          <div className="flex items-center gap-4 sm:gap-6">
             <Link 
               href="/events" 
               className={`text-xs sm:text-sm font-medium transition-colors ${
@@ -54,26 +54,6 @@ export function Navbar() {
               }`}
             >
               Event
-            </Link>
-            <Link 
-              href="/my-tickets" 
-              className={`hidden sm:inline-block text-xs sm:text-sm font-medium transition-colors ${
-                pathname.startsWith('/my-tickets') 
-                  ? 'text-zinc-950' 
-                  : 'text-zinc-800 hover:text-zinc-950'
-              }`}
-            >
-              Tiket Saya
-            </Link>
-            <Link 
-              href="/cashless" 
-              className={`hidden md:inline-block text-xs sm:text-sm font-medium transition-colors ${
-                pathname.startsWith('/cashless') 
-                  ? 'text-zinc-950' 
-                  : 'text-zinc-800 hover:text-zinc-950'
-              }`}
-            >
-              Gelang Cashless
             </Link>
 
             {/* Avatar Dropdown */}

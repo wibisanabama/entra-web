@@ -928,7 +928,7 @@ export default function MyTicketsPage() {
               </div>
             </div>
 
-            <div className="flex justify-between items-center pt-2 print:hidden">
+            <div className="flex items-center pt-2 print:hidden">
               <Button
                 variant="outline"
                 onClick={() => window.print()}
@@ -936,12 +936,6 @@ export default function MyTicketsPage() {
               >
                 <Printer className="h-4 w-4" />
                 Cetak Invoice
-              </Button>
-              <Button
-                onClick={() => setIsInvoiceOpen(false)}
-                className="bg-zinc-950 hover:bg-zinc-800 text-white text-xs font-semibold rounded-full px-6 py-2.5 border-0 shadow-none"
-              >
-                Tutup
               </Button>
             </div>
           </div>

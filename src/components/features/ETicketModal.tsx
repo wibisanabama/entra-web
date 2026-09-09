@@ -176,38 +176,29 @@ export function ETicketModal({ isOpen, onClose, ticket, onOpenTransfer }: ETicke
         </div>
 
         {/* Action Buttons */}
-        <div className="flex flex-wrap justify-between items-center gap-3 pt-2 print:hidden">
-          <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2 pt-2 print:hidden">
+          <Button
+            variant="outline"
+            onClick={handlePrint}
+            className="flex items-center gap-2 text-zinc-800 bg-zinc-100 hover:bg-zinc-200 text-xs rounded-full border-0 font-semibold px-4 py-2.5 shadow-none"
+          >
+            <Printer className="h-4 w-4" />
+            Cetak / PDF
+          </Button>
+
+          {isActive && onOpenTransfer && (
             <Button
               variant="outline"
-              onClick={handlePrint}
+              onClick={() => {
+                onClose();
+                onOpenTransfer(ticket);
+              }}
               className="flex items-center gap-2 text-zinc-800 bg-zinc-100 hover:bg-zinc-200 text-xs rounded-full border-0 font-semibold px-4 py-2.5 shadow-none"
             >
-              <Printer className="h-4 w-4" />
-              Cetak / PDF
+              <SendHorizontal className="h-4 w-4" />
+              Transfer Tiket
             </Button>
-
-            {isActive && onOpenTransfer && (
-              <Button
-                variant="outline"
-                onClick={() => {
-                  onClose();
-                  onOpenTransfer(ticket);
-                }}
-                className="flex items-center gap-2 text-zinc-800 bg-zinc-100 hover:bg-zinc-200 text-xs rounded-full border-0 font-semibold px-4 py-2.5 shadow-none"
-              >
-                <SendHorizontal className="h-4 w-4" />
-                Transfer Tiket
-              </Button>
-            )}
-          </div>
-
-          <Button
-            onClick={onClose}
-            className="bg-zinc-950 hover:bg-zinc-800 text-white px-6 text-xs font-semibold rounded-full border-0 shadow-none py-2.5"
-          >
-            Tutup
-          </Button>
+          )}
         </div>
       </div>
     </Modal>

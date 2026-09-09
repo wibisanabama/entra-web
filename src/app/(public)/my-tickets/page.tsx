@@ -157,18 +157,6 @@ export default function MyTicketsPage() {
     }
   };
 
-  const handleSimulatePayment = async (orderId: string) => {
-    try {
-      setPayingOrderId(orderId);
-      await ticketApi.post(`/api/v1/tickets/orders/${orderId}/simulate`);
-      await fetchUserTicketsAndOrders();
-    } catch (error: unknown) {
-      console.error('Simulate payment error:', error);
-    } finally {
-      setPayingOrderId(null);
-    }
-  };
-
   const handleTransferSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setTransferError(null);
@@ -761,26 +749,14 @@ export default function MyTicketsPage() {
                         )}
 
                         {isPending && (
-                          <div className="flex items-center gap-2">
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => handleSimulatePayment(order.id)}
-                              disabled={payingOrderId === order.id}
-                              className="bg-white hover:bg-zinc-200 text-zinc-800 text-xs font-semibold rounded-full border-0 shadow-none px-4 py-2.5"
-                              title="Simulasikan pembayaran langsung di mode pengembangan"
-                            >
-                              {payingOrderId === order.id ? 'Memproses...' : 'Simulasi Bayar (Dev)'}
-                            </Button>
-                            <Button
-                              onClick={() => handlePayOrder(order.id)}
-                              disabled={payingOrderId === order.id}
-                              className="bg-zinc-950 hover:bg-zinc-800 text-white flex items-center gap-1.5 text-xs font-semibold rounded-full border-0 shadow-none px-5 py-2.5"
-                            >
-                              {payingOrderId === order.id ? 'Memuat...' : 'Bayar Sekarang'}
-                              <ArrowRight className="h-3.5 w-3.5" />
-                            </Button>
-                          </div>
+                          <Button
+                            onClick={() => handlePayOrder(order.id)}
+                            disabled={payingOrderId === order.id}
+                            className="bg-zinc-950 hover:bg-zinc-800 text-white flex items-center gap-1.5 text-xs font-semibold rounded-full border-0 shadow-none px-5 py-2.5"
+                          >
+                            {payingOrderId === order.id ? 'Memuat...' : 'Bayar Sekarang'}
+                            <ArrowRight className="h-3.5 w-3.5" />
+                          </Button>
                         )}
                       </div>
                     </div>

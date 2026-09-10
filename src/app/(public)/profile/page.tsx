@@ -27,7 +27,7 @@ import {
 } from 'lucide-react';
 
 const PROFILE_TABS = [
-  { key: 'INFO', label: 'Informasi Pribadi & Avatar', icon: UserIcon },
+  { key: 'INFO', label: 'Informasi Pribadi', icon: UserIcon },
   { key: 'SECURITY', label: 'Keamanan & Kata Sandi', icon: Shield },
 ] as const;
 
@@ -283,11 +283,8 @@ export default function ProfilePage() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
         <div className="space-y-6">
           <Skeleton className="h-44 w-full bg-zinc-100 rounded-3xl border-0 shadow-none" />
-          <Skeleton className="h-12 w-96 bg-zinc-100 rounded-full border-0 shadow-none" />
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Skeleton className="h-96 md:col-span-2 bg-zinc-100 rounded-3xl border-0 shadow-none" />
-            <Skeleton className="h-96 bg-zinc-100 rounded-3xl border-0 shadow-none" />
-          </div>
+          <Skeleton className="h-12 w-64 bg-zinc-100 rounded-full border-0 shadow-none" />
+          <Skeleton className="h-80 w-full bg-zinc-100 rounded-3xl border-0 shadow-none" />
         </div>
       </div>
     );
@@ -315,7 +312,7 @@ export default function ProfilePage() {
                 )}
               </div>
 
-              {/* Upload Overlay Button */}
+              {/* Upload Overlay Button (Hover Desktop) */}
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
@@ -325,6 +322,17 @@ export default function ProfilePage() {
               >
                 <Camera className="h-6 w-6 mb-1" />
                 <span className="text-[10px] font-semibold">Ubah Foto</span>
+              </button>
+
+              {/* Quick Camera Badge (Always Accessible) */}
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={isUploadingAvatar}
+                className="absolute -bottom-1 -right-1 p-2 bg-white hover:bg-zinc-200 text-zinc-900 rounded-full cursor-pointer border-0 shadow-sm flex items-center justify-center transition-transform hover:scale-105"
+                title="Ubah Foto Profil"
+              >
+                <Camera className="h-3.5 w-3.5" />
               </button>
 
               <input
@@ -450,18 +458,18 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      {/* TAB 1: Informasi Pribadi & Avatar */}
+      {/* TAB 1: Informasi Pribadi */}
       {activeTab === 'INFO' && (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="md:col-span-2 bg-zinc-100 p-6 sm:p-8 space-y-6 rounded-3xl border-0 shadow-none">
-            <div>
-              <h2 className="text-lg font-bold text-zinc-950">Data Profil</h2>
-              <p className="text-xs text-zinc-500 mt-1">
-                Perbarui identitas akun Anda untuk dicantumkan pada e-ticket dan tiket masuk acara.
-              </p>
-            </div>
+        <div className="bg-zinc-100 p-6 sm:p-8 space-y-6 rounded-3xl border-0 shadow-none">
+          <div>
+            <h2 className="text-lg font-bold text-zinc-950">Data Profil</h2>
+            <p className="text-xs text-zinc-500 mt-1">
+              Perbarui identitas akun Anda untuk dicantumkan pada e-ticket dan tiket masuk acara.
+            </p>
+          </div>
 
-            <form onSubmit={handleProfileSubmit} className="space-y-4">
+          <form onSubmit={handleProfileSubmit} className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <label className="text-xs font-bold text-zinc-700 uppercase tracking-wider">
                   Nama Lengkap
@@ -494,80 +502,37 @@ export default function ProfilePage() {
                   />
                 </div>
               </div>
-
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold text-zinc-700 uppercase tracking-wider">
-                  Alamat Email (Akun Utama)
-                </label>
-                <div className="relative">
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
-                  <input
-                    type="email"
-                    value={user.email}
-                    disabled
-                    className="w-full pl-11 pr-4 py-3 bg-zinc-200/70 rounded-full text-sm text-zinc-500 cursor-not-allowed font-medium border-0 shadow-none"
-                  />
-                </div>
-                <p className="text-[11px] text-zinc-500">
-                  Alamat email digunakan untuk verifikasi login dan penerimaan invoice tiket.
-                </p>
-              </div>
-
-              <div className="pt-4 flex justify-end">
-                <Button
-                  type="submit"
-                  disabled={isSavingProfile || isUploadingAvatar}
-                  className="bg-zinc-950 hover:bg-zinc-800 text-white font-bold text-xs sm:text-sm px-7 py-3 rounded-full flex items-center gap-2 border-0 shadow-none cursor-pointer"
-                >
-                  <Save className="h-4 w-4" />
-                  {isSavingProfile ? 'Menyimpan...' : 'Simpan Perubahan Profil'}
-                </Button>
-              </div>
-            </form>
-          </div>
-
-          {/* Avatar Details Card */}
-          <div className="bg-zinc-100 p-6 sm:p-7 space-y-5 flex flex-col justify-between rounded-3xl border-0 shadow-none">
-            <div className="space-y-4">
-              <div>
-                <h3 className="text-base font-bold text-zinc-950">Foto Profil Avatar</h3>
-                <p className="text-xs text-zinc-500 mt-1">
-                  Foto profil akan ditampilkan di bilah navigasi dan kartu identitas festival Anda.
-                </p>
-              </div>
-
-              <div className="p-6 bg-white rounded-2xl flex flex-col items-center justify-center text-center space-y-4 border-0 shadow-none">
-                <div className="w-24 h-24 rounded-full overflow-hidden bg-zinc-950 flex items-center justify-center text-white text-3xl font-bold border-0 shadow-none">
-                  {effectiveAvatar ? (
-                    <img
-                      src={effectiveAvatar}
-                      alt="Avatar"
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <span>{user.full_name?.charAt(0).toUpperCase() || 'U'}</span>
-                  )}
-                </div>
-
-                <Button
-                  type="button"
-                  onClick={() => fileInputRef.current?.click()}
-                  disabled={isUploadingAvatar}
-                  className="text-xs font-bold flex items-center gap-1.5 rounded-full bg-zinc-100 hover:bg-zinc-200 text-zinc-900 border-0 shadow-none px-4 py-2.5 cursor-pointer"
-                >
-                  <Camera className="h-3.5 w-3.5" />
-                  {isUploadingAvatar ? 'Mengunggah...' : 'Ganti Foto'}
-                </Button>
-              </div>
             </div>
 
-            <div className="p-4 bg-white rounded-2xl text-xs text-zinc-500 space-y-1 border-0 shadow-none">
-              <p className="font-bold text-zinc-900">Petunjuk Unggah:</p>
-              <p>• Format: JPG atau PNG</p>
-              <p>• Ukuran maksimal: 5MB</p>
-              <p>• Disarankan rasio 1:1 (persegi)</p>
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-zinc-700 uppercase tracking-wider">
+                Alamat Email (Akun Utama)
+              </label>
+              <div className="relative">
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
+                <input
+                  type="email"
+                  value={user.email}
+                  disabled
+                  className="w-full pl-11 pr-4 py-3 bg-zinc-200/70 rounded-full text-sm text-zinc-500 cursor-not-allowed font-medium border-0 shadow-none"
+                />
+              </div>
+              <p className="text-[11px] text-zinc-500">
+                Alamat email digunakan untuk verifikasi login dan penerimaan invoice tiket.
+              </p>
             </div>
-          </div>
+
+            <div className="pt-4 flex justify-end">
+              <Button
+                type="submit"
+                disabled={isSavingProfile || isUploadingAvatar}
+                className="bg-zinc-950 hover:bg-zinc-800 text-white font-bold text-xs sm:text-sm px-7 py-3 rounded-full flex items-center gap-2 border-0 shadow-none cursor-pointer"
+              >
+                <Save className="h-4 w-4" />
+                {isSavingProfile ? 'Menyimpan...' : 'Simpan Perubahan Profil'}
+              </Button>
+            </div>
+          </form>
         </div>
       )}
 

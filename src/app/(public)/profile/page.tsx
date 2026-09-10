@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/providers/auth-provider';
 import { authApi, getCookie } from '@/lib/api';
-import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Skeleton } from '@/components/ui/Skeleton';
@@ -243,10 +242,14 @@ export default function ProfilePage() {
 
   if (isLoading || !user) {
     return (
-      <div className="max-w-5xl mx-auto px-4 py-16">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
         <div className="space-y-6">
-          <Skeleton className="h-10 w-48 bg-zinc-100 rounded-full" />
-          <Skeleton className="h-64 w-full bg-zinc-100 rounded-3xl" />
+          <Skeleton className="h-44 w-full bg-zinc-100 rounded-3xl border-0 shadow-none" />
+          <Skeleton className="h-12 w-96 bg-zinc-100 rounded-full border-0 shadow-none" />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Skeleton className="h-96 md:col-span-2 bg-zinc-100 rounded-3xl border-0 shadow-none" />
+            <Skeleton className="h-96 bg-zinc-100 rounded-3xl border-0 shadow-none" />
+          </div>
         </div>
       </div>
     );
@@ -255,14 +258,14 @@ export default function ProfilePage() {
   const effectiveAvatar = avatarPreview || avatarUrl || user.avatar_url;
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
-      {/* Top Banner & Identity Hero - Mobbin Light */}
-      <div className="relative bg-zinc-50 border border-zinc-200 rounded-3xl p-6 sm:p-8 shadow-sm overflow-hidden">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8 text-zinc-900">
+      {/* Top Banner & Identity Hero */}
+      <div className="relative bg-zinc-100 rounded-3xl p-6 sm:p-8 border-0 shadow-none overflow-hidden">
         <div className="relative z-10 flex flex-col md:flex-row items-center md:items-start justify-between gap-6">
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 text-center sm:text-left">
             {/* Avatar with Camera Trigger */}
             <div className="relative group">
-              <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-4 border-white bg-zinc-900 flex items-center justify-center text-white font-bold text-3xl shadow-sm">
+              <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden bg-zinc-950 flex items-center justify-center text-white font-bold text-3xl border-0 shadow-none">
                 {effectiveAvatar ? (
                   <img
                     src={effectiveAvatar}
@@ -279,7 +282,7 @@ export default function ProfilePage() {
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
                 disabled={isUploadingAvatar}
-                className="absolute inset-0 bg-black/60 rounded-full flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer text-white"
+                className="absolute inset-0 bg-black/60 rounded-full flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer text-white border-0 shadow-none"
                 title="Ubah Foto Profil"
               >
                 <Camera className="h-6 w-6 mb-1" />
@@ -309,7 +312,7 @@ export default function ProfilePage() {
                       ? 'success'
                       : 'secondary'
                   }
-                  className="text-[11px] font-bold uppercase tracking-wider rounded-full px-3 py-0.5"
+                  className="text-[11px] font-bold uppercase tracking-wider rounded-full px-3 py-1 border-0 shadow-none"
                 >
                   {user.role === 'admin'
                     ? 'Admin Platform'
@@ -324,19 +327,19 @@ export default function ProfilePage() {
                 {user.email}
               </p>
 
-              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 pt-1 text-xs text-zinc-500">
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white border border-zinc-200 rounded-full font-medium">
+              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2.5 pt-1 text-xs text-zinc-600">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white rounded-full font-medium border-0 shadow-none">
                   <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />
                   Akun Terverifikasi
                 </span>
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white border border-zinc-200 rounded-full font-mono font-medium">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white rounded-full font-mono font-medium border-0 shadow-none">
                   ID: {user.id.substring(0, 8)}...
                   <button
                     onClick={handleCopyId}
-                    className="hover:text-zinc-900 p-0.5"
+                    className="hover:text-zinc-950 p-0.5 transition-colors cursor-pointer border-0"
                     title="Salin ID"
                   >
-                    {copiedId ? <Check className="h-3 w-3 text-emerald-600" /> : <Copy className="h-3 w-3" />}
+                    {copiedId ? <Check className="h-3.5 w-3.5 text-emerald-600" /> : <Copy className="h-3.5 w-3.5" />}
                   </button>
                 </span>
               </div>
@@ -345,15 +348,17 @@ export default function ProfilePage() {
 
           {/* Upgrade to Organizer CTA for Users */}
           {user.role === 'user' && (
-            <div className="bg-white border border-zinc-200 p-5 rounded-2xl max-w-xs text-center md:text-right space-y-2.5 shadow-sm">
-              <p className="text-xs font-bold text-zinc-950">Ingin Menggelar Event?</p>
-              <p className="text-[12px] text-zinc-500 leading-relaxed">
-                Buka akses dashboard penjualan tiket, manajemen kuota, dan scanner pintu masuk.
-              </p>
+            <div className="bg-white p-5 sm:p-6 rounded-2xl max-w-xs text-center md:text-right space-y-3 border-0 shadow-none">
+              <div>
+                <p className="text-xs font-bold text-zinc-950">Ingin Menggelar Event?</p>
+                <p className="text-[11px] text-zinc-500 leading-relaxed mt-1">
+                  Buka akses dashboard penjualan tiket, manajemen kuota, dan scanner pintu masuk.
+                </p>
+              </div>
               <Button
                 onClick={handleUpgrade}
                 disabled={isUpgrading}
-                className="w-full bg-zinc-950 hover:bg-zinc-800 text-white text-xs font-bold py-2 rounded-full"
+                className="w-full bg-zinc-950 hover:bg-zinc-800 text-white text-xs font-bold py-3 rounded-full border-0 shadow-none cursor-pointer"
               >
                 {isUpgrading ? 'Memproses...' : 'Tingkatkan ke Organizer'}
               </Button>
@@ -362,49 +367,52 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      {/* Navigation Tabs */}
-      <div className="flex border-b border-zinc-200 space-x-6">
+      {/* Navigation Tabs - Borderless Pill Group */}
+      <div className="flex flex-wrap gap-2 p-1.5 bg-zinc-100 rounded-full border-0 shadow-none w-fit">
         <button
+          type="button"
           onClick={() => setActiveTab('INFO')}
-          className={`pb-3 text-sm font-bold flex items-center gap-2 border-b-2 transition-all cursor-pointer ${
+          className={`px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer border-0 shadow-none ${
             activeTab === 'INFO'
-              ? 'border-zinc-950 text-zinc-950'
-              : 'border-transparent text-zinc-500 hover:text-zinc-900'
+              ? 'bg-zinc-950 text-white'
+              : 'text-zinc-600 hover:text-zinc-950 hover:bg-zinc-200/70'
           }`}
         >
           <UserIcon className="h-4 w-4" />
-          Informasi Pribadi & Avatar
+          <span>Informasi Pribadi & Avatar</span>
         </button>
 
         <button
+          type="button"
           onClick={() => setActiveTab('SECURITY')}
-          className={`pb-3 text-sm font-bold flex items-center gap-2 border-b-2 transition-all cursor-pointer ${
+          className={`px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer border-0 shadow-none ${
             activeTab === 'SECURITY'
-              ? 'border-zinc-950 text-zinc-950'
-              : 'border-transparent text-zinc-500 hover:text-zinc-900'
+              ? 'bg-zinc-950 text-white'
+              : 'text-zinc-600 hover:text-zinc-950 hover:bg-zinc-200/70'
           }`}
         >
           <Shield className="h-4 w-4" />
-          Keamanan & Kata Sandi
+          <span>Keamanan & Kata Sandi</span>
         </button>
 
         <button
+          type="button"
           onClick={() => setActiveTab('ACTIVITY')}
-          className={`pb-3 text-sm font-bold flex items-center gap-2 border-b-2 transition-all cursor-pointer ${
+          className={`px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer border-0 shadow-none ${
             activeTab === 'ACTIVITY'
-              ? 'border-zinc-950 text-zinc-950'
-              : 'border-transparent text-zinc-500 hover:text-zinc-900'
+              ? 'bg-zinc-950 text-white'
+              : 'text-zinc-600 hover:text-zinc-950 hover:bg-zinc-200/70'
           }`}
         >
           <Sparkles className="h-4 w-4" />
-          Aktivitas & Akses Cepat
+          <span>Aktivitas & Akses Cepat</span>
         </button>
       </div>
 
       {/* TAB 1: Informasi Pribadi & Avatar */}
       {activeTab === 'INFO' && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className="md:col-span-2 bg-white border-zinc-200 p-6 sm:p-7 space-y-6 rounded-2xl shadow-sm">
+          <div className="md:col-span-2 bg-zinc-100 p-6 sm:p-8 space-y-6 rounded-3xl border-0 shadow-none">
             <div>
               <h2 className="text-lg font-bold text-zinc-950">Data Profil</h2>
               <p className="text-xs text-zinc-500 mt-1">
@@ -423,7 +431,7 @@ export default function ProfilePage() {
                     type="text"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2.5 bg-zinc-50 border border-zinc-200 rounded-full text-sm text-zinc-950 focus:outline-none focus:border-zinc-950 focus:bg-white transition-all font-medium"
+                    className="w-full pl-11 pr-4 py-3 bg-white rounded-full text-sm text-zinc-950 focus:outline-none focus:bg-white transition-all font-medium border-0 shadow-none"
                     placeholder="Masukkan nama lengkap Anda"
                     required
                   />
@@ -440,7 +448,7 @@ export default function ProfilePage() {
                     type="tel"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2.5 bg-zinc-50 border border-zinc-200 rounded-full text-sm text-zinc-950 focus:outline-none focus:border-zinc-950 focus:bg-white transition-all font-medium"
+                    className="w-full pl-11 pr-4 py-3 bg-white rounded-full text-sm text-zinc-950 focus:outline-none focus:bg-white transition-all font-medium border-0 shadow-none"
                     placeholder="Contoh: 08123456789"
                   />
                 </div>
@@ -456,7 +464,7 @@ export default function ProfilePage() {
                     type="email"
                     value={user.email}
                     disabled
-                    className="w-full pl-10 pr-4 py-2.5 bg-zinc-100 border border-zinc-200 rounded-full text-sm text-zinc-500 cursor-not-allowed font-medium"
+                    className="w-full pl-11 pr-4 py-3 bg-zinc-200/70 rounded-full text-sm text-zinc-500 cursor-not-allowed font-medium border-0 shadow-none"
                   />
                 </div>
                 <p className="text-[11px] text-zinc-500">
@@ -468,25 +476,27 @@ export default function ProfilePage() {
                 <Button
                   type="submit"
                   disabled={isSavingProfile || isUploadingAvatar}
-                  className="bg-zinc-950 hover:bg-zinc-800 text-white font-bold text-sm px-6 py-2.5 rounded-full flex items-center gap-2 shadow-none"
+                  className="bg-zinc-950 hover:bg-zinc-800 text-white font-bold text-xs sm:text-sm px-7 py-3 rounded-full flex items-center gap-2 border-0 shadow-none cursor-pointer"
                 >
                   <Save className="h-4 w-4" />
                   {isSavingProfile ? 'Menyimpan...' : 'Simpan Perubahan Profil'}
                 </Button>
               </div>
             </form>
-          </Card>
+          </div>
 
           {/* Avatar Details Card */}
-          <Card className="bg-white border-zinc-200 p-6 space-y-4 flex flex-col justify-between rounded-2xl shadow-sm">
-            <div className="space-y-3">
-              <h3 className="text-base font-bold text-zinc-950">Foto Profil Avatar</h3>
-              <p className="text-xs text-zinc-500">
-                Foto profil akan ditampilkan di bilah navigasi dan kartu identitas festival Anda.
-              </p>
+          <div className="bg-zinc-100 p-6 sm:p-7 space-y-5 flex flex-col justify-between rounded-3xl border-0 shadow-none">
+            <div className="space-y-4">
+              <div>
+                <h3 className="text-base font-bold text-zinc-950">Foto Profil Avatar</h3>
+                <p className="text-xs text-zinc-500 mt-1">
+                  Foto profil akan ditampilkan di bilah navigasi dan kartu identitas festival Anda.
+                </p>
+              </div>
 
-              <div className="p-5 bg-zinc-50 rounded-2xl border border-zinc-200 flex flex-col items-center justify-center text-center space-y-3">
-                <div className="w-20 h-20 rounded-full overflow-hidden bg-zinc-900 border-2 border-white shadow-sm flex items-center justify-center text-white text-2xl font-bold">
+              <div className="p-6 bg-white rounded-2xl flex flex-col items-center justify-center text-center space-y-4 border-0 shadow-none">
+                <div className="w-24 h-24 rounded-full overflow-hidden bg-zinc-950 flex items-center justify-center text-white text-3xl font-bold border-0 shadow-none">
                   {effectiveAvatar ? (
                     <img
                       src={effectiveAvatar}
@@ -500,11 +510,9 @@ export default function ProfilePage() {
 
                 <Button
                   type="button"
-                  variant="outline"
-                  size="sm"
                   onClick={() => fileInputRef.current?.click()}
                   disabled={isUploadingAvatar}
-                  className="text-xs flex items-center gap-1.5 rounded-full border-zinc-200 bg-white hover:bg-zinc-100 text-zinc-900"
+                  className="text-xs font-bold flex items-center gap-1.5 rounded-full bg-zinc-100 hover:bg-zinc-200 text-zinc-900 border-0 shadow-none px-4 py-2.5 cursor-pointer"
                 >
                   <Camera className="h-3.5 w-3.5" />
                   {isUploadingAvatar ? 'Mengunggah...' : 'Ganti Foto'}
@@ -512,20 +520,20 @@ export default function ProfilePage() {
               </div>
             </div>
 
-            <div className="p-3 bg-zinc-50 rounded-xl border border-zinc-200 text-[11px] text-zinc-500 space-y-1">
+            <div className="p-4 bg-white rounded-2xl text-xs text-zinc-500 space-y-1 border-0 shadow-none">
               <p className="font-bold text-zinc-900">Petunjuk Unggah:</p>
               <p>• Format: JPG atau PNG</p>
               <p>• Ukuran maksimal: 5MB</p>
               <p>• Disarankan rasio 1:1 (persegi)</p>
             </div>
-          </Card>
+          </div>
         </div>
       )}
 
       {/* TAB 2: Keamanan & Kata Sandi */}
       {activeTab === 'SECURITY' && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className="md:col-span-2 bg-white border-zinc-200 p-6 sm:p-7 space-y-6 rounded-2xl shadow-sm">
+          <div className="md:col-span-2 bg-zinc-100 p-6 sm:p-8 space-y-6 rounded-3xl border-0 shadow-none">
             <div>
               <h2 className="text-lg font-bold text-zinc-950">Keamanan & Reset Kata Sandi</h2>
               <p className="text-xs text-zinc-500 mt-1">
@@ -534,9 +542,9 @@ export default function ProfilePage() {
             </div>
 
             {/* Direct Password Change Form */}
-            <form onSubmit={handleChangePassword} className="p-5 bg-zinc-50 border border-zinc-200 rounded-2xl space-y-4">
-              <div className="flex items-center gap-3 border-b border-zinc-200 pb-3">
-                <div className="p-2.5 bg-zinc-900 text-white rounded-xl">
+            <form onSubmit={handleChangePassword} className="p-5 sm:p-6 bg-white rounded-2xl space-y-5 border-0 shadow-none">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 bg-zinc-100 text-zinc-950 rounded-2xl">
                   <KeyRound className="h-4 w-4" />
                 </div>
                 <div>
@@ -547,21 +555,21 @@ export default function ProfilePage() {
                 </div>
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-4">
                 <div>
-                  <label className="text-xs font-bold text-zinc-700 mb-1 block">Kata Sandi Saat Ini</label>
+                  <label className="text-xs font-bold text-zinc-700 mb-1.5 block">Kata Sandi Saat Ini</label>
                   <div className="relative">
                     <input
                       type={showOldPassword ? "text" : "password"}
                       value={oldPassword}
                       onChange={(e) => setOldPassword(e.target.value)}
                       placeholder="Masukkan kata sandi lama"
-                      className="w-full bg-white border border-zinc-200 rounded-full px-4 py-2.5 text-sm text-zinc-950 placeholder:text-zinc-400 pr-10 focus:outline-none focus:border-zinc-950 transition-all font-medium"
+                      className="w-full bg-zinc-100 focus:bg-zinc-50 rounded-full px-4 py-3 text-sm text-zinc-950 placeholder:text-zinc-400 pr-11 focus:outline-none transition-all font-medium border-0 shadow-none"
                     />
                     <button
                       type="button"
                       onClick={() => setShowOldPassword(!showOldPassword)}
-                      className="absolute right-3.5 top-3 text-zinc-400 hover:text-zinc-700"
+                      className="absolute right-3.5 top-3.5 text-zinc-400 hover:text-zinc-700 cursor-pointer border-0"
                       title={showOldPassword ? "Sembunyikan" : "Tampilkan"}
                     >
                       {showOldPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -569,21 +577,21 @@ export default function ProfilePage() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                   <div>
-                    <label className="text-xs font-bold text-zinc-700 mb-1 block">Kata Sandi Baru</label>
+                    <label className="text-xs font-bold text-zinc-700 mb-1.5 block">Kata Sandi Baru</label>
                     <div className="relative">
                       <input
                         type={showNewPassword ? "text" : "password"}
                         value={newPassword}
                         onChange={(e) => setNewPassword(e.target.value)}
                         placeholder="Minimal 8 karakter"
-                        className="w-full bg-white border border-zinc-200 rounded-full px-4 py-2.5 text-sm text-zinc-950 placeholder:text-zinc-400 pr-10 focus:outline-none focus:border-zinc-950 transition-all font-medium"
+                        className="w-full bg-zinc-100 focus:bg-zinc-50 rounded-full px-4 py-3 text-sm text-zinc-950 placeholder:text-zinc-400 pr-11 focus:outline-none transition-all font-medium border-0 shadow-none"
                       />
                       <button
                         type="button"
                         onClick={() => setShowNewPassword(!showNewPassword)}
-                        className="absolute right-3.5 top-3 text-zinc-400 hover:text-zinc-700"
+                        className="absolute right-3.5 top-3.5 text-zinc-400 hover:text-zinc-700 cursor-pointer border-0"
                         title={showNewPassword ? "Sembunyikan" : "Tampilkan"}
                       >
                         {showNewPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -592,19 +600,19 @@ export default function ProfilePage() {
                   </div>
 
                   <div>
-                    <label className="text-xs font-bold text-zinc-700 mb-1 block">Konfirmasi Kata Sandi Baru</label>
+                    <label className="text-xs font-bold text-zinc-700 mb-1.5 block">Konfirmasi Kata Sandi Baru</label>
                     <div className="relative">
                       <input
                         type={showConfirmPassword ? "text" : "password"}
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         placeholder="Ulangi kata sandi baru"
-                        className="w-full bg-white border border-zinc-200 rounded-full px-4 py-2.5 text-sm text-zinc-950 placeholder:text-zinc-400 pr-10 focus:outline-none focus:border-zinc-950 transition-all font-medium"
+                        className="w-full bg-zinc-100 focus:bg-zinc-50 rounded-full px-4 py-3 text-sm text-zinc-950 placeholder:text-zinc-400 pr-11 focus:outline-none transition-all font-medium border-0 shadow-none"
                       />
                       <button
                         type="button"
                         onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                        className="absolute right-3.5 top-3 text-zinc-400 hover:text-zinc-700"
+                        className="absolute right-3.5 top-3.5 text-zinc-400 hover:text-zinc-700 cursor-pointer border-0"
                         title={showConfirmPassword ? "Sembunyikan" : "Tampilkan"}
                       >
                         {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -614,11 +622,11 @@ export default function ProfilePage() {
                 </div>
               </div>
 
-              <div className="pt-1 flex justify-end">
+              <div className="pt-2 flex justify-end">
                 <Button
                   type="submit"
                   disabled={isChangingPassword}
-                  className="bg-zinc-950 hover:bg-zinc-800 text-white font-bold text-xs py-2.5 px-5 rounded-full flex items-center gap-2 shadow-none"
+                  className="bg-zinc-950 hover:bg-zinc-800 text-white font-bold text-xs py-3 px-6 rounded-full flex items-center gap-2 border-0 shadow-none cursor-pointer"
                 >
                   <Lock className="h-3.5 w-3.5" />
                   {isChangingPassword ? 'Memperbarui...' : 'Simpan Kata Sandi Baru'}
@@ -626,9 +634,9 @@ export default function ProfilePage() {
               </div>
             </form>
 
-            <div className="p-5 bg-zinc-50 border border-zinc-200 rounded-2xl space-y-3">
+            <div className="p-5 sm:p-6 bg-white rounded-2xl space-y-4 border-0 shadow-none">
               <div className="flex items-start gap-3">
-                <div className="p-2.5 bg-zinc-900 text-white rounded-xl">
+                <div className="p-2.5 bg-zinc-100 text-zinc-950 rounded-2xl">
                   <Key className="h-4 w-4" />
                 </div>
                 <div className="space-y-1">
@@ -640,7 +648,7 @@ export default function ProfilePage() {
               </div>
 
               {resetRequested ? (
-                <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-700 flex items-center gap-2 font-medium">
+                <div className="p-4 bg-emerald-100 text-emerald-800 rounded-2xl text-xs flex items-center gap-2.5 font-medium border-0 shadow-none">
                   <CheckCircle2 className="h-4 w-4 flex-shrink-0 text-emerald-600" />
                   <span>Tautan pembaruan kata sandi telah dikirimkan ke email Anda. Silakan periksa kotak masuk atau spam.</span>
                 </div>
@@ -648,7 +656,7 @@ export default function ProfilePage() {
                 <Button
                   onClick={handleRequestPasswordReset}
                   disabled={isRequestingReset}
-                  className="bg-zinc-950 hover:bg-zinc-800 text-white font-bold text-xs py-2.5 px-5 rounded-full flex items-center gap-2 shadow-none"
+                  className="bg-zinc-950 hover:bg-zinc-800 text-white font-bold text-xs py-3 px-6 rounded-full flex items-center gap-2 border-0 shadow-none cursor-pointer"
                 >
                   <Lock className="h-3.5 w-3.5" />
                   {isRequestingReset ? 'Mengirim Permintaan...' : 'Kirim Tautan Reset Kata Sandi'}
@@ -659,146 +667,152 @@ export default function ProfilePage() {
             {/* Security checklist */}
             <div className="space-y-3">
               <h3 className="text-sm font-bold text-zinc-950">Rekomendasi Keamanan Akun</h3>
-              <div className="space-y-2 text-xs text-zinc-600">
-                <div className="flex items-center gap-2 p-3 bg-zinc-50 rounded-xl border border-zinc-200 font-medium">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+              <div className="space-y-2.5 text-xs text-zinc-600">
+                <div className="flex items-center gap-2.5 p-4 bg-white rounded-2xl font-medium border-0 shadow-none">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-600 flex-shrink-0" />
                   <span>Gunakan minimal 8 karakter dengan kombinasi huruf besar, angka, dan simbol.</span>
                 </div>
-                <div className="flex items-center gap-2 p-3 bg-zinc-50 rounded-xl border border-zinc-200 font-medium">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+                <div className="flex items-center gap-2.5 p-4 bg-white rounded-2xl font-medium border-0 shadow-none">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-600 flex-shrink-0" />
                   <span>Jangan pernah membagikan kode QR tiket digital atau akses akun kepada orang lain.</span>
                 </div>
               </div>
             </div>
-          </Card>
+          </div>
 
-          <Card className="bg-white border-zinc-200 p-6 space-y-4 rounded-2xl shadow-sm">
+          <div className="bg-zinc-100 p-6 sm:p-7 space-y-4 rounded-3xl border-0 shadow-none">
             <h3 className="text-base font-bold text-zinc-950">Status Keamanan</h3>
-            <div className="space-y-3">
-              <div className="flex justify-between items-center text-xs p-3 bg-zinc-50 rounded-xl border border-zinc-200">
+            <div className="space-y-2.5">
+              <div className="flex justify-between items-center text-xs p-4 bg-white rounded-2xl border-0 shadow-none">
                 <span className="text-zinc-500 font-medium">Enkripsi Password</span>
                 <span className="text-emerald-700 font-bold font-mono">Bcrypt (Cost 10)</span>
               </div>
-              <div className="flex justify-between items-center text-xs p-3 bg-zinc-50 rounded-xl border border-zinc-200">
+              <div className="flex justify-between items-center text-xs p-4 bg-white rounded-2xl border-0 shadow-none">
                 <span className="text-zinc-500 font-medium">Token JWT</span>
                 <span className="text-zinc-950 font-bold font-mono">HS256 Active</span>
               </div>
-              <div className="flex justify-between items-center text-xs p-3 bg-zinc-50 rounded-xl border border-zinc-200">
+              <div className="flex justify-between items-center text-xs p-4 bg-white rounded-2xl border-0 shadow-none">
                 <span className="text-zinc-500 font-medium">Autentikasi Sesi</span>
                 <span className="text-zinc-950 font-bold">Aman (Http Cookie)</span>
               </div>
             </div>
-          </Card>
+          </div>
         </div>
       )}
 
       {/* TAB 3: Aktivitas & Akses Cepat */}
       {activeTab === 'ACTIVITY' && (
         <div className="space-y-6">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <Link href="/my-tickets">
-              <Card className="bg-white hover:border-zinc-300 border-zinc-200 p-6 transition-all cursor-pointer h-full flex flex-col justify-between group rounded-2xl shadow-sm hover:shadow-md">
-                <div className="space-y-2.5">
-                  <div className="p-3 bg-zinc-100 text-zinc-950 rounded-2xl w-fit group-hover:bg-zinc-950 group-hover:text-white transition-colors">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+            <Link href="/my-tickets" className="block h-full">
+              <div className="bg-zinc-100 hover:bg-zinc-200/80 p-6 sm:p-7 transition-all cursor-pointer h-full flex flex-col justify-between group rounded-3xl border-0 shadow-none">
+                <div className="space-y-3">
+                  <div className="p-3.5 bg-white text-zinc-950 rounded-2xl w-fit group-hover:bg-zinc-950 group-hover:text-white transition-colors border-0 shadow-none">
                     <Ticket className="h-6 w-6" />
                   </div>
-                  <h3 className="text-base font-bold text-zinc-950 group-hover:text-black transition-colors">
-                    Tiket Saya & E-Ticket
-                  </h3>
-                  <p className="text-xs text-zinc-500 leading-relaxed">
-                    Akses kode QR digital tiket konser dan riwayat invoice pembayaran.
-                  </p>
+                  <div>
+                    <h3 className="text-base font-bold text-zinc-950 group-hover:text-black transition-colors">
+                      Tiket Saya & E-Ticket
+                    </h3>
+                    <p className="text-xs text-zinc-500 leading-relaxed mt-1">
+                      Akses kode QR digital tiket konser dan riwayat invoice pembayaran.
+                    </p>
+                  </div>
                 </div>
-                <div className="pt-4 flex items-center gap-1 text-xs text-zinc-950 font-bold">
+                <div className="pt-5 flex items-center gap-1.5 text-xs text-zinc-950 font-bold">
                   <span>Buka Tiket</span>
                   <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform" />
                 </div>
-              </Card>
+              </div>
             </Link>
 
-            <Link href="/cashless">
-              <Card className="bg-white hover:border-zinc-300 border-zinc-200 p-6 transition-all cursor-pointer h-full flex flex-col justify-between group rounded-2xl shadow-sm hover:shadow-md">
-                <div className="space-y-2.5">
-                  <div className="p-3 bg-zinc-100 text-zinc-950 rounded-2xl w-fit group-hover:bg-zinc-950 group-hover:text-white transition-colors">
+            <Link href="/cashless" className="block h-full">
+              <div className="bg-zinc-100 hover:bg-zinc-200/80 p-6 sm:p-7 transition-all cursor-pointer h-full flex flex-col justify-between group rounded-3xl border-0 shadow-none">
+                <div className="space-y-3">
+                  <div className="p-3.5 bg-white text-zinc-950 rounded-2xl w-fit group-hover:bg-zinc-950 group-hover:text-white transition-colors border-0 shadow-none">
                     <CreditCard className="h-6 w-6" />
                   </div>
-                  <h3 className="text-base font-bold text-zinc-950 group-hover:text-black transition-colors">
-                    Gelang RFID Cashless
-                  </h3>
-                  <p className="text-xs text-zinc-500 leading-relaxed">
-                    Cek saldo aktif gelang festival, top-up saldo instan, dan mutasi tenant F&B.
-                  </p>
+                  <div>
+                    <h3 className="text-base font-bold text-zinc-950 group-hover:text-black transition-colors">
+                      Gelang RFID Cashless
+                    </h3>
+                    <p className="text-xs text-zinc-500 leading-relaxed mt-1">
+                      Cek saldo aktif gelang festival, top-up saldo instan, dan mutasi tenant F&B.
+                    </p>
+                  </div>
                 </div>
-                <div className="pt-4 flex items-center gap-1 text-xs text-zinc-950 font-bold">
+                <div className="pt-5 flex items-center gap-1.5 text-xs text-zinc-950 font-bold">
                   <span>Buka Portal Gelang</span>
                   <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform" />
                 </div>
-              </Card>
+              </div>
             </Link>
 
             {user.role === 'organizer' || user.role === 'admin' ? (
-              <Link href="/dashboard">
-                <Card className="bg-white hover:border-zinc-300 border-zinc-200 p-6 transition-all cursor-pointer h-full flex flex-col justify-between group rounded-2xl shadow-sm hover:shadow-md">
-                  <div className="space-y-2.5">
-                    <div className="p-3 bg-zinc-100 text-zinc-950 rounded-2xl w-fit group-hover:bg-zinc-950 group-hover:text-white transition-colors">
+              <Link href="/dashboard" className="block h-full">
+                <div className="bg-zinc-100 hover:bg-zinc-200/80 p-6 sm:p-7 transition-all cursor-pointer h-full flex flex-col justify-between group rounded-3xl border-0 shadow-none">
+                  <div className="space-y-3">
+                    <div className="p-3.5 bg-white text-zinc-950 rounded-2xl w-fit group-hover:bg-zinc-950 group-hover:text-white transition-colors border-0 shadow-none">
                       <Building className="h-6 w-6" />
                     </div>
-                    <h3 className="text-base font-bold text-zinc-950 group-hover:text-black transition-colors">
-                      Dashboard Organizer
-                    </h3>
-                    <p className="text-xs text-zinc-500 leading-relaxed">
-                      Kelola event Anda, pantau penjualan tiket, dan ajukan pencairan dana.
-                    </p>
+                    <div>
+                      <h3 className="text-base font-bold text-zinc-950 group-hover:text-black transition-colors">
+                        Dashboard Organizer
+                      </h3>
+                      <p className="text-xs text-zinc-500 leading-relaxed mt-1">
+                        Kelola event Anda, pantau penjualan tiket, dan ajukan pencairan dana.
+                      </p>
+                    </div>
                   </div>
-                  <div className="pt-4 flex items-center gap-1 text-xs text-zinc-950 font-bold">
+                  <div className="pt-5 flex items-center gap-1.5 text-xs text-zinc-950 font-bold">
                     <span>Buka Dashboard</span>
                     <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform" />
                   </div>
-                </Card>
+                </div>
               </Link>
             ) : (
-              <Card className="bg-white border-zinc-200 p-6 flex flex-col justify-between rounded-2xl shadow-sm">
-                <div className="space-y-2.5">
-                  <div className="p-3 bg-zinc-100 text-zinc-950 rounded-2xl w-fit">
+              <div className="bg-zinc-100 p-6 sm:p-7 flex flex-col justify-between rounded-3xl border-0 shadow-none h-full">
+                <div className="space-y-3">
+                  <div className="p-3.5 bg-white text-zinc-950 rounded-2xl w-fit border-0 shadow-none">
                     <Building className="h-6 w-6" />
                   </div>
-                  <h3 className="text-base font-bold text-zinc-950">Tingkatkan Akun</h3>
-                  <p className="text-xs text-zinc-500 leading-relaxed">
-                    Ingin menjual tiket event Anda sendiri di Entra?
-                  </p>
+                  <div>
+                    <h3 className="text-base font-bold text-zinc-950">Tingkatkan Akun</h3>
+                    <p className="text-xs text-zinc-500 leading-relaxed mt-1">
+                      Ingin menjual tiket event Anda sendiri di Entra?
+                    </p>
+                  </div>
                 </div>
                 <Button
-                  size="sm"
                   onClick={handleUpgrade}
                   disabled={isUpgrading}
-                  className="mt-4 bg-zinc-950 hover:bg-zinc-800 text-white text-xs font-bold rounded-full py-2.5"
+                  className="mt-5 bg-zinc-950 hover:bg-zinc-800 text-white text-xs font-bold rounded-full py-3 border-0 shadow-none cursor-pointer"
                 >
                   {isUpgrading ? 'Memproses...' : 'Tingkatkan ke Organizer'}
                 </Button>
-              </Card>
+              </div>
             )}
           </div>
 
           {/* Danger Zone: Log out */}
-          <Card className="bg-red-50/50 border-red-200 p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-2xl">
+          <div className="bg-rose-50/80 p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-5 rounded-3xl border-0 shadow-none">
             <div>
-              <h3 className="text-base font-bold text-red-600 flex items-center gap-2">
+              <h3 className="text-base font-bold text-rose-600 flex items-center gap-2">
                 <LogOut className="h-4 w-4" />
                 Keluar dari Sesi Akun
               </h3>
-              <p className="text-xs text-zinc-500 mt-0.5">
+              <p className="text-xs text-zinc-500 mt-1">
                 Keluar dari akun Anda pada perangkat ini. Anda perlu masuk kembali untuk mengakses tiket.
               </p>
             </div>
 
             <Button
-              variant="outline"
               onClick={() => logout()}
-              className="border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 text-xs font-bold px-5 py-2 rounded-full"
+              className="bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-6 py-3 rounded-full border-0 shadow-none cursor-pointer"
             >
               Keluar Sekarang
             </Button>
-          </Card>
+          </div>
         </div>
       )}
     </div>

@@ -538,158 +538,136 @@ export default function ProfilePage() {
 
       {/* TAB 2: Keamanan & Kata Sandi */}
       {activeTab === 'SECURITY' && (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="md:col-span-2 bg-zinc-100 p-6 sm:p-8 space-y-6 rounded-3xl border-0 shadow-none">
-            <div>
-              <h2 className="text-lg font-bold text-zinc-950">Keamanan & Reset Kata Sandi</h2>
-              <p className="text-xs text-zinc-500 mt-1">
-                Kelola kata sandi akun untuk memastikan keamanan akses transaksi dan tiket Anda.
-              </p>
+        <div className="bg-zinc-100 p-6 sm:p-8 space-y-6 rounded-3xl border-0 shadow-none">
+          <div>
+            <h2 className="text-lg font-bold text-zinc-950">Keamanan & Reset Kata Sandi</h2>
+            <p className="text-xs text-zinc-500 mt-1">
+              Kelola kata sandi akun untuk memastikan keamanan akses transaksi dan tiket Anda.
+            </p>
+          </div>
+
+          {/* Direct Password Change Form */}
+          <form onSubmit={handleChangePassword} className="p-5 sm:p-6 bg-white rounded-2xl space-y-5 border-0 shadow-none">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 bg-zinc-100 text-zinc-950 rounded-2xl">
+                <KeyRound className="h-4 w-4" />
+              </div>
+              <div>
+                <h3 className="text-sm font-bold text-zinc-950">Ubah Kata Sandi Langsung</h3>
+                <p className="text-xs text-zinc-500">
+                  Masukkan kata sandi saat ini dan tentukan kata sandi baru Anda.
+                </p>
+              </div>
             </div>
 
-            {/* Direct Password Change Form */}
-            <form onSubmit={handleChangePassword} className="p-5 sm:p-6 bg-white rounded-2xl space-y-5 border-0 shadow-none">
-              <div className="flex items-center gap-3">
-                <div className="p-2.5 bg-zinc-100 text-zinc-950 rounded-2xl">
-                  <KeyRound className="h-4 w-4" />
-                </div>
-                <div>
-                  <h3 className="text-sm font-bold text-zinc-950">Ubah Kata Sandi Langsung</h3>
-                  <p className="text-xs text-zinc-500">
-                    Masukkan kata sandi saat ini dan tentukan kata sandi baru Anda.
-                  </p>
+            <div className="space-y-4">
+              <div>
+                <label className="text-xs font-bold text-zinc-700 mb-1.5 block">Kata Sandi Saat Ini</label>
+                <div className="relative">
+                  <input
+                    type={showOldPassword ? "text" : "password"}
+                    value={oldPassword}
+                    onChange={(e) => setOldPassword(e.target.value)}
+                    placeholder="Masukkan kata sandi lama"
+                    className="w-full bg-zinc-100 focus:bg-zinc-50 rounded-full px-4 py-3 text-sm text-zinc-950 placeholder:text-zinc-400 pr-11 focus:outline-none transition-all font-medium border-0 shadow-none"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowOldPassword(!showOldPassword)}
+                    className="absolute right-3.5 top-3.5 text-zinc-400 hover:text-zinc-700 cursor-pointer border-0"
+                    title={showOldPassword ? "Sembunyikan" : "Tampilkan"}
+                  >
+                    {showOldPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
                 </div>
               </div>
 
-              <div className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                 <div>
-                  <label className="text-xs font-bold text-zinc-700 mb-1.5 block">Kata Sandi Saat Ini</label>
+                  <label className="text-xs font-bold text-zinc-700 mb-1.5 block">Kata Sandi Baru</label>
                   <div className="relative">
                     <input
-                      type={showOldPassword ? "text" : "password"}
-                      value={oldPassword}
-                      onChange={(e) => setOldPassword(e.target.value)}
-                      placeholder="Masukkan kata sandi lama"
+                      type={showNewPassword ? "text" : "password"}
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      placeholder="Minimal 8 karakter"
                       className="w-full bg-zinc-100 focus:bg-zinc-50 rounded-full px-4 py-3 text-sm text-zinc-950 placeholder:text-zinc-400 pr-11 focus:outline-none transition-all font-medium border-0 shadow-none"
                     />
                     <button
                       type="button"
-                      onClick={() => setShowOldPassword(!showOldPassword)}
+                      onClick={() => setShowNewPassword(!showNewPassword)}
                       className="absolute right-3.5 top-3.5 text-zinc-400 hover:text-zinc-700 cursor-pointer border-0"
-                      title={showOldPassword ? "Sembunyikan" : "Tampilkan"}
+                      title={showNewPassword ? "Sembunyikan" : "Tampilkan"}
                     >
-                      {showOldPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      {showNewPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </button>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                  <div>
-                    <label className="text-xs font-bold text-zinc-700 mb-1.5 block">Kata Sandi Baru</label>
-                    <div className="relative">
-                      <input
-                        type={showNewPassword ? "text" : "password"}
-                        value={newPassword}
-                        onChange={(e) => setNewPassword(e.target.value)}
-                        placeholder="Minimal 8 karakter"
-                        className="w-full bg-zinc-100 focus:bg-zinc-50 rounded-full px-4 py-3 text-sm text-zinc-950 placeholder:text-zinc-400 pr-11 focus:outline-none transition-all font-medium border-0 shadow-none"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowNewPassword(!showNewPassword)}
-                        className="absolute right-3.5 top-3.5 text-zinc-400 hover:text-zinc-700 cursor-pointer border-0"
-                        title={showNewPassword ? "Sembunyikan" : "Tampilkan"}
-                      >
-                        {showNewPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                      </button>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="text-xs font-bold text-zinc-700 mb-1.5 block">Konfirmasi Kata Sandi Baru</label>
-                    <div className="relative">
-                      <input
-                        type={showConfirmPassword ? "text" : "password"}
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        placeholder="Ulangi kata sandi baru"
-                        className="w-full bg-zinc-100 focus:bg-zinc-50 rounded-full px-4 py-3 text-sm text-zinc-950 placeholder:text-zinc-400 pr-11 focus:outline-none transition-all font-medium border-0 shadow-none"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                        className="absolute right-3.5 top-3.5 text-zinc-400 hover:text-zinc-700 cursor-pointer border-0"
-                        title={showConfirmPassword ? "Sembunyikan" : "Tampilkan"}
-                      >
-                        {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                      </button>
-                    </div>
+                <div>
+                  <label className="text-xs font-bold text-zinc-700 mb-1.5 block">Konfirmasi Kata Sandi Baru</label>
+                  <div className="relative">
+                    <input
+                      type={showConfirmPassword ? "text" : "password"}
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      placeholder="Ulangi kata sandi baru"
+                      className="w-full bg-zinc-100 focus:bg-zinc-50 rounded-full px-4 py-3 text-sm text-zinc-950 placeholder:text-zinc-400 pr-11 focus:outline-none transition-all font-medium border-0 shadow-none"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      className="absolute right-3.5 top-3.5 text-zinc-400 hover:text-zinc-700 cursor-pointer border-0"
+                      title={showConfirmPassword ? "Sembunyikan" : "Tampilkan"}
+                    >
+                      {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
                   </div>
                 </div>
               </div>
-
-              <div className="pt-2 flex justify-end">
-                <Button
-                  type="submit"
-                  disabled={isChangingPassword}
-                  className="bg-zinc-950 hover:bg-zinc-800 text-white font-bold text-xs py-3 px-6 rounded-full flex items-center gap-2 border-0 shadow-none cursor-pointer"
-                >
-                  <Lock className="h-3.5 w-3.5" />
-                  {isChangingPassword ? 'Memperbarui...' : 'Simpan Kata Sandi Baru'}
-                </Button>
-              </div>
-            </form>
-
-            <div className="p-5 sm:p-6 bg-white rounded-2xl space-y-4 border-0 shadow-none">
-              <div className="flex items-start gap-3">
-                <div className="p-2.5 bg-zinc-100 text-zinc-950 rounded-2xl">
-                  <Key className="h-4 w-4" />
-                </div>
-                <div className="space-y-1">
-                  <h3 className="text-sm font-bold text-zinc-950">Reset Kata Sandi Akun</h3>
-                  <p className="text-xs text-zinc-500 leading-relaxed">
-                    Kami akan mengirimkan tautan verifikasi aman ke email Anda ({user.email}) untuk memperbarui kata sandi baru.
-                  </p>
-                </div>
-              </div>
-
-              {resetRequested ? (
-                <div className="p-4 bg-emerald-100 text-emerald-800 rounded-2xl text-xs flex items-center gap-2.5 font-medium border-0 shadow-none">
-                  <CheckCircle2 className="h-4 w-4 flex-shrink-0 text-emerald-600" />
-                  <span>Tautan pembaruan kata sandi telah dikirimkan ke email Anda. Silakan periksa kotak masuk atau spam.</span>
-                </div>
-              ) : (
-                <Button
-                  onClick={handleRequestPasswordReset}
-                  disabled={isRequestingReset}
-                  className="bg-zinc-950 hover:bg-zinc-800 text-white font-bold text-xs py-3 px-6 rounded-full flex items-center gap-2 border-0 shadow-none cursor-pointer"
-                >
-                  <Lock className="h-3.5 w-3.5" />
-                  {isRequestingReset ? 'Mengirim Permintaan...' : 'Kirim Tautan Reset Kata Sandi'}
-                </Button>
-              )}
             </div>
 
-          </div>
+            <div className="pt-2 flex justify-end">
+              <Button
+                type="submit"
+                disabled={isChangingPassword}
+                className="bg-zinc-950 hover:bg-zinc-800 text-white font-bold text-xs py-3 px-6 rounded-full flex items-center gap-2 border-0 shadow-none cursor-pointer"
+              >
+                <Lock className="h-3.5 w-3.5" />
+                {isChangingPassword ? 'Memperbarui...' : 'Simpan Kata Sandi Baru'}
+              </Button>
+            </div>
+          </form>
 
-          {/* Tips Keamanan Card */}
-          <div className="bg-zinc-100 p-6 sm:p-7 space-y-4 rounded-3xl border-0 shadow-none h-fit">
-            <div>
-              <h3 className="text-base font-bold text-zinc-950">Tips Keamanan</h3>
-              <p className="text-xs text-zinc-500 mt-1">
-                Panduan menjaga keamanan akun dan akses tiket digital Anda.
-              </p>
-            </div>
-            <div className="space-y-2.5 text-xs text-zinc-600">
-              <div className="flex items-start gap-2.5 p-4 bg-white rounded-2xl font-medium border-0 shadow-none">
-                <CheckCircle2 className="h-4 w-4 text-emerald-600 flex-shrink-0 mt-0.5" />
-                <span>Gunakan minimal 8 karakter dengan kombinasi huruf besar, angka, dan simbol.</span>
+          {/* Email Reset Option */}
+          <div className="p-5 sm:p-6 bg-white rounded-2xl space-y-4 border-0 shadow-none">
+            <div className="flex items-start gap-3">
+              <div className="p-2.5 bg-zinc-100 text-zinc-950 rounded-2xl">
+                <Key className="h-4 w-4" />
               </div>
-              <div className="flex items-start gap-2.5 p-4 bg-white rounded-2xl font-medium border-0 shadow-none">
-                <CheckCircle2 className="h-4 w-4 text-emerald-600 flex-shrink-0 mt-0.5" />
-                <span>Jangan pernah membagikan kode QR tiket digital atau akses akun kepada orang lain.</span>
+              <div className="space-y-1">
+                <h3 className="text-sm font-bold text-zinc-950">Reset Kata Sandi Akun</h3>
+                <p className="text-xs text-zinc-500 leading-relaxed">
+                  Kami akan mengirimkan tautan verifikasi aman ke email Anda ({user.email}) untuk memperbarui kata sandi baru.
+                </p>
               </div>
             </div>
+
+            {resetRequested ? (
+              <div className="p-4 bg-emerald-100 text-emerald-800 rounded-2xl text-xs flex items-center gap-2.5 font-medium border-0 shadow-none">
+                <CheckCircle2 className="h-4 w-4 flex-shrink-0 text-emerald-600" />
+                <span>Tautan pembaruan kata sandi telah dikirimkan ke email Anda. Silakan periksa kotak masuk atau spam.</span>
+              </div>
+            ) : (
+              <Button
+                onClick={handleRequestPasswordReset}
+                disabled={isRequestingReset}
+                className="bg-zinc-950 hover:bg-zinc-800 text-white font-bold text-xs py-3 px-6 rounded-full flex items-center gap-2 border-0 shadow-none cursor-pointer"
+              >
+                <Lock className="h-3.5 w-3.5" />
+                {isRequestingReset ? 'Mengirim Permintaan...' : 'Kirim Tautan Reset Kata Sandi'}
+              </Button>
+            )}
           </div>
         </div>
       )}

@@ -443,22 +443,59 @@ export default function CashlessPortalPage() {
         </div>
 
         {/* Quick Actions Panel */}
-        <div className="flex flex-col justify-between gap-4 bg-zinc-100 rounded-3xl p-6 sm:p-7 border-0 shadow-none">
-          <div>
-            <h3 className="text-lg font-bold text-zinc-950 mb-1">Aksi Cepat Gelang</h3>
-            <p className="text-xs text-zinc-500">
-              Isi ulang saldo instan, bayar di kasir, atau cairkan sisa saldo gelang Anda.
-            </p>
+        <div className="flex flex-col justify-between bg-zinc-100 rounded-3xl p-6 sm:p-7 border-0 shadow-none">
+          <div className="space-y-4">
+            <div>
+              <h3 className="text-lg font-bold text-zinc-950 mb-1">Aksi Cepat Gelang</h3>
+              <p className="text-xs text-zinc-500 leading-relaxed">
+                Isi ulang saldo instan via Midtrans Snap atau ajukan pencairan sisa saldo gelang Anda.
+              </p>
+            </div>
+
+            {/* Quick Top-Up Shortcut Chips */}
+            <div className="space-y-1.5 pt-1">
+              <span className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider block">
+                Top-Up Cepat
+              </span>
+              <div className="grid grid-cols-3 gap-2">
+                {[
+                  { label: '+50rb', val: 50000 },
+                  { label: '+100rb', val: 100000 },
+                  { label: '+200rb', val: 200000 },
+                ].map((item) => (
+                  <button
+                    key={item.val}
+                    type="button"
+                    onClick={() => {
+                      setTopUpAmount(item.val);
+                      setCustomTopUpInput(item.val.toString());
+                      setIsTopUpOpen(true);
+                    }}
+                    className="py-2.5 px-2 bg-white hover:bg-zinc-200/80 text-zinc-800 rounded-2xl text-xs font-bold transition-all text-center border-0 shadow-none cursor-pointer"
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Micro Trust & Security Info */}
+            <div className="flex items-center gap-2 text-xs text-zinc-600 bg-white/70 px-3.5 py-2.5 rounded-2xl border-0">
+              <ShieldCheck className="h-4 w-4 text-emerald-600 flex-shrink-0" />
+              <span className="text-[11px] font-medium text-zinc-600">
+                Gateway resmi Midtrans Snap (QRIS, VA)
+              </span>
+            </div>
           </div>
 
-          <div className="space-y-2.5">
+          <div className="space-y-2 pt-4">
             <Button
               onClick={() => {
                 setTopUpAmount(100000);
                 setCustomTopUpInput('100000');
                 setIsTopUpOpen(true);
               }}
-              className="w-full bg-zinc-950 hover:bg-zinc-800 text-white font-semibold py-3.5 rounded-full flex items-center justify-center gap-2.5 text-xs shadow-none border-0"
+              className="w-full bg-zinc-950 hover:bg-zinc-800 text-white font-semibold py-3.5 rounded-full flex items-center justify-center gap-2.5 text-xs shadow-none border-0 cursor-pointer"
             >
               <Zap className="h-4 w-4" />
               Top-Up Saldo Gelang
@@ -473,7 +510,7 @@ export default function CashlessPortalPage() {
                 setIsRefundOpen(true);
               }}
               disabled={balanceAmount <= 0}
-              className="w-full bg-rose-50 hover:bg-rose-100 text-rose-600 font-semibold py-3.5 rounded-full flex items-center justify-center gap-2.5 text-xs disabled:opacity-40 border-0 shadow-none"
+              className="w-full bg-rose-50 hover:bg-rose-100 text-rose-600 font-semibold py-3.5 rounded-full flex items-center justify-center gap-2.5 text-xs disabled:opacity-40 border-0 shadow-none cursor-pointer"
             >
               <ArrowDownToLine className="h-4 w-4 text-rose-500" />
               Tarik Saldo Gelang (Refund)

@@ -478,14 +478,6 @@ export default function CashlessPortalPage() {
                 ))}
               </div>
             </div>
-
-            {/* Micro Trust & Security Info */}
-            <div className="flex items-center gap-2 text-xs text-zinc-600 bg-white/70 px-3.5 py-2.5 rounded-2xl border-0">
-              <ShieldCheck className="h-4 w-4 text-emerald-600 flex-shrink-0" />
-              <span className="text-[11px] font-medium text-zinc-600">
-                Gateway resmi Midtrans Snap (QRIS, VA)
-              </span>
-            </div>
           </div>
 
           <div className="space-y-2 pt-4">

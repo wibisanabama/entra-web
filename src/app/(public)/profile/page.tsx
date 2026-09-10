@@ -313,8 +313,8 @@ export default function ProfilePage() {
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8 text-zinc-900">
       {/* Top Banner & Identity Hero */}
       <div className="relative bg-zinc-100 rounded-3xl p-6 sm:p-8 border-0 shadow-none overflow-hidden">
-        <div className="relative z-10 flex flex-col md:flex-row items-center md:items-start justify-between gap-6">
-          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 text-center sm:text-left">
+        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left">
             {/* Avatar with Camera Trigger */}
             <div className="relative group">
               <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden bg-zinc-950 flex items-center justify-center text-white font-bold text-3xl border-0 shadow-none">

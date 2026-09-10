@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/providers/auth-provider';
 import { cashlessApi } from '@/lib/api';
@@ -45,6 +45,45 @@ export default function CashlessPortalPage() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [txFilter, setTxFilter] = useState<'ALL' | 'TOPUP' | 'PURCHASE' | 'REFUND'>('ALL');
   const [copied, setCopied] = useState(false);
+
+  // Filter tabs sliding indicator ala Mobbin (persis seperti kategori di /)
+  const filterContainerRef = useRef<HTMLDivElement>(null);
+  const filterTabsRef = useRef<Record<string, HTMLButtonElement | null>>({});
+  const [filterIndicatorStyle, setFilterIndicatorStyle] = useState<{ left: number; width: number }>({ left: 0, width: 0 });
+  const [isFilterReady, setIsFilterReady] = useState(false);
+
+  useEffect(() => {
+    const activeEl = filterTabsRef.current[txFilter];
+    if (activeEl) {
+      setFilterIndicatorStyle({
+        left: activeEl.offsetLeft,
+        width: activeEl.offsetWidth,
+      });
+
+      if (!isFilterReady) {
+        const timer = setTimeout(() => setIsFilterReady(true), 50);
+        return () => clearTimeout(timer);
+      } else if (filterContainerRef.current) {
+        const container = filterContainerRef.current;
+        const targetScrollLeft = activeEl.offsetLeft - container.offsetWidth / 2 + activeEl.offsetWidth / 2;
+        container.scrollTo({ left: targetScrollLeft, behavior: 'smooth' });
+      }
+    }
+  }, [txFilter, transactions.length, isFilterReady]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const activeEl = filterTabsRef.current[txFilter];
+      if (activeEl) {
+        setFilterIndicatorStyle({
+          left: activeEl.offsetLeft,
+          width: activeEl.offsetWidth,
+        });
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [txFilter]);
 
   // Top-Up Modal State
   const [isTopUpOpen, setIsTopUpOpen] = useState(false);
@@ -419,40 +458,49 @@ export default function CashlessPortalPage() {
             </p>
           </div>
 
-          {/* Filter Tabs */}
-          <div className="flex flex-wrap bg-zinc-200/80 p-1 rounded-full text-xs w-fit gap-1 border-0">
-            <button
-              onClick={() => setTxFilter('ALL')}
-              className={`px-3.5 py-1.5 rounded-full font-medium transition-colors border-0 cursor-pointer ${
-                txFilter === 'ALL' ? 'bg-white text-zinc-950 shadow-none font-semibold' : 'text-zinc-600 hover:text-zinc-950'
+          {/* Segmented Control Pill ala Mobbin (persis seperti kategori di /) */}
+          <div
+            ref={filterContainerRef}
+            className="relative inline-flex items-center p-1 sm:p-1.5 bg-zinc-200/80 rounded-full gap-1 overflow-x-auto no-scrollbar max-w-full border-0"
+          >
+            {/* Sliding Capsule Highlight */}
+            <div
+              className={`absolute top-1 sm:top-1.5 bottom-1 sm:bottom-1.5 rounded-full bg-white pointer-events-none ${
+                isFilterReady
+                  ? 'transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]'
+                  : 'transition-none'
               }`}
-            >
-              Semua ({transactions.length})
-            </button>
-            <button
-              onClick={() => setTxFilter('TOPUP')}
-              className={`px-3.5 py-1.5 rounded-full font-medium transition-colors border-0 cursor-pointer ${
-                txFilter === 'TOPUP' ? 'bg-white text-zinc-950 shadow-none font-semibold' : 'text-zinc-600 hover:text-zinc-950'
-              }`}
-            >
-              Top-Up Saldo
-            </button>
-            <button
-              onClick={() => setTxFilter('PURCHASE')}
-              className={`px-3.5 py-1.5 rounded-full font-medium transition-colors border-0 cursor-pointer ${
-                txFilter === 'PURCHASE' ? 'bg-white text-zinc-950 shadow-none font-semibold' : 'text-zinc-600 hover:text-zinc-950'
-              }`}
-            >
-              Belanja Tenant
-            </button>
-            <button
-              onClick={() => setTxFilter('REFUND')}
-              className={`px-3.5 py-1.5 rounded-full font-medium transition-colors border-0 cursor-pointer ${
-                txFilter === 'REFUND' ? 'bg-rose-600 text-white shadow-none font-semibold' : 'text-zinc-600 hover:text-zinc-950'
-              }`}
-            >
-              Refund
-            </button>
+              style={{
+                left: `${filterIndicatorStyle.left}px`,
+                width: `${filterIndicatorStyle.width}px`,
+                opacity: filterIndicatorStyle.width > 0 ? 1 : 0,
+              }}
+            />
+
+            {[
+              { id: 'ALL', label: `Semua (${transactions.length})` },
+              { id: 'TOPUP', label: 'Top-Up Saldo' },
+              { id: 'PURCHASE', label: 'Belanja Tenant' },
+              { id: 'REFUND', label: 'Refund' },
+            ].map((tab) => {
+              const isSelected = txFilter === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  ref={(el) => {
+                    filterTabsRef.current[tab.id] = el;
+                  }}
+                  onClick={() => setTxFilter(tab.id as 'ALL' | 'TOPUP' | 'PURCHASE' | 'REFUND')}
+                  className={`relative z-10 px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-medium transition-colors duration-200 whitespace-nowrap cursor-pointer ${
+                    isSelected
+                      ? 'text-zinc-950'
+                      : 'text-zinc-500 hover:text-zinc-900'
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              );
+            })}
           </div>
         </div>
 

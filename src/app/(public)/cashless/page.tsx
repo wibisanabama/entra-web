@@ -377,13 +377,17 @@ export default function CashlessPortalPage() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-3 bg-zinc-900 px-3.5 py-2 rounded-2xl border-0 w-fit">
-                <div className="bg-white p-1 rounded-xl">
-                  <QRCodeSVG value={wallet?.id || 'entra-wristband'} size={38} />
+              <div className="flex items-center gap-3 bg-zinc-800/80 px-3.5 py-2.5 rounded-2xl border-0 w-fit">
+                <div className="bg-white p-1.5 rounded-xl">
+                  <QRCodeSVG value={wallet?.id || 'entra-wristband'} size={36} />
                 </div>
-                <div className="text-left">
-                  <span className="text-[10px] text-zinc-400 uppercase block font-bold">NFC TAP-READY</span>
-                  <span className="text-xs font-mono text-white font-bold">0.05s SPEED</span>
+                <div className="text-left space-y-0.5">
+                  <span className="text-[10px] text-zinc-400 uppercase tracking-wider block font-semibold">
+                    Scan QR / Tap NFC
+                  </span>
+                  <span className="text-xs text-zinc-100 font-semibold block">
+                    Siap Digunakan
+                  </span>
                 </div>
               </div>
             </div>

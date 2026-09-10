@@ -16,11 +16,7 @@ import {
   ArrowUpRight,
   ArrowDownLeft,
   RefreshCw,
-  Store,
   CheckCircle2,
-  UtensilsCrossed,
-  Shirt,
-  Coffee,
   Copy,
   Check,
   Landmark,
@@ -32,12 +28,6 @@ import {
 import { toast } from '@/lib/toast';
 
 const PRESET_TOPUP_AMOUNTS = [25000, 50000, 100000, 200000, 500000];
-
-const SAMPLE_MERCHANTS = [
-  { id: 'm-food-01', name: 'Festival Street Food & Snack', category: 'Food & Beverage', icon: <UtensilsCrossed className="h-5 w-5" /> },
-  { id: 'm-drink-02', name: 'Entra Coffee & Beverage Bar', category: 'Coffee & Drinks', icon: <Coffee className="h-5 w-5" /> },
-  { id: 'm-merch-03', name: 'Official Festival Merchandise Store', category: 'Merchandise', icon: <Shirt className="h-5 w-5" /> },
-];
 
 const BANK_OPTIONS = ['BCA', 'Bank Mandiri', 'BNI', 'BRI', 'SeaBank', 'Bank Jago', 'GoPay', 'OVO', 'DANA'];
 
@@ -104,13 +94,6 @@ export default function CashlessPortalPage() {
   const [paymentMethod, setPaymentMethod] = useState<'qris' | 'bca_va' | 'mandiri_va'>('qris');
   const [paymentVerifying, setPaymentVerifying] = useState(false);
   const [vaCopied, setVaCopied] = useState(false);
-
-  // Merchant POS Simulation Modal State
-  const [isPosOpen, setIsPosOpen] = useState(false);
-  const [selectedMerchant, setSelectedMerchant] = useState(SAMPLE_MERCHANTS[0]);
-  const [posAmount, setPosAmount] = useState<number>(35000);
-  const [customPosInput, setCustomPosInput] = useState<string>('35000');
-  const [posLoading, setPosLoading] = useState(false);
 
   // Wristband Balance Refund Modal State
   const [isRefundOpen, setIsRefundOpen] = useState(false);
@@ -265,41 +248,6 @@ export default function CashlessPortalPage() {
       toast.error(errMsg);
     } finally {
       setPaymentVerifying(false);
-    }
-  };
-
-  const handlePosPayment = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (posAmount <= 0) {
-      toast.error('Nominal transaksi harus lebih dari Rp 0');
-      return;
-    }
-
-    const currentBal = parseAmount(wallet?.balance);
-    if (currentBal < posAmount) {
-      toast.error(`Saldo gelang tidak mencukupi. Saldo Anda: ${formatCurrency(currentBal)}`);
-      return;
-    }
-
-    try {
-      setPosLoading(true);
-      await cashlessApi.post('/api/v1/cashless/pay', {
-        amount: posAmount,
-        merchant_id: selectedMerchant.id,
-        merchant_name: selectedMerchant.name,
-      });
-
-      toast.success(
-        `Pembayaran Tap-to-Pay sebesar ${formatCurrency(posAmount)} di ${selectedMerchant.name} berhasil!`
-      );
-      setIsPosOpen(false);
-      await fetchWalletAndTransactions();
-    } catch (error: unknown) {
-      console.error('POS payment error:', error);
-      const errMsg = error instanceof Error ? error.message : 'Pembayaran gelang di merchant gagal.';
-      toast.error(errMsg);
-    } finally {
-      setPosLoading(false);
     }
   };
 
@@ -514,19 +462,6 @@ export default function CashlessPortalPage() {
             >
               <Zap className="h-4 w-4" />
               Top-Up Saldo Gelang
-            </Button>
-
-            <Button
-              variant="outline"
-              onClick={() => {
-                setPosAmount(35000);
-                setCustomPosInput('35000');
-                setIsPosOpen(true);
-              }}
-              className="w-full bg-white hover:bg-zinc-200/80 text-zinc-800 font-semibold py-3.5 rounded-full flex items-center justify-center gap-2.5 text-xs border-0 shadow-none"
-            >
-              <Store className="h-4 w-4 text-emerald-600" />
-              Simulasi Kasir POS (Tap to Pay)
             </Button>
 
             <Button
@@ -760,97 +695,7 @@ export default function CashlessPortalPage() {
         </Modal>
       )}
 
-      {/* MODAL 2: Simulasi Kasir Tenant POS (Tap to Pay) */}
-      {isPosOpen && (
-        <Modal
-          isOpen={isPosOpen}
-          onClose={() => !posLoading && setIsPosOpen(false)}
-          title="Simulasi Kasir Merchant / Tap to Pay"
-        >
-          <form onSubmit={handlePosPayment} className="space-y-5 text-zinc-900">
-            <div className="p-4 bg-zinc-100 rounded-2xl text-xs text-zinc-600 space-y-1 border-0">
-              <p className="text-zinc-950 font-semibold flex items-center gap-1.5">
-                <Store className="h-4 w-4 text-emerald-600" />
-                Simulasi Mesin POS Tenant Festival
-              </p>
-              <p>
-                Simulasi pemindaian gelang NFC pengunjung di booth makanan/minuman/merchandise untuk memotong saldo secara instan.
-              </p>
-            </div>
-
-            {/* Select Merchant */}
-            <div className="space-y-2">
-              <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">
-                Pilih Tenant / Merchant
-              </label>
-              <div className="space-y-2">
-                {SAMPLE_MERCHANTS.map((m) => (
-                  <div
-                    key={m.id}
-                    onClick={() => setSelectedMerchant(m)}
-                    className={`p-3 rounded-2xl border-0 flex items-center justify-between cursor-pointer transition-colors ${
-                      selectedMerchant.id === m.id
-                        ? 'bg-zinc-200/90 text-zinc-950 font-bold'
-                        : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200/60'
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 bg-white rounded-xl text-zinc-900 border-0">{m.icon}</div>
-                      <div>
-                        <p className="text-xs font-bold text-zinc-950">{m.name}</p>
-                        <p className="text-[11px] text-zinc-500">{m.category}</p>
-                      </div>
-                    </div>
-                    {selectedMerchant.id === m.id && (
-                      <CheckCircle2 className="h-5 w-5 text-zinc-950" />
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Total Belanja Input */}
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">
-                Total Tagihan Belanja (Rp)
-              </label>
-              <input
-                type="number"
-                min="1000"
-                step="1000"
-                value={customPosInput}
-                onChange={(e) => {
-                  setCustomPosInput(e.target.value);
-                  setPosAmount(Number(e.target.value) || 0);
-                }}
-                className="w-full px-4 py-2.5 bg-zinc-100 border-0 rounded-full text-zinc-900 font-bold focus:outline-none focus:ring-0 text-sm shadow-none"
-                required
-              />
-            </div>
-
-            <div className="flex justify-end gap-2.5 pt-2">
-              <Button
-                type="button"
-                variant="outline"
-                disabled={posLoading}
-                onClick={() => setIsPosOpen(false)}
-                className="rounded-full bg-zinc-100 hover:bg-zinc-200 text-zinc-700 text-xs border-0 shadow-none cursor-pointer"
-              >
-                Batal
-              </Button>
-              <Button
-                type="submit"
-                disabled={posLoading || posAmount <= 0}
-                className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 font-semibold flex items-center gap-1.5 rounded-full text-xs border-0 shadow-none cursor-pointer"
-              >
-                {posLoading ? 'Memproses...' : `Tap Gelang & Bayar (${formatCurrency(posAmount)})`}
-              </Button>
-            </div>
-          </form>
-        </Modal>
-      )}
-
-      {/* MODAL 3: Form Pengajuan Refund Sisa Saldo Gelang */}
+      {/* MODAL 2: Form Pengajuan Refund Sisa Saldo Gelang */}
       {isRefundOpen && (
         <Modal
           isOpen={isRefundOpen}

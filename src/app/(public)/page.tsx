@@ -249,26 +249,39 @@ export default function HomePage() {
                   </div>
                 ))
               ) : loadError ? (
-                <div className="col-span-full flex flex-col items-center rounded-3xl border border-zinc-200 bg-white px-6 py-20 text-center">
+                <div className="col-span-full flex flex-col items-center justify-center rounded-3xl bg-zinc-100 px-6 py-16 sm:py-20 text-center">
                   <p className="text-base font-bold text-zinc-950">Event belum dapat dimuat</p>
                   <p className="mt-2 max-w-md text-sm text-zinc-500">Periksa koneksi ke layanan event, lalu coba kembali.</p>
-                  <button onClick={() => window.location.reload()} className="mt-5 h-10 rounded-full bg-zinc-950 px-5 text-sm font-semibold text-white">Coba lagi</button>
+                  <button
+                    onClick={() => window.location.reload()}
+                    className="mt-5 h-10 rounded-full bg-zinc-950 px-5 text-sm font-semibold text-white hover:bg-zinc-800 transition-colors cursor-pointer"
+                  >
+                    Coba lagi
+                  </button>
                 </div>
               ) : filteredEvents.length > 0 ? (
                 filteredEvents.map((event) => (
                   <EventCard key={event.id} event={event} />
                 ))
               ) : (
-                <div className="col-span-full flex flex-col items-center justify-center h-[352px] lg:h-[371px] xl:h-[312px] text-center p-6 sm:p-8 bg-zinc-100 rounded-2xl">
+                <div className="col-span-full flex flex-col items-center justify-center rounded-3xl bg-zinc-100 p-8 sm:p-12 text-center min-h-[300px]">
                   <div className="max-w-md mx-auto">
-                    <p className="text-base font-bold text-zinc-950 mb-1">Tidak ada event untuk filter ini</p>
-                    <p className="text-xs text-zinc-500">Coba pilih kategori lain atau reset filter pilihan Anda.</p>
-                    <button
-                      onClick={() => setSelectedCategory('all')}
-                      className="mt-4 px-5 py-2 rounded-full text-xs font-semibold bg-zinc-950 text-white hover:bg-zinc-800 transition-colors cursor-pointer"
-                    >
-                      Reset Filter
-                    </button>
+                    <p className="text-base font-bold text-zinc-950 mb-1">
+                      {events.length === 0 ? 'Belum ada event yang tersedia' : 'Tidak ada event untuk filter ini'}
+                    </p>
+                    <p className="text-xs text-zinc-500">
+                      {events.length === 0
+                        ? 'Event baru akan segera hadir. Silakan periksa kembali nanti.'
+                        : 'Coba pilih kategori lain atau reset filter pilihan Anda.'}
+                    </p>
+                    {events.length > 0 && selectedCategory !== 'all' && (
+                      <button
+                        onClick={() => setSelectedCategory('all')}
+                        className="mt-4 px-5 py-2 rounded-full text-xs font-semibold bg-zinc-950 text-white hover:bg-zinc-800 transition-colors cursor-pointer"
+                      >
+                        Reset Filter
+                      </button>
+                    )}
                   </div>
                 </div>
               )}

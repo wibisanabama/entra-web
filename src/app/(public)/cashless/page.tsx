@@ -313,44 +313,45 @@ export default function CashlessPortalPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
         {/* RFID Wristband Pass Card */}
         <div className="lg:col-span-2 relative bg-zinc-950 rounded-3xl p-6 sm:p-8 text-white shadow-none border-0 overflow-hidden flex flex-col justify-between group">
-          <div className="relative z-10 space-y-6">
-            <div className="flex items-start justify-between">
-              <div className="flex items-center gap-3">
-                <div className="p-3 bg-zinc-800 rounded-2xl text-white border-0">
-                  <CreditCard className="h-6 w-6" />
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-bold uppercase tracking-widest text-zinc-400">
-                      Entra Festival Wristband
-                    </span>
+          <div className="relative z-10 flex flex-col sm:flex-row items-center sm:items-stretch justify-between gap-6 h-full">
+            {/* Left Column: Details */}
+            <div className="flex-1 flex flex-col justify-between space-y-6 w-full">
+              <div className="flex items-start justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="p-3 bg-zinc-800 rounded-2xl text-white border-0">
+                    <CreditCard className="h-6 w-6" />
                   </div>
-                  <h3 className="text-white font-mono text-sm font-semibold mt-0.5">
-                    {user?.full_name || 'Festival Attendee'}
-                  </h3>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-bold uppercase tracking-widest text-zinc-400">
+                        Entra Festival Wristband
+                      </span>
+                    </div>
+                    <h3 className="text-white font-mono text-sm font-semibold mt-0.5">
+                      {user?.full_name || 'Festival Attendee'}
+                    </h3>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {/* Live Balance Counter */}
-            <div className="space-y-1">
-              <span className="text-xs text-zinc-400 uppercase tracking-wider block font-medium">
-                Saldo Aktif Gelang
-              </span>
-              {loading ? (
-                <Skeleton className="h-12 w-48 bg-zinc-800" />
-              ) : (
-                <h2 className="text-4xl sm:text-5xl font-black text-white tracking-tight">
-                  {formatCurrency(balanceAmount)}
-                </h2>
-              )}
-              <p className="text-xs text-zinc-400">
-                Dapat digunakan di seluruh tenant F&B dan Official Merch festival.
-              </p>
-            </div>
+              {/* Live Balance Counter */}
+              <div className="space-y-1">
+                <span className="text-xs text-zinc-400 uppercase tracking-wider block font-medium">
+                  Saldo Aktif Gelang
+                </span>
+                {loading ? (
+                  <Skeleton className="h-12 w-48 bg-zinc-800" />
+                ) : (
+                  <h2 className="text-4xl sm:text-5xl font-black text-white tracking-tight">
+                    {formatCurrency(balanceAmount)}
+                  </h2>
+                )}
+                <p className="text-xs text-zinc-400">
+                  Dapat digunakan di seluruh tenant F&B dan Official Merch festival.
+                </p>
+              </div>
 
-            {/* Wristband UID and QR Code Stub */}
-            <div className="pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-0">
+              {/* Wristband UID */}
               <div className="space-y-1">
                 <span className="text-[11px] text-zinc-400 uppercase tracking-wider block font-medium">
                   Wristband UID / Kode Kartu
@@ -362,26 +363,31 @@ export default function CashlessPortalPage() {
                   <button
                     type="button"
                     onClick={handleCopyWristbandCode}
-                    className="p-1 hover:bg-zinc-800 rounded text-zinc-400 hover:text-white transition-colors"
+                    className="p-1 hover:bg-zinc-800 rounded text-zinc-400 hover:text-white transition-colors cursor-pointer"
                     title="Salin Kode UID"
                   >
                     {copied ? <Check className="h-4 w-4 text-emerald-400" /> : <Copy className="h-4 w-4" />}
                   </button>
                 </div>
               </div>
+            </div>
 
-              <div className="flex items-center gap-3 bg-zinc-800/80 px-3.5 py-2.5 rounded-2xl border-0 w-fit">
-                <div className="bg-white p-1.5 rounded-xl">
-                  <QRCodeSVG value={wallet?.id || 'entra-wristband'} size={36} />
-                </div>
-                <div className="text-left space-y-0.5">
-                  <span className="text-[10px] text-zinc-400 uppercase tracking-wider block font-semibold">
-                    Scan QR / Tap NFC
-                  </span>
-                  <span className="text-xs text-zinc-100 font-semibold block">
-                    Siap Digunakan
-                  </span>
-                </div>
+            {/* Right Column: Dedicated QR Code Card */}
+            <div className="bg-zinc-900/90 rounded-2xl p-5 flex flex-col items-center justify-center text-center space-y-3.5 w-full sm:w-auto sm:min-w-[190px] border-0 shadow-none flex-shrink-0 self-center sm:self-stretch">
+              <div className="bg-white p-2.5 rounded-2xl border-0 shadow-none">
+                <QRCodeSVG
+                  value={wallet?.id || 'entra-wristband'}
+                  size={120}
+                  level="M"
+                />
+              </div>
+              <div className="space-y-0.5 text-center">
+                <span className="text-[10px] text-zinc-400 uppercase tracking-widest block font-bold">
+                  Scan QR / Tap NFC
+                </span>
+                <span className="text-xs text-white font-bold block">
+                  Siap Digunakan
+                </span>
               </div>
             </div>
           </div>

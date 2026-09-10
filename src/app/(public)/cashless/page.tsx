@@ -153,13 +153,76 @@ export default function CashlessPortalPage() {
 
     try {
       setTopUpLoading(true);
-      await cashlessApi.post('/api/v1/cashless/topup', {
+      const res = await cashlessApi.post<{
+        topup?: { id: string; amount: any; status: string };
+        token?: string;
+        redirect_url?: string;
+      }>('/api/v1/cashless/topup', {
         amount: topUpAmount,
       });
 
-      toast.success(`Top-Up saldo gelang sebesar ${formatCurrency(topUpAmount)} berhasil diproses!`);
-      setIsTopUpOpen(false);
-      fetchWalletAndTransactions();
+      const topupId = res.data?.topup?.id;
+      const token = res.data?.token;
+
+      if (!topupId) {
+        throw new Error('Gagal memulai transaksi top-up.');
+      }
+
+      // Tunggu window.snap siap jika sedang dimuat di background
+      if (typeof window !== 'undefined' && !window.snap && token && !token.startsWith('MOCK_')) {
+        for (let i = 0; i < 20; i++) {
+          await new Promise((r) => setTimeout(r, 150));
+          if (window.snap) break;
+        }
+      }
+
+      // Jika mock token atau snap tidak tersedia, selesaikan topup langsung
+      if (!token || token.startsWith('MOCK_') || typeof window === 'undefined' || !window.snap) {
+        try {
+          await cashlessApi.post(`/api/v1/cashless/topup/${topupId}/confirm`);
+          toast.success(`Top-Up saldo gelang sebesar ${formatCurrency(topUpAmount)} berhasil diselesaikan!`);
+          setIsTopUpOpen(false);
+          await fetchWalletAndTransactions();
+          return;
+        } catch (confirmErr: any) {
+          throw new Error(confirmErr?.message || 'Gagal menyelesaikan top-up saldo');
+        }
+      }
+
+      // Pemicu pembayaran resmi Midtrans Snap
+      window.snap.pay(token, {
+        onSuccess: async (result: any) => {
+          try {
+            if (result) {
+              await cashlessApi.post('/api/v1/cashless/midtrans/webhook', result).catch(() => null);
+            }
+            await cashlessApi.post(`/api/v1/cashless/topup/${topupId}/confirm`);
+          } catch (err) {
+            console.error('Top-up confirmation sync error:', err);
+          }
+          toast.success(`Top-Up saldo gelang sebesar ${formatCurrency(topUpAmount)} berhasil!`);
+          setIsTopUpOpen(false);
+          await fetchWalletAndTransactions();
+        },
+        onPending: async (result: any) => {
+          try {
+            if (result) {
+              await cashlessApi.post('/api/v1/cashless/midtrans/webhook', result).catch(() => null);
+            }
+          } catch (err) {
+            console.error('Top-up pending sync error:', err);
+          }
+          toast.info('Menunggu pembayaran Midtrans diselesaikan.');
+          setIsTopUpOpen(false);
+          await fetchWalletAndTransactions();
+        },
+        onError: () => {
+          toast.error('Pembayaran top-up dibatalkan atau gagal.');
+        },
+        onClose: async () => {
+          await fetchWalletAndTransactions();
+        },
+      });
     } catch (error: unknown) {
       console.error('Top-Up error:', error);
       const errMsg = error instanceof Error ? error.message : 'Gagal memproses top-up saldo.';
@@ -187,13 +250,14 @@ export default function CashlessPortalPage() {
       await cashlessApi.post('/api/v1/cashless/pay', {
         amount: posAmount,
         merchant_id: selectedMerchant.id,
+        merchant_name: selectedMerchant.name,
       });
 
       toast.success(
         `Pembayaran Tap-to-Pay sebesar ${formatCurrency(posAmount)} di ${selectedMerchant.name} berhasil!`
       );
       setIsPosOpen(false);
-      fetchWalletAndTransactions();
+      await fetchWalletAndTransactions();
     } catch (error: unknown) {
       console.error('POS payment error:', error);
       const errMsg = error instanceof Error ? error.message : 'Pembayaran gelang di merchant gagal.';

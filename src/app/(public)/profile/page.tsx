@@ -161,9 +161,26 @@ export default function ProfilePage() {
       }
 
       const data = await response.json();
-      if (data.url) {
-        setAvatarUrl(data.url);
-        toast.success('Foto profil berhasil diunggah! Jangan lupa simpan perubahan.');
+      const uploadedUrl = data.data?.url || data.url;
+      if (uploadedUrl) {
+        setAvatarUrl(uploadedUrl);
+        setAvatarPreview(uploadedUrl);
+
+        // Auto-save to user profile so change is immediately live
+        try {
+          await authApi.put('/api/v1/auth/profile', {
+            full_name: fullName.trim() || user?.full_name || '',
+            phone: phone.trim() || user?.phone || '',
+            avatar_url: uploadedUrl,
+          });
+          await loadProfile();
+          toast.success('Foto profil berhasil diperbarui!');
+        } catch (saveErr) {
+          console.error('Auto save avatar error:', saveErr);
+          toast.success('Foto profil berhasil diunggah! Klik Simpan Perubahan Profil untuk menerapkan.');
+        }
+      } else {
+        throw new Error(data.message || 'Gagal memperoleh tautan foto dari storage.');
       }
     } catch (error: unknown) {
       console.error('Avatar upload error:', error);

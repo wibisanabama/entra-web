@@ -75,8 +75,9 @@ export function MediaUploader({ onUploadComplete }: MediaUploaderProps) {
       }
 
       const data = await response.json();
-      if (data.url) {
-        onUploadComplete(data.url);
+      const uploadedUrl = data.data?.url || data.url;
+      if (uploadedUrl) {
+        onUploadComplete(uploadedUrl);
       }
     } catch (err: unknown) {
       const errMsg = err instanceof Error ? err.message : 'Terjadi kesalahan saat upload';

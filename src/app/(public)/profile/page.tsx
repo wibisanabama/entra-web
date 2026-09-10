@@ -17,13 +17,7 @@ import {
   CheckCircle2,
   Copy,
   Check,
-  Sparkles,
-  Ticket,
-  CreditCard,
-  Building,
-  LogOut,
   Save,
-  ArrowRight,
   Mail,
   Phone,
   Lock,
@@ -35,14 +29,13 @@ import {
 const PROFILE_TABS = [
   { key: 'INFO', label: 'Informasi Pribadi & Avatar', icon: UserIcon },
   { key: 'SECURITY', label: 'Keamanan & Kata Sandi', icon: Shield },
-  { key: 'ACTIVITY', label: 'Aktivitas & Akses Cepat', icon: Sparkles },
 ] as const;
 
 export default function ProfilePage() {
-  const { user, isLoading, logout, loadProfile } = useAuth();
+  const { user, isLoading, loadProfile } = useAuth();
   const router = useRouter();
 
-  const [activeTab, setActiveTab] = useState<'INFO' | 'SECURITY' | 'ACTIVITY'>('INFO');
+  const [activeTab, setActiveTab] = useState<'INFO' | 'SECURITY'>('INFO');
 
   // Slider indicator ala Mobbin / Slider Kita
   const tabContainerRef = useRef<HTMLDivElement>(null);
@@ -744,122 +737,6 @@ export default function ProfilePage() {
                 <span className="text-zinc-950 font-bold">Aman (Http Cookie)</span>
               </div>
             </div>
-          </div>
-        </div>
-      )}
-
-      {/* TAB 3: Aktivitas & Akses Cepat */}
-      {activeTab === 'ACTIVITY' && (
-        <div className="space-y-6">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-            <Link href="/my-tickets" className="block h-full">
-              <div className="bg-zinc-100 hover:bg-zinc-200/80 p-6 sm:p-7 transition-all cursor-pointer h-full flex flex-col justify-between group rounded-3xl border-0 shadow-none">
-                <div className="space-y-3">
-                  <div className="p-3.5 bg-white text-zinc-950 rounded-2xl w-fit group-hover:bg-zinc-950 group-hover:text-white transition-colors border-0 shadow-none">
-                    <Ticket className="h-6 w-6" />
-                  </div>
-                  <div>
-                    <h3 className="text-base font-bold text-zinc-950 group-hover:text-black transition-colors">
-                      Tiket Saya & E-Ticket
-                    </h3>
-                    <p className="text-xs text-zinc-500 leading-relaxed mt-1">
-                      Akses kode QR digital tiket konser dan riwayat invoice pembayaran.
-                    </p>
-                  </div>
-                </div>
-                <div className="pt-5 flex items-center gap-1.5 text-xs text-zinc-950 font-bold">
-                  <span>Buka Tiket</span>
-                  <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform" />
-                </div>
-              </div>
-            </Link>
-
-            <Link href="/cashless" className="block h-full">
-              <div className="bg-zinc-100 hover:bg-zinc-200/80 p-6 sm:p-7 transition-all cursor-pointer h-full flex flex-col justify-between group rounded-3xl border-0 shadow-none">
-                <div className="space-y-3">
-                  <div className="p-3.5 bg-white text-zinc-950 rounded-2xl w-fit group-hover:bg-zinc-950 group-hover:text-white transition-colors border-0 shadow-none">
-                    <CreditCard className="h-6 w-6" />
-                  </div>
-                  <div>
-                    <h3 className="text-base font-bold text-zinc-950 group-hover:text-black transition-colors">
-                      Gelang RFID Cashless
-                    </h3>
-                    <p className="text-xs text-zinc-500 leading-relaxed mt-1">
-                      Cek saldo aktif gelang festival, top-up saldo instan, dan mutasi tenant F&B.
-                    </p>
-                  </div>
-                </div>
-                <div className="pt-5 flex items-center gap-1.5 text-xs text-zinc-950 font-bold">
-                  <span>Buka Portal Gelang</span>
-                  <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform" />
-                </div>
-              </div>
-            </Link>
-
-            {user.role === 'organizer' || user.role === 'admin' ? (
-              <Link href="/dashboard" className="block h-full">
-                <div className="bg-zinc-100 hover:bg-zinc-200/80 p-6 sm:p-7 transition-all cursor-pointer h-full flex flex-col justify-between group rounded-3xl border-0 shadow-none">
-                  <div className="space-y-3">
-                    <div className="p-3.5 bg-white text-zinc-950 rounded-2xl w-fit group-hover:bg-zinc-950 group-hover:text-white transition-colors border-0 shadow-none">
-                      <Building className="h-6 w-6" />
-                    </div>
-                    <div>
-                      <h3 className="text-base font-bold text-zinc-950 group-hover:text-black transition-colors">
-                        Dashboard Organizer
-                      </h3>
-                      <p className="text-xs text-zinc-500 leading-relaxed mt-1">
-                        Kelola event Anda, pantau penjualan tiket, dan ajukan pencairan dana.
-                      </p>
-                    </div>
-                  </div>
-                  <div className="pt-5 flex items-center gap-1.5 text-xs text-zinc-950 font-bold">
-                    <span>Buka Dashboard</span>
-                    <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform" />
-                  </div>
-                </div>
-              </Link>
-            ) : (
-              <div className="bg-zinc-100 p-6 sm:p-7 flex flex-col justify-between rounded-3xl border-0 shadow-none h-full">
-                <div className="space-y-3">
-                  <div className="p-3.5 bg-white text-zinc-950 rounded-2xl w-fit border-0 shadow-none">
-                    <Building className="h-6 w-6" />
-                  </div>
-                  <div>
-                    <h3 className="text-base font-bold text-zinc-950">Tingkatkan Akun</h3>
-                    <p className="text-xs text-zinc-500 leading-relaxed mt-1">
-                      Ingin menjual tiket event Anda sendiri di Entra?
-                    </p>
-                  </div>
-                </div>
-                <Button
-                  onClick={handleUpgrade}
-                  disabled={isUpgrading}
-                  className="mt-5 bg-zinc-950 hover:bg-zinc-800 text-white text-xs font-bold rounded-full py-3 border-0 shadow-none cursor-pointer"
-                >
-                  {isUpgrading ? 'Memproses...' : 'Tingkatkan ke Organizer'}
-                </Button>
-              </div>
-            )}
-          </div>
-
-          {/* Danger Zone: Log out */}
-          <div className="bg-rose-50/80 p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-5 rounded-3xl border-0 shadow-none">
-            <div>
-              <h3 className="text-base font-bold text-rose-600 flex items-center gap-2">
-                <LogOut className="h-4 w-4" />
-                Keluar dari Sesi Akun
-              </h3>
-              <p className="text-xs text-zinc-500 mt-1">
-                Keluar dari akun Anda pada perangkat ini. Anda perlu masuk kembali untuk mengakses tiket.
-              </p>
-            </div>
-
-            <Button
-              onClick={() => logout()}
-              className="bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-6 py-3 rounded-full border-0 shadow-none cursor-pointer"
-            >
-              Keluar Sekarang
-            </Button>
           </div>
         </div>
       )}

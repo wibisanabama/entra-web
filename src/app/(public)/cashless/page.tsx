@@ -24,7 +24,10 @@ import {
   Copy,
   Check,
   Landmark,
-  ArrowDownToLine
+  ArrowDownToLine,
+  QrCode,
+  Building2,
+  ShieldCheck
 } from 'lucide-react';
 import { toast } from '@/lib/toast';
 
@@ -90,6 +93,17 @@ export default function CashlessPortalPage() {
   const [topUpAmount, setTopUpAmount] = useState<number>(100000);
   const [customTopUpInput, setCustomTopUpInput] = useState<string>('100000');
   const [topUpLoading, setTopUpLoading] = useState(false);
+
+  // Top-Up Checkout Payment Modal State (Alur Pembayaran Gateway)
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [pendingTopup, setPendingTopup] = useState<{
+    topupId: string;
+    amount: number;
+    orderId: string;
+  } | null>(null);
+  const [paymentMethod, setPaymentMethod] = useState<'qris' | 'bca_va' | 'mandiri_va'>('qris');
+  const [paymentVerifying, setPaymentVerifying] = useState(false);
+  const [vaCopied, setVaCopied] = useState(false);
 
   // Merchant POS Simulation Modal State
   const [isPosOpen, setIsPosOpen] = useState(false);
@@ -176,59 +190,81 @@ export default function CashlessPortalPage() {
         }
       }
 
-      // Jika mock token atau snap tidak tersedia, selesaikan topup langsung
-      if (!token || token.startsWith('MOCK_') || typeof window === 'undefined' || !window.snap) {
-        try {
-          await cashlessApi.post(`/api/v1/cashless/topup/${topupId}/confirm`);
-          toast.success(`Top-Up saldo gelang sebesar ${formatCurrency(topUpAmount)} berhasil diselesaikan!`);
-          setIsTopUpOpen(false);
-          await fetchWalletAndTransactions();
-          return;
-        } catch (confirmErr: any) {
-          throw new Error(confirmErr?.message || 'Gagal menyelesaikan top-up saldo');
-        }
+      // Jika token resmi Midtrans Snap aktif, buka popup Snap
+      if (token && !token.startsWith('MOCK_') && typeof window !== 'undefined' && window.snap) {
+        setIsTopUpOpen(false);
+        window.snap.pay(token, {
+          onSuccess: async (result: any) => {
+            try {
+              if (result) {
+                await cashlessApi.post('/api/v1/cashless/midtrans/webhook', result).catch(() => null);
+              }
+              await cashlessApi.post(`/api/v1/cashless/topup/${topupId}/confirm`);
+            } catch (err) {
+              console.error('Top-up confirmation sync error:', err);
+            }
+            toast.success(`Top-Up saldo gelang sebesar ${formatCurrency(topUpAmount)} berhasil!`);
+            await fetchWalletAndTransactions();
+          },
+          onPending: async (result: any) => {
+            try {
+              if (result) {
+                await cashlessApi.post('/api/v1/cashless/midtrans/webhook', result).catch(() => null);
+              }
+            } catch (err) {
+              console.error('Top-up pending sync error:', err);
+            }
+            toast.info('Menunggu pembayaran Midtrans diselesaikan.');
+            await fetchWalletAndTransactions();
+          },
+          onError: () => {
+            toast.error('Pembayaran top-up dibatalkan atau gagal.');
+          },
+          onClose: async () => {
+            await fetchWalletAndTransactions();
+          },
+        });
+        return;
       }
 
-      // Pemicu pembayaran resmi Midtrans Snap
-      window.snap.pay(token, {
-        onSuccess: async (result: any) => {
-          try {
-            if (result) {
-              await cashlessApi.post('/api/v1/cashless/midtrans/webhook', result).catch(() => null);
-            }
-            await cashlessApi.post(`/api/v1/cashless/topup/${topupId}/confirm`);
-          } catch (err) {
-            console.error('Top-up confirmation sync error:', err);
-          }
-          toast.success(`Top-Up saldo gelang sebesar ${formatCurrency(topUpAmount)} berhasil!`);
-          setIsTopUpOpen(false);
-          await fetchWalletAndTransactions();
-        },
-        onPending: async (result: any) => {
-          try {
-            if (result) {
-              await cashlessApi.post('/api/v1/cashless/midtrans/webhook', result).catch(() => null);
-            }
-          } catch (err) {
-            console.error('Top-up pending sync error:', err);
-          }
-          toast.info('Menunggu pembayaran Midtrans diselesaikan.');
-          setIsTopUpOpen(false);
-          await fetchWalletAndTransactions();
-        },
-        onError: () => {
-          toast.error('Pembayaran top-up dibatalkan atau gagal.');
-        },
-        onClose: async () => {
-          await fetchWalletAndTransactions();
-        },
+      // Alur gerbang pembayaran interaktif (Checkout Gateway: QRIS / Virtual Account)
+      setIsTopUpOpen(false);
+      setPendingTopup({
+        topupId,
+        amount: topUpAmount,
+        orderId: `TOPUP-${topupId.slice(0, 8).toUpperCase()}`,
       });
+      setPaymentMethod('qris');
+      setIsPaymentModalOpen(true);
     } catch (error: unknown) {
       console.error('Top-Up error:', error);
       const errMsg = error instanceof Error ? error.message : 'Gagal memproses top-up saldo.';
       toast.error(errMsg);
     } finally {
       setTopUpLoading(false);
+    }
+  };
+
+  const handleConfirmPayment = async () => {
+    if (!pendingTopup) return;
+    try {
+      setPaymentVerifying(true);
+      // Simulasi jeda verifikasi payment gateway
+      await new Promise((r) => setTimeout(r, 900));
+
+      await cashlessApi.post(`/api/v1/cashless/topup/${pendingTopup.topupId}/confirm`);
+      toast.success(
+        `Pembayaran ${formatCurrency(pendingTopup.amount)} berhasil diverifikasi! Saldo gelang telah bertambah.`
+      );
+      setIsPaymentModalOpen(false);
+      setPendingTopup(null);
+      await fetchWalletAndTransactions();
+    } catch (error: unknown) {
+      console.error('Payment confirm error:', error);
+      const errMsg = error instanceof Error ? error.message : 'Gagal memverifikasi pembayaran.';
+      toast.error(errMsg);
+    } finally {
+      setPaymentVerifying(false);
     }
   };
 
@@ -959,6 +995,174 @@ export default function CashlessPortalPage() {
               </Button>
             </div>
           </form>
+        </Modal>
+      )}
+
+      {/* MODAL 4: Gerbang Pembayaran Top-Up (Payment Gateway Checkout) */}
+      {isPaymentModalOpen && pendingTopup && (
+        <Modal
+          isOpen={isPaymentModalOpen}
+          onClose={() => !paymentVerifying && setIsPaymentModalOpen(false)}
+          title="Selesaikan Pembayaran Top-Up"
+        >
+          <div className="space-y-5 text-zinc-900">
+            {/* Tagihan Summary Card */}
+            <div className="p-4 bg-zinc-100 rounded-2xl flex items-center justify-between border-0">
+              <div>
+                <span className="text-[11px] text-zinc-400 uppercase tracking-wider block font-semibold">
+                  Total Tagihan Top-Up
+                </span>
+                <p className="text-2xl font-black text-zinc-950 mt-0.5">
+                  {formatCurrency(pendingTopup.amount)}
+                </p>
+                <p className="text-[11px] text-zinc-500 mt-0.5">
+                  Ref: <span className="font-mono font-semibold">{pendingTopup.orderId}</span>
+                </p>
+              </div>
+              <div className="p-3 bg-white rounded-2xl border-0 text-emerald-600">
+                <ShieldCheck className="h-6 w-6" />
+              </div>
+            </div>
+
+            {/* Pilihan Metode Pembayaran */}
+            <div className="space-y-2">
+              <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wider block">
+                Metode Pembayaran
+              </label>
+              <div className="grid grid-cols-3 gap-2">
+                {[
+                  { id: 'qris', label: 'QRIS', icon: <QrCode className="h-4 w-4" /> },
+                  { id: 'bca_va', label: 'BCA VA', icon: <Building2 className="h-4 w-4" /> },
+                  { id: 'mandiri_va', label: 'Mandiri VA', icon: <Building2 className="h-4 w-4" /> },
+                ].map((m) => (
+                  <button
+                    key={m.id}
+                    type="button"
+                    onClick={() => setPaymentMethod(m.id as 'qris' | 'bca_va' | 'mandiri_va')}
+                    className={`p-2.5 rounded-2xl flex flex-col items-center justify-center gap-1.5 text-xs font-bold border-0 transition-colors cursor-pointer ${
+                      paymentMethod === m.id
+                        ? 'bg-zinc-950 text-white'
+                        : 'bg-zinc-100 text-zinc-700 hover:bg-zinc-200'
+                    }`}
+                  >
+                    {m.icon}
+                    <span>{m.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Konten Metode Pembayaran: QRIS */}
+            {paymentMethod === 'qris' && (
+              <div className="p-5 bg-zinc-100 rounded-2xl flex flex-col items-center text-center space-y-3 border-0">
+                <div className="bg-white p-3 rounded-2xl border-0 shadow-none">
+                  <QRCodeSVG
+                    value={`https://sandbox.entra.local/qris/${pendingTopup.topupId}`}
+                    size={160}
+                  />
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-zinc-950">Pindai QRIS untuk Bayar</p>
+                  <p className="text-[11px] text-zinc-500 mt-0.5">
+                    Buka BCA Mobile, GoPay, OVO, DANA, atau ShopeePay dan scan kode di atas.
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Konten Metode Pembayaran: BCA VA */}
+            {paymentMethod === 'bca_va' && (
+              <div className="p-4 bg-zinc-100 rounded-2xl space-y-3 border-0">
+                <div>
+                  <span className="text-[11px] text-zinc-500 block font-medium">Nomor BCA Virtual Account</span>
+                  <div className="flex items-center justify-between mt-1 p-3 bg-white rounded-xl border-0">
+                    <span className="font-mono text-base font-bold text-zinc-950 tracking-wider">
+                      88012 8592 1286
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        navigator.clipboard.writeText('8801285921286');
+                        setVaCopied(true);
+                        toast.success('Nomor Virtual Account disalin ke clipboard');
+                        setTimeout(() => setVaCopied(false), 2000);
+                      }}
+                      className="text-xs font-semibold text-zinc-600 hover:text-zinc-950 flex items-center gap-1 cursor-pointer"
+                    >
+                      {vaCopied ? <Check className="h-3.5 w-3.5 text-emerald-600" /> : <Copy className="h-3.5 w-3.5" />}
+                      {vaCopied ? 'Tersalin' : 'Salin'}
+                    </button>
+                  </div>
+                </div>
+                <div className="text-[11px] text-zinc-500 space-y-0.5">
+                  <p>1. Buka m-BCA &gt; m-Transfer &gt; BCA Virtual Account</p>
+                  <p>2. Masukkan nomor VA di atas lalu selesaikan tagihan {formatCurrency(pendingTopup.amount)}</p>
+                </div>
+              </div>
+            )}
+
+            {/* Konten Metode Pembayaran: Mandiri VA */}
+            {paymentMethod === 'mandiri_va' && (
+              <div className="p-4 bg-zinc-100 rounded-2xl space-y-3 border-0">
+                <div>
+                  <span className="text-[11px] text-zinc-500 block font-medium">Nomor Mandiri Virtual Account</span>
+                  <div className="flex items-center justify-between mt-1 p-3 bg-white rounded-xl border-0">
+                    <span className="font-mono text-base font-bold text-zinc-950 tracking-wider">
+                      70012 9014 3321
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        navigator.clipboard.writeText('7001290143321');
+                        setVaCopied(true);
+                        toast.success('Nomor Virtual Account disalin ke clipboard');
+                        setTimeout(() => setVaCopied(false), 2000);
+                      }}
+                      className="text-xs font-semibold text-zinc-600 hover:text-zinc-950 flex items-center gap-1 cursor-pointer"
+                    >
+                      {vaCopied ? <Check className="h-3.5 w-3.5 text-emerald-600" /> : <Copy className="h-3.5 w-3.5" />}
+                      {vaCopied ? 'Tersalin' : 'Salin'}
+                    </button>
+                  </div>
+                </div>
+                <div className="text-[11px] text-zinc-500 space-y-0.5">
+                  <p>1. Buka Livin by Mandiri &gt; Bayar &gt; Virtual Account</p>
+                  <p>2. Masukkan nomor VA di atas lalu selesaikan tagihan {formatCurrency(pendingTopup.amount)}</p>
+                </div>
+              </div>
+            )}
+
+            {/* Action Buttons */}
+            <div className="flex items-center justify-end gap-2.5 pt-2">
+              <Button
+                type="button"
+                variant="outline"
+                disabled={paymentVerifying}
+                onClick={() => setIsPaymentModalOpen(false)}
+                className="rounded-full bg-zinc-100 hover:bg-zinc-200 text-zinc-700 text-xs border-0 shadow-none cursor-pointer"
+              >
+                Batal
+              </Button>
+              <Button
+                type="button"
+                disabled={paymentVerifying}
+                onClick={handleConfirmPayment}
+                className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 font-semibold rounded-full text-xs border-0 shadow-none cursor-pointer flex items-center gap-2"
+              >
+                {paymentVerifying ? (
+                  <>
+                    <RefreshCw className="h-3.5 w-3.5 animate-spin" />
+                    Memverifikasi Pembayaran...
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle2 className="h-4 w-4" />
+                    Saya Sudah Membayar
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
         </Modal>
       )}
     </div>

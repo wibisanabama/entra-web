@@ -270,8 +270,8 @@ export default function CashlessPortalPage() {
               Silakan masuk ke akun Entra Anda untuk mengakses saldo gelang RFID festival dan riwayat transaksi.
             </p>
           </div>
-          <Link href="/login" className="block w-full">
-            <Button className="w-full bg-zinc-950 hover:bg-zinc-800 text-white rounded-full py-3 border-0 shadow-none">
+          <Link href="/login?redirect=/cashless" className="block w-full">
+            <Button className="w-full bg-zinc-950 hover:bg-zinc-800 text-white rounded-full py-3 border-0 shadow-none cursor-pointer">
               Masuk Sekarang
             </Button>
           </Link>

@@ -74,7 +74,7 @@ export default function ProfilePage() {
 
   useEffect(() => {
     if (!isLoading && !user) {
-      router.push('/login');
+      router.push('/login?redirect=/profile');
     }
   }, [user, isLoading, router]);
 

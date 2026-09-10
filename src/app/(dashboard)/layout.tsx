@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { Topbar } from '@/components/layout/Topbar';
 import { useAuth } from '@/providers/auth-provider';
@@ -14,14 +14,15 @@ export default function DashboardLayout({
   const { user, isLoading: loading } = useAuth();
   const isAuthenticated = !!user;
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     if (!loading && !isAuthenticated) {
-      router.push('/login');
+      router.push(`/login?redirect=${encodeURIComponent(pathname)}`);
     } else if (!loading && user?.role !== 'organizer' && user?.role !== 'admin') {
       router.push('/');
     }
-  }, [isAuthenticated, loading, user, router]);
+  }, [isAuthenticated, loading, user, router, pathname]);
 
   if (loading || !isAuthenticated) {
     return (

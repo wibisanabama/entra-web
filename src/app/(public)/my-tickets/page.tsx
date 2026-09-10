@@ -297,8 +297,8 @@ export default function MyTicketsPage() {
               Silakan masuk ke akun Entra Anda untuk mengakses e-ticket digital dan riwayat pesanan.
             </p>
           </div>
-          <Link href="/login" className="block w-full">
-            <Button className="w-full bg-zinc-950 hover:bg-zinc-800 text-white rounded-full py-3 border-0 shadow-none">
+          <Link href="/login?redirect=/my-tickets" className="block w-full">
+            <Button className="w-full bg-zinc-950 hover:bg-zinc-800 text-white rounded-full py-3 border-0 shadow-none cursor-pointer">
               Masuk ke Akun
             </Button>
           </Link>

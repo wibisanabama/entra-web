@@ -136,36 +136,42 @@ export function Navbar() {
               )}
             </div>
           </div>
-        ) : (
-          <nav className="flex items-center gap-4 sm:gap-6">
-            <Link 
-              href="/events" 
-              className={`text-sm font-medium transition-colors ${
-                pathname.startsWith('/events') 
-                  ? 'text-zinc-950' 
-                  : 'text-zinc-800 hover:text-zinc-950'
-              }`}
-            >
-              Event
-            </Link>
-            <Link 
-              href="/login" 
-              className={`text-sm font-medium transition-colors ${
-                pathname === '/login' 
-                  ? 'text-zinc-950' 
-                  : 'text-zinc-800 hover:text-zinc-950'
-              }`}
-            >
-              Masuk
-            </Link>
-            <Link 
-              href="/register" 
-              className="inline-flex items-center justify-center h-9 sm:h-9.5 px-5 rounded-full bg-zinc-950 hover:bg-zinc-800 text-white text-xs sm:text-sm font-semibold transition-all shadow-none"
-            >
-              Daftar
-            </Link>
-          </nav>
-        )}
+        ) : (() => {
+          const isAuthPage = pathname.startsWith('/login') || pathname.startsWith('/register') || pathname === '/forgot-password' || pathname === '/reset-password';
+          const loginHref = !isAuthPage && pathname !== '/' ? `/login?redirect=${encodeURIComponent(pathname)}` : '/login';
+          const registerHref = !isAuthPage && pathname !== '/' ? `/register?redirect=${encodeURIComponent(pathname)}` : '/register';
+
+          return (
+            <nav className="flex items-center gap-4 sm:gap-6">
+              <Link 
+                href="/events" 
+                className={`text-sm font-medium transition-colors ${
+                  pathname.startsWith('/events') 
+                    ? 'text-zinc-950' 
+                    : 'text-zinc-800 hover:text-zinc-950'
+                }`}
+              >
+                Event
+              </Link>
+              <Link 
+                href={loginHref} 
+                className={`text-sm font-medium transition-colors ${
+                  pathname === '/login' 
+                    ? 'text-zinc-950' 
+                    : 'text-zinc-800 hover:text-zinc-950'
+                }`}
+              >
+                Masuk
+              </Link>
+              <Link 
+                href={registerHref} 
+                className="inline-flex items-center justify-center h-9 sm:h-9.5 px-5 rounded-full bg-zinc-950 hover:bg-zinc-800 text-white text-xs sm:text-sm font-semibold transition-all shadow-none"
+              >
+                Daftar
+              </Link>
+            </nav>
+          );
+        })()}
 
       </div>
     </header>

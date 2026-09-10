@@ -535,7 +535,7 @@ export default function EventDetailPage() {
                   className="w-full bg-zinc-950 hover:bg-zinc-800 text-white rounded-full py-3 font-semibold"
                   onClick={() => {
                     setModalData({...modalData, isOpen: false});
-                    router.push('/login');
+                    router.push(`/login?redirect=${encodeURIComponent(`/events/${params.id}`)}`);
                   }}
                 >
                   Masuk Kembali

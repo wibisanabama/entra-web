@@ -265,7 +265,7 @@ export default function CashlessPortalPage() {
             variant="outline"
             onClick={fetchWalletAndTransactions}
             disabled={loading}
-            className="flex items-center gap-2 text-zinc-700 border-zinc-200 hover:bg-zinc-50 rounded-full text-xs"
+            className="flex items-center gap-2 text-zinc-700 bg-zinc-100 hover:bg-zinc-200 border-0 rounded-full text-xs font-semibold px-4 py-2 shadow-none"
           >
             <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
             Refresh
@@ -276,11 +276,11 @@ export default function CashlessPortalPage() {
       {/* Hero Wristband Digital Pass & Quick Actions */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
         {/* RFID Wristband Pass Card */}
-        <div className="lg:col-span-2 relative bg-zinc-950 rounded-3xl p-6 sm:p-8 text-white shadow-sm overflow-hidden flex flex-col justify-between group">
+        <div className="lg:col-span-2 relative bg-zinc-950 rounded-3xl p-6 sm:p-8 text-white shadow-none border-0 overflow-hidden flex flex-col justify-between group">
           <div className="relative z-10 space-y-6">
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-3">
-                <div className="p-3 bg-zinc-800 rounded-2xl text-white border border-zinc-700">
+                <div className="p-3 bg-zinc-800 rounded-2xl text-white border-0">
                   <CreditCard className="h-6 w-6" />
                 </div>
                 <div>
@@ -295,7 +295,7 @@ export default function CashlessPortalPage() {
                 </div>
               </div>
 
-              <span className="text-xs py-1 px-3 bg-emerald-950/80 text-emerald-400 border border-emerald-700 rounded-full font-semibold">
+              <span className="text-xs py-1 px-3 bg-emerald-500/15 text-emerald-400 rounded-full font-semibold border-0">
                 RFID AKTIF
               </span>
             </div>
@@ -318,7 +318,7 @@ export default function CashlessPortalPage() {
             </div>
 
             {/* Wristband UID and QR Code Stub */}
-            <div className="pt-4 border-t border-zinc-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-0">
               <div className="space-y-1">
                 <span className="text-[11px] text-zinc-400 uppercase tracking-wider block font-medium">
                   Wristband UID / Kode Kartu
@@ -338,7 +338,7 @@ export default function CashlessPortalPage() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-3 bg-zinc-900 px-3.5 py-2 rounded-2xl border border-zinc-800 w-fit">
+              <div className="flex items-center gap-3 bg-zinc-900 px-3.5 py-2 rounded-2xl border-0 w-fit">
                 <div className="bg-white p-1 rounded-xl">
                   <QRCodeSVG value={wallet?.id || 'entra-wristband'} size={38} />
                 </div>
@@ -352,7 +352,7 @@ export default function CashlessPortalPage() {
         </div>
 
         {/* Quick Actions Panel */}
-        <div className="flex flex-col justify-between gap-4 bg-white border border-zinc-200 rounded-3xl p-6 shadow-xs">
+        <div className="flex flex-col justify-between gap-4 bg-zinc-100 rounded-3xl p-6 sm:p-7 border-0 shadow-none">
           <div>
             <h3 className="text-lg font-bold text-zinc-950 mb-1">Aksi Cepat Gelang</h3>
             <p className="text-xs text-zinc-500">
@@ -367,7 +367,7 @@ export default function CashlessPortalPage() {
                 setCustomTopUpInput('100000');
                 setIsTopUpOpen(true);
               }}
-              className="w-full bg-zinc-950 hover:bg-zinc-800 text-white font-semibold py-3.5 rounded-full flex items-center justify-center gap-2.5 text-xs shadow-none"
+              className="w-full bg-zinc-950 hover:bg-zinc-800 text-white font-semibold py-3.5 rounded-full flex items-center justify-center gap-2.5 text-xs shadow-none border-0"
             >
               <Zap className="h-4 w-4" />
               Top-Up Saldo Gelang
@@ -380,7 +380,7 @@ export default function CashlessPortalPage() {
                 setCustomPosInput('35000');
                 setIsPosOpen(true);
               }}
-              className="w-full border-zinc-200 hover:bg-zinc-50 text-zinc-800 font-semibold py-3.5 rounded-full flex items-center justify-center gap-2.5 text-xs"
+              className="w-full bg-white hover:bg-zinc-200/80 text-zinc-800 font-semibold py-3.5 rounded-full flex items-center justify-center gap-2.5 text-xs border-0 shadow-none"
             >
               <Store className="h-4 w-4 text-emerald-600" />
               Simulasi Kasir POS (Tap to Pay)
@@ -395,14 +395,14 @@ export default function CashlessPortalPage() {
                 setIsRefundOpen(true);
               }}
               disabled={balanceAmount <= 0}
-              className="w-full border-rose-200 hover:bg-rose-50 text-rose-600 font-semibold py-3.5 rounded-full flex items-center justify-center gap-2.5 text-xs disabled:opacity-40"
+              className="w-full bg-rose-50 hover:bg-rose-100 text-rose-600 font-semibold py-3.5 rounded-full flex items-center justify-center gap-2.5 text-xs disabled:opacity-40 border-0 shadow-none"
             >
               <ArrowDownToLine className="h-4 w-4 text-rose-500" />
               Tarik Saldo Gelang (Refund)
             </Button>
           </div>
 
-          <div className="p-3.5 bg-zinc-50 rounded-2xl border border-zinc-200 text-xs text-zinc-600 flex items-start gap-2">
+          <div className="p-3.5 bg-white rounded-2xl border-0 text-xs text-zinc-600 flex items-start gap-2 shadow-none">
             <CheckCircle2 className="h-4 w-4 text-emerald-600 flex-shrink-0 mt-0.5" />
             <span>Sisa saldo gelang dapat di-refund kapan saja setelah event festival berakhir.</span>
           </div>
@@ -410,7 +410,7 @@ export default function CashlessPortalPage() {
       </div>
 
       {/* Transaction History Section */}
-      <div className="bg-white border border-zinc-200 p-6 space-y-6 rounded-3xl shadow-xs">
+      <div className="bg-zinc-100 p-6 sm:p-8 space-y-6 rounded-3xl border-0 shadow-none">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h2 className="text-xl font-bold text-zinc-950">Riwayat Transaksi Gelang</h2>
@@ -420,35 +420,35 @@ export default function CashlessPortalPage() {
           </div>
 
           {/* Filter Tabs */}
-          <div className="flex flex-wrap bg-zinc-100 p-1 rounded-full border border-zinc-200 text-xs w-fit gap-1">
+          <div className="flex flex-wrap bg-zinc-200/80 p-1 rounded-full text-xs w-fit gap-1 border-0">
             <button
               onClick={() => setTxFilter('ALL')}
-              className={`px-3.5 py-1.5 rounded-full font-medium transition-colors ${
-                txFilter === 'ALL' ? 'bg-zinc-950 text-white shadow-xs' : 'text-zinc-600 hover:text-zinc-950'
+              className={`px-3.5 py-1.5 rounded-full font-medium transition-colors border-0 cursor-pointer ${
+                txFilter === 'ALL' ? 'bg-white text-zinc-950 shadow-none font-semibold' : 'text-zinc-600 hover:text-zinc-950'
               }`}
             >
               Semua ({transactions.length})
             </button>
             <button
               onClick={() => setTxFilter('TOPUP')}
-              className={`px-3.5 py-1.5 rounded-full font-medium transition-colors ${
-                txFilter === 'TOPUP' ? 'bg-zinc-950 text-white shadow-xs' : 'text-zinc-600 hover:text-zinc-950'
+              className={`px-3.5 py-1.5 rounded-full font-medium transition-colors border-0 cursor-pointer ${
+                txFilter === 'TOPUP' ? 'bg-white text-zinc-950 shadow-none font-semibold' : 'text-zinc-600 hover:text-zinc-950'
               }`}
             >
               Top-Up Saldo
             </button>
             <button
               onClick={() => setTxFilter('PURCHASE')}
-              className={`px-3.5 py-1.5 rounded-full font-medium transition-colors ${
-                txFilter === 'PURCHASE' ? 'bg-zinc-950 text-white shadow-xs' : 'text-zinc-600 hover:text-zinc-950'
+              className={`px-3.5 py-1.5 rounded-full font-medium transition-colors border-0 cursor-pointer ${
+                txFilter === 'PURCHASE' ? 'bg-white text-zinc-950 shadow-none font-semibold' : 'text-zinc-600 hover:text-zinc-950'
               }`}
             >
               Belanja Tenant
             </button>
             <button
               onClick={() => setTxFilter('REFUND')}
-              className={`px-3.5 py-1.5 rounded-full font-medium transition-colors ${
-                txFilter === 'REFUND' ? 'bg-rose-600 text-white shadow-xs' : 'text-zinc-600 hover:text-zinc-950'
+              className={`px-3.5 py-1.5 rounded-full font-medium transition-colors border-0 cursor-pointer ${
+                txFilter === 'REFUND' ? 'bg-rose-600 text-white shadow-none font-semibold' : 'text-zinc-600 hover:text-zinc-950'
               }`}
             >
               Refund
@@ -469,22 +469,22 @@ export default function CashlessPortalPage() {
             <p className="text-sm font-medium">Belum ada mutasi transaksi pada filter ini.</p>
           </div>
         ) : (
-          <div className="divide-y divide-zinc-100">
+          <div className="space-y-2">
             {filteredTransactions.map((tx) => {
               const isCredit = tx.type?.toUpperCase() === 'CREDIT' || tx.type?.toUpperCase() === 'TOPUP';
               const isRefund = getPgText(tx.description).toLowerCase().includes('refund');
               const amount = parseAmount(tx.amount);
 
               return (
-                <div key={tx.id} className="py-4 flex items-center justify-between gap-4">
+                <div key={tx.id} className="p-3.5 sm:p-4 rounded-2xl flex items-center justify-between gap-4 bg-white hover:bg-white/80 transition-colors border-0">
                   <div className="flex items-center gap-3">
                     <div
-                      className={`p-2.5 rounded-2xl border ${
+                      className={`p-2.5 rounded-2xl border-0 ${
                         isRefund
-                          ? 'bg-rose-50 border-rose-200 text-rose-600'
+                          ? 'bg-rose-100 text-rose-600'
                           : isCredit
-                          ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
-                          : 'bg-zinc-100 border-zinc-200 text-zinc-800'
+                          ? 'bg-emerald-100 text-emerald-700'
+                          : 'bg-zinc-100 text-zinc-800'
                       }`}
                     >
                       {isRefund ? (
@@ -532,7 +532,7 @@ export default function CashlessPortalPage() {
           title="Top-Up Saldo Gelang Festival"
         >
           <form onSubmit={handleTopUpSubmit} className="space-y-5 text-zinc-900">
-            <div className="p-3.5 bg-zinc-50 border border-zinc-200 rounded-2xl text-xs text-zinc-600 space-y-1">
+            <div className="p-4 bg-zinc-100 rounded-2xl text-xs text-zinc-600 space-y-1 border-0">
               <p className="text-zinc-950 font-semibold flex items-center gap-1.5">
                 <Zap className="h-4 w-4 text-zinc-800" />
                 Isi Ulang Saldo Instan
@@ -554,10 +554,10 @@ export default function CashlessPortalPage() {
                       setTopUpAmount(amt);
                       setCustomTopUpInput(amt.toString());
                     }}
-                    className={`py-2 px-3 rounded-full text-xs font-bold border transition-colors ${
+                    className={`py-2 px-3 rounded-full text-xs font-bold border-0 transition-colors cursor-pointer ${
                       topUpAmount === amt
-                        ? 'bg-zinc-950 text-white border-zinc-950'
-                        : 'bg-white text-zinc-700 border-zinc-200 hover:bg-zinc-50'
+                        ? 'bg-zinc-950 text-white'
+                        : 'bg-zinc-100 text-zinc-700 hover:bg-zinc-200'
                     }`}
                   >
                     {formatCurrency(amt)}
@@ -580,7 +580,7 @@ export default function CashlessPortalPage() {
                   setCustomTopUpInput(e.target.value);
                   setTopUpAmount(Number(e.target.value) || 0);
                 }}
-                className="w-full px-4 py-2.5 bg-white border border-zinc-200 rounded-full text-zinc-900 font-bold focus:outline-none focus:border-zinc-900 text-sm"
+                className="w-full px-4 py-2.5 bg-zinc-100 border-0 rounded-full text-zinc-900 font-bold focus:outline-none focus:ring-0 text-sm shadow-none"
                 placeholder="Minimal Rp 10.000"
                 required
               />
@@ -592,14 +592,14 @@ export default function CashlessPortalPage() {
                 variant="outline"
                 disabled={topUpLoading}
                 onClick={() => setIsTopUpOpen(false)}
-                className="rounded-full border-zinc-200 text-zinc-700 hover:bg-zinc-50 text-xs"
+                className="rounded-full bg-zinc-100 hover:bg-zinc-200 text-zinc-700 text-xs border-0 shadow-none cursor-pointer"
               >
                 Batal
               </Button>
               <Button
                 type="submit"
                 disabled={topUpLoading || topUpAmount < 10000}
-                className="bg-zinc-950 hover:bg-zinc-800 text-white px-6 font-semibold rounded-full text-xs"
+                className="bg-zinc-950 hover:bg-zinc-800 text-white px-6 font-semibold rounded-full text-xs border-0 shadow-none cursor-pointer"
               >
                 {topUpLoading ? 'Memproses...' : `Top-Up ${formatCurrency(topUpAmount)}`}
               </Button>
@@ -616,7 +616,7 @@ export default function CashlessPortalPage() {
           title="Simulasi Kasir Merchant / Tap to Pay"
         >
           <form onSubmit={handlePosPayment} className="space-y-5 text-zinc-900">
-            <div className="p-3.5 bg-zinc-50 border border-zinc-200 rounded-2xl text-xs text-zinc-600 space-y-1">
+            <div className="p-4 bg-zinc-100 rounded-2xl text-xs text-zinc-600 space-y-1 border-0">
               <p className="text-zinc-950 font-semibold flex items-center gap-1.5">
                 <Store className="h-4 w-4 text-emerald-600" />
                 Simulasi Mesin POS Tenant Festival
@@ -636,14 +636,14 @@ export default function CashlessPortalPage() {
                   <div
                     key={m.id}
                     onClick={() => setSelectedMerchant(m)}
-                    className={`p-3 rounded-2xl border flex items-center justify-between cursor-pointer transition-colors ${
+                    className={`p-3 rounded-2xl border-0 flex items-center justify-between cursor-pointer transition-colors ${
                       selectedMerchant.id === m.id
-                        ? 'bg-zinc-100 border-zinc-900 text-zinc-950'
-                        : 'bg-white border-zinc-200 text-zinc-600 hover:border-zinc-300'
+                        ? 'bg-zinc-200/90 text-zinc-950 font-bold'
+                        : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200/60'
                     }`}
                   >
                     <div className="flex items-center gap-3">
-                      <div className="p-2 bg-zinc-100 rounded-xl text-zinc-900">{m.icon}</div>
+                      <div className="p-2 bg-white rounded-xl text-zinc-900 border-0">{m.icon}</div>
                       <div>
                         <p className="text-xs font-bold text-zinc-950">{m.name}</p>
                         <p className="text-[11px] text-zinc-500">{m.category}</p>
@@ -671,7 +671,7 @@ export default function CashlessPortalPage() {
                   setCustomPosInput(e.target.value);
                   setPosAmount(Number(e.target.value) || 0);
                 }}
-                className="w-full px-4 py-2.5 bg-white border border-zinc-200 rounded-full text-zinc-900 font-bold focus:outline-none focus:border-zinc-900 text-sm"
+                className="w-full px-4 py-2.5 bg-zinc-100 border-0 rounded-full text-zinc-900 font-bold focus:outline-none focus:ring-0 text-sm shadow-none"
                 required
               />
             </div>
@@ -682,14 +682,14 @@ export default function CashlessPortalPage() {
                 variant="outline"
                 disabled={posLoading}
                 onClick={() => setIsPosOpen(false)}
-                className="rounded-full border-zinc-200 text-zinc-700 hover:bg-zinc-50 text-xs"
+                className="rounded-full bg-zinc-100 hover:bg-zinc-200 text-zinc-700 text-xs border-0 shadow-none cursor-pointer"
               >
                 Batal
               </Button>
               <Button
                 type="submit"
                 disabled={posLoading || posAmount <= 0}
-                className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 font-semibold flex items-center gap-1.5 rounded-full text-xs"
+                className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 font-semibold flex items-center gap-1.5 rounded-full text-xs border-0 shadow-none cursor-pointer"
               >
                 {posLoading ? 'Memproses...' : `Tap Gelang & Bayar (${formatCurrency(posAmount)})`}
               </Button>
@@ -706,7 +706,7 @@ export default function CashlessPortalPage() {
           title="Tarik Sisa Saldo Gelang (Refund)"
         >
           <form onSubmit={handleRefundSubmit} className="space-y-4 text-zinc-900">
-            <div className="p-3.5 bg-zinc-50 border border-zinc-200 rounded-2xl text-xs text-zinc-600 space-y-1">
+            <div className="p-4 bg-zinc-100 rounded-2xl text-xs text-zinc-600 space-y-1 border-0">
               <p className="text-zinc-950 font-semibold flex items-center gap-1.5">
                 <Landmark className="h-4 w-4 text-rose-600" />
                 Pencairan Saldo ke Rekening / E-Wallet
@@ -736,10 +736,10 @@ export default function CashlessPortalPage() {
                       setRefundAmount(actual);
                       setCustomRefundInput(actual.toString());
                     }}
-                    className={`py-2 px-2.5 rounded-full text-xs font-bold border transition-colors ${
+                    className={`py-2 px-2.5 rounded-full text-xs font-bold border-0 transition-colors cursor-pointer ${
                       refundAmount === preset.val
-                        ? 'bg-rose-600 text-white border-rose-600'
-                        : 'bg-white text-zinc-700 border-zinc-200 hover:bg-zinc-50'
+                        ? 'bg-rose-600 text-white'
+                        : 'bg-zinc-100 text-zinc-700 hover:bg-zinc-200'
                     }`}
                   >
                     {preset.label}
@@ -756,7 +756,7 @@ export default function CashlessPortalPage() {
                   setCustomRefundInput(e.target.value);
                   setRefundAmount(Number(e.target.value) || 0);
                 }}
-                className="w-full px-4 py-2.5 bg-white border border-zinc-200 rounded-full text-zinc-900 font-bold focus:outline-none focus:border-zinc-900 mt-2 text-sm"
+                className="w-full px-4 py-2.5 bg-zinc-100 border-0 rounded-full text-zinc-900 font-bold focus:outline-none focus:ring-0 mt-2 text-sm shadow-none"
                 placeholder="Nominal yang ditarik..."
                 required
               />
@@ -770,7 +770,7 @@ export default function CashlessPortalPage() {
               <select
                 value={refundBank}
                 onChange={(e) => setRefundBank(e.target.value)}
-                className="w-full px-4 py-2.5 bg-white border border-zinc-200 rounded-full text-zinc-900 font-medium focus:outline-none focus:border-zinc-900 cursor-pointer text-sm"
+                className="w-full px-4 py-2.5 bg-zinc-100 border-0 rounded-full text-zinc-900 font-medium focus:outline-none focus:ring-0 cursor-pointer text-sm shadow-none"
               >
                 {BANK_OPTIONS.map((bank) => (
                   <option key={bank} value={bank}>
@@ -789,7 +789,7 @@ export default function CashlessPortalPage() {
                 type="text"
                 value={refundAccountNumber}
                 onChange={(e) => setRefundAccountNumber(e.target.value)}
-                className="w-full px-4 py-2.5 bg-white border border-zinc-200 rounded-full text-zinc-900 font-medium focus:outline-none focus:border-zinc-900 text-sm"
+                className="w-full px-4 py-2.5 bg-zinc-100 border-0 rounded-full text-zinc-900 font-medium focus:outline-none focus:ring-0 text-sm shadow-none"
                 placeholder="Contoh: 1234567890"
                 required
               />
@@ -804,7 +804,7 @@ export default function CashlessPortalPage() {
                 type="text"
                 value={refundAccountHolder}
                 onChange={(e) => setRefundAccountHolder(e.target.value)}
-                className="w-full px-4 py-2.5 bg-white border border-zinc-200 rounded-full text-zinc-900 font-medium focus:outline-none focus:border-zinc-900 text-sm"
+                className="w-full px-4 py-2.5 bg-zinc-100 border-0 rounded-full text-zinc-900 font-medium focus:outline-none focus:ring-0 text-sm shadow-none"
                 placeholder="Nama sesuai buku tabungan"
                 required
               />
@@ -819,7 +819,7 @@ export default function CashlessPortalPage() {
                 type="text"
                 value={refundReason}
                 onChange={(e) => setRefundReason(e.target.value)}
-                className="w-full px-4 py-2.5 bg-white border border-zinc-200 rounded-full text-zinc-900 font-medium focus:outline-none focus:border-zinc-900 text-sm"
+                className="w-full px-4 py-2.5 bg-zinc-100 border-0 rounded-full text-zinc-900 font-medium focus:outline-none focus:ring-0 text-sm shadow-none"
                 placeholder="Contoh: Selesai event festival"
               />
             </div>
@@ -830,14 +830,14 @@ export default function CashlessPortalPage() {
                 variant="outline"
                 disabled={refundLoading}
                 onClick={() => setIsRefundOpen(false)}
-                className="rounded-full border-zinc-200 text-zinc-700 hover:bg-zinc-50 text-xs"
+                className="rounded-full bg-zinc-100 hover:bg-zinc-200 text-zinc-700 text-xs border-0 shadow-none cursor-pointer"
               >
                 Batal
               </Button>
               <Button
                 type="submit"
                 disabled={refundLoading || refundAmount <= 0 || refundAmount > balanceAmount}
-                className="bg-rose-600 hover:bg-rose-700 text-white px-6 font-semibold flex items-center gap-1.5 rounded-full text-xs"
+                className="bg-rose-600 hover:bg-rose-700 text-white px-6 font-semibold flex items-center gap-1.5 rounded-full text-xs border-0 shadow-none cursor-pointer"
               >
                 {refundLoading ? 'Memproses...' : `Cairkan ${formatCurrency(refundAmount)}`}
               </Button>

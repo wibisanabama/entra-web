@@ -248,6 +248,9 @@ export default function CashlessPortalPage() {
 
   // Filter transactions
   const filteredTransactions = transactions.filter((tx) => {
+    const isRefund = tx.type?.toUpperCase() === 'REFUND' || tx.description?.toLowerCase().includes('refund');
+    if (isRefund) return false;
+
     const isTopUp = tx.type?.toUpperCase() === 'TOPUP' || tx.type?.toUpperCase() === 'CREDIT';
     if (txFilter === 'TOPUP') return isTopUp;
     if (txFilter === 'PURCHASE') return !isTopUp;

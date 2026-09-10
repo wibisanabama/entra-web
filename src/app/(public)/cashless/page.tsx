@@ -425,13 +425,6 @@ export default function CashlessPortalPage() {
                 ))}
               </div>
             </div>
-
-            <div className="p-3.5 bg-white/80 rounded-2xl border-0 text-xs text-zinc-600 flex items-start gap-2.5">
-              <CheckCircle2 className="h-4 w-4 text-emerald-600 flex-shrink-0 mt-0.5" />
-              <span className="text-[11px] leading-relaxed">
-                Saldo otomatis tersinkronisasi ke wristband RFID Anda dan siap digunakan di seluruh tenant festival.
-              </span>
-            </div>
           </div>
 
           <div className="pt-4">

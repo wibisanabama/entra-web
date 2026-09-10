@@ -374,10 +374,6 @@ export default function ProfilePage() {
               </p>
 
               <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2.5 pt-1 text-xs text-zinc-600">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white rounded-full font-medium border-0 shadow-none">
-                  <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />
-                  Akun Terverifikasi
-                </span>
                 <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white rounded-full font-mono font-medium border-0 shadow-none">
                   ID: {user.id.substring(0, 8)}...
                   <button

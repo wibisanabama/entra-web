@@ -479,11 +479,6 @@ export default function CashlessPortalPage() {
               Tarik Saldo Gelang (Refund)
             </Button>
           </div>
-
-          <div className="p-3.5 bg-white rounded-2xl border-0 text-xs text-zinc-600 flex items-start gap-2 shadow-none">
-            <CheckCircle2 className="h-4 w-4 text-emerald-600 flex-shrink-0 mt-0.5" />
-            <span>Sisa saldo gelang dapat di-refund kapan saja setelah event festival berakhir.</span>
-          </div>
         </div>
       </div>
 

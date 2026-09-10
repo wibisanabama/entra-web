@@ -705,36 +705,24 @@ export default function ProfilePage() {
               )}
             </div>
 
-            {/* Security checklist */}
-            <div className="space-y-3">
-              <h3 className="text-sm font-bold text-zinc-950">Rekomendasi Keamanan Akun</h3>
-              <div className="space-y-2.5 text-xs text-zinc-600">
-                <div className="flex items-center gap-2.5 p-4 bg-white rounded-2xl font-medium border-0 shadow-none">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-600 flex-shrink-0" />
-                  <span>Gunakan minimal 8 karakter dengan kombinasi huruf besar, angka, dan simbol.</span>
-                </div>
-                <div className="flex items-center gap-2.5 p-4 bg-white rounded-2xl font-medium border-0 shadow-none">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-600 flex-shrink-0" />
-                  <span>Jangan pernah membagikan kode QR tiket digital atau akses akun kepada orang lain.</span>
-                </div>
-              </div>
-            </div>
           </div>
 
-          <div className="bg-zinc-100 p-6 sm:p-7 space-y-4 rounded-3xl border-0 shadow-none">
-            <h3 className="text-base font-bold text-zinc-950">Status Keamanan</h3>
-            <div className="space-y-2.5">
-              <div className="flex justify-between items-center text-xs p-4 bg-white rounded-2xl border-0 shadow-none">
-                <span className="text-zinc-500 font-medium">Enkripsi Password</span>
-                <span className="text-emerald-700 font-bold font-mono">Bcrypt (Cost 10)</span>
+          {/* Tips Keamanan Card */}
+          <div className="bg-zinc-100 p-6 sm:p-7 space-y-4 rounded-3xl border-0 shadow-none h-fit">
+            <div>
+              <h3 className="text-base font-bold text-zinc-950">Tips Keamanan</h3>
+              <p className="text-xs text-zinc-500 mt-1">
+                Panduan menjaga keamanan akun dan akses tiket digital Anda.
+              </p>
+            </div>
+            <div className="space-y-2.5 text-xs text-zinc-600">
+              <div className="flex items-start gap-2.5 p-4 bg-white rounded-2xl font-medium border-0 shadow-none">
+                <CheckCircle2 className="h-4 w-4 text-emerald-600 flex-shrink-0 mt-0.5" />
+                <span>Gunakan minimal 8 karakter dengan kombinasi huruf besar, angka, dan simbol.</span>
               </div>
-              <div className="flex justify-between items-center text-xs p-4 bg-white rounded-2xl border-0 shadow-none">
-                <span className="text-zinc-500 font-medium">Token JWT</span>
-                <span className="text-zinc-950 font-bold font-mono">HS256 Active</span>
-              </div>
-              <div className="flex justify-between items-center text-xs p-4 bg-white rounded-2xl border-0 shadow-none">
-                <span className="text-zinc-500 font-medium">Autentikasi Sesi</span>
-                <span className="text-zinc-950 font-bold">Aman (Http Cookie)</span>
+              <div className="flex items-start gap-2.5 p-4 bg-white rounded-2xl font-medium border-0 shadow-none">
+                <CheckCircle2 className="h-4 w-4 text-emerald-600 flex-shrink-0 mt-0.5" />
+                <span>Jangan pernah membagikan kode QR tiket digital atau akses akun kepada orang lain.</span>
               </div>
             </div>
           </div>

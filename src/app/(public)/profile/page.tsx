@@ -32,11 +32,56 @@ import {
   KeyRound
 } from 'lucide-react';
 
+const PROFILE_TABS = [
+  { key: 'INFO', label: 'Informasi Pribadi & Avatar', icon: UserIcon },
+  { key: 'SECURITY', label: 'Keamanan & Kata Sandi', icon: Shield },
+  { key: 'ACTIVITY', label: 'Aktivitas & Akses Cepat', icon: Sparkles },
+] as const;
+
 export default function ProfilePage() {
   const { user, isLoading, logout, loadProfile } = useAuth();
   const router = useRouter();
 
   const [activeTab, setActiveTab] = useState<'INFO' | 'SECURITY' | 'ACTIVITY'>('INFO');
+
+  // Slider indicator ala Mobbin / Slider Kita
+  const tabContainerRef = useRef<HTMLDivElement>(null);
+  const tabsRef = useRef<Record<string, HTMLButtonElement | null>>({});
+  const [tabIndicatorStyle, setTabIndicatorStyle] = useState<{ left: number; width: number }>({ left: 0, width: 0 });
+  const [isTabReady, setIsTabReady] = useState(false);
+
+  useEffect(() => {
+    const activeEl = tabsRef.current[activeTab];
+    if (activeEl) {
+      setTabIndicatorStyle({
+        left: activeEl.offsetLeft,
+        width: activeEl.offsetWidth,
+      });
+
+      if (!isTabReady) {
+        const timer = setTimeout(() => setIsTabReady(true), 50);
+        return () => clearTimeout(timer);
+      } else if (tabContainerRef.current) {
+        const container = tabContainerRef.current;
+        const targetScrollLeft = activeEl.offsetLeft - container.offsetWidth / 2 + activeEl.offsetWidth / 2;
+        container.scrollTo({ left: targetScrollLeft, behavior: 'smooth' });
+      }
+    }
+  }, [activeTab, isTabReady]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const activeEl = tabsRef.current[activeTab];
+      if (activeEl) {
+        setTabIndicatorStyle({
+          left: activeEl.offsetLeft,
+          width: activeEl.offsetWidth,
+        });
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [activeTab]);
   
   // Profile form state
   const [fullName, setFullName] = useState('');
@@ -367,46 +412,49 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      {/* Navigation Tabs - Borderless Pill Group */}
-      <div className="flex flex-wrap gap-2 p-1.5 bg-zinc-100 rounded-full border-0 shadow-none w-fit">
-        <button
-          type="button"
-          onClick={() => setActiveTab('INFO')}
-          className={`px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer border-0 shadow-none ${
-            activeTab === 'INFO'
-              ? 'bg-zinc-950 text-white'
-              : 'text-zinc-600 hover:text-zinc-950 hover:bg-zinc-200/70'
-          }`}
+      {/* Navigation Tabs - Slider Mobbin / Slider Kita */}
+      <div className="flex w-full overflow-hidden">
+        <div
+          ref={tabContainerRef}
+          className="relative inline-flex items-center p-1 sm:p-1.5 bg-zinc-200/80 rounded-full gap-1 overflow-x-auto no-scrollbar max-w-full border-0 shadow-none"
         >
-          <UserIcon className="h-4 w-4" />
-          <span>Informasi Pribadi & Avatar</span>
-        </button>
+          {/* Sliding Capsule Highlight */}
+          <div
+            className={`absolute top-1 sm:top-1.5 bottom-1 sm:bottom-1.5 rounded-full bg-white pointer-events-none border-0 shadow-none ${
+              isTabReady
+                ? 'transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]'
+                : 'transition-none'
+            }`}
+            style={{
+              left: `${tabIndicatorStyle.left}px`,
+              width: `${tabIndicatorStyle.width}px`,
+              opacity: tabIndicatorStyle.width > 0 ? 1 : 0,
+            }}
+          />
 
-        <button
-          type="button"
-          onClick={() => setActiveTab('SECURITY')}
-          className={`px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer border-0 shadow-none ${
-            activeTab === 'SECURITY'
-              ? 'bg-zinc-950 text-white'
-              : 'text-zinc-600 hover:text-zinc-950 hover:bg-zinc-200/70'
-          }`}
-        >
-          <Shield className="h-4 w-4" />
-          <span>Keamanan & Kata Sandi</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setActiveTab('ACTIVITY')}
-          className={`px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer border-0 shadow-none ${
-            activeTab === 'ACTIVITY'
-              ? 'bg-zinc-950 text-white'
-              : 'text-zinc-600 hover:text-zinc-950 hover:bg-zinc-200/70'
-          }`}
-        >
-          <Sparkles className="h-4 w-4" />
-          <span>Aktivitas & Akses Cepat</span>
-        </button>
+          {PROFILE_TABS.map((tab) => {
+            const isSelected = activeTab === tab.key;
+            const Icon = tab.icon;
+            return (
+              <button
+                key={tab.key}
+                ref={(el) => {
+                  tabsRef.current[tab.key] = el;
+                }}
+                type="button"
+                onClick={() => setActiveTab(tab.key)}
+                className={`relative z-10 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-semibold transition-colors duration-200 whitespace-nowrap cursor-pointer flex items-center gap-2 border-0 shadow-none ${
+                  isSelected
+                    ? 'text-zinc-950'
+                    : 'text-zinc-500 hover:text-zinc-900'
+                }`}
+              >
+                <Icon className="h-4 w-4 flex-shrink-0" />
+                <span>{tab.label}</span>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* TAB 1: Informasi Pribadi & Avatar */}

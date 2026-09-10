@@ -17,6 +17,7 @@ import {
   ArrowDownLeft,
   RefreshCw,
   CheckCircle2,
+  Clock,
   Copy,
   Check,
   Landmark,
@@ -104,6 +105,18 @@ export default function CashlessPortalPage() {
   const [refundAccountHolder, setRefundAccountHolder] = useState<string>('');
   const [refundReason, setRefundReason] = useState<string>('Selesai event festival');
   const [refundLoading, setRefundLoading] = useState(false);
+
+  // Refund Receipt / Claim Status Modal State
+  const [isRefundReceiptOpen, setIsRefundReceiptOpen] = useState(false);
+  const [refundReceipt, setRefundReceipt] = useState<{
+    referenceNo: string;
+    bankName: string;
+    accountNumber: string;
+    accountHolder: string;
+    amount: number;
+    estimatedDays: string;
+    status: string;
+  } | null>(null);
 
   const fetchWalletAndTransactions = useCallback(async () => {
     if (!user) return;
@@ -269,7 +282,7 @@ export default function CashlessPortalPage() {
 
     try {
       setRefundLoading(true);
-      await cashlessApi.post('/api/v1/cashless/refund', {
+      const res = await cashlessApi.post('/api/v1/cashless/refund', {
         amount: refundAmount,
         bank_name: refundBank,
         account_number: refundAccountNumber.trim(),
@@ -277,9 +290,23 @@ export default function CashlessPortalPage() {
         reason: refundReason.trim() || 'Refund sisa saldo gelang',
       });
 
-      toast.success(`Pengajuan refund saldo ${formatCurrency(refundAmount)} ke ${refundBank} berhasil diproses!`);
+      const resData = (res.data as any)?.data;
+      const refNo = resData?.reference_no || `REF-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+
+      setRefundReceipt({
+        referenceNo: refNo,
+        bankName: refundBank,
+        accountNumber: refundAccountNumber.trim(),
+        accountHolder: refundAccountHolder.trim(),
+        amount: refundAmount,
+        estimatedDays: resData?.estimated_days || '1–3 Hari Kerja',
+        status: resData?.status || 'PROCESSING',
+      });
+
       setIsRefundOpen(false);
-      fetchWalletAndTransactions();
+      setIsRefundReceiptOpen(true);
+      toast.success(`Pengajuan refund berhasil didaftarkan! No. Tiket: ${refNo}`);
+      await fetchWalletAndTransactions();
     } catch (error: unknown) {
       console.error('Refund error:', error);
       const errMsg = error instanceof Error ? error.message : 'Gagal mengajukan refund saldo gelang.';
@@ -608,9 +635,16 @@ export default function CashlessPortalPage() {
                     </div>
                     <div>
                       <h4 className="text-sm font-bold text-zinc-950">
-                        {tx.description || (isCredit ? 'Top-Up Saldo Gelang' : 'Pembayaran Tenant')}
+                        {isRefund
+                          ? 'Klaim Refund Saldo Gelang'
+                          : isCredit
+                          ? 'Top-Up Saldo Gelang'
+                          : 'Pembayaran Tenant'}
                       </h4>
-                      <p className="text-xs text-zinc-500">
+                      <p className="text-xs text-zinc-500 line-clamp-1">
+                        {tx.description || (isCredit ? 'Top-Up Saldo Gelang' : 'Pembayaran Tenant')}
+                      </p>
+                      <p className="text-[11px] text-zinc-400">
                         {tx.created_at ? formatDate(tx.created_at) : 'Waktu transaksi'}
                       </p>
                     </div>
@@ -624,9 +658,23 @@ export default function CashlessPortalPage() {
                     >
                       {isCredit ? '+' : '-'} {formatCurrency(amount)}
                     </span>
-                    <span className="block text-[10px] text-zinc-400 uppercase tracking-wider font-semibold">
-                      {isRefund ? 'REFUND DIKIRIM' : isCredit ? 'BERHASIL' : 'DIBAYAR'}
-                    </span>
+                    <div className="mt-1 flex justify-end">
+                      {isRefund ? (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 uppercase tracking-wider">
+                          <Clock className="h-3 w-3" />
+                          DIPROSES
+                        </span>
+                      ) : isCredit ? (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 uppercase tracking-wider">
+                          <CheckCircle2 className="h-3 w-3" />
+                          BERHASIL
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-zinc-100 text-zinc-700 uppercase tracking-wider">
+                          DIBAYAR
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </div>
               );
@@ -845,6 +893,26 @@ export default function CashlessPortalPage() {
               />
             </div>
 
+            {/* Rincian Estimasi & Biaya Transfer */}
+            <div className="p-4 bg-zinc-100 rounded-2xl space-y-2 text-xs border-0">
+              <div className="flex justify-between text-zinc-600">
+                <span>Nominal Penarikan Saldo</span>
+                <span className="font-bold text-zinc-950 font-mono">{formatCurrency(refundAmount)}</span>
+              </div>
+              <div className="flex justify-between text-zinc-600">
+                <span>Biaya Admin Transfer Bank</span>
+                <span className="font-bold text-emerald-600">Gratis (Rp 0)</span>
+              </div>
+              <div className="flex justify-between text-zinc-600">
+                <span>Estimasi Pencairan Dana</span>
+                <span className="font-bold text-zinc-950">1 – 3 Hari Kerja</span>
+              </div>
+              <div className="border-t border-zinc-200/80 pt-2 flex justify-between font-bold text-zinc-950 text-sm">
+                <span>Total Dana Diterima</span>
+                <span className="font-mono text-rose-600">{formatCurrency(refundAmount)}</span>
+              </div>
+            </div>
+
             <div className="flex justify-end gap-2.5 pt-2">
               <Button
                 type="button"
@@ -860,10 +928,104 @@ export default function CashlessPortalPage() {
                 disabled={refundLoading || refundAmount <= 0 || refundAmount > balanceAmount}
                 className="bg-rose-600 hover:bg-rose-700 text-white px-6 font-semibold flex items-center gap-1.5 rounded-full text-xs border-0 shadow-none cursor-pointer"
               >
-                {refundLoading ? 'Memproses...' : `Cairkan ${formatCurrency(refundAmount)}`}
+                {refundLoading ? 'Mendaftarkan Klaim...' : `Ajukan Klaim (${formatCurrency(refundAmount)})`}
               </Button>
             </div>
           </form>
+        </Modal>
+      )}
+
+      {/* MODAL 3: Bukti Tanda Terima Klaim Refund */}
+      {isRefundReceiptOpen && refundReceipt && (
+        <Modal
+          isOpen={isRefundReceiptOpen}
+          onClose={() => setIsRefundReceiptOpen(false)}
+          title="Tanda Terima Klaim Refund"
+        >
+          <div className="space-y-5 text-zinc-900">
+            <div className="p-5 bg-emerald-50 rounded-2xl text-center space-y-2 border-0">
+              <div className="w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto">
+                <CheckCircle2 className="h-6 w-6" />
+              </div>
+              <div>
+                <h4 className="text-base font-bold text-emerald-950">Klaim Refund Berhasil Didaftarkan!</h4>
+                <p className="text-xs text-emerald-700 mt-0.5">
+                  Pengajuan pencairan saldo Anda telah terdaftar dalam antrean sistem finance festival.
+                </p>
+              </div>
+            </div>
+
+            {/* Receipt Summary Card */}
+            <div className="p-4 bg-zinc-100 rounded-2xl space-y-3 text-xs border-0">
+              <div className="flex items-center justify-between pb-2.5 border-b border-zinc-200">
+                <span className="text-zinc-500 font-medium">Nomor Tiket Klaim</span>
+                <div className="flex items-center gap-1.5 font-mono font-bold text-zinc-950">
+                  <span>{refundReceipt.referenceNo}</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      navigator.clipboard.writeText(refundReceipt.referenceNo);
+                      toast.success('Nomor tiket berhasil disalin!');
+                    }}
+                    className="p-1 hover:bg-zinc-200 rounded text-zinc-500 hover:text-zinc-900 transition-colors cursor-pointer"
+                    title="Salin Nomor Tiket"
+                  >
+                    <Copy className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+              </div>
+
+              <div className="flex justify-between items-center">
+                <span className="text-zinc-500 font-medium">Status Pengajuan</span>
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-100 text-amber-800">
+                  <Clock className="h-3 w-3" />
+                  DIPROSES
+                </span>
+              </div>
+
+              <div className="flex justify-between items-center">
+                <span className="text-zinc-500 font-medium">Nominal Refund</span>
+                <span className="font-bold text-zinc-950 font-mono text-sm">
+                  {formatCurrency(refundReceipt.amount)}
+                </span>
+              </div>
+
+              <div className="flex justify-between items-start">
+                <span className="text-zinc-500 font-medium">Rekening Tujuan</span>
+                <div className="text-right">
+                  <p className="font-bold text-zinc-950">{refundReceipt.bankName} - {refundReceipt.accountNumber}</p>
+                  <p className="text-[11px] text-zinc-500">a/n {refundReceipt.accountHolder}</p>
+                </div>
+              </div>
+
+              <div className="flex justify-between items-center">
+                <span className="text-zinc-500 font-medium">Biaya Transfer</span>
+                <span className="font-bold text-emerald-600">Gratis (Rp 0)</span>
+              </div>
+
+              <div className="flex justify-between items-center pt-2 border-t border-zinc-200">
+                <span className="text-zinc-500 font-medium">Estimasi Dana Masuk</span>
+                <span className="font-bold text-zinc-950">{refundReceipt.estimatedDays}</span>
+              </div>
+            </div>
+
+            <div className="p-3.5 bg-zinc-100 rounded-2xl text-[11px] text-zinc-500 flex items-start gap-2 border-0">
+              <CheckCircle2 className="h-4 w-4 text-emerald-600 flex-shrink-0 mt-0.5" />
+              <span>
+                Tim finance festival akan memvalidasi nomor rekening dan mengirimkan dana ke rekening Anda. Anda dapat memantau statusnya sewaktu-waktu di riwayat transaksi.
+              </span>
+            </div>
+
+            <div className="pt-2">
+              <Button
+                type="button"
+                onClick={() => setIsRefundReceiptOpen(false)}
+                className="w-full bg-zinc-950 hover:bg-zinc-800 text-white font-semibold py-3.5 rounded-full text-xs border-0 shadow-none cursor-pointer"
+              >
+                Tutup & Lihat Riwayat Transaksi
+              </Button>
+            </div>
+          </div>
         </Modal>
       )}
 

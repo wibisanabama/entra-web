@@ -16,7 +16,6 @@ import {
   ArrowUpRight,
   ArrowDownLeft,
   RefreshCw,
-  Sparkles,
   Store,
   CheckCircle2,
   UtensilsCrossed,
@@ -253,14 +252,6 @@ export default function CashlessPortalPage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 mb-2">
-            <div className="p-1.5 bg-zinc-100 text-zinc-800 rounded-lg border border-zinc-200">
-              <Sparkles className="h-4 w-4" />
-            </div>
-            <span className="text-xs font-semibold uppercase tracking-wider text-zinc-600">
-              NFC / RFID Digital Festival Pass
-            </span>
-          </div>
           <h1 className="text-3xl font-black text-zinc-950 tracking-tight">
             Portal Gelang RFID Cashless
           </h1>
@@ -296,10 +287,6 @@ export default function CashlessPortalPage() {
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-bold uppercase tracking-widest text-zinc-400">
                       Entra Festival Wristband
-                    </span>
-                    <span className="flex h-2 w-2 relative">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                     </span>
                   </div>
                   <h3 className="text-white font-mono text-sm font-semibold mt-0.5">

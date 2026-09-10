@@ -2,7 +2,7 @@
 
 import { useState, Suspense } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/providers/auth-provider';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
@@ -10,6 +10,8 @@ import { BrandLogo } from '@/components/brand/BrandLogo';
 
 function RegisterForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectPath = searchParams.get('redirect');
   const { register } = useAuth();
   
   const [formData, setFormData] = useState({
@@ -48,7 +50,11 @@ function RegisterForm() {
         password: formData.password,
         phone: formData.phone,
       });
-      router.push('/');
+      if (redirectPath && redirectPath.startsWith('/')) {
+        router.push(redirectPath);
+      } else {
+        router.push('/');
+      }
     } catch (err: unknown) {
       const errMsg = err instanceof Error ? err.message : 'Terjadi kesalahan saat mendaftar';
       setError(errMsg);
@@ -153,7 +159,10 @@ function RegisterForm() {
 
         <div className="mt-8 text-center text-xs text-zinc-500">
           Sudah punya akun?{' '}
-          <Link href="/login" className="text-zinc-950 hover:underline font-bold">
+          <Link 
+            href={redirectPath ? `/login?redirect=${encodeURIComponent(redirectPath)}` : "/login"} 
+            className="text-zinc-950 hover:underline font-bold"
+          >
             Masuk
           </Link>
         </div>

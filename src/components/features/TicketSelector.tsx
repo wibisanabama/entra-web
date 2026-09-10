@@ -19,6 +19,8 @@ export interface AppliedPromo {
 export interface TicketSelectorProps {
   ticketTypes: TicketType[];
   eventId?: string;
+  initialQuantities?: Record<string, number>;
+  initialPromo?: AppliedPromo | null;
   onSelect: (
     selectedTickets: { ticketTypeId: string; quantity: number }[],
     appliedPromo?: AppliedPromo | null
@@ -35,12 +37,31 @@ interface PromoValidateResponse {
   message: string;
 }
 
-export function TicketSelector({ ticketTypes, eventId, onSelect }: TicketSelectorProps) {
-  const [quantities, setQuantities] = useState<Record<string, number>>({});
-  const [promoInput, setPromoInput] = useState('');
+export function TicketSelector({
+  ticketTypes,
+  eventId,
+  initialQuantities,
+  initialPromo,
+  onSelect,
+}: TicketSelectorProps) {
+  const [quantities, setQuantities] = useState<Record<string, number>>(initialQuantities || {});
+  const [promoInput, setPromoInput] = useState(initialPromo?.promoCode || '');
   const [promoLoading, setPromoLoading] = useState(false);
-  const [appliedPromo, setAppliedPromo] = useState<AppliedPromo | null>(null);
+  const [appliedPromo, setAppliedPromo] = useState<AppliedPromo | null>(initialPromo || null);
   const [promoError, setPromoError] = useState<string | null>(null);
+
+  React.useEffect(() => {
+    if (initialQuantities && Object.keys(initialQuantities).length > 0) {
+      setQuantities(initialQuantities);
+    }
+  }, [initialQuantities]);
+
+  React.useEffect(() => {
+    if (initialPromo) {
+      setAppliedPromo(initialPromo);
+      setPromoInput(initialPromo.promoCode);
+    }
+  }, [initialPromo]);
 
   const parsePrice = (price: string | number): number => {
     if (typeof price === 'number') return price;

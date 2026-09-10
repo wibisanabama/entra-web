@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { TicketSelector } from '@/components/features/TicketSelector';
+import { TicketSelector, AppliedPromo } from '@/components/features/TicketSelector';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
@@ -37,6 +37,9 @@ export default function EventDetailPage() {
   const [modalData, setModalData] = useState<{isOpen: boolean, title: string, message: string, type: 'success' | 'error', isAuthError?: boolean}>({isOpen: false, title: '', message: '', type: 'success'});
   const [createdOrderId, setCreatedOrderId] = useState<string | null>(null);
   const [isPaying, setIsPaying] = useState(false);
+  const [restoredQuantities, setRestoredQuantities] = useState<Record<string, number> | undefined>(undefined);
+  const [restoredPromo, setRestoredPromo] = useState<AppliedPromo | null | undefined>(undefined);
+  const [autoResuming, setAutoResuming] = useState(false);
 
   const handlePayOrder = async (orderId: string) => {
     try {
@@ -47,6 +50,14 @@ export default function EventDetailPage() {
 
       if (!token) {
         throw new Error('Token pembayaran tidak ditemukan.');
+      }
+
+      // Tunggu window.snap siap jika sedang dimuat
+      if (typeof window !== 'undefined' && !window.snap && !token.startsWith('MOCK_')) {
+        for (let i = 0; i < 20; i++) {
+          await new Promise((r) => setTimeout(r, 150));
+          if (window.snap) break;
+        }
       }
 
       // If mock token or no snap instance, trigger simulate
@@ -103,6 +114,132 @@ export default function EventDetailPage() {
       setIsPaying(false);
     }
   };
+
+  const executeCheckout = async (
+    selected: { ticketTypeId: string; quantity: number }[],
+    appliedPromo?: AppliedPromo | null
+  ) => {
+    if (!user) {
+      if (typeof window !== 'undefined') {
+        sessionStorage.setItem('entra_pending_checkout', JSON.stringify({
+          eventId: event?.id || String(params.id),
+          selected,
+          appliedPromo: appliedPromo || null,
+        }));
+      }
+      const currentPath = `/events/${params.id}?checkout=true`;
+      router.push(`/login?redirect=${encodeURIComponent(currentPath)}`);
+      return;
+    }
+
+    if (selected.length === 0 || !event) return;
+    try {
+      setCheckoutLoading(true);
+      const totalRawSubtotal = selected.reduce((sum, item) => {
+        const t = event.tickets.find((tk) => tk.id === item.ticketTypeId);
+        const price = t?.price ? (typeof t.price === 'number' ? t.price : parseFloat(t.price) || 0) : 0;
+        return sum + price * item.quantity;
+      }, 0);
+
+      let lastOrderId = '';
+      for (const item of selected) {
+        const ticketData = event.tickets.find((t) => t.id === item.ticketTypeId);
+        const basePrice = ticketData?.price ? (typeof ticketData.price === 'number' ? ticketData.price : parseFloat(ticketData.price) || 0) : 0;
+        let unitPrice = basePrice;
+        if (appliedPromo && appliedPromo.discountAmount > 0 && totalRawSubtotal > 0) {
+          const itemSubtotal = basePrice * item.quantity;
+          const itemDiscount = (itemSubtotal / totalRawSubtotal) * appliedPromo.discountAmount;
+          const finalItemSubtotal = Math.max(0, itemSubtotal - itemDiscount);
+          unitPrice = item.quantity > 0 ? Math.round((finalItemSubtotal / item.quantity) * 100) / 100 : basePrice;
+        }
+
+        const orderRes = await ticketApi.post<{ id: string }>('/api/v1/tickets/orders', {
+          event_id: event.id,
+          ticket_type_id: item.ticketTypeId,
+          quantity: item.quantity,
+          price: unitPrice
+        });
+        if (orderRes?.data?.id) {
+          lastOrderId = orderRes.data.id;
+        }
+      }
+
+      if (!lastOrderId) {
+        throw new Error('Gagal membuat pesanan tiket.');
+      }
+
+      setCreatedOrderId(lastOrderId);
+
+      setModalData({
+        isOpen: true,
+        title: 'Pemesanan Berhasil',
+        message: appliedPromo 
+          ? `Pesanan tiket berhasil dibuat dengan kupon ${appliedPromo.promoCode}! Anda dapat langsung membayar sekarang atau melanjutkannya di halaman Tiket Saya.`
+          : 'Pesanan tiket Anda berhasil dibuat dan berstatus PENDING. Silakan selesaikan pembayaran untuk menerbitkan tiket.',
+        type: 'success'
+      });
+
+      // Lanjut otomatis ke pembayaran gateway Midtrans
+      await handlePayOrder(lastOrderId);
+
+    } catch (error: unknown) {
+      const errMsg = error instanceof Error ? error.message : 'Terjadi kesalahan saat memesan tiket';
+      const isAuthError =
+        errMsg.toLowerCase().includes('authorization') ||
+        errMsg.toLowerCase().includes('unauthorized') ||
+        errMsg.toLowerCase().includes('401');
+
+      setModalData({
+        isOpen: true,
+        title: isAuthError ? 'Sesi Masuk Telah Berakhir' : 'Gagal Memesan Tiket',
+        message: isAuthError
+          ? 'Sesi masuk Anda telah berakhir demi keamanan. Silakan masuk kembali ke akun Anda untuk menyelesaikan pemesanan tiket.'
+          : 'Terjadi kesalahan: ' + errMsg,
+        type: 'error',
+        isAuthError,
+      });
+    } finally {
+      setCheckoutLoading(false);
+    }
+  };
+
+  // Auto-resume checkout setelah kembali dari halaman login
+  useEffect(() => {
+    if (!user || loading || !event || checkoutLoading || isPaying || autoResuming) return;
+
+    if (typeof window === 'undefined') return;
+
+    const rawPending = sessionStorage.getItem('entra_pending_checkout');
+    if (!rawPending) return;
+
+    try {
+      const pending = JSON.parse(rawPending);
+      if (pending.eventId === event.id && Array.isArray(pending.selected) && pending.selected.length > 0) {
+        sessionStorage.removeItem('entra_pending_checkout');
+        setAutoResuming(true);
+
+        // Pulihkan kuantitas ke TicketSelector
+        const qtyMap: Record<string, number> = {};
+        for (const item of pending.selected) {
+          qtyMap[item.ticketTypeId] = item.quantity;
+        }
+        setRestoredQuantities(qtyMap);
+        if (pending.appliedPromo) {
+          setRestoredPromo(pending.appliedPromo);
+        }
+
+        // Bersihkan query param di URL browser
+        if (window.location.search.includes('checkout=')) {
+          window.history.replaceState({}, '', `/events/${event.id}`);
+        }
+
+        // Langsung eksekusi checkout & lanjut pembayaran
+        executeCheckout(pending.selected, pending.appliedPromo);
+      }
+    } catch {
+      sessionStorage.removeItem('entra_pending_checkout');
+    }
+  }, [user, loading, event, checkoutLoading, isPaying, autoResuming]);
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -328,76 +465,15 @@ export default function EventDetailPage() {
                   <TicketSelector 
                     ticketTypes={event.tickets} 
                     eventId={String(event.id)}
-                    onSelect={async (selected, appliedPromo) => {
-                      if (!user) {
-                        router.push('/login');
-                        return;
-                      }
-                      
-                      if (selected.length === 0) return;
-                      try {
-                        setCheckoutLoading(true);
-                        const totalRawSubtotal = selected.reduce((sum, item) => {
-                          const t = event.tickets.find((tk) => tk.id === item.ticketTypeId);
-                          const price = t?.price ? (typeof t.price === 'number' ? t.price : parseFloat(t.price) || 0) : 0;
-                          return sum + price * item.quantity;
-                        }, 0);
-
-                        let lastOrderId = '';
-                        for (const item of selected) {
-                          const ticketData = event.tickets.find((t) => t.id === item.ticketTypeId);
-                          const basePrice = ticketData?.price ? (typeof ticketData.price === 'number' ? ticketData.price : parseFloat(ticketData.price) || 0) : 0;
-                          let unitPrice = basePrice;
-                          if (appliedPromo && appliedPromo.discountAmount > 0 && totalRawSubtotal > 0) {
-                            const itemSubtotal = basePrice * item.quantity;
-                            const itemDiscount = (itemSubtotal / totalRawSubtotal) * appliedPromo.discountAmount;
-                            const finalItemSubtotal = Math.max(0, itemSubtotal - itemDiscount);
-                            unitPrice = item.quantity > 0 ? Math.round((finalItemSubtotal / item.quantity) * 100) / 100 : basePrice;
-                          }
-
-                          const orderRes = await ticketApi.post<{ id: string }>('/api/v1/tickets/orders', {
-                            event_id: event.id,
-                            ticket_type_id: item.ticketTypeId,
-                            quantity: item.quantity,
-                            price: unitPrice
-                          });
-                          if (orderRes?.data?.id) {
-                            lastOrderId = orderRes.data.id;
-                          }
-                        }
-
-                        setCreatedOrderId(lastOrderId);
-
-                        setModalData({
-                          isOpen: true,
-                          title: 'Pemesanan Berhasil',
-                          message: appliedPromo 
-                            ? `Pesanan tiket berhasil dibuat dengan kupon ${appliedPromo.promoCode}! Anda dapat langsung membayar sekarang atau melanjutkannya di halaman Tiket Saya.`
-                            : 'Pesanan tiket Anda berhasil dibuat dan berstatus PENDING. Silakan selesaikan pembayaran untuk menerbitkan tiket.',
-                          type: 'success'
-                        });
-                      } catch (error: unknown) {
-                        const errMsg = error instanceof Error ? error.message : 'Terjadi kesalahan saat memesan tiket';
-                        const isAuthError =
-                          errMsg.toLowerCase().includes('authorization') ||
-                          errMsg.toLowerCase().includes('unauthorized') ||
-                          errMsg.toLowerCase().includes('401');
-
-                        setModalData({
-                          isOpen: true,
-                          title: isAuthError ? 'Sesi Masuk Telah Berakhir' : 'Gagal Memesan Tiket',
-                          message: isAuthError
-                            ? 'Sesi masuk Anda telah berakhir demi keamanan. Silakan masuk kembali ke akun Anda untuk menyelesaikan pemesanan tiket.'
-                            : 'Terjadi kesalahan: ' + errMsg,
-                          type: 'error',
-                          isAuthError,
-                        });
-                      } finally {
-                        setCheckoutLoading(false);
-                      }
-                    }} 
+                    initialQuantities={restoredQuantities}
+                    initialPromo={restoredPromo}
+                    onSelect={executeCheckout} 
                   />
-                  {checkoutLoading && <p className="text-xs text-zinc-500 mt-3 text-center animate-pulse">Memproses pesanan tiket...</p>}
+                  {(checkoutLoading || isPaying) && (
+                    <p className="text-xs text-zinc-500 mt-3 text-center animate-pulse">
+                      {isPaying ? 'Menghubungkan ke gateway pembayaran...' : 'Memproses pesanan tiket...'}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>

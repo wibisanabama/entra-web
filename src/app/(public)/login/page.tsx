@@ -93,7 +93,10 @@ function LoginForm() {
 
       <div className="mt-8 text-center text-xs text-zinc-500">
         Belum punya akun?{' '}
-        <Link href="/register" className="text-zinc-950 hover:underline font-bold">
+        <Link 
+          href={redirectPath ? `/register?redirect=${encodeURIComponent(redirectPath)}` : "/register"} 
+          className="text-zinc-950 hover:underline font-bold"
+        >
           Daftar Sekarang
         </Link>
       </div>

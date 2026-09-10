@@ -92,7 +92,7 @@ export default function EventDetailPage() {
             router.push('/my-tickets');
           },
           onError: () => {
-            // User can review order in my-tickets
+            router.push('/my-tickets');
           },
           onClose: async () => {
             try {
@@ -108,8 +108,14 @@ export default function EventDetailPage() {
       } else {
         router.push('/my-tickets');
       }
-    } catch {
-      // ignore
+    } catch (err) {
+      const errMsg = err instanceof Error ? err.message : 'Gagal memproses pembayaran gateway.';
+      setModalData({
+        isOpen: true,
+        title: 'Gagal Membuka Pembayaran',
+        message: `${errMsg} Namun pesanan tiket Anda telah tersimpan. Silakan lanjutkan pembayaran melalui halaman Tiket Saya.`,
+        type: 'error',
+      });
     } finally {
       setIsPaying(false);
     }
@@ -169,15 +175,6 @@ export default function EventDetailPage() {
       }
 
       setCreatedOrderId(lastOrderId);
-
-      setModalData({
-        isOpen: true,
-        title: 'Pemesanan Berhasil',
-        message: appliedPromo 
-          ? `Pesanan tiket berhasil dibuat dengan kupon ${appliedPromo.promoCode}! Anda dapat langsung membayar sekarang atau melanjutkannya di halaman Tiket Saya.`
-          : 'Pesanan tiket Anda berhasil dibuat dan berstatus PENDING. Silakan selesaikan pembayaran untuk menerbitkan tiket.',
-        type: 'success'
-      });
 
       // Lanjut otomatis ke pembayaran gateway Midtrans
       await handlePayOrder(lastOrderId);

@@ -330,10 +330,6 @@ export default function CashlessPortalPage() {
                   </h3>
                 </div>
               </div>
-
-              <span className="text-xs py-1 px-3 bg-emerald-500/15 text-emerald-400 rounded-full font-semibold border-0">
-                RFID AKTIF
-              </span>
             </div>
 
             {/* Live Balance Counter */}

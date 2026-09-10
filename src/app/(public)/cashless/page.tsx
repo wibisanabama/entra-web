@@ -390,7 +390,7 @@ export default function CashlessPortalPage() {
 
         {/* Quick Actions Panel */}
         <div className="flex flex-col justify-between bg-zinc-100 rounded-3xl p-6 sm:p-7 border-0 shadow-none">
-          <div className="space-y-4">
+          <div className="space-y-5">
             <div>
               <h3 className="text-lg font-bold text-zinc-950 mb-1">Aksi Cepat Gelang</h3>
               <p className="text-xs text-zinc-500 leading-relaxed">
@@ -398,17 +398,17 @@ export default function CashlessPortalPage() {
               </p>
             </div>
 
-            {/* Quick Top-Up Shortcut Chips */}
-            <div className="space-y-1.5 pt-1">
+            {/* Quick Top-Up Shortcut Grid */}
+            <div className="space-y-2">
               <span className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider block">
-                Top-Up Cepat
+                Pilihan Top-Up Cepat
               </span>
-              <div className="grid grid-cols-4 gap-1.5">
+              <div className="grid grid-cols-2 gap-2">
                 {[
-                  { label: '+25rb', val: 25000 },
-                  { label: '+50rb', val: 50000 },
-                  { label: '+100rb', val: 100000 },
-                  { label: '+200rb', val: 200000 },
+                  { label: '+ Rp 25.000', val: 25000 },
+                  { label: '+ Rp 50.000', val: 50000 },
+                  { label: '+ Rp 100.000', val: 100000 },
+                  { label: '+ Rp 200.000', val: 200000 },
                 ].map((item) => (
                   <button
                     key={item.val}
@@ -418,7 +418,7 @@ export default function CashlessPortalPage() {
                       setCustomTopUpInput(item.val.toString());
                       setIsTopUpOpen(true);
                     }}
-                    className="py-2.5 px-1.5 bg-white hover:bg-zinc-200/80 text-zinc-800 rounded-2xl text-xs font-bold transition-all text-center border-0 shadow-none cursor-pointer"
+                    className="py-3 px-3 bg-white hover:bg-zinc-200/80 text-zinc-900 rounded-2xl text-xs font-bold transition-all text-center border-0 shadow-none cursor-pointer"
                   >
                     {item.label}
                   </button>

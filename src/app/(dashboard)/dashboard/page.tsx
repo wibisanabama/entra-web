@@ -137,16 +137,16 @@ export default function DashboardOverviewPage() {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
         {stats.map((stat, index) => (
-          <Card key={index} className="p-6 bg-white border border-zinc-200 rounded-2xl shadow-sm hover:shadow-md transition-all">
+          <Card key={index} className="p-6 bg-white rounded-2xl">
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-1.5">{stat.title}</p>
                 {loading ? <Skeleton className="h-8 w-24 mb-2 bg-zinc-100 rounded-lg" /> : <h3 className="text-2xl font-black text-zinc-950 mb-2 tracking-tight">{stat.value}</h3>}
-                <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-zinc-100 text-zinc-700 border border-zinc-200">
+                <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-zinc-100 text-zinc-700">
                   {stat.change}
                 </span>
               </div>
-              <div className="p-3 rounded-2xl bg-zinc-50 border border-zinc-200 text-zinc-900">
+              <div className="p-3 rounded-2xl bg-zinc-50 text-zinc-900">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={stat.icon} />
                 </svg>
@@ -159,7 +159,7 @@ export default function DashboardOverviewPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Chart Area */}
         <div className="lg:col-span-2">
-          <Card className="bg-white border border-zinc-200 rounded-2xl p-6 sm:p-7 shadow-sm h-full min-h-[400px]">
+          <Card className="bg-white rounded-2xl p-6 sm:p-7 h-full min-h-[400px]">
             <h3 className="text-base font-bold text-zinc-950 mb-6">Tren Penjualan (Riwayat)</h3>
             <div className="flex h-64 items-end gap-2 mt-8">
               {loading ? (
@@ -187,7 +187,7 @@ export default function DashboardOverviewPage() {
 
         {/* Recent Orders */}
         <div className="lg:col-span-1">
-          <Card className="bg-white border border-zinc-200 rounded-2xl p-6 sm:p-7 shadow-sm h-full">
+          <Card className="bg-white rounded-2xl p-6 sm:p-7 h-full">
             <h3 className="text-base font-bold text-zinc-950 mb-6">Pesanan Terbaru</h3>
             <div className="space-y-4">
               {loading ? (
@@ -198,8 +198,8 @@ export default function DashboardOverviewPage() {
                 recentOrders.slice(0, 5).map((order) => {
                   const isPaid = order.status?.toUpperCase() === 'PAID' || order.status?.toUpperCase() === 'SUCCESS' || order.status === 'SUKSES';
                   return (
-                    <div key={order.id} className="flex items-center gap-3.5 p-2 rounded-xl hover:bg-zinc-50 transition-colors">
-                      <div className="w-9 h-9 rounded-full bg-zinc-100 border border-zinc-200 flex items-center justify-center text-zinc-900 font-bold text-xs shrink-0">
+                    <div key={order.id} className="flex items-center gap-3.5 p-2 rounded-xl">
+                      <div className="w-9 h-9 rounded-full bg-zinc-100 flex items-center justify-center text-zinc-900 font-bold text-xs shrink-0">
                         {(order.user?.name || "U")[0].toUpperCase()}
                       </div>
                       <div className="flex-1 min-w-0">
@@ -208,7 +208,7 @@ export default function DashboardOverviewPage() {
                       </div>
                       <div className="text-right shrink-0">
                         <p className="text-xs font-black text-zinc-950">{formatCurrency(Number(order.total_amount))}</p>
-                        <span className={`inline-block text-[10px] font-bold px-2 py-0.5 rounded-full border ${isPaid ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200'}`}>
+                        <span className={`inline-block text-[10px] font-bold px-2 py-0.5 rounded-full ${isPaid ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'}`}>
                           {isPaid ? 'LUNAS' : order.status}
                         </span>
                       </div>

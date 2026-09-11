@@ -190,7 +190,7 @@ export function TicketTypeModal({ isOpen, onClose, onSubmit, initialData, isLoad
             name="description"
             value={formData.description}
             onChange={handleChange}
-            className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl py-2.5 px-4 text-zinc-950 text-xs focus:outline-none focus:border-zinc-950 focus:bg-white transition-all font-medium placeholder:text-zinc-400"
+            className="w-full bg-zinc-50 border-0 shadow-none rounded-2xl py-3 px-4 text-zinc-950 text-xs focus:outline-none focus:ring-0 focus:bg-white transition-all font-medium placeholder:text-zinc-400 resize-none"
             rows={3}
             placeholder="Fasilitas yang didapat (misal: Akses VIP Lounge, dsb)"
           />

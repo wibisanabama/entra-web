@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
@@ -31,6 +31,45 @@ export default function AttendeeListPage() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<'ALL' | 'HADIR' | 'BELUM'>('ALL');
+
+  // Segmented control indicator ala Mobbin (persis seperti kategori di landing page)
+  const filterContainerRef = useRef<HTMLDivElement>(null);
+  const filterTabsRef = useRef<Record<string, HTMLButtonElement | null>>({});
+  const [filterIndicatorStyle, setFilterIndicatorStyle] = useState<{ left: number; width: number }>({ left: 0, width: 0 });
+  const [isFilterReady, setIsFilterReady] = useState(false);
+
+  useEffect(() => {
+    const activeEl = filterTabsRef.current[statusFilter];
+    if (activeEl) {
+      setFilterIndicatorStyle({
+        left: activeEl.offsetLeft,
+        width: activeEl.offsetWidth,
+      });
+
+      if (!isFilterReady) {
+        const timer = setTimeout(() => setIsFilterReady(true), 50);
+        return () => clearTimeout(timer);
+      } else if (filterContainerRef.current) {
+        const container = filterContainerRef.current;
+        const targetScrollLeft = activeEl.offsetLeft - container.offsetWidth / 2 + activeEl.offsetWidth / 2;
+        container.scrollTo({ left: targetScrollLeft, behavior: 'smooth' });
+      }
+    }
+  }, [statusFilter, attendees.length, isFilterReady]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const activeEl = filterTabsRef.current[statusFilter];
+      if (activeEl) {
+        setFilterIndicatorStyle({
+          left: activeEl.offsetLeft,
+          width: activeEl.offsetWidth,
+        });
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [statusFilter]);
 
   const fetchAttendees = useCallback(async () => {
     if (!params.id) return;
@@ -230,31 +269,48 @@ export default function AttendeeListPage() {
       <Card className="bg-zinc-100 rounded-3xl p-6 space-y-4 border-0 shadow-none">
         {/* Controls Bar */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="flex bg-white p-1 rounded-full border-0 shadow-none text-xs w-fit">
-            <button
-              onClick={() => setStatusFilter('ALL')}
-              className={`px-3.5 py-1.5 rounded-full font-bold transition-all cursor-pointer ${
-                statusFilter === 'ALL' ? 'bg-zinc-950 text-white shadow-none' : 'text-zinc-600 hover:text-zinc-950'
+          {/* Segmented Control Pill ala Mobbin (persis seperti kategori sebelumnya) */}
+          <div
+            ref={filterContainerRef}
+            className="relative inline-flex items-center p-1 bg-zinc-200/80 rounded-full gap-1 overflow-x-auto no-scrollbar max-w-full border-0"
+          >
+            {/* Sliding Capsule Highlight */}
+            <div
+              className={`absolute top-1 bottom-1 rounded-full bg-white shadow-none pointer-events-none ${
+                isFilterReady
+                  ? 'transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]'
+                  : 'transition-none'
               }`}
-            >
-              Semua ({attendees.length})
-            </button>
-            <button
-              onClick={() => setStatusFilter('HADIR')}
-              className={`px-3.5 py-1.5 rounded-full font-bold transition-all cursor-pointer ${
-                statusFilter === 'HADIR' ? 'bg-zinc-950 text-white shadow-none' : 'text-zinc-600 hover:text-zinc-950'
-              }`}
-            >
-              Hadir ({checkedInCount})
-            </button>
-            <button
-              onClick={() => setStatusFilter('BELUM')}
-              className={`px-3.5 py-1.5 rounded-full font-bold transition-all cursor-pointer ${
-                statusFilter === 'BELUM' ? 'bg-zinc-950 text-white shadow-none' : 'text-zinc-600 hover:text-zinc-950'
-              }`}
-            >
-              Belum Hadir ({attendees.length - checkedInCount})
-            </button>
+              style={{
+                left: `${filterIndicatorStyle.left}px`,
+                width: `${filterIndicatorStyle.width}px`,
+                opacity: filterIndicatorStyle.width > 0 ? 1 : 0,
+              }}
+            />
+
+            {[
+              { id: 'ALL', label: `Semua (${attendees.length})` },
+              { id: 'HADIR', label: `Hadir (${checkedInCount})` },
+              { id: 'BELUM', label: `Belum Hadir (${attendees.length - checkedInCount})` },
+            ].map((tab) => {
+              const isSelected = statusFilter === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  ref={(el) => {
+                    filterTabsRef.current[tab.id] = el;
+                  }}
+                  onClick={() => setStatusFilter(tab.id as 'ALL' | 'HADIR' | 'BELUM')}
+                  className={`relative z-10 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-colors duration-200 whitespace-nowrap cursor-pointer ${
+                    isSelected
+                      ? 'text-zinc-950'
+                      : 'text-zinc-500 hover:text-zinc-900'
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              );
+            })}
           </div>
 
           <div className="relative w-full sm:w-72">

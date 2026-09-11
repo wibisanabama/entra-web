@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
@@ -27,6 +27,45 @@ export default function DashboardOrdersPage() {
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState<string>('ALL');
   const [searchQuery, setSearchQuery] = useState<string>('');
+
+  // Segmented control indicator ala Mobbin (persis seperti kategori)
+  const filterContainerRef = useRef<HTMLDivElement>(null);
+  const filterTabsRef = useRef<Record<string, HTMLButtonElement | null>>({});
+  const [filterIndicatorStyle, setFilterIndicatorStyle] = useState<{ left: number; width: number }>({ left: 0, width: 0 });
+  const [isFilterReady, setIsFilterReady] = useState(false);
+
+  useEffect(() => {
+    const activeEl = filterTabsRef.current[statusFilter];
+    if (activeEl) {
+      setFilterIndicatorStyle({
+        left: activeEl.offsetLeft,
+        width: activeEl.offsetWidth,
+      });
+
+      if (!isFilterReady) {
+        const timer = setTimeout(() => setIsFilterReady(true), 50);
+        return () => clearTimeout(timer);
+      } else if (filterContainerRef.current) {
+        const container = filterContainerRef.current;
+        const targetScrollLeft = activeEl.offsetLeft - container.offsetWidth / 2 + activeEl.offsetWidth / 2;
+        container.scrollTo({ left: targetScrollLeft, behavior: 'smooth' });
+      }
+    }
+  }, [statusFilter, orders.length, isFilterReady]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const activeEl = filterTabsRef.current[statusFilter];
+      if (activeEl) {
+        setFilterIndicatorStyle({
+          left: activeEl.offsetLeft,
+          width: activeEl.offsetWidth,
+        });
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [statusFilter]);
 
   const fetchOrdersAndEvents = useCallback(async () => {
     try {
@@ -201,23 +240,49 @@ export default function DashboardOrdersPage() {
       {/* Main Table Card with Search & Filters */}
       <Card className="bg-white border border-zinc-200 rounded-2xl p-5 space-y-4 shadow-sm">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="flex bg-zinc-100 p-1 rounded-full border border-zinc-200 text-xs w-fit">
+          {/* Segmented Control Pill ala Mobbin (persis seperti kategori sebelumnya) */}
+          <div
+            ref={filterContainerRef}
+            className="relative inline-flex items-center p-1 bg-zinc-200/80 rounded-full gap-1 overflow-x-auto no-scrollbar max-w-full border-0"
+          >
+            {/* Sliding Capsule Highlight */}
+            <div
+              className={`absolute top-1 bottom-1 rounded-full bg-white shadow-none pointer-events-none ${
+                isFilterReady
+                  ? 'transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]'
+                  : 'transition-none'
+              }`}
+              style={{
+                left: `${filterIndicatorStyle.left}px`,
+                width: `${filterIndicatorStyle.width}px`,
+                opacity: filterIndicatorStyle.width > 0 ? 1 : 0,
+              }}
+            />
+
             {[
               { id: 'ALL', label: `Semua (${orders.length})` },
               { id: 'PAID', label: `Lunas (${paidOrders.length})` },
               { id: 'PENDING', label: `Menunggu (${pendingOrders.length})` },
               { id: 'CANCELLED', label: 'Batal' },
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setStatusFilter(tab.id)}
-                className={`px-3.5 py-1.5 rounded-full font-bold transition-all cursor-pointer ${
-                  statusFilter === tab.id ? 'bg-zinc-950 text-white shadow-xs' : 'text-zinc-600 hover:text-zinc-950'
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
+            ].map((tab) => {
+              const isSelected = statusFilter === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  ref={(el) => {
+                    filterTabsRef.current[tab.id] = el;
+                  }}
+                  onClick={() => setStatusFilter(tab.id)}
+                  className={`relative z-10 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-colors duration-200 whitespace-nowrap cursor-pointer ${
+                    isSelected
+                      ? 'text-zinc-950'
+                      : 'text-zinc-500 hover:text-zinc-900'
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              );
+            })}
           </div>
 
           <div className="relative w-full sm:w-72">

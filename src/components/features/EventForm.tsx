@@ -109,7 +109,7 @@ export function EventForm({ initialData, onSubmit, onCancel, isLoading = false }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="bg-white border border-zinc-200 rounded-3xl p-6 sm:p-8 space-y-5 shadow-sm">
+      <div className="bg-zinc-100 rounded-3xl p-6 sm:p-8 space-y-6 border-0 shadow-none">
         <Input
           label="Judul Event"
           name="title"
@@ -117,7 +117,7 @@ export function EventForm({ initialData, onSubmit, onCancel, isLoading = false }
           onChange={handleChange}
           required
           placeholder="Masukkan judul event"
-          className="bg-zinc-50 border-zinc-200 text-zinc-950 rounded-full px-4 py-2.5 focus:bg-white focus:border-zinc-950"
+          className="bg-white border-0 shadow-none text-zinc-950 rounded-full px-5 py-3 focus:bg-white focus:ring-0 text-sm font-medium"
         />
 
         <div className="w-full">
@@ -130,7 +130,7 @@ export function EventForm({ initialData, onSubmit, onCancel, isLoading = false }
             onChange={handleChange}
             required
             rows={4}
-            className="flex w-full rounded-2xl bg-zinc-50 border border-zinc-200 text-zinc-950 px-4 py-3 text-sm transition-all focus:outline-none focus:border-zinc-950 focus:bg-white placeholder:text-zinc-400 font-medium"
+            className="flex w-full rounded-2xl bg-white border-0 shadow-none text-zinc-950 px-5 py-3.5 text-sm transition-all focus:outline-none focus:ring-0 focus:bg-white placeholder:text-zinc-400 font-medium"
             placeholder="Jelaskan detail event Anda..."
           />
         </div>
@@ -143,7 +143,7 @@ export function EventForm({ initialData, onSubmit, onCancel, isLoading = false }
             value={(formData.start_date as string)?.substring(0, 16)}
             onChange={handleChange}
             required
-            className="bg-zinc-50 border-zinc-200 text-zinc-950 rounded-full px-4 py-2.5 focus:bg-white focus:border-zinc-950"
+            className="bg-white border-0 shadow-none text-zinc-950 rounded-full px-5 py-3 focus:bg-white focus:ring-0 text-sm font-medium"
           />
           <Input
             label="Tanggal Selesai (UTC)"
@@ -152,7 +152,7 @@ export function EventForm({ initialData, onSubmit, onCancel, isLoading = false }
             value={(formData.end_date as string)?.substring(0, 16)}
             onChange={handleChange}
             required
-            className="bg-zinc-50 border-zinc-200 text-zinc-950 rounded-full px-4 py-2.5 focus:bg-white focus:border-zinc-950"
+            className="bg-white border-0 shadow-none text-zinc-950 rounded-full px-5 py-3 focus:bg-white focus:ring-0 text-sm font-medium"
           />
         </div>
 
@@ -167,7 +167,7 @@ export function EventForm({ initialData, onSubmit, onCancel, isLoading = false }
               onChange={handleChange}
               disabled={loadingData}
               required
-              className="flex w-full rounded-full bg-zinc-50 border border-zinc-200 text-zinc-950 px-4 py-2.5 text-sm transition-all focus:outline-none focus:border-zinc-950 focus:bg-white disabled:opacity-50 font-medium"
+              className="flex w-full rounded-full bg-white border-0 shadow-none text-zinc-950 px-5 py-3 text-sm transition-all focus:outline-none focus:ring-0 focus:bg-white disabled:opacity-50 font-medium cursor-pointer"
             >
               <option value="">Pilih Kategori</option>
               {categories.map((c) => (
@@ -182,7 +182,7 @@ export function EventForm({ initialData, onSubmit, onCancel, isLoading = false }
             min="1"
             value={formData.max_attendees || ''}
             onChange={handleChange}
-            className="bg-zinc-50 border-zinc-200 text-zinc-950 rounded-full px-4 py-2.5 focus:bg-white focus:border-zinc-950"
+            className="bg-white border-0 shadow-none text-zinc-950 rounded-full px-5 py-3 focus:bg-white focus:ring-0 text-sm font-medium"
           />
         </div>
 
@@ -193,9 +193,9 @@ export function EventForm({ initialData, onSubmit, onCancel, isLoading = false }
             name="is_online"
             checked={formData.is_online}
             onChange={handleChange}
-            className="h-4 w-4 rounded border-zinc-300 text-zinc-950 focus:ring-zinc-950 cursor-pointer"
+            className="h-4 w-4 rounded border-0 text-zinc-950 focus:ring-0 cursor-pointer"
           />
-          <label htmlFor="is_online" className="text-xs font-bold text-zinc-700 uppercase tracking-wider cursor-pointer">
+          <label htmlFor="is_online" className="text-xs font-bold text-zinc-700 uppercase tracking-wider cursor-pointer select-none">
             Event Online
           </label>
         </div>
@@ -209,7 +209,7 @@ export function EventForm({ initialData, onSubmit, onCancel, isLoading = false }
             onChange={handleChange}
             placeholder="https://..."
             required
-            className="bg-zinc-50 border-zinc-200 text-zinc-950 rounded-full px-4 py-2.5 focus:bg-white focus:border-zinc-950"
+            className="bg-white border-0 shadow-none text-zinc-950 rounded-full px-5 py-3 focus:bg-white focus:ring-0 text-sm font-medium"
           />
         ) : (
           <div className="w-full">
@@ -222,7 +222,7 @@ export function EventForm({ initialData, onSubmit, onCancel, isLoading = false }
               onChange={handleChange}
               disabled={loadingData}
               required={!formData.is_online}
-              className="flex w-full rounded-full bg-zinc-50 border border-zinc-200 text-zinc-950 px-4 py-2.5 text-sm transition-all focus:outline-none focus:border-zinc-950 focus:bg-white disabled:opacity-50 font-medium"
+              className="flex w-full rounded-full bg-white border-0 shadow-none text-zinc-950 px-5 py-3 text-sm transition-all focus:outline-none focus:ring-0 focus:bg-white disabled:opacity-50 font-medium cursor-pointer"
             >
               <option value="">Pilih Venue</option>
               {venues.map((v) => (
@@ -238,7 +238,7 @@ export function EventForm({ initialData, onSubmit, onCancel, isLoading = false }
           </label>
           
           {formData.banner_url ? (
-            <div className="relative rounded-3xl overflow-hidden border border-zinc-200 bg-zinc-50 group">
+            <div className="relative rounded-3xl overflow-hidden bg-zinc-950 border-0 shadow-none group">
               <img
                 src={formData.banner_url}
                 alt="Event Banner Preview"
@@ -249,7 +249,7 @@ export function EventForm({ initialData, onSubmit, onCancel, isLoading = false }
                   type="button"
                   size="sm"
                   variant="outline"
-                  className="bg-white/90 border-zinc-300 text-zinc-900 hover:bg-white rounded-full font-bold text-xs px-4 py-2"
+                  className="bg-white text-zinc-900 hover:bg-zinc-100 border-0 shadow-none rounded-full font-bold text-xs px-4 py-2"
                   onClick={() => setFormData(prev => ({ ...prev, banner_url: '' }))}
                 >
                   Hapus / Ganti Banner
@@ -265,14 +265,14 @@ export function EventForm({ initialData, onSubmit, onCancel, isLoading = false }
                 }}
               />
               <div className="flex items-center gap-2">
-                <span className="text-xs text-zinc-400 whitespace-nowrap">Atau masukkan URL:</span>
+                <span className="text-xs text-zinc-500 font-medium whitespace-nowrap">Atau masukkan URL:</span>
                 <Input
                   name="banner_url"
                   type="url"
                   value={formData.banner_url || ''}
                   onChange={handleChange}
                   placeholder="https://..."
-                  className="bg-zinc-50 border-zinc-200 text-zinc-950 rounded-full px-4 py-2 text-xs focus:bg-white focus:border-zinc-950"
+                  className="bg-white border-0 shadow-none text-zinc-950 rounded-full px-4 py-2 text-xs focus:bg-white focus:ring-0 font-medium"
                 />
               </div>
             </div>
@@ -288,7 +288,7 @@ export function EventForm({ initialData, onSubmit, onCancel, isLoading = false }
             value={formData.status || 'draft'}
             onChange={handleChange}
             required
-            className="flex w-full rounded-full bg-zinc-50 border border-zinc-200 text-zinc-950 px-4 py-2.5 text-sm transition-all focus:outline-none focus:border-zinc-950 focus:bg-white font-medium"
+            className="flex w-full rounded-full bg-white border-0 shadow-none text-zinc-950 px-5 py-3 text-sm transition-all focus:outline-none focus:ring-0 focus:bg-white font-medium cursor-pointer"
           >
             <option value="draft">Draft (Disembunyikan)</option>
             <option value="published">Published (Diterbitkan)</option>
@@ -298,11 +298,11 @@ export function EventForm({ initialData, onSubmit, onCancel, isLoading = false }
 
       <div className="pt-2 flex justify-end gap-3">
         {onCancel && (
-          <Button type="button" variant="outline" onClick={onCancel} className="rounded-full border-zinc-200 text-zinc-700 hover:bg-zinc-100 text-xs px-5 py-2.5 font-bold">
+          <Button type="button" variant="outline" onClick={onCancel} className="rounded-full bg-zinc-100 hover:bg-zinc-200 text-zinc-700 border-0 shadow-none text-xs px-5 py-2.5 font-bold cursor-pointer">
             Batal
           </Button>
         )}
-        <Button type="submit" variant="primary" isLoading={isLoading || loadingData} className="bg-zinc-950 hover:bg-zinc-800 text-white rounded-full font-bold text-xs px-6 py-2.5 shadow-none">
+        <Button type="submit" variant="primary" isLoading={isLoading || loadingData} className="bg-zinc-950 hover:bg-zinc-800 text-white rounded-full font-bold text-xs px-6 py-2.5 border-0 shadow-none cursor-pointer">
           {initialData ? 'Simpan Perubahan' : 'Buat Event'}
         </Button>
       </div>

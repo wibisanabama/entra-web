@@ -109,12 +109,12 @@ export function MediaUploader({ onUploadComplete }: MediaUploaderProps) {
   return (
     <div className="w-full">
       <div
-        className={`rounded-3xl p-8 text-center transition-all cursor-pointer border-2 border-dashed select-none ${
+        className={`rounded-3xl p-8 text-center transition-all cursor-pointer border-0 shadow-none select-none ${
           isDragging 
-            ? 'border-zinc-950 bg-zinc-100' 
+            ? 'bg-zinc-200' 
             : error 
-              ? 'border-red-300 bg-red-50/50' 
-              : 'border-zinc-200 bg-zinc-50 hover:bg-zinc-100/70 hover:border-zinc-300'
+              ? 'bg-red-50' 
+              : 'bg-white hover:bg-white/90'
         }`}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
@@ -145,13 +145,13 @@ export function MediaUploader({ onUploadComplete }: MediaUploaderProps) {
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center py-2">
-            <div className="w-12 h-12 rounded-2xl bg-white border border-zinc-200 flex items-center justify-center mb-3 shadow-xs">
-              <Camera className="w-5 h-5 text-zinc-500" />
+            <div className="w-12 h-12 rounded-2xl bg-zinc-100 border-0 flex items-center justify-center mb-3 shadow-none">
+              <Camera className="w-5 h-5 text-zinc-600" />
             </div>
             <p className="text-xs font-bold text-zinc-950 mb-1">
               Klik atau tarik gambar banner ke sini
             </p>
-            <p className="text-[11px] text-zinc-400">
+            <p className="text-[11px] text-zinc-500 font-medium">
               Format JPG, PNG (Maksimal 5MB)
             </p>
           </div>

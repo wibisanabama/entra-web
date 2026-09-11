@@ -91,6 +91,11 @@ export function LocationPickerMapInner({
     };
   };
 
+  const onLocationSelectRef = useRef(onLocationSelect);
+  useEffect(() => {
+    onLocationSelectRef.current = onLocationSelect;
+  }, [onLocationSelect]);
+
   // Reverse geocode coordinate into address
   const reverseGeocode = useCallback(
     async (lat: number, lng: number) => {
@@ -109,21 +114,32 @@ export function LocationPickerMapInner({
         const parsed = parseNominatimAddress(data);
 
         setCurrentLoc(parsed);
-        onLocationSelect(parsed);
+        onLocationSelectRef.current?.(parsed);
       } catch (err) {
         console.warn('Reverse geocoding error:', err);
       } finally {
         setIsReverseGeocoding(false);
       }
     },
-    [onLocationSelect]
+    []
   );
+
+  const reverseGeocodeRef = useRef(reverseGeocode);
+  useEffect(() => {
+    reverseGeocodeRef.current = reverseGeocode;
+  }, [reverseGeocode]);
 
   // Initialize Leaflet Map
   useEffect(() => {
     if (!mapContainerRef.current) return;
 
+    let resizeTimer: ReturnType<typeof setTimeout> | null = null;
+
     if (!mapInstanceRef.current) {
+      if ((mapContainerRef.current as any)._leaflet_id) {
+        delete (mapContainerRef.current as any)._leaflet_id;
+      }
+
       // Custom elegant modern Pin icon
       const customPinIcon = L.divIcon({
         className: 'custom-leaflet-marker',
@@ -189,32 +205,52 @@ export function LocationPickerMapInner({
 
       marker.on('dragend', () => {
         const pos = marker.getLatLng();
-        reverseGeocode(pos.lat, pos.lng);
+        reverseGeocodeRef.current(pos.lat, pos.lng);
       });
 
       // Click anywhere on map to move marker
       map.on('click', (e: L.LeafletMouseEvent) => {
         marker.setLatLng(e.latlng);
-        reverseGeocode(e.latlng.lat, e.latlng.lng);
+        reverseGeocodeRef.current(e.latlng.lat, e.latlng.lng);
       });
 
       mapInstanceRef.current = map;
       markerRef.current = marker;
 
-      // Fix container size on initial mount
-      setTimeout(() => {
-        map.invalidateSize();
+      // Fix container size on initial mount safely
+      resizeTimer = setTimeout(() => {
+        if (mapInstanceRef.current && mapContainerRef.current) {
+          try {
+            mapInstanceRef.current.invalidateSize();
+          } catch {
+            // safely ignore if unmounted
+          }
+        }
       }, 250);
+    } else {
+      try {
+        mapInstanceRef.current.setView([initialLat, initialLng], mapInstanceRef.current.getZoom());
+        markerRef.current?.setLatLng([initialLat, initialLng]);
+      } catch {
+        // safely ignore
+      }
     }
 
     return () => {
+      if (resizeTimer) {
+        clearTimeout(resizeTimer);
+      }
       if (mapInstanceRef.current) {
-        mapInstanceRef.current.remove();
+        try {
+          mapInstanceRef.current.remove();
+        } catch {
+          // safely ignore
+        }
         mapInstanceRef.current = null;
         markerRef.current = null;
       }
     };
-  }, [initialLat, initialLng, reverseGeocode]);
+  }, [initialLat, initialLng]);
 
   // Handle place search
   const handleSearchSubmit = async (e?: React.FormEvent) => {

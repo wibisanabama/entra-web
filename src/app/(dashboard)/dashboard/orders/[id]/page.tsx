@@ -72,11 +72,11 @@ export default function OrderDetailsPage() {
 
   if (!order) {
     return (
-      <div className="max-w-md mx-auto my-16 p-8 text-center bg-white border border-zinc-200 rounded-3xl shadow-sm">
+      <div className="max-w-md mx-auto my-16 p-8 text-center bg-zinc-100 rounded-3xl border-0 shadow-none">
         <p className="text-base font-semibold text-zinc-900 mb-4">Pesanan tidak ditemukan.</p>
         <button
           onClick={() => router.push('/dashboard/orders')}
-          className="inline-flex items-center justify-center px-5 py-2.5 rounded-full text-xs font-semibold bg-zinc-950 text-white hover:bg-zinc-800 transition-colors"
+          className="inline-flex items-center justify-center px-5 py-2.5 rounded-full text-xs font-semibold bg-zinc-950 text-white hover:bg-zinc-800 transition-colors border-0 shadow-none cursor-pointer"
         >
           Kembali ke Daftar Pesanan
         </button>
@@ -89,7 +89,7 @@ export default function OrderDetailsPage() {
       <div className="flex items-center gap-2">
         <button 
           onClick={() => router.push('/dashboard/orders')}
-          className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-medium text-zinc-600 bg-zinc-100 hover:bg-zinc-200 hover:text-zinc-900 transition-colors"
+          className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-medium text-zinc-600 bg-zinc-100 hover:bg-zinc-200 hover:text-zinc-900 transition-colors border-0 shadow-none cursor-pointer"
         >
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-3.5 h-3.5">
             <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
@@ -98,19 +98,22 @@ export default function OrderDetailsPage() {
         </button>
       </div>
 
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2 border-b border-zinc-200/80">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2 border-b border-zinc-200/50">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-zinc-950">Detail Pesanan</h1>
           <p className="text-xs font-mono text-zinc-400 mt-1">ID: {order.id}</p>
         </div>
         <div>
-          <Badge status={order.status === 'PAID' || order.status === 'SUCCESS' ? 'Sukses' : order.status === 'PENDING' ? 'Pending' : 'Dibatalkan'} />
+          <Badge 
+            status={order.status === 'PAID' || order.status === 'SUCCESS' ? 'Sukses' : order.status === 'PENDING' ? 'Pending' : 'Dibatalkan'} 
+            className="border-0 shadow-none"
+          />
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Card className="bg-white border border-zinc-200/90 rounded-2xl p-6 shadow-[0_2px_8px_rgba(0,0,0,0.03)]">
-          <h2 className="text-sm font-bold text-zinc-950 uppercase tracking-wider mb-4 pb-2 border-b border-zinc-100">
+        <Card className="bg-zinc-100 rounded-3xl p-6 border-0 shadow-none">
+          <h2 className="text-sm font-bold text-zinc-950 uppercase tracking-wider mb-4 pb-2 border-b border-zinc-200/50">
             Informasi Pembeli
           </h2>
           <div className="space-y-4">
@@ -124,19 +127,19 @@ export default function OrderDetailsPage() {
             </div>
             <div>
               <p className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-0.5">User ID</p>
-              <p className="text-xs font-mono text-zinc-600 bg-zinc-50 p-1.5 rounded-lg border border-zinc-100 inline-block">{order.user_id}</p>
+              <p className="text-xs font-mono text-zinc-700 bg-white px-3 py-1.5 rounded-xl border-0 shadow-none inline-block">{order.user_id}</p>
             </div>
           </div>
         </Card>
 
-        <Card className="bg-white border border-zinc-200/90 rounded-2xl p-6 shadow-[0_2px_8px_rgba(0,0,0,0.03)]">
-          <h2 className="text-sm font-bold text-zinc-950 uppercase tracking-wider mb-4 pb-2 border-b border-zinc-100">
+        <Card className="bg-zinc-100 rounded-3xl p-6 border-0 shadow-none">
+          <h2 className="text-sm font-bold text-zinc-950 uppercase tracking-wider mb-4 pb-2 border-b border-zinc-200/50">
             Informasi Pembayaran
           </h2>
           <div className="space-y-4">
             <div>
               <p className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-0.5">Total Pembayaran</p>
-              <p className="text-2xl font-bold tracking-tight text-zinc-950">{formatCurrency(order.total_amount)}</p>
+              <p className="text-2xl font-black tracking-tight text-zinc-950">{formatCurrency(order.total_amount)}</p>
             </div>
             <div>
               <p className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-0.5">Tanggal Pemesanan</p>
@@ -144,38 +147,38 @@ export default function OrderDetailsPage() {
             </div>
             <div>
               <p className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-0.5">Event ID</p>
-              <p className="text-xs font-mono text-zinc-600 bg-zinc-50 p-1.5 rounded-lg border border-zinc-100 inline-block">{order.event_id}</p>
+              <p className="text-xs font-mono text-zinc-700 bg-white px-3 py-1.5 rounded-xl border-0 shadow-none inline-block">{order.event_id}</p>
             </div>
           </div>
         </Card>
       </div>
 
-      <div className="bg-white border border-zinc-200/90 rounded-2xl overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.03)]">
-        <div className="px-6 py-4 border-b border-zinc-100 flex items-center justify-between">
+      <div className="bg-zinc-100 rounded-3xl p-6 border-0 shadow-none space-y-4">
+        <div className="flex items-center justify-between pb-2 border-b border-zinc-200/50">
           <h2 className="text-sm font-bold text-zinc-950 uppercase tracking-wider">Tiket Terbit</h2>
-          <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-zinc-100 text-zinc-600">
+          <span className="text-xs font-semibold px-3 py-1 rounded-full bg-white text-zinc-700 border-0 shadow-none">
             {tickets.length} Tiket
           </span>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm">
-            <thead className="text-xs font-semibold text-zinc-500 uppercase tracking-wider bg-zinc-50/75 border-b border-zinc-200">
+          <table className="w-full text-left text-sm text-zinc-600">
+            <thead className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider bg-zinc-200/50 border-0">
               <tr>
-                <th scope="col" className="px-6 py-3.5">Kode Tiket</th>
-                <th scope="col" className="px-6 py-3.5">Tipe Tiket ID</th>
-                <th scope="col" className="px-6 py-3.5">Status</th>
+                <th scope="col" className="px-4 py-3.5 rounded-l-2xl">Kode Tiket</th>
+                <th scope="col" className="px-4 py-3.5">Tipe Tiket ID</th>
+                <th scope="col" className="px-4 py-3.5 text-right rounded-r-2xl">Status</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-zinc-100">
+            <tbody className="divide-y divide-zinc-200/50">
               {tickets.length > 0 ? tickets.map((ticket, i) => (
-                <tr key={i} className="hover:bg-zinc-50/60 transition-colors">
-                  <td className="px-6 py-4 font-mono font-semibold text-zinc-950">{ticket.ticket_code}</td>
-                  <td className="px-6 py-4 text-xs font-mono text-zinc-500">{ticket.ticket_type_id}</td>
-                  <td className="px-6 py-4"><Badge status={ticket.status} /></td>
+                <tr key={i} className="hover:bg-zinc-200/40 transition-colors">
+                  <td className="px-4 py-3.5 font-mono font-bold text-zinc-950 text-xs">{ticket.ticket_code}</td>
+                  <td className="px-4 py-3.5 text-xs font-mono text-zinc-500">{ticket.ticket_type_id}</td>
+                  <td className="px-4 py-3.5 text-right"><Badge status={ticket.status} className="border-0 shadow-none" /></td>
                 </tr>
               )) : (
                 <tr>
-                  <td colSpan={3} className="px-6 py-10 text-center text-zinc-400 text-sm">
+                  <td colSpan={3} className="px-4 py-10 text-center text-zinc-400 text-xs">
                     Belum ada tiket yang terbit untuk pesanan ini.
                   </td>
                 </tr>

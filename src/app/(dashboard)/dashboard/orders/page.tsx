@@ -166,7 +166,7 @@ export default function DashboardOrdersPage() {
             variant="outline"
             onClick={fetchOrdersAndEvents}
             disabled={loading}
-            className="rounded-full border-zinc-200 text-zinc-700 hover:bg-zinc-100 flex items-center gap-2 text-xs font-bold px-4 py-2"
+            className="rounded-full bg-zinc-100 hover:bg-zinc-200 text-zinc-700 flex items-center gap-2 text-xs font-bold px-4 py-2 border-0 shadow-none cursor-pointer"
           >
             <RefreshCw className={`h-3.5 w-3.5 ${loading ? 'animate-spin' : ''}`} />
             Refresh
@@ -175,7 +175,7 @@ export default function DashboardOrdersPage() {
           <Button
             onClick={handleExportCsv}
             disabled={orders.length === 0}
-            className="rounded-full bg-zinc-950 hover:bg-zinc-800 text-white flex items-center gap-2 text-xs font-bold px-5 py-2 shadow-none"
+            className="rounded-full bg-zinc-950 hover:bg-zinc-800 text-white flex items-center gap-2 text-xs font-bold px-5 py-2 border-0 shadow-none cursor-pointer"
           >
             <Download className="h-3.5 w-3.5" />
             Ekspor Rekap (CSV)
@@ -185,52 +185,52 @@ export default function DashboardOrdersPage() {
 
       {/* 3 Summary Revenue Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Card className="bg-white border border-zinc-200 rounded-2xl p-5 shadow-sm">
+        <Card className="bg-zinc-100 rounded-2xl p-5 border-0 shadow-none">
           <div className="flex items-start justify-between">
             <div>
               <p className="text-xs text-zinc-500 font-bold uppercase tracking-wider">Total Omset Pesanan</p>
               {loading ? (
-                <Skeleton className="h-7 w-28 mt-1 bg-zinc-100 rounded-lg" />
+                <Skeleton className="h-7 w-28 mt-1 bg-zinc-200/70 rounded-lg" />
               ) : (
                 <p className="text-2xl font-black text-zinc-950 mt-1 tracking-tight">{formatCurrency(totalRevenue)}</p>
               )}
               <p className="text-[11px] text-zinc-400 mt-0.5 font-medium">{paidOrders.length} transaksi lunas</p>
             </div>
-            <div className="p-2.5 bg-zinc-50 border border-zinc-200 text-zinc-900 rounded-xl">
+            <div className="p-2.5 bg-white text-zinc-900 rounded-xl border-0 shadow-none">
               <CreditCard className="h-5 w-5" />
             </div>
           </div>
         </Card>
 
-        <Card className="bg-white border border-zinc-200 rounded-2xl p-5 shadow-sm">
+        <Card className="bg-zinc-100 rounded-2xl p-5 border-0 shadow-none">
           <div className="flex items-start justify-between">
             <div>
               <p className="text-xs text-emerald-700 font-bold uppercase tracking-wider">Pesanan Lunas (PAID)</p>
               {loading ? (
-                <Skeleton className="h-7 w-12 mt-1 bg-zinc-100 rounded-lg" />
+                <Skeleton className="h-7 w-12 mt-1 bg-zinc-200/70 rounded-lg" />
               ) : (
                 <p className="text-2xl font-black text-emerald-600 mt-1 tracking-tight">{paidOrders.length}</p>
               )}
               <p className="text-[11px] text-zinc-400 mt-0.5 font-medium">Pembayaran terverifikasi</p>
             </div>
-            <div className="p-2.5 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-xl">
+            <div className="p-2.5 bg-white text-emerald-600 rounded-xl border-0 shadow-none">
               <CheckCircle2 className="h-5 w-5" />
             </div>
           </div>
         </Card>
 
-        <Card className="bg-white border border-zinc-200 rounded-2xl p-5 shadow-sm">
+        <Card className="bg-zinc-100 rounded-2xl p-5 border-0 shadow-none">
           <div className="flex items-start justify-between">
             <div>
               <p className="text-xs text-amber-700 font-bold uppercase tracking-wider">Menunggu Pembayaran</p>
               {loading ? (
-                <Skeleton className="h-7 w-12 mt-1 bg-zinc-100 rounded-lg" />
+                <Skeleton className="h-7 w-12 mt-1 bg-zinc-200/70 rounded-lg" />
               ) : (
                 <p className="text-2xl font-black text-amber-600 mt-1 tracking-tight">{pendingOrders.length}</p>
               )}
               <p className="text-[11px] text-zinc-400 mt-0.5 font-medium">Pending checkout</p>
             </div>
-            <div className="p-2.5 bg-amber-50 border border-amber-200 text-amber-700 rounded-xl">
+            <div className="p-2.5 bg-white text-amber-600 rounded-xl border-0 shadow-none">
               <Clock className="h-5 w-5" />
             </div>
           </div>
@@ -238,7 +238,7 @@ export default function DashboardOrdersPage() {
       </div>
 
       {/* Main Table Card with Search & Filters */}
-      <Card className="bg-white border border-zinc-200 rounded-2xl p-5 space-y-4 shadow-sm">
+      <Card className="bg-zinc-100 rounded-3xl p-6 space-y-4 border-0 shadow-none">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           {/* Segmented Control Pill ala Mobbin (persis seperti kategori sebelumnya) */}
           <div
@@ -293,7 +293,7 @@ export default function DashboardOrdersPage() {
               aria-label="Cari ID pesanan atau nama event"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 bg-zinc-50 border border-zinc-200 rounded-full text-xs text-zinc-950 placeholder-zinc-400 focus:outline-none focus:border-zinc-950 focus:bg-white transition-all font-medium"
+              className="w-full pl-9 pr-4 py-2.5 bg-white border-0 shadow-none rounded-full text-xs text-zinc-950 placeholder-zinc-400 focus:outline-none transition-all font-medium"
             />
           </div>
         </div>
@@ -301,33 +301,35 @@ export default function DashboardOrdersPage() {
         {/* Table */}
         {orders.length === 0 && !loading ? (
           <div className="text-center py-16">
-            <ShoppingCart className="w-12 h-12 mx-auto text-zinc-300 mb-3" />
+            <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center mx-auto mb-3 text-zinc-400 border-0 shadow-none">
+              <ShoppingCart className="w-6 h-6" />
+            </div>
             <h3 className="text-base font-bold text-zinc-950 mb-1">Belum ada pesanan</h3>
             <p className="text-zinc-400 text-xs">Belum ada pesanan tiket yang masuk untuk event Anda.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm text-zinc-600">
-              <thead className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider bg-zinc-50 border-b border-zinc-200">
+              <thead className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider bg-zinc-200/50 border-0">
                 <tr>
-                  <th scope="col" className="px-4 py-3.5">Order ID</th>
+                  <th scope="col" className="px-4 py-3.5 rounded-l-2xl">Order ID</th>
                   <th scope="col" className="px-4 py-3.5">Event</th>
                   <th scope="col" className="px-4 py-3.5">Total Tagihan</th>
                   <th scope="col" className="px-4 py-3.5">Status</th>
                   <th scope="col" className="px-4 py-3.5">Waktu Transaksi</th>
-                  <th scope="col" className="px-4 py-3.5 text-right">Aksi</th>
+                  <th scope="col" className="px-4 py-3.5 text-right rounded-r-2xl">Aksi</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-zinc-100">
+              <tbody className="divide-y divide-zinc-200/50">
                 {loading ? (
                   Array(4).fill(0).map((_, i) => (
                     <tr key={i}>
-                      <td className="px-4 py-3.5"><Skeleton className="h-5 w-28 bg-zinc-100 rounded-full" /></td>
-                      <td className="px-4 py-3.5"><Skeleton className="h-5 w-36 bg-zinc-100 rounded-full" /></td>
-                      <td className="px-4 py-3.5"><Skeleton className="h-5 w-24 bg-zinc-100 rounded-full" /></td>
-                      <td className="px-4 py-3.5"><Skeleton className="h-5 w-20 bg-zinc-100 rounded-full" /></td>
-                      <td className="px-4 py-3.5"><Skeleton className="h-5 w-24 bg-zinc-100 rounded-full" /></td>
-                      <td className="px-4 py-3.5 text-right"><Skeleton className="h-7 w-16 ml-auto bg-zinc-100 rounded-full" /></td>
+                      <td className="px-4 py-3.5"><Skeleton className="h-5 w-28 bg-zinc-200/60 rounded-full" /></td>
+                      <td className="px-4 py-3.5"><Skeleton className="h-5 w-36 bg-zinc-200/60 rounded-full" /></td>
+                      <td className="px-4 py-3.5"><Skeleton className="h-5 w-24 bg-zinc-200/60 rounded-full" /></td>
+                      <td className="px-4 py-3.5"><Skeleton className="h-5 w-20 bg-zinc-200/60 rounded-full" /></td>
+                      <td className="px-4 py-3.5"><Skeleton className="h-5 w-24 bg-zinc-200/60 rounded-full" /></td>
+                      <td className="px-4 py-3.5 text-right"><Skeleton className="h-7 w-16 ml-auto bg-zinc-200/60 rounded-full" /></td>
                     </tr>
                   ))
                 ) : filteredOrders.map((order) => {
@@ -336,7 +338,7 @@ export default function DashboardOrdersPage() {
                   const eventName = eventsMap[order.event_id];
 
                   return (
-                    <tr key={order.id} className="hover:bg-zinc-50/70 transition-colors">
+                    <tr key={order.id} className="hover:bg-zinc-200/40 transition-colors">
                       <td className="px-4 py-3.5 font-mono font-medium text-zinc-600 text-xs">
                         {order.id.substring(0, 8).toUpperCase()}...
                       </td>
@@ -349,7 +351,7 @@ export default function DashboardOrdersPage() {
                       <td className="px-4 py-3.5">
                         <Badge
                           variant={isPaid ? 'success' : isPending ? 'warning' : 'error'}
-                          className="text-[10px] font-bold px-2.5 py-0.5 rounded-full"
+                          className="text-[10px] font-bold px-2.5 py-0.5 rounded-full border-0 shadow-none"
                         >
                           {isPaid ? 'LUNAS' : isPending ? 'MENUNGGU' : 'DIBATALKAN'}
                         </Badge>
@@ -359,7 +361,7 @@ export default function DashboardOrdersPage() {
                       </td>
                       <td className="px-4 py-3.5 text-right">
                         <Link href={`/dashboard/orders/${order.id}`}>
-                          <Button variant="outline" size="sm" className="rounded-full border-zinc-200 text-zinc-700 hover:bg-zinc-100 text-xs py-1 px-3.5 h-8 font-bold">
+                          <Button variant="outline" size="sm" className="rounded-full bg-white text-zinc-800 hover:bg-zinc-200 text-xs py-1 px-3.5 h-8 font-bold border-0 shadow-none cursor-pointer">
                             Detail
                           </Button>
                         </Link>

@@ -58,17 +58,31 @@ export default function EventTicketsPage() {
     try {
       setIsSubmitting(true);
       const eventId = String(params.id);
+      const payload = {
+        name: data.name.trim(),
+        description: typeof data.description === 'string'
+          ? data.description
+          : (data.description?.Valid ? data.description.String : ''),
+        price: typeof data.price === 'number' ? data.price : (parseFloat(data.price) || 0),
+        quantity: Number(data.quantity) || 0,
+        max_per_order: typeof data.max_per_order === 'number'
+          ? data.max_per_order
+          : (data.max_per_order?.Valid ? data.max_per_order.Int32 : 4) || 4,
+        sale_start: data.sale_start,
+        sale_end: data.sale_end,
+      };
+
       if (selectedTicket) {
-        await eventApi.put(`/api/v1/events/${eventId}/tickets/${selectedTicket.id}`, data);
+        await eventApi.put(`/api/v1/events/${eventId}/tickets/${selectedTicket.id}`, payload);
         toast.success('Tipe tiket berhasil diperbarui!');
       } else {
-        await eventApi.post(`/api/v1/events/${eventId}/tickets`, data);
+        await eventApi.post(`/api/v1/events/${eventId}/tickets`, payload);
         toast.success('Tipe tiket berhasil ditambahkan!');
       }
       fetchEventAndTickets();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to save ticket type', error);
-      toast.error('Gagal menyimpan tipe tiket');
+      toast.error(error?.message || 'Gagal menyimpan tipe tiket');
       throw error;
     } finally {
       setIsSubmitting(false);
@@ -173,7 +187,7 @@ export default function EventTicketsPage() {
                         <Badge status={statusStr} />
                       </td>
                       <td className="px-6 py-4 text-zinc-950 font-black text-xs">
-                        {parseFloat(ticket.price) > 0 ? formatCurrency(parseFloat(ticket.price)) : 'Gratis'}
+                        {Number(ticket.price) > 0 ? formatCurrency(Number(ticket.price)) : 'Gratis'}
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-2">

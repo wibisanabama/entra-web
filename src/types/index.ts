@@ -68,7 +68,7 @@ export interface TicketType {
   event_id: string;
   name: string;
   description?: { String: string; Valid: boolean } | string;
-  price: string;
+  price: string | number;
   quantity: number;
   sold: number;
   max_per_order: { Int32: number; Valid: boolean } | number;

@@ -82,18 +82,18 @@ export function TicketTypeModal({ isOpen, onClose, onSubmit, initialData, isLoad
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name || !formData.price || !formData.quantity || !formData.sale_start || !formData.sale_end) {
+    if (!formData.name?.trim() || formData.price === '' || !formData.quantity || !formData.sale_start || !formData.sale_end) {
       toast.error('Mohon lengkapi kolom yang wajib diisi');
       return;
     }
     
     try {
       await onSubmit({
-        name: formData.name,
-        description: formData.description,
-        price: String(parseFloat(formData.price) || 0),
-        quantity: parseInt(formData.quantity) || 0,
-        max_per_order: parseInt(formData.max_per_order) || 4,
+        name: formData.name.trim(),
+        description: formData.description.trim(),
+        price: parseFloat(formData.price) || 0,
+        quantity: parseInt(formData.quantity, 10) || 0,
+        max_per_order: parseInt(formData.max_per_order, 10) || 4,
         sale_start: new Date(formData.sale_start).toISOString(),
         sale_end: new Date(formData.sale_end).toISOString(),
       });

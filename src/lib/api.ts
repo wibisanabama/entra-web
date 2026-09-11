@@ -181,7 +181,15 @@ export class ApiClient {
     }
 
     if (!response.ok) {
-      throw new Error(data.message || `Request failed with status ${response.status}`);
+      const errDetail = typeof data.errors === 'string'
+        ? data.errors
+        : data.errors
+          ? JSON.stringify(data.errors)
+          : '';
+      const errMsg = errDetail
+        ? `${data.message || 'Request failed'}: ${errDetail}`
+        : (data.message || `Request failed with status ${response.status}`);
+      throw new Error(errMsg);
     }
 
     return data;

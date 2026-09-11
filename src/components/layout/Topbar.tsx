@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/providers/auth-provider';
+import { User, LogOut, Home, Ticket, Wallet } from 'lucide-react';
 
 export function Topbar() {
   const { user, logout } = useAuth();
@@ -50,28 +51,57 @@ export function Topbar() {
             </span>
           </button>
           
-          {isDropdownOpen && (
-            <div className="absolute right-0 mt-2 w-48 rounded-2xl shadow-xl bg-white border border-zinc-200 p-1.5 z-50">
-              <div className="flex flex-col">
-                <Link
-                  href="/profile"
-                  onClick={() => setIsDropdownOpen(false)}
-                  className="block px-3.5 py-2 text-xs font-semibold text-zinc-700 hover:text-zinc-950 hover:bg-zinc-100 rounded-xl transition-colors"
+          {isDropdownOpen && user && (
+            <div className="absolute right-0 mt-3 w-56 rounded-2xl shadow-xl bg-white border-0 py-1.5 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+              <div className="px-4 py-2.5 border-b border-zinc-100">
+                <p className="text-xs font-medium text-zinc-500">Masuk sebagai</p>
+                <p className="text-sm font-semibold text-zinc-950 truncate">{user.full_name || user.email}</p>
+                <span className="inline-block mt-1 px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-zinc-100 text-zinc-700 border-0">
+                  {user.role === 'admin' ? 'Admin' : user.role === 'organizer' ? 'Organizer' : 'Pengguna'}
+                </span>
+              </div>
+              
+              <div className="py-1">
+                <Link 
+                  href="/" 
+                  onClick={() => setIsDropdownOpen(false)} 
+                  className="flex items-center gap-2.5 px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50 hover:text-zinc-950 transition-colors"
                 >
-                  Profil Saya
-                </Link>
-                <Link
-                  href="/"
-                  onClick={() => setIsDropdownOpen(false)}
-                  className="block px-3.5 py-2 text-xs font-semibold text-zinc-700 hover:text-zinc-950 hover:bg-zinc-100 rounded-xl transition-colors"
-                >
+                  <Home className="w-4 h-4 text-zinc-400" />
                   Halaman Utama
                 </Link>
-                <div className="my-1 border-t border-zinc-100"></div>
-                <button
-                  onClick={logout}
-                  className="block w-full text-left px-3.5 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 rounded-xl transition-colors cursor-pointer"
+                <Link 
+                  href="/profile" 
+                  onClick={() => setIsDropdownOpen(false)} 
+                  className="flex items-center gap-2.5 px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50 hover:text-zinc-950 transition-colors"
                 >
+                  <User className="w-4 h-4 text-zinc-400" />
+                  Profil & Akun
+                </Link>
+                <Link 
+                  href="/my-tickets" 
+                  onClick={() => setIsDropdownOpen(false)} 
+                  className="flex items-center gap-2.5 px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50 hover:text-zinc-950 transition-colors"
+                >
+                  <Ticket className="w-4 h-4 text-zinc-400" />
+                  Tiket Saya
+                </Link>
+                <Link 
+                  href="/cashless" 
+                  onClick={() => setIsDropdownOpen(false)} 
+                  className="flex items-center gap-2.5 px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50 hover:text-zinc-950 transition-colors"
+                >
+                  <Wallet className="w-4 h-4 text-zinc-400" />
+                  Gelang Cashless
+                </Link>
+              </div>
+
+              <div className="border-t border-zinc-100 pt-1">
+                <button 
+                  onClick={() => { setIsDropdownOpen(false); logout(); }} 
+                  className="flex items-center gap-2.5 w-full text-left px-4 py-2 text-sm text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+                >
+                  <LogOut className="w-4 h-4 text-rose-500" />
                   Keluar
                 </button>
               </div>

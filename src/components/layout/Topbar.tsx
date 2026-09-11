@@ -34,8 +34,16 @@ export function Topbar() {
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             className="flex items-center gap-2.5 p-1 pr-3 rounded-full border border-zinc-200 hover:border-zinc-300 hover:bg-zinc-50 transition-all cursor-pointer select-none"
           >
-            <div className="h-7 w-7 rounded-full bg-zinc-950 flex items-center justify-center text-white font-bold text-xs shadow-xs">
-              {user?.full_name?.charAt(0) || 'U'}
+            <div className="h-7 w-7 rounded-full bg-zinc-950 flex items-center justify-center text-white font-bold text-xs shadow-xs overflow-hidden">
+              {user?.avatar_url ? (
+                <img
+                  src={user.avatar_url}
+                  alt={user.full_name || 'Organizer'}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                user?.full_name?.charAt(0).toUpperCase() || 'U'
+              )}
             </div>
             <span className="text-xs font-bold text-zinc-900 hidden sm:block">
               {user?.full_name || 'Organizer'}

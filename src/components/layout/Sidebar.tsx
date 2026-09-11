@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/providers/auth-provider';
-import { BarChart3, Calendar, ShoppingCart, Folder, Wallet, ShieldCheck, MapPin, ArrowUpRight } from 'lucide-react';
+import { BarChart3, Calendar, ShoppingCart, Folder, Wallet, ShieldCheck, ArrowUpRight } from 'lucide-react';
 import { BrandLogo } from '@/components/brand/BrandLogo';
 
 export function Sidebar() {
@@ -14,7 +14,6 @@ export function Sidebar() {
   const allMenuItems = [
     { name: 'Dashboard', path: '/dashboard', icon: <BarChart3 className="h-4 w-4" /> },
     { name: 'Event', path: '/dashboard/events', icon: <Calendar className="h-4 w-4" /> },
-    { name: 'Venue & Lokasi', path: '/dashboard/venues', icon: <MapPin className="h-4 w-4" /> },
     { name: 'Pesanan', path: '/dashboard/orders', icon: <ShoppingCart className="h-4 w-4" /> },
     { name: 'Keuangan & Saldo', path: '/dashboard/withdrawals', icon: <Wallet className="h-4 w-4" /> },
     { name: 'Pencairan Admin', path: '/dashboard/admin/withdrawals', icon: <ShieldCheck className="h-4 w-4" />, adminOnly: true },

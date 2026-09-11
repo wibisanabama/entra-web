@@ -286,7 +286,7 @@ export function LocationPickerMapInner({
     <div className={`space-y-3 w-full ${className}`}>
       {/* Search Input Bar */}
       <div className="relative z-20">
-        <form onSubmit={handleSearchSubmit} className="relative flex items-center">
+        <div className="relative flex items-center">
           <div className="absolute left-4 text-zinc-400 pointer-events-none">
             {isSearching ? <Loader2 className="h-4 w-4 animate-spin text-zinc-950" /> : <Search className="h-4 w-4" />}
           </div>
@@ -296,6 +296,12 @@ export function LocationPickerMapInner({
             onChange={(e) => {
               setSearchQuery(e.target.value);
               if (!showDropdown && searchResults.length > 0) setShowDropdown(true);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                handleSearchSubmit();
+              }
             }}
             placeholder="Ketik nama gedung, tempat, atau jalan di peta..."
             className="w-full pl-11 pr-24 py-3 bg-white rounded-full text-xs sm:text-sm font-medium text-zinc-950 placeholder-zinc-400 border-0 shadow-none focus:outline-none focus:ring-2 focus:ring-zinc-950/10 transition-all"
@@ -310,14 +316,15 @@ export function LocationPickerMapInner({
               <Navigation className="h-4 w-4" />
             </button>
             <button
-              type="submit"
+              type="button"
+              onClick={() => handleSearchSubmit()}
               disabled={isSearching || !searchQuery.trim()}
               className="px-3.5 py-2 bg-zinc-950 hover:bg-zinc-800 disabled:opacity-50 text-white rounded-full text-xs font-bold transition-colors cursor-pointer border-0 shadow-none"
             >
               Cari
             </button>
           </div>
-        </form>
+        </div>
 
         {/* Search Results Autocomplete Dropdown */}
         {showDropdown && searchResults.length > 0 && (

@@ -155,7 +155,8 @@ export function EventForm({ initialData, onSubmit, onCancel, isLoading = false }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <>
+      <form onSubmit={handleSubmit} className="space-y-6">
       <div className="bg-zinc-100 rounded-3xl p-6 sm:p-8 space-y-6 border-0 shadow-none">
         <Input
           label="Judul Event"
@@ -383,78 +384,79 @@ export function EventForm({ initialData, onSubmit, onCancel, isLoading = false }
           {initialData ? 'Simpan Perubahan' : 'Buat Event'}
         </Button>
       </div>
-
-      {isMapModalOpen && (
-        <Modal
-          isOpen={isMapModalOpen}
-          onClose={() => !isSavingVenue && setIsMapModalOpen(false)}
-          title="Pilih Lokasi dari Peta"
-        >
-          <div className="space-y-4">
-            <p className="text-xs text-zinc-500">
-              Ketik nama tempat di kotak pencarian atau klik dan geser pin pada peta untuk menentukan titik lokasi.
-            </p>
-
-            <LocationPickerMap
-              initialLat={selectedVenue?.latitude || undefined}
-              initialLng={selectedVenue?.longitude || undefined}
-              initialName={selectedVenue?.name || ''}
-              initialAddress={selectedVenue?.address || ''}
-              onLocationSelect={(loc) => {
-                setSelectedMapLoc(loc);
-                if (!venueNameInput) {
-                  setVenueNameInput(loc.name);
-                }
-              }}
-              height="300px"
-            />
-
-            {selectedMapLoc && (
-              <div className="p-4 bg-zinc-100 rounded-2xl space-y-3">
-                <div className="space-y-1">
-                  <label className="block text-[10px] font-bold text-zinc-600 uppercase tracking-wider">
-                    Nama Lokasi / Tempat
-                  </label>
-                  <input
-                    type="text"
-                    value={venueNameInput}
-                    onChange={(e) => setVenueNameInput(e.target.value)}
-                    placeholder="Contoh: Istora Senayan / Gedung Serbaguna"
-                    className="w-full px-4 py-2.5 bg-white rounded-full text-xs font-bold text-zinc-950 border-0 shadow-none focus:outline-none"
-                    required
-                  />
-                </div>
-                <div className="text-[11px] text-zinc-500 space-y-0.5">
-                  <p><span className="font-semibold text-zinc-700">Alamat:</span> {selectedMapLoc.address || '-'}</p>
-                  <p><span className="font-semibold text-zinc-700">Wilayah:</span> {selectedMapLoc.city}, {selectedMapLoc.province}</p>
-                </div>
-              </div>
-            )}
-
-            <div className="flex justify-end gap-2.5 pt-3 border-t border-zinc-100">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setIsMapModalOpen(false)}
-                disabled={isSavingVenue}
-                className="rounded-full text-xs font-bold px-4 py-2 border-0 bg-zinc-100 hover:bg-zinc-200 text-zinc-700 shadow-none cursor-pointer"
-              >
-                Batal
-              </Button>
-              <Button
-                type="button"
-                variant="primary"
-                disabled={!selectedMapLoc || isSavingVenue}
-                isLoading={isSavingVenue}
-                onClick={handleConfirmMapLocation}
-                className="bg-zinc-950 hover:bg-zinc-800 text-white rounded-full text-xs font-bold px-5 py-2 border-0 shadow-none cursor-pointer"
-              >
-                Gunakan Lokasi Ini
-              </Button>
-            </div>
-          </div>
-        </Modal>
-      )}
     </form>
+
+    {isMapModalOpen && (
+      <Modal
+        isOpen={isMapModalOpen}
+        onClose={() => !isSavingVenue && setIsMapModalOpen(false)}
+        title="Pilih Lokasi dari Peta"
+      >
+        <div className="space-y-4">
+          <p className="text-xs text-zinc-500">
+            Ketik nama tempat di kotak pencarian atau klik dan geser pin pada peta untuk menentukan titik lokasi.
+          </p>
+
+          <LocationPickerMap
+            initialLat={selectedVenue?.latitude || undefined}
+            initialLng={selectedVenue?.longitude || undefined}
+            initialName={selectedVenue?.name || ''}
+            initialAddress={selectedVenue?.address || ''}
+            onLocationSelect={(loc) => {
+              setSelectedMapLoc(loc);
+              if (!venueNameInput) {
+                setVenueNameInput(loc.name);
+              }
+            }}
+            height="300px"
+          />
+
+          {selectedMapLoc && (
+            <div className="p-4 bg-zinc-100 rounded-2xl space-y-3">
+              <div className="space-y-1">
+                <label className="block text-[10px] font-bold text-zinc-600 uppercase tracking-wider">
+                  Nama Lokasi / Tempat
+                </label>
+                <input
+                  type="text"
+                  value={venueNameInput}
+                  onChange={(e) => setVenueNameInput(e.target.value)}
+                  placeholder="Contoh: Istora Senayan / Gedung Serbaguna"
+                  className="w-full px-4 py-2.5 bg-white rounded-full text-xs font-bold text-zinc-950 border-0 shadow-none focus:outline-none"
+                  required
+                />
+              </div>
+              <div className="text-[11px] text-zinc-500 space-y-0.5">
+                <p><span className="font-semibold text-zinc-700">Alamat:</span> {selectedMapLoc.address || '-'}</p>
+                <p><span className="font-semibold text-zinc-700">Wilayah:</span> {selectedMapLoc.city}, {selectedMapLoc.province}</p>
+              </div>
+            </div>
+          )}
+
+          <div className="flex justify-end gap-2.5 pt-3 border-t border-zinc-100">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setIsMapModalOpen(false)}
+              disabled={isSavingVenue}
+              className="rounded-full text-xs font-bold px-4 py-2 border-0 bg-zinc-100 hover:bg-zinc-200 text-zinc-700 shadow-none cursor-pointer"
+            >
+              Batal
+            </Button>
+            <Button
+              type="button"
+              variant="primary"
+              disabled={!selectedMapLoc || isSavingVenue}
+              isLoading={isSavingVenue}
+              onClick={handleConfirmMapLocation}
+              className="bg-zinc-950 hover:bg-zinc-800 text-white rounded-full text-xs font-bold px-5 py-2 border-0 shadow-none cursor-pointer"
+            >
+              Gunakan Lokasi Ini
+            </Button>
+          </div>
+        </div>
+      </Modal>
+    )}
+    </>
   );
 }

@@ -4,10 +4,13 @@ import React, { useState, useEffect } from 'react';
 import { Event, Category, Venue } from '@/types';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
+import { Modal } from '@/components/ui/Modal';
+import { LocationPickerMap, SelectedLocation } from '@/components/ui/LocationPickerMap';
 import { eventApi } from '@/lib/api';
 import { toast } from '@/lib/toast';
 import { getPgText } from '@/lib/utils';
 import { MediaUploader } from '@/components/features/MediaUploader';
+import { MapPin } from 'lucide-react';
 
 export interface EventFormProps {
   initialData?: Event;
@@ -34,6 +37,12 @@ export function EventForm({ initialData, onSubmit, onCancel, isLoading = false }
   const [categories, setCategories] = useState<Category[]>([]);
   const [venues, setVenues] = useState<Venue[]>([]);
   const [loadingData, setLoadingData] = useState(true);
+
+  // Map Picker Modal State
+  const [isMapModalOpen, setIsMapModalOpen] = useState(false);
+  const [selectedMapLoc, setSelectedMapLoc] = useState<SelectedLocation | null>(null);
+  const [venueNameInput, setVenueNameInput] = useState('');
+  const [isSavingVenue, setIsSavingVenue] = useState(false);
 
   const [prevInitialData, setPrevInitialData] = useState<Event | undefined>(initialData);
   if (initialData && initialData !== prevInitialData) {
@@ -105,6 +114,38 @@ export function EventForm({ initialData, onSubmit, onCancel, isLoading = false }
     }
     
     onSubmit(submitData);
+  };
+
+  const handleConfirmMapLocation = async () => {
+    if (!selectedMapLoc) return;
+    try {
+      setIsSavingVenue(true);
+      const payload = {
+        name: (venueNameInput.trim() || selectedMapLoc.name || 'Venue Baru').trim(),
+        address: selectedMapLoc.address || `${selectedMapLoc.city}, ${selectedMapLoc.province}`,
+        city: selectedMapLoc.city || 'Jakarta',
+        province: selectedMapLoc.province || 'DKI Jakarta',
+        country: 'Indonesia',
+        latitude: selectedMapLoc.latitude,
+        longitude: selectedMapLoc.longitude,
+        capacity: formData.max_attendees ? Number(formData.max_attendees) : 1000,
+        description: 'Lokasi ditentukan via peta interaktif.',
+      };
+
+      const res = await eventApi.post<Venue>('/api/v1/venues', payload);
+      if (res.data && res.data.id) {
+        const newVenue = res.data;
+        setVenues((prev) => [newVenue, ...prev]);
+        setFormData((prev) => ({ ...prev, venue_id: newVenue.id }));
+        toast.success(`Lokasi "${payload.name}" berhasil dipilih!`);
+      }
+      setIsMapModalOpen(false);
+    } catch (err) {
+      console.error('Failed to create venue from map:', err);
+      toast.error('Gagal menyimpan lokasi venue baru.');
+    } finally {
+      setIsSavingVenue(false);
+    }
   };
 
   return (
@@ -212,10 +253,24 @@ export function EventForm({ initialData, onSubmit, onCancel, isLoading = false }
             className="bg-white border-0 shadow-none text-zinc-950 rounded-full px-5 py-3 focus:bg-white focus:ring-0 text-sm font-medium"
           />
         ) : (
-          <div className="w-full">
-            <label className="block text-xs font-bold text-zinc-700 uppercase tracking-wider mb-1.5">
-              Lokasi (Venue)
-            </label>
+          <div className="w-full space-y-2">
+            <div className="flex items-center justify-between">
+              <label className="block text-xs font-bold text-zinc-700 uppercase tracking-wider">
+                Lokasi (Venue)
+              </label>
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedMapLoc(null);
+                  setVenueNameInput('');
+                  setIsMapModalOpen(true);
+                }}
+                className="inline-flex items-center gap-1.5 text-xs font-bold text-zinc-950 hover:text-zinc-700 bg-white hover:bg-zinc-200 px-3.5 py-1.5 rounded-full transition-all cursor-pointer border-0 shadow-none"
+              >
+                <MapPin className="h-3.5 w-3.5" />
+                <span>Pilih dari Peta</span>
+              </button>
+            </div>
             <select
               name="venue_id"
               value={formData.venue_id || ''}
@@ -224,9 +279,9 @@ export function EventForm({ initialData, onSubmit, onCancel, isLoading = false }
               required={!formData.is_online}
               className="flex w-full rounded-full bg-white border-0 shadow-none text-zinc-950 px-5 py-3 text-sm transition-all focus:outline-none focus:ring-0 focus:bg-white disabled:opacity-50 font-medium cursor-pointer"
             >
-              <option value="">Pilih Venue</option>
+              <option value="">Pilih Venue Terdaftar</option>
               {venues.map((v) => (
-                <option key={v.id} value={v.id}>{v.name}</option>
+                <option key={v.id} value={v.id}>{v.name} - {v.city}</option>
               ))}
             </select>
           </div>
@@ -306,6 +361,74 @@ export function EventForm({ initialData, onSubmit, onCancel, isLoading = false }
           {initialData ? 'Simpan Perubahan' : 'Buat Event'}
         </Button>
       </div>
+
+      {isMapModalOpen && (
+        <Modal
+          isOpen={isMapModalOpen}
+          onClose={() => !isSavingVenue && setIsMapModalOpen(false)}
+          title="Pilih Lokasi Venue dari Peta"
+        >
+          <div className="space-y-4">
+            <p className="text-xs text-zinc-500">
+              Ketik nama gedung/tempat di kotak pencarian atau klik dan geser pin pada peta untuk menentukan titik lokasi.
+            </p>
+
+            <LocationPickerMap
+              onLocationSelect={(loc) => {
+                setSelectedMapLoc(loc);
+                if (!venueNameInput) {
+                  setVenueNameInput(loc.name);
+                }
+              }}
+              height="300px"
+            />
+
+            {selectedMapLoc && (
+              <div className="p-4 bg-zinc-100 rounded-2xl space-y-3">
+                <div className="space-y-1">
+                  <label className="block text-[10px] font-bold text-zinc-600 uppercase tracking-wider">
+                    Nama Venue / Gedung
+                  </label>
+                  <input
+                    type="text"
+                    value={venueNameInput}
+                    onChange={(e) => setVenueNameInput(e.target.value)}
+                    placeholder="Contoh: Istora Senayan / Balai Kartini"
+                    className="w-full px-4 py-2.5 bg-white rounded-full text-xs font-bold text-zinc-950 border-0 shadow-none focus:outline-none"
+                    required
+                  />
+                </div>
+                <div className="text-[11px] text-zinc-500 space-y-0.5">
+                  <p><span className="font-semibold text-zinc-700">Alamat:</span> {selectedMapLoc.address || '-'}</p>
+                  <p><span className="font-semibold text-zinc-700">Wilayah:</span> {selectedMapLoc.city}, {selectedMapLoc.province}</p>
+                </div>
+              </div>
+            )}
+
+            <div className="flex justify-end gap-2.5 pt-3 border-t border-zinc-100">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setIsMapModalOpen(false)}
+                disabled={isSavingVenue}
+                className="rounded-full text-xs font-bold px-4 py-2 border-0 bg-zinc-100 hover:bg-zinc-200 text-zinc-700 shadow-none cursor-pointer"
+              >
+                Batal
+              </Button>
+              <Button
+                type="button"
+                variant="primary"
+                disabled={!selectedMapLoc || isSavingVenue}
+                isLoading={isSavingVenue}
+                onClick={handleConfirmMapLocation}
+                className="bg-zinc-950 hover:bg-zinc-800 text-white rounded-full text-xs font-bold px-5 py-2 border-0 shadow-none cursor-pointer"
+              >
+                Gunakan Lokasi Ini
+              </Button>
+            </div>
+          </div>
+        </Modal>
+      )}
     </form>
   );
 }

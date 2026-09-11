@@ -7,6 +7,7 @@ import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { Modal } from '@/components/ui/Modal';
+import { LocationPickerMap } from '@/components/ui/LocationPickerMap';
 import {
   MapPin,
   Plus,
@@ -438,6 +439,31 @@ export default function VenuesManagementPage() {
           title={isEditing ? 'Edit Informasi Venue' : 'Tambah Venue Baru'}
         >
           <form onSubmit={handleFormSubmit} className="space-y-4">
+            {/* Peta Interaktif & Pencarian Lokasi */}
+            <div className="space-y-1.5 pb-1">
+              <label className="text-xs font-bold text-zinc-700 uppercase tracking-wider">
+                Cari Lokasi di Peta (Otomatis Isi Data)
+              </label>
+              <LocationPickerMap
+                initialLat={formData.latitude || -6.2088}
+                initialLng={formData.longitude || 106.8456}
+                initialName={formData.name}
+                initialAddress={formData.address}
+                onLocationSelect={(loc) => {
+                  setFormData((prev) => ({
+                    ...prev,
+                    name: loc.name || prev.name,
+                    address: loc.address || prev.address,
+                    city: loc.city || prev.city,
+                    province: loc.province || prev.province,
+                    latitude: loc.latitude,
+                    longitude: loc.longitude,
+                  }));
+                }}
+                height="240px"
+              />
+            </div>
+
             {/* Nama Venue */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">

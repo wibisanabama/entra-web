@@ -141,17 +141,7 @@ export default function EventTicketsPage() {
               </svg>
             </div>
             <h3 className="text-base font-bold text-zinc-950 mb-1">Belum ada tipe tiket</h3>
-            <p className="text-xs text-zinc-500 mb-6 max-w-sm mx-auto">Anda belum membuat tipe tiket apapun untuk event ini. Silakan buat minimal satu tipe tiket agar event dapat dipesan.</p>
-            <Button 
-              variant="primary" 
-              className="rounded-full bg-zinc-950 hover:bg-zinc-800 text-white border-0 shadow-none text-xs font-bold px-6 py-2.5 cursor-pointer"
-              onClick={() => {
-                setSelectedTicket(undefined);
-                setIsModalOpen(true);
-              }}
-            >
-              Buat Tiket Pertama
-            </Button>
+            <p className="text-xs text-zinc-500 max-w-sm mx-auto">Anda belum membuat tipe tiket apapun untuk event ini. Silakan buat minimal satu tipe tiket agar event dapat dipesan.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">

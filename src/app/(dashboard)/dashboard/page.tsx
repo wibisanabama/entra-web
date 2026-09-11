@@ -137,16 +137,16 @@ export default function DashboardOverviewPage() {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
         {stats.map((stat, index) => (
-          <Card key={index} className="p-6 bg-white rounded-2xl">
+          <Card key={index} className="p-6 bg-zinc-100 rounded-2xl">
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-1.5">{stat.title}</p>
-                {loading ? <Skeleton className="h-8 w-24 mb-2 bg-zinc-100 rounded-lg" /> : <h3 className="text-2xl font-black text-zinc-950 mb-2 tracking-tight">{stat.value}</h3>}
-                <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-zinc-100 text-zinc-700">
+                {loading ? <Skeleton className="h-8 w-24 mb-2 bg-zinc-200 rounded-lg" /> : <h3 className="text-2xl font-black text-zinc-950 mb-2 tracking-tight">{stat.value}</h3>}
+                <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-white text-zinc-700">
                   {stat.change}
                 </span>
               </div>
-              <div className="p-3 rounded-2xl bg-zinc-50 text-zinc-900">
+              <div className="p-3 rounded-2xl bg-white text-zinc-900">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={stat.icon} />
                 </svg>
@@ -159,7 +159,7 @@ export default function DashboardOverviewPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Chart Area */}
         <div className="lg:col-span-2">
-          <Card className="bg-white rounded-2xl p-6 sm:p-7 h-full min-h-[400px]">
+          <Card className="bg-zinc-100 rounded-2xl p-6 sm:p-7 h-full min-h-[400px]">
             <h3 className="text-base font-bold text-zinc-950 mb-6">Tren Penjualan (Riwayat)</h3>
             <div className="flex h-64 items-end gap-2 mt-8">
               {loading ? (
@@ -170,14 +170,14 @@ export default function DashboardOverviewPage() {
                 chartData.map((data, i) => (
                   <div key={i} className="flex-1 flex flex-col justify-end group">
                     <div 
-                      className="w-full bg-zinc-200 group-hover:bg-zinc-950 rounded-t-md transition-all relative"
+                      className="w-full bg-zinc-300 group-hover:bg-zinc-950 rounded-t-md transition-all relative"
                       style={{ height: `${data.height}%` }}
                     >
                       <div className="opacity-0 group-hover:opacity-100 absolute -top-8 left-1/2 -translate-x-1/2 bg-zinc-950 text-white text-[10px] font-bold py-1 px-2 rounded-full whitespace-nowrap z-10 shadow-sm">
                         {data.tickets} Tiket
                       </div>
                     </div>
-                    <div className="text-[10px] font-medium text-zinc-400 text-center mt-2 truncate">{data.label}</div>
+                    <div className="text-[10px] font-medium text-zinc-500 text-center mt-2 truncate">{data.label}</div>
                   </div>
                 ))
               )}
@@ -187,11 +187,11 @@ export default function DashboardOverviewPage() {
 
         {/* Recent Orders */}
         <div className="lg:col-span-1">
-          <Card className="bg-white rounded-2xl p-6 sm:p-7 h-full">
+          <Card className="bg-zinc-100 rounded-2xl p-6 sm:p-7 h-full">
             <h3 className="text-base font-bold text-zinc-950 mb-6">Pesanan Terbaru</h3>
             <div className="space-y-4">
               {loading ? (
-                Array(5).fill(0).map((_, i) => <Skeleton key={i} className="h-12 w-full bg-zinc-100 rounded-xl" />)
+                Array(5).fill(0).map((_, i) => <Skeleton key={i} className="h-12 w-full bg-zinc-200 rounded-xl" />)
               ) : recentOrders.length === 0 ? (
                 <div className="text-zinc-400 text-xs text-center py-8">Belum ada pesanan</div>
               ) : (
@@ -199,7 +199,7 @@ export default function DashboardOverviewPage() {
                   const isPaid = order.status?.toUpperCase() === 'PAID' || order.status?.toUpperCase() === 'SUCCESS' || order.status === 'SUKSES';
                   return (
                     <div key={order.id} className="flex items-center gap-3.5 p-2 rounded-xl">
-                      <div className="w-9 h-9 rounded-full bg-zinc-100 flex items-center justify-center text-zinc-900 font-bold text-xs shrink-0">
+                      <div className="w-9 h-9 rounded-full bg-white flex items-center justify-center text-zinc-900 font-bold text-xs shrink-0">
                         {(order.user?.name || "U")[0].toUpperCase()}
                       </div>
                       <div className="flex-1 min-w-0">
@@ -208,7 +208,7 @@ export default function DashboardOverviewPage() {
                       </div>
                       <div className="text-right shrink-0">
                         <p className="text-xs font-black text-zinc-950">{formatCurrency(Number(order.total_amount))}</p>
-                        <span className={`inline-block text-[10px] font-bold px-2 py-0.5 rounded-full ${isPaid ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'}`}>
+                        <span className={`inline-block text-[10px] font-bold px-2 py-0.5 rounded-full ${isPaid ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}`}>
                           {isPaid ? 'LUNAS' : order.status}
                         </span>
                       </div>

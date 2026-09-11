@@ -40,7 +40,7 @@ export default function DashboardLayout({
       </div>
 
       {/* Main Content area */}
-      <div className="flex-1 flex flex-col min-w-0 bg-zinc-50/50">
+      <div className="flex-1 flex flex-col min-w-0 bg-white">
         <Topbar />
         <main className="flex-1 overflow-x-hidden overflow-y-auto p-6 md:p-8 lg:p-10">
           {children}

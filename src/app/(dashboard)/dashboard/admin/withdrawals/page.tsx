@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
@@ -29,6 +29,45 @@ export default function AdminWithdrawalsPage() {
   const [withdrawals, setWithdrawals] = useState<Withdrawal[]>([]);
   const [statusFilter, setStatusFilter] = useState<string>('ALL');
   const [searchQuery, setSearchQuery] = useState<string>('');
+
+  // Segmented control indicator ala Mobbin
+  const filterContainerRef = useRef<HTMLDivElement>(null);
+  const filterTabsRef = useRef<Record<string, HTMLButtonElement | null>>({});
+  const [filterIndicatorStyle, setFilterIndicatorStyle] = useState<{ left: number; width: number }>({ left: 0, width: 0 });
+  const [isFilterReady, setIsFilterReady] = useState(false);
+
+  useEffect(() => {
+    const activeEl = filterTabsRef.current[statusFilter];
+    if (activeEl) {
+      setFilterIndicatorStyle({
+        left: activeEl.offsetLeft,
+        width: activeEl.offsetWidth,
+      });
+
+      if (!isFilterReady) {
+        const timer = setTimeout(() => setIsFilterReady(true), 50);
+        return () => clearTimeout(timer);
+      } else if (filterContainerRef.current) {
+        const container = filterContainerRef.current;
+        const targetScrollLeft = activeEl.offsetLeft - container.offsetWidth / 2 + activeEl.offsetWidth / 2;
+        container.scrollTo({ left: targetScrollLeft, behavior: 'smooth' });
+      }
+    }
+  }, [statusFilter, withdrawals.length, isFilterReady]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const activeEl = filterTabsRef.current[statusFilter];
+      if (activeEl) {
+        setFilterIndicatorStyle({
+          left: activeEl.offsetLeft,
+          width: activeEl.offsetWidth,
+        });
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [statusFilter]);
 
   // Modals
   const [selectedWithdrawal, setSelectedWithdrawal] = useState<Withdrawal | null>(null);
@@ -118,46 +157,48 @@ export default function AdminWithdrawalsPage() {
   const paidSum = paidList.reduce((sum, w) => sum + parseAmount(w.amount), 0);
   const rejectedSum = rejectedList.reduce((sum, w) => sum + parseAmount(w.amount), 0);
 
+  const filterTabs = [
+    { id: 'ALL', label: `Semua (${withdrawals.length})` },
+    { id: 'PENDING', label: `Menunggu (${pendingList.length})` },
+    { id: 'APPROVED', label: `Disetujui (${approvedList.length})` },
+    { id: 'PAID', label: `Selesai (${paidList.length})` },
+    { id: 'REJECTED', label: rejectedList.length > 0 ? `Ditolak (${rejectedList.length})` : 'Ditolak' },
+  ];
+
   const getStatusBadge = (status: string) => {
     switch (status?.toUpperCase()) {
       case 'PENDING':
-        return <Badge variant="warning">Menunggu Verifikasi</Badge>;
+        return <Badge variant="warning" className="border-0 shadow-none font-bold text-[10px]">Menunggu Verifikasi</Badge>;
       case 'APPROVED':
-        return <Badge variant="info">Disetujui Admin</Badge>;
+        return <Badge variant="info" className="border-0 shadow-none font-bold text-[10px]">Disetujui Admin</Badge>;
       case 'PAID':
-        return <Badge variant="success">Berhasil Ditransfer</Badge>;
+        return <Badge variant="success" className="border-0 shadow-none font-bold text-[10px]">Berhasil Ditransfer</Badge>;
       case 'REJECTED':
-        return <Badge variant="error">Ditolak</Badge>;
+        return <Badge variant="error" className="border-0 shadow-none font-bold text-[10px]">Ditolak</Badge>;
       default:
-        return <Badge variant="secondary">{status}</Badge>;
+        return <Badge variant="secondary" className="border-0 shadow-none font-bold text-[10px]">{status}</Badge>;
     }
   };
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto">
+    <div className="space-y-6 max-w-7xl mx-auto">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="inline-flex items-center gap-2 mb-2 px-3 py-1 rounded-full bg-zinc-100 text-zinc-800">
-            <ShieldCheck className="h-3.5 w-3.5 text-zinc-600" />
-            <span className="text-xs font-bold uppercase tracking-wider">
-              Admin Financial Operations
-            </span>
-          </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-zinc-950 tracking-tight">
             Manajemen Pencairan Dana Organizer
           </h1>
-          <p className="text-zinc-500 text-sm mt-1">
+          <p className="text-zinc-500 text-xs sm:text-sm mt-1">
             Tinjau seluruh permohonan penarikan dana tiket, verifikasi rekening tujuan, dan kelola proses kliring transfer bank.
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5">
           <Button
             variant="outline"
             onClick={fetchAdminWithdrawals}
             disabled={loading}
-            className="rounded-full border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-700 text-xs font-semibold px-4 py-2 flex items-center gap-2"
+            className="rounded-full bg-zinc-100 hover:bg-zinc-200 text-zinc-800 text-xs font-bold px-4 py-2 flex items-center gap-2 border-0 shadow-none cursor-pointer"
           >
             <RefreshCw className={`h-3.5 w-3.5 ${loading ? 'animate-spin' : ''}`} />
             Refresh Data
@@ -166,90 +207,90 @@ export default function AdminWithdrawalsPage() {
       </div>
 
       {/* 4 Financial Aggregate Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Pending Card */}
-        <Card className="bg-white border border-zinc-200/90 rounded-2xl p-5 shadow-[0_2px_8px_rgba(0,0,0,0.03)]">
+        <Card className="bg-zinc-100 rounded-2xl p-5 border-0 shadow-none">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-zinc-400 text-xs font-semibold uppercase tracking-wider mb-1">
+              <p className="text-xs text-amber-700 font-bold uppercase tracking-wider">
                 Menunggu Transfer
               </p>
               {loading ? (
-                <Skeleton className="h-8 w-28 mb-1 rounded-lg" />
+                <Skeleton className="h-7 w-28 mt-1 bg-zinc-200/70 rounded-lg" />
               ) : (
-                <h3 className="text-2xl font-bold tracking-tight text-amber-600 mb-1">
+                <h3 className="text-2xl font-black tracking-tight text-amber-600 mt-1">
                   {formatCurrency(pendingSum)}
                 </h3>
               )}
-              <p className="text-xs text-zinc-400">{pendingList.length} permohonan antre</p>
+              <p className="text-[11px] text-zinc-400 mt-0.5 font-medium">{pendingList.length} permohonan antre</p>
             </div>
-            <div className="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center text-amber-600">
+            <div className="p-2.5 bg-white text-amber-600 rounded-xl border-0 shadow-none">
               <Clock className="h-5 w-5" />
             </div>
           </div>
         </Card>
 
         {/* Approved Card */}
-        <Card className="bg-white border border-zinc-200/90 rounded-2xl p-5 shadow-[0_2px_8px_rgba(0,0,0,0.03)]">
+        <Card className="bg-zinc-100 rounded-2xl p-5 border-0 shadow-none">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-zinc-400 text-xs font-semibold uppercase tracking-wider mb-1">
+              <p className="text-xs text-blue-700 font-bold uppercase tracking-wider">
                 Disetujui (Ready to Pay)
               </p>
               {loading ? (
-                <Skeleton className="h-8 w-28 mb-1 rounded-lg" />
+                <Skeleton className="h-7 w-28 mt-1 bg-zinc-200/70 rounded-lg" />
               ) : (
-                <h3 className="text-2xl font-bold tracking-tight text-blue-600 mb-1">
+                <h3 className="text-2xl font-black tracking-tight text-blue-600 mt-1">
                   {formatCurrency(approvedSum)}
                 </h3>
               )}
-              <p className="text-xs text-zinc-400">{approvedList.length} pengajuan</p>
+              <p className="text-[11px] text-zinc-400 mt-0.5 font-medium">{approvedList.length} pengajuan</p>
             </div>
-            <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600">
+            <div className="p-2.5 bg-white text-blue-600 rounded-xl border-0 shadow-none">
               <Send className="h-5 w-5" />
             </div>
           </div>
         </Card>
 
         {/* Paid Card */}
-        <Card className="bg-white border border-zinc-200/90 rounded-2xl p-5 shadow-[0_2px_8px_rgba(0,0,0,0.03)]">
+        <Card className="bg-zinc-100 rounded-2xl p-5 border-0 shadow-none">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-zinc-400 text-xs font-semibold uppercase tracking-wider mb-1">
+              <p className="text-xs text-emerald-700 font-bold uppercase tracking-wider">
                 Selesai Ditransfer
               </p>
               {loading ? (
-                <Skeleton className="h-8 w-28 mb-1 rounded-lg" />
+                <Skeleton className="h-7 w-28 mt-1 bg-zinc-200/70 rounded-lg" />
               ) : (
-                <h3 className="text-2xl font-bold tracking-tight text-emerald-600 mb-1">
+                <h3 className="text-2xl font-black tracking-tight text-emerald-600 mt-1">
                   {formatCurrency(paidSum)}
                 </h3>
               )}
-              <p className="text-xs text-zinc-400">{paidList.length} transaksi sukses</p>
+              <p className="text-[11px] text-zinc-400 mt-0.5 font-medium">{paidList.length} transaksi sukses</p>
             </div>
-            <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600">
+            <div className="p-2.5 bg-white text-emerald-600 rounded-xl border-0 shadow-none">
               <CheckCircle2 className="h-5 w-5" />
             </div>
           </div>
         </Card>
 
         {/* Rejected Card */}
-        <Card className="bg-white border border-zinc-200/90 rounded-2xl p-5 shadow-[0_2px_8px_rgba(0,0,0,0.03)]">
+        <Card className="bg-zinc-100 rounded-2xl p-5 border-0 shadow-none">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-zinc-400 text-xs font-semibold uppercase tracking-wider mb-1">
+              <p className="text-xs text-rose-700 font-bold uppercase tracking-wider">
                 Total Ditolak
               </p>
               {loading ? (
-                <Skeleton className="h-8 w-28 mb-1 rounded-lg" />
+                <Skeleton className="h-7 w-28 mt-1 bg-zinc-200/70 rounded-lg" />
               ) : (
-                <h3 className="text-2xl font-bold tracking-tight text-red-600 mb-1">
+                <h3 className="text-2xl font-black tracking-tight text-rose-600 mt-1">
                   {formatCurrency(rejectedSum)}
                 </h3>
               )}
-              <p className="text-xs text-zinc-400">{rejectedList.length} pengajuan ditolak</p>
+              <p className="text-[11px] text-zinc-400 mt-0.5 font-medium">{rejectedList.length} pengajuan ditolak</p>
             </div>
-            <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center text-red-600">
+            <div className="p-2.5 bg-white text-rose-600 rounded-xl border-0 shadow-none">
               <XCircle className="h-5 w-5" />
             </div>
           </div>
@@ -257,206 +298,212 @@ export default function AdminWithdrawalsPage() {
       </div>
 
       {/* Main Table Card */}
-      <div className="bg-white border border-zinc-200/90 rounded-2xl p-6 space-y-6 shadow-[0_2px_8px_rgba(0,0,0,0.03)]">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <h2 className="text-lg font-bold text-zinc-950">Daftar Pengajuan Pencairan Dana</h2>
-            <p className="text-xs text-zinc-500 mt-0.5">
-              Kelola dan eksekusi permohonan penarikan dana dari event organizer secara transparan.
-            </p>
-          </div>
+      <Card className="bg-zinc-100 rounded-3xl p-6 space-y-4 border-0 shadow-none">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+          {/* Segmented Control Pill ala Mobbin */}
+          <div
+            ref={filterContainerRef}
+            className="relative inline-flex items-center p-1 bg-zinc-200/80 rounded-full gap-1 overflow-x-auto no-scrollbar max-w-full border-0"
+          >
+            {/* Sliding Capsule Highlight */}
+            <div
+              className={`absolute top-1 bottom-1 rounded-full bg-white shadow-none pointer-events-none ${
+                isFilterReady
+                  ? 'transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]'
+                  : 'transition-none'
+              }`}
+              style={{
+                left: `${filterIndicatorStyle.left}px`,
+                width: `${filterIndicatorStyle.width}px`,
+                opacity: filterIndicatorStyle.width > 0 ? 1 : 0,
+              }}
+            />
 
-          <div className="flex flex-wrap items-center gap-3">
-            {/* Search Bar */}
-            <div className="relative w-full sm:w-64">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-400" />
-              <input
-                type="text"
-                placeholder="Cari bank, rekening, nama, ID..."
-                aria-label="Cari bank, rekening, nama organizer, atau ID penarikan"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 bg-zinc-50/80 border border-zinc-200 rounded-full text-xs font-medium text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:bg-white focus:border-zinc-400 transition-colors"
-              />
-            </div>
-
-            {/* Status Filter Tabs */}
-            <div className="flex bg-zinc-100 p-1 rounded-full text-xs">
-              {[
-                { id: 'ALL', label: 'Semua' },
-                { id: 'PENDING', label: `Menunggu (${pendingList.length})` },
-                { id: 'APPROVED', label: 'Disetujui' },
-                { id: 'PAID', label: 'Selesai' },
-                { id: 'REJECTED', label: 'Ditolak' },
-              ].map((tab) => (
+            {filterTabs.map((tab) => {
+              const isSelected = statusFilter === tab.id;
+              return (
                 <button
                   key={tab.id}
+                  ref={(el) => {
+                    filterTabsRef.current[tab.id] = el;
+                  }}
                   onClick={() => setStatusFilter(tab.id)}
-                  className={`px-3 py-1 rounded-full text-xs font-semibold transition-all ${
-                    statusFilter === tab.id
-                      ? 'bg-zinc-950 text-white shadow-none'
-                      : 'text-zinc-600 hover:text-zinc-900'
+                  className={`relative z-10 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-colors duration-200 whitespace-nowrap cursor-pointer ${
+                    isSelected
+                      ? 'text-zinc-950'
+                      : 'text-zinc-500 hover:text-zinc-900'
                   }`}
                 >
                   {tab.label}
                 </button>
-              ))}
-            </div>
+              );
+            })}
+          </div>
+
+          {/* Search Bar */}
+          <div className="relative w-full sm:w-72">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-400" />
+            <input
+              type="text"
+              placeholder="Cari bank, rekening, nama, ID..."
+              aria-label="Cari bank, rekening, nama organizer, atau ID penarikan"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-9 pr-4 py-2.5 bg-white border-0 shadow-none rounded-full text-xs text-zinc-950 placeholder-zinc-400 focus:outline-none transition-all font-medium"
+            />
           </div>
         </div>
 
         {/* Withdrawals Table */}
-        <div className="overflow-x-auto border border-zinc-100 rounded-xl">
-          <table className="w-full text-left text-sm">
-            <thead className="bg-zinc-50/75 text-zinc-500 uppercase text-xs font-semibold border-b border-zinc-200">
-              <tr>
-                <th className="py-3.5 px-5">Tanggal & ID</th>
-                <th className="py-3.5 px-5">Organizer</th>
-                <th className="py-3.5 px-5">Nominal Penarikan</th>
-                <th className="py-3.5 px-5">Rekening Tujuan</th>
-                <th className="py-3.5 px-5">Status</th>
-                <th className="py-3.5 px-5 text-right">Aksi Admin</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-zinc-100">
-              {loading ? (
-                Array.from({ length: 5 }).map((_, idx) => (
-                  <tr key={idx}>
-                    <td className="py-4 px-5"><Skeleton className="h-4 w-28 rounded-md" /></td>
-                    <td className="py-4 px-5"><Skeleton className="h-4 w-24 rounded-md" /></td>
-                    <td className="py-4 px-5"><Skeleton className="h-4 w-24 rounded-md" /></td>
-                    <td className="py-4 px-5"><Skeleton className="h-4 w-40 rounded-md" /></td>
-                    <td className="py-4 px-5"><Skeleton className="h-6 w-20 rounded-full" /></td>
-                    <td className="py-4 px-5 text-right"><Skeleton className="h-8 w-32 ml-auto rounded-full" /></td>
-                  </tr>
-                ))
-              ) : filteredWithdrawals.length === 0 ? (
+        {filteredWithdrawals.length === 0 && !loading ? (
+          <div className="text-center py-16">
+            <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center mx-auto mb-3 text-zinc-400 border-0 shadow-none">
+              <Banknote className="h-6 w-6" />
+            </div>
+            <h3 className="text-base font-bold text-zinc-950 mb-1">Tidak ada data penarikan dana</h3>
+            <p className="text-zinc-400 text-xs max-w-sm mx-auto">
+              {statusFilter !== 'ALL'
+                ? `Tidak ada transaksi dengan status ${statusFilter}.`
+                : 'Semua pengajuan penarikan dana organizer akan muncul di sini.'}
+            </p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-sm text-zinc-600">
+              <thead className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider bg-zinc-200/50 border-0">
                 <tr>
-                  <td colSpan={6} className="py-12 text-center text-zinc-400">
-                    <div className="flex flex-col items-center justify-center space-y-2">
-                      <div className="w-12 h-12 bg-zinc-100 rounded-full flex items-center justify-center text-zinc-400">
-                        <Banknote className="h-6 w-6" />
-                      </div>
-                      <p className="font-semibold text-sm text-zinc-900">Tidak ada data penarikan dana.</p>
-                      <p className="text-xs text-zinc-500">
-                        {statusFilter !== 'ALL'
-                          ? `Tidak ada transaksi dengan status ${statusFilter}.`
-                          : 'Semua pengajuan penarikan dana organizer akan muncul di sini.'}
-                      </p>
-                    </div>
-                  </td>
+                  <th scope="col" className="px-4 py-3.5 rounded-l-2xl">Tanggal & ID</th>
+                  <th scope="col" className="px-4 py-3.5">Organizer</th>
+                  <th scope="col" className="px-4 py-3.5">Nominal Penarikan</th>
+                  <th scope="col" className="px-4 py-3.5">Rekening Tujuan</th>
+                  <th scope="col" className="px-4 py-3.5">Status</th>
+                  <th scope="col" className="px-4 py-3.5 text-right rounded-r-2xl">Aksi Admin</th>
                 </tr>
-              ) : (
-                filteredWithdrawals.map((w) => {
-                  const amountNum = parseAmount(w.amount);
-                  const isPending = w.status?.toUpperCase() === 'PENDING';
-                  const isApproved = w.status?.toUpperCase() === 'APPROVED';
+              </thead>
+              <tbody className="divide-y divide-zinc-200/50">
+                {loading ? (
+                  Array.from({ length: 5 }).map((_, idx) => (
+                    <tr key={idx}>
+                      <td className="px-4 py-3.5"><Skeleton className="h-5 w-28 bg-zinc-200/60 rounded-full" /></td>
+                      <td className="px-4 py-3.5"><Skeleton className="h-5 w-24 bg-zinc-200/60 rounded-full" /></td>
+                      <td className="px-4 py-3.5"><Skeleton className="h-5 w-24 bg-zinc-200/60 rounded-full" /></td>
+                      <td className="px-4 py-3.5"><Skeleton className="h-5 w-40 bg-zinc-200/60 rounded-full" /></td>
+                      <td className="px-4 py-3.5"><Skeleton className="h-5 w-20 bg-zinc-200/60 rounded-full" /></td>
+                      <td className="px-4 py-3.5 text-right"><Skeleton className="h-7 w-32 ml-auto bg-zinc-200/60 rounded-full" /></td>
+                    </tr>
+                  ))
+                ) : (
+                  filteredWithdrawals.map((w) => {
+                    const amountNum = parseAmount(w.amount);
+                    const isPending = w.status?.toUpperCase() === 'PENDING';
+                    const isApproved = w.status?.toUpperCase() === 'APPROVED';
 
-                  return (
-                    <tr
-                      key={w.id}
-                      className="hover:bg-zinc-50/60 transition-colors cursor-pointer"
-                      onClick={() => setSelectedWithdrawal(w)}
-                    >
-                      {/* Date & ID */}
-                      <td className="py-4 px-5">
-                        <div className="font-semibold text-zinc-950 text-sm">{formatDate(w.created_at)}</div>
-                        <div className="text-xs text-zinc-400 font-mono mt-0.5">ID: {w.id.substring(0, 8)}...</div>
-                      </td>
+                    return (
+                      <tr
+                        key={w.id}
+                        className="hover:bg-zinc-200/40 transition-colors cursor-pointer"
+                        onClick={() => setSelectedWithdrawal(w)}
+                      >
+                        {/* Date & ID */}
+                        <td className="px-4 py-3.5">
+                          <div className="font-bold text-zinc-950 text-xs">{formatDate(w.created_at)}</div>
+                          <div className="text-[11px] text-zinc-400 font-mono mt-0.5">ID: {w.id.substring(0, 8)}...</div>
+                        </td>
 
-                      {/* Organizer ID */}
-                      <td className="py-4 px-5">
-                        <div className="text-xs text-zinc-600 font-mono flex items-center gap-1.5 bg-zinc-50 px-2 py-1 rounded-md border border-zinc-100 inline-flex">
-                          <User className="h-3 w-3 text-zinc-500" />
-                          {w.organizer_id.substring(0, 8)}...
-                        </div>
-                      </td>
-
-                      {/* Amount */}
-                      <td className="py-4 px-5">
-                        <div className="font-bold text-zinc-950 text-base">{formatCurrency(amountNum)}</div>
-                        <div className="text-xs text-emerald-600 font-medium">Bebas Biaya Transfer</div>
-                      </td>
-
-                      {/* Bank Details */}
-                      <td className="py-4 px-5">
-                        <div className="font-semibold text-zinc-900 flex items-center gap-1.5 text-sm">
-                          <Building2 className="h-3.5 w-3.5 text-zinc-400" />
-                          {w.bank_name}
-                        </div>
-                        <div className="text-xs text-zinc-500 font-mono mt-0.5">
-                          {w.account_number} a.n {w.account_name}
-                        </div>
-                      </td>
-
-                      {/* Status Badge */}
-                      <td className="py-4 px-5">
-                        {getStatusBadge(w.status)}
-                        {w.status?.toUpperCase() === 'REJECTED' && getPgText(w.rejection_reason) && (
-                          <div className="text-xs text-rose-600 mt-1 max-w-xs truncate font-medium">
-                            Alasan: {getPgText(w.rejection_reason)}
+                        {/* Organizer ID */}
+                        <td className="px-4 py-3.5">
+                          <div className="text-xs font-mono font-bold text-zinc-800 bg-white px-2.5 py-1 rounded-full border-0 shadow-none inline-flex items-center gap-1.5">
+                            <User className="h-3 w-3 text-zinc-400" />
+                            {w.organizer_id.substring(0, 8)}...
                           </div>
-                        )}
-                      </td>
+                        </td>
 
-                      {/* Admin Actions */}
-                      <td className="py-4 px-5 text-right" onClick={(e) => e.stopPropagation()}>
-                        <div className="flex items-center justify-end gap-1.5">
-                          {isPending && (
-                            <>
-                              <Button
-                                size="sm"
-                                disabled={actionLoading}
-                                onClick={() => handleUpdateStatus(w.id, 'APPROVED')}
-                                className="rounded-full bg-zinc-950 hover:bg-zinc-800 text-white text-xs font-semibold px-3.5 py-1 h-7"
-                              >
-                                Setujui
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                disabled={actionLoading}
-                                onClick={() => {
-                                  setRejectModalWithdrawal(w);
-                                  setRejectionReason('');
-                                }}
-                                className="rounded-full border-red-200 text-red-600 hover:bg-red-50 text-xs font-medium px-3 py-1 h-7"
-                              >
-                                Tolak
-                              </Button>
-                            </>
+                        {/* Amount */}
+                        <td className="px-4 py-3.5">
+                          <div className="font-black text-zinc-950 text-xs">{formatCurrency(amountNum)}</div>
+                          <div className="text-[11px] text-emerald-600 font-medium">Bebas Biaya Transfer</div>
+                        </td>
+
+                        {/* Bank Details */}
+                        <td className="px-4 py-3.5">
+                          <div className="font-bold text-zinc-900 flex items-center gap-1.5 text-xs">
+                            <Building2 className="h-3.5 w-3.5 text-zinc-400" />
+                            {w.bank_name}
+                          </div>
+                          <div className="text-[11px] text-zinc-500 font-mono mt-0.5">
+                            {w.account_number} a.n {w.account_name}
+                          </div>
+                        </td>
+
+                        {/* Status Badge */}
+                        <td className="px-4 py-3.5">
+                          {getStatusBadge(w.status)}
+                          {w.status?.toUpperCase() === 'REJECTED' && getPgText(w.rejection_reason) && (
+                            <div className="text-[11px] text-rose-600 mt-1 max-w-xs truncate font-medium">
+                              Alasan: {getPgText(w.rejection_reason)}
+                            </div>
                           )}
+                        </td>
 
-                          {isApproved && (
+                        {/* Admin Actions */}
+                        <td className="px-4 py-3.5 text-right" onClick={(e) => e.stopPropagation()}>
+                          <div className="flex items-center justify-end gap-1.5">
+                            {isPending && (
+                              <>
+                                <Button
+                                  size="sm"
+                                  disabled={actionLoading}
+                                  onClick={() => handleUpdateStatus(w.id, 'APPROVED')}
+                                  className="rounded-full bg-zinc-950 hover:bg-zinc-800 text-white text-xs font-bold px-3.5 py-1.5 h-8 border-0 shadow-none cursor-pointer"
+                                >
+                                  Setujui
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  disabled={actionLoading}
+                                  onClick={() => {
+                                    setRejectModalWithdrawal(w);
+                                    setRejectionReason('');
+                                  }}
+                                  className="rounded-full bg-rose-100 hover:bg-rose-200 text-rose-700 text-xs font-bold px-3.5 py-1.5 h-8 border-0 shadow-none cursor-pointer"
+                                >
+                                  Tolak
+                                </Button>
+                              </>
+                            )}
+
+                            {isApproved && (
+                              <Button
+                                size="sm"
+                                disabled={actionLoading}
+                                onClick={() => handleUpdateStatus(w.id, 'PAID')}
+                                className="rounded-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3.5 py-1.5 h-8 flex items-center gap-1 border-0 shadow-none cursor-pointer"
+                              >
+                                <CheckCircle2 className="h-3.5 w-3.5" />
+                                Tandai Selesai
+                              </Button>
+                            )}
+
                             <Button
                               size="sm"
-                              disabled={actionLoading}
-                              onClick={() => handleUpdateStatus(w.id, 'PAID')}
-                              className="rounded-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-3.5 py-1 h-7 flex items-center gap-1"
+                              variant="outline"
+                              onClick={() => setSelectedWithdrawal(w)}
+                              className="rounded-full bg-white text-zinc-800 hover:bg-zinc-200 text-xs py-1 px-3.5 h-8 font-bold border-0 shadow-none cursor-pointer"
                             >
-                              <CheckCircle2 className="h-3 w-3" />
-                              Tandai Selesai
+                              Detail
                             </Button>
-                          )}
-
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => setSelectedWithdrawal(w)}
-                            className="rounded-full border-zinc-200 bg-white hover:bg-zinc-100 text-zinc-700 text-xs font-medium px-3 py-1 h-7"
-                          >
-                            Detail
-                          </Button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </Card>
 
       {/* MODAL: Reject Withdrawal Dialog */}
       {rejectModalWithdrawal && (
@@ -466,15 +513,15 @@ export default function AdminWithdrawalsPage() {
           title="Tolak Pengajuan Penarikan Dana"
         >
           <div className="space-y-4">
-            <div className="p-4 bg-red-50 border border-red-200 rounded-2xl text-xs text-red-900 space-y-1">
-              <p className="font-semibold text-red-950">Konfirmasi Penolakan</p>
-              <p className="text-red-700">
+            <div className="p-4 bg-rose-50 rounded-2xl text-xs text-rose-900 space-y-1 border-0 shadow-none">
+              <p className="font-bold text-rose-950">Konfirmasi Penolakan</p>
+              <p className="text-rose-700 font-medium">
                 Dana sebesar <span className="font-bold text-zinc-950">{formatCurrency(parseAmount(rejectModalWithdrawal.amount))}</span> akan otomatis dikembalikan ke Saldo Tersedia organizer.
               </p>
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">
+              <label className="text-xs font-bold text-zinc-500 uppercase tracking-wider">
                 Alasan Penolakan (Wajib Diisi)
               </label>
               <textarea
@@ -482,24 +529,25 @@ export default function AdminWithdrawalsPage() {
                 placeholder="Contoh: Nama pemilik rekening tidak cocok dengan nama akun bank, atau nomor rekening tidak aktif..."
                 value={rejectionReason}
                 onChange={(e) => setRejectionReason(e.target.value)}
-                className="w-full px-3.5 py-2.5 bg-zinc-50 border border-zinc-200 rounded-xl text-sm font-medium text-zinc-950 focus:outline-none focus:bg-white focus:border-zinc-400 placeholder:text-zinc-400 resize-none transition-colors"
+                className="w-full px-4 py-3 bg-zinc-100 border-0 shadow-none rounded-2xl text-xs font-medium text-zinc-950 focus:outline-none focus:bg-zinc-200/60 placeholder:text-zinc-400 resize-none transition-colors"
                 required
               />
             </div>
 
             <div className="flex justify-end gap-2.5 pt-2">
               <Button
+                type="button"
                 variant="outline"
                 disabled={actionLoading}
                 onClick={() => setRejectModalWithdrawal(null)}
-                className="rounded-full border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-700 text-xs font-medium px-4 py-2"
+                className="rounded-full bg-zinc-100 hover:bg-zinc-200 text-zinc-800 text-xs font-bold px-5 py-2.5 border-0 shadow-none cursor-pointer"
               >
                 Batal
               </Button>
               <Button
                 disabled={actionLoading || !rejectionReason.trim()}
                 onClick={() => handleUpdateStatus(rejectModalWithdrawal.id, 'REJECTED', rejectionReason.trim())}
-                className="rounded-full bg-red-600 hover:bg-red-700 text-white text-xs font-semibold px-4 py-2"
+                className="rounded-full bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-6 py-2.5 border-0 shadow-none cursor-pointer"
               >
                 {actionLoading ? 'Memproses...' : 'Konfirmasi Tolak'}
               </Button>
@@ -516,11 +564,11 @@ export default function AdminWithdrawalsPage() {
           title="Rincian Pengajuan Penarikan Dana (Admin View)"
         >
           <div className="space-y-6">
-            <div className="text-center py-3 border-b border-zinc-100">
+            <div className="text-center py-3 border-b border-zinc-200/50">
               <p className="text-xs text-zinc-400 uppercase tracking-widest mb-1 font-mono">
                 ID: {selectedWithdrawal.id}
               </p>
-              <h3 className="text-3xl font-extrabold text-zinc-950">
+              <h3 className="text-3xl font-black text-zinc-950">
                 {formatCurrency(parseAmount(selectedWithdrawal.amount))}
               </h3>
               <div className="mt-3 flex justify-center">
@@ -528,41 +576,41 @@ export default function AdminWithdrawalsPage() {
               </div>
             </div>
 
-            <div className="space-y-3 bg-zinc-50 p-4 rounded-2xl border border-zinc-200 text-sm">
+            <div className="space-y-3 bg-zinc-100 p-5 rounded-2xl border-0 shadow-none text-sm">
               <div className="flex justify-between">
-                <span className="text-zinc-500 text-xs">Organizer ID:</span>
+                <span className="text-zinc-500 text-xs font-medium">Organizer ID:</span>
                 <span className="font-mono text-xs font-bold text-zinc-900">{selectedWithdrawal.organizer_id}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-zinc-500 text-xs">Bank Tujuan:</span>
-                <span className="font-semibold text-zinc-900 text-xs">{selectedWithdrawal.bank_name}</span>
+                <span className="text-zinc-500 text-xs font-medium">Bank Tujuan:</span>
+                <span className="font-bold text-zinc-900 text-xs">{selectedWithdrawal.bank_name}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-zinc-500 text-xs">Nomor Rekening:</span>
+                <span className="text-zinc-500 text-xs font-medium">Nomor Rekening:</span>
                 <span className="font-mono font-bold text-zinc-900 text-xs">{selectedWithdrawal.account_number}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-zinc-500 text-xs">Nama Pemilik:</span>
-                <span className="font-semibold text-zinc-900 text-xs">{selectedWithdrawal.account_name}</span>
+                <span className="text-zinc-500 text-xs font-medium">Nama Pemilik:</span>
+                <span className="font-bold text-zinc-900 text-xs">{selectedWithdrawal.account_name}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-zinc-500 text-xs">Waktu Pengajuan:</span>
-                <span className="text-zinc-700 text-xs">{formatDate(selectedWithdrawal.created_at)}</span>
+                <span className="text-zinc-500 text-xs font-medium">Waktu Pengajuan:</span>
+                <span className="text-zinc-700 text-xs font-medium">{formatDate(selectedWithdrawal.created_at)}</span>
               </div>
               {getPgText(selectedWithdrawal.notes) && (
-                <div className="border-t border-zinc-200 pt-2 flex justify-between">
-                  <span className="text-zinc-500 text-xs">Catatan Organizer:</span>
-                  <span className="text-zinc-700 text-xs">{getPgText(selectedWithdrawal.notes)}</span>
+                <div className="border-t border-zinc-200/60 pt-2 flex justify-between">
+                  <span className="text-zinc-500 text-xs font-medium">Catatan Organizer:</span>
+                  <span className="text-zinc-700 text-xs font-medium">{getPgText(selectedWithdrawal.notes)}</span>
                 </div>
               )}
             </div>
 
             {selectedWithdrawal.status?.toUpperCase() === 'REJECTED' && (
-              <div className="p-4 bg-red-50 border border-red-200 rounded-2xl flex items-start gap-3 text-sm text-red-900">
-                <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
+              <div className="p-4 bg-rose-50 rounded-2xl border-0 shadow-none flex items-start gap-3 text-sm text-rose-900">
+                <AlertCircle className="h-5 w-5 text-rose-600 flex-shrink-0 mt-0.5" />
                 <div>
-                  <p className="font-semibold text-xs text-red-950">Alasan Penolakan</p>
-                  <p className="text-xs mt-1 text-red-700">
+                  <p className="font-bold text-xs text-rose-950">Alasan Penolakan</p>
+                  <p className="text-xs mt-1 text-rose-700 font-medium">
                     {getPgText(selectedWithdrawal.rejection_reason) || 'Data rekening tidak sesuai.'}
                   </p>
                 </div>
@@ -576,7 +624,7 @@ export default function AdminWithdrawalsPage() {
                     size="sm"
                     disabled={actionLoading}
                     onClick={() => handleUpdateStatus(selectedWithdrawal.id, 'APPROVED')}
-                    className="rounded-full bg-zinc-950 hover:bg-zinc-800 text-white text-xs font-semibold px-4 py-1.5"
+                    className="rounded-full bg-zinc-950 hover:bg-zinc-800 text-white text-xs font-bold px-5 py-2.5 border-0 shadow-none cursor-pointer"
                   >
                     Setujui Permohonan
                   </Button>
@@ -586,7 +634,7 @@ export default function AdminWithdrawalsPage() {
                     size="sm"
                     disabled={actionLoading}
                     onClick={() => handleUpdateStatus(selectedWithdrawal.id, 'PAID')}
-                    className="rounded-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-4 py-1.5"
+                    className="rounded-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-5 py-2.5 border-0 shadow-none cursor-pointer"
                   >
                     Tandai Selesai Ditransfer
                   </Button>
@@ -595,7 +643,7 @@ export default function AdminWithdrawalsPage() {
 
               <Button
                 variant="outline"
-                className="rounded-full border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-700 text-xs font-semibold px-4 py-1.5"
+                className="rounded-full bg-zinc-100 hover:bg-zinc-200 text-zinc-800 text-xs font-bold px-6 py-2.5 border-0 shadow-none cursor-pointer"
                 onClick={() => setSelectedWithdrawal(null)}
               >
                 Tutup

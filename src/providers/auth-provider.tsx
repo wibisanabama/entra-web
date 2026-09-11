@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { authApi } from "@/lib/api";
-import { AuthResponse, LoginRequest, RegisterRequest, User } from "@/types";
+import { AuthResponse, LoginRequest, RegisterRequest, TokenPair, User } from "@/types";
 
 interface AuthContextType {
   user: User | null;
@@ -12,6 +12,8 @@ interface AuthContextType {
   logout: () => void;
   refreshToken: () => Promise<void>;
   loadProfile: () => Promise<void>;
+  setAuthData: (user: User, tokens: TokenPair) => void;
+  upgradeToOrganizer: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -133,8 +135,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const setAuthData = React.useCallback((userData: User, tokens: TokenPair) => {
+    setCookies(tokens.access_token, tokens.refresh_token, tokens.expires_at);
+    setUser(userData);
+  }, []);
+
+  const upgradeToOrganizer = React.useCallback(async () => {
+    const response = await authApi.post<AuthResponse>("/api/v1/auth/upgrade");
+    if (response.data?.tokens && response.data?.user) {
+      setAuthData(response.data.user, response.data.tokens);
+    }
+  }, [setAuthData]);
+
   return (
-    <AuthContext.Provider value={{ user, isLoading, login, register, logout, refreshToken, loadProfile }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        isLoading,
+        login,
+        register,
+        logout,
+        refreshToken,
+        loadProfile,
+        setAuthData,
+        upgradeToOrganizer,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

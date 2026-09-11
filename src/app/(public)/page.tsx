@@ -7,13 +7,21 @@ import { Skeleton } from '@/components/ui/Skeleton';
 import { eventApi } from '@/lib/api';
 import { Event as EventType, Category, Venue } from '@/types';
 import { ArrowRight } from 'lucide-react';
+import { useAuth } from '@/providers/auth-provider';
 
 export default function HomePage() {
+  const { user } = useAuth();
   const [events, setEvents] = useState<EventType[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
+
+  const organizerHref = !user 
+    ? '/register' 
+    : user.role === 'organizer' || user.role === 'admin' 
+    ? '/dashboard' 
+    : '/profile';
 
   // Only display categories that actually have at least one event
   const activeCategories = useMemo(() => {
@@ -143,7 +151,7 @@ export default function HomePage() {
               Jelajahi event
             </Link>
             <Link 
-              href="/register" 
+              href={organizerHref} 
               className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-zinc-200 bg-white px-6 text-[15px] font-semibold text-zinc-950 hover:bg-zinc-50 transition-all shadow-none tracking-[-0.01em]"
             >
               Mulai sebagai organizer <ArrowRight className="h-4 w-4 stroke-[2]" />
@@ -319,7 +327,7 @@ export default function HomePage() {
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-zinc-400">Untuk organizer</p>
             <h2 className="mt-4 text-3xl font-black tracking-tight sm:text-5xl">Kelola event dari publikasi hingga check-in.</h2>
           </div>
-          <Link href="/register" className="inline-flex h-12 shrink-0 items-center gap-2 rounded-full bg-white px-7 text-sm font-semibold text-zinc-950 hover:bg-zinc-100">
+          <Link href={organizerHref} className="inline-flex h-12 shrink-0 items-center gap-2 rounded-full bg-white px-7 text-sm font-semibold text-zinc-950 hover:bg-zinc-100">
             Buat akun organizer <ArrowRight className="h-4 w-4" />
           </Link>
         </div>

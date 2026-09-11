@@ -32,7 +32,7 @@ const PROFILE_TABS = [
 ] as const;
 
 export default function ProfilePage() {
-  const { user, isLoading, loadProfile } = useAuth();
+  const { user, isLoading, loadProfile, upgradeToOrganizer } = useAuth();
   const router = useRouter();
 
   const [activeTab, setActiveTab] = useState<'INFO' | 'SECURITY'>('INFO');
@@ -274,13 +274,13 @@ export default function ProfilePage() {
   const handleUpgrade = async () => {
     try {
       setIsUpgrading(true);
-      await authApi.post('/api/v1/auth/upgrade');
-      await loadProfile();
+      await upgradeToOrganizer();
       toast.success('Selamat! Akun Anda berhasil ditingkatkan menjadi Organizer.');
-      router.push('/dashboard');
+      window.location.href = '/dashboard';
     } catch (error: unknown) {
       console.error('Failed to upgrade role:', error);
-      toast.error('Gagal meningkatkan akun. Silakan coba lagi.');
+      const errMsg = error instanceof Error ? error.message : 'Gagal meningkatkan akun. Silakan coba lagi.';
+      toast.error(errMsg);
     } finally {
       setIsUpgrading(false);
     }

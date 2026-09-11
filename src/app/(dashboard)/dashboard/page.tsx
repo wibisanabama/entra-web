@@ -30,6 +30,8 @@ interface SalesTrendItem {
 
 interface RecentOrder {
   id: string;
+  user_id?: string;
+  event_id?: string;
   total_amount: number | string;
   status: string;
   user?: { name?: string; email?: string };
@@ -49,6 +51,7 @@ export default function DashboardOverviewPage() {
     paid_amount: 0,
   });
   const [activeEvents, setActiveEvents] = useState(0);
+  const [eventsMap, setEventsMap] = useState<Record<string, string>>({});
   const [recentOrders, setRecentOrders] = useState<RecentOrder[]>([]);
   const [salesTrend, setSalesTrend] = useState<SalesTrendItem[]>([]);
 
@@ -75,6 +78,11 @@ export default function DashboardOverviewPage() {
         if (eventsRes.data) {
           const events = eventsRes.data || [];
           setActiveEvents(events.filter((e) => e.status?.toLowerCase() === 'published').length);
+          const evMap: Record<string, string> = {};
+          events.forEach((ev) => {
+            if (ev.id) evMap[ev.id] = ev.title;
+          });
+          setEventsMap(evMap);
         }
 
         if (trendRes.data) {
@@ -197,14 +205,16 @@ export default function DashboardOverviewPage() {
               ) : (
                 recentOrders.slice(0, 5).map((order) => {
                   const isPaid = order.status?.toUpperCase() === 'PAID' || order.status?.toUpperCase() === 'SUCCESS' || order.status === 'SUKSES';
+                  const eventTitle = (order.event_id && eventsMap[order.event_id]) || order.event?.title || 'Tiket Event';
+                  const customerName = order.user?.name || (order.user_id ? `User #${order.user_id.slice(0, 6)}` : 'Pelanggan');
                   return (
                     <div key={order.id} className="flex items-center gap-3.5 p-2 rounded-xl">
                       <div className="w-9 h-9 rounded-full bg-white flex items-center justify-center text-zinc-900 font-bold text-xs shrink-0">
-                        {(order.user?.name || "U")[0].toUpperCase()}
+                        {customerName[0].toUpperCase()}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs font-bold text-zinc-950 truncate">{order.user?.name || 'User'}</p>
-                        <p className="text-[11px] text-zinc-500 truncate">{order.event?.title || 'Event Tiket'}</p>
+                        <p className="text-xs font-bold text-zinc-950 truncate">{customerName}</p>
+                        <p className="text-[11px] text-zinc-500 truncate">{eventTitle}</p>
                       </div>
                       <div className="text-right shrink-0">
                         <p className="text-xs font-black text-zinc-950">{formatCurrency(Number(order.total_amount))}</p>

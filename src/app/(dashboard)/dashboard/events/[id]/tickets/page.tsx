@@ -132,10 +132,10 @@ export default function EventTicketsPage() {
         </Button>
       </div>
 
-      <Card className="bg-white border border-zinc-200 rounded-2xl shadow-sm overflow-hidden">
+      <Card className="bg-zinc-100 rounded-3xl overflow-hidden border-0 shadow-none">
         {tickets.length === 0 ? (
           <div className="text-center py-16">
-            <div className="w-16 h-16 rounded-3xl bg-zinc-100 border border-zinc-200 flex items-center justify-center mx-auto mb-4 text-zinc-400">
+            <div className="w-16 h-16 rounded-3xl bg-white flex items-center justify-center mx-auto mb-4 text-zinc-900 border-0 shadow-none">
               <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
               </svg>
@@ -143,8 +143,8 @@ export default function EventTicketsPage() {
             <h3 className="text-base font-bold text-zinc-950 mb-1">Belum ada tipe tiket</h3>
             <p className="text-xs text-zinc-500 mb-6 max-w-sm mx-auto">Anda belum membuat tipe tiket apapun untuk event ini. Silakan buat minimal satu tipe tiket agar event dapat dipesan.</p>
             <Button 
-              variant="outline" 
-              className="rounded-full bg-zinc-950 hover:bg-zinc-800 text-white border-transparent text-xs font-bold px-5 py-2.5"
+              variant="primary" 
+              className="rounded-full bg-zinc-950 hover:bg-zinc-800 text-white border-0 shadow-none text-xs font-bold px-6 py-2.5 cursor-pointer"
               onClick={() => {
                 setSelectedTicket(undefined);
                 setIsModalOpen(true);
@@ -156,7 +156,7 @@ export default function EventTicketsPage() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm text-zinc-600">
-              <thead className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider bg-zinc-50 border-b border-zinc-200">
+              <thead className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider bg-zinc-200/50">
                 <tr>
                   <th scope="col" className="px-6 py-3.5">Nama Tiket</th>
                   <th scope="col" className="px-6 py-3.5">Harga</th>
@@ -165,7 +165,7 @@ export default function EventTicketsPage() {
                   <th scope="col" className="px-6 py-3.5 text-right">Aksi</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-zinc-100">
+              <tbody className="divide-y divide-zinc-200/50">
                 {tickets.map((ticket) => {
                   const saleStart = new Date(ticket.sale_start);
                   const saleEnd = new Date(ticket.sale_end);
@@ -177,7 +177,7 @@ export default function EventTicketsPage() {
                   else if (ticket.sold >= ticket.quantity) statusStr = "Habis";
 
                   return (
-                    <tr key={ticket.id} className="hover:bg-zinc-50/70 transition-colors">
+                    <tr key={ticket.id} className="hover:bg-zinc-200/40 transition-colors">
                       <td className="px-6 py-4">
                         <div className="font-bold text-zinc-950 text-sm mb-1">{ticket.name}</div>
                         <Badge status={statusStr} />
@@ -190,7 +190,7 @@ export default function EventTicketsPage() {
                           <span className="font-bold text-zinc-950 text-xs">{ticket.sold}</span>
                           <span className="text-zinc-400 text-xs">/ {ticket.quantity}</span>
                         </div>
-                        <div className="w-full bg-zinc-100 rounded-full h-1.5 mt-2 overflow-hidden">
+                        <div className="w-full bg-zinc-200 rounded-full h-1.5 mt-2 overflow-hidden">
                           <div 
                             className="bg-zinc-950 h-1.5 rounded-full" 
                             style={{ width: `${Math.min(100, (ticket.sold / ticket.quantity) * 100)}%` }}
@@ -203,9 +203,9 @@ export default function EventTicketsPage() {
                       </td>
                       <td className="px-6 py-4 text-right space-x-1.5">
                         <Button 
-                          variant="outline" 
+                          variant="ghost" 
                           size="sm" 
-                          className="rounded-full text-xs font-semibold px-3 py-1 border-zinc-200 text-zinc-700 hover:bg-zinc-100 hover:text-zinc-950"
+                          className="rounded-full text-xs font-semibold px-3.5 py-1.5 bg-white text-zinc-800 hover:bg-zinc-200 border-0 shadow-none cursor-pointer"
                           onClick={() => {
                             setSelectedTicket(ticket);
                             setIsModalOpen(true);
@@ -214,9 +214,9 @@ export default function EventTicketsPage() {
                           Edit
                         </Button>
                         <Button 
-                          variant="outline" 
+                          variant="ghost" 
                           size="sm" 
-                          className="rounded-full text-xs font-semibold px-3 py-1 border-red-200 text-red-600 hover:bg-red-50"
+                          className="rounded-full text-xs font-semibold px-3.5 py-1.5 bg-rose-50 text-rose-600 hover:bg-rose-100 border-0 shadow-none cursor-pointer disabled:opacity-50"
                           onClick={() => confirmDelete(ticket.id)}
                           disabled={ticket.sold > 0}
                         >

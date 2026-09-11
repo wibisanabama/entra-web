@@ -172,46 +172,46 @@ export default function AttendeeListPage() {
 
       {/* 3 Summary Statistics Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Card className="bg-white border border-zinc-200 rounded-2xl p-5 shadow-sm">
+        <Card className="bg-zinc-100 rounded-2xl p-5 border-0 shadow-none">
           <div className="flex items-start justify-between">
             <div>
               <p className="text-xs text-zinc-500 font-bold uppercase tracking-wider">Total Peserta</p>
               {loading ? (
-                <Skeleton className="h-7 w-12 mt-1 bg-zinc-100 rounded-lg" />
+                <Skeleton className="h-7 w-12 mt-1 bg-zinc-200 rounded-lg" />
               ) : (
                 <p className="text-2xl font-black text-zinc-950 mt-1 tracking-tight">{attendees.length}</p>
               )}
               <p className="text-[11px] text-zinc-400 mt-0.5 font-medium">Tiket diterbitkan</p>
             </div>
-            <div className="p-2.5 bg-zinc-50 border border-zinc-200 text-zinc-900 rounded-xl">
+            <div className="p-2.5 bg-white text-zinc-900 rounded-2xl border-0 shadow-none">
               <Users className="h-5 w-5" />
             </div>
           </div>
         </Card>
 
-        <Card className="bg-white border border-zinc-200 rounded-2xl p-5 shadow-sm">
+        <Card className="bg-zinc-100 rounded-2xl p-5 border-0 shadow-none">
           <div className="flex items-start justify-between">
             <div>
               <p className="text-xs text-emerald-700 font-bold uppercase tracking-wider">Sudah Hadir (Gate In)</p>
               {loading ? (
-                <Skeleton className="h-7 w-12 mt-1 bg-zinc-100 rounded-lg" />
+                <Skeleton className="h-7 w-12 mt-1 bg-zinc-200 rounded-lg" />
               ) : (
                 <p className="text-2xl font-black text-emerald-600 mt-1 tracking-tight">{checkedInCount}</p>
               )}
               <p className="text-[11px] text-zinc-400 mt-0.5 font-medium">Check-in terverifikasi</p>
             </div>
-            <div className="p-2.5 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-xl">
+            <div className="p-2.5 bg-white text-emerald-600 rounded-2xl border-0 shadow-none">
               <CheckCircle2 className="h-5 w-5" />
             </div>
           </div>
         </Card>
 
-        <Card className="bg-white border border-zinc-200 rounded-2xl p-5 shadow-sm">
+        <Card className="bg-zinc-100 rounded-2xl p-5 border-0 shadow-none">
           <div className="flex items-start justify-between">
             <div>
               <p className="text-xs text-amber-700 font-bold uppercase tracking-wider">Belum Hadir</p>
               {loading ? (
-                <Skeleton className="h-7 w-12 mt-1 bg-zinc-100 rounded-lg" />
+                <Skeleton className="h-7 w-12 mt-1 bg-zinc-200 rounded-lg" />
               ) : (
                 <p className="text-2xl font-black text-amber-600 mt-1 tracking-tight">
                   {attendees.length - checkedInCount}
@@ -219,7 +219,7 @@ export default function AttendeeListPage() {
               )}
               <p className="text-[11px] text-zinc-400 mt-0.5 font-medium">Menunggu scan di gate</p>
             </div>
-            <div className="p-2.5 bg-amber-50 border border-amber-200 text-amber-700 rounded-xl">
+            <div className="p-2.5 bg-white text-amber-600 rounded-2xl border-0 shadow-none">
               <Clock className="h-5 w-5" />
             </div>
           </div>
@@ -227,13 +227,13 @@ export default function AttendeeListPage() {
       </div>
 
       {/* Main Table Card with Search & Filters */}
-      <Card className="bg-white border border-zinc-200 rounded-2xl p-5 space-y-4 shadow-sm">
+      <Card className="bg-zinc-100 rounded-3xl p-6 space-y-4 border-0 shadow-none">
         {/* Controls Bar */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="flex bg-zinc-100 p-1 rounded-full border border-zinc-200 text-xs w-fit">
+          <div className="flex bg-white p-1 rounded-full border-0 shadow-none text-xs w-fit">
             <button
               onClick={() => setStatusFilter('ALL')}
-              className={`px-3 py-1.5 rounded-full font-bold transition-all cursor-pointer ${
+              className={`px-3.5 py-1.5 rounded-full font-bold transition-all cursor-pointer ${
                 statusFilter === 'ALL' ? 'bg-zinc-950 text-white shadow-none' : 'text-zinc-600 hover:text-zinc-950'
               }`}
             >
@@ -241,7 +241,7 @@ export default function AttendeeListPage() {
             </button>
             <button
               onClick={() => setStatusFilter('HADIR')}
-              className={`px-3 py-1.5 rounded-full font-bold transition-all cursor-pointer ${
+              className={`px-3.5 py-1.5 rounded-full font-bold transition-all cursor-pointer ${
                 statusFilter === 'HADIR' ? 'bg-zinc-950 text-white shadow-none' : 'text-zinc-600 hover:text-zinc-950'
               }`}
             >
@@ -249,7 +249,7 @@ export default function AttendeeListPage() {
             </button>
             <button
               onClick={() => setStatusFilter('BELUM')}
-              className={`px-3 py-1.5 rounded-full font-bold transition-all cursor-pointer ${
+              className={`px-3.5 py-1.5 rounded-full font-bold transition-all cursor-pointer ${
                 statusFilter === 'BELUM' ? 'bg-zinc-950 text-white shadow-none' : 'text-zinc-600 hover:text-zinc-950'
               }`}
             >
@@ -265,7 +265,7 @@ export default function AttendeeListPage() {
               aria-label="Cari nama, email, atau kode tiket peserta"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 bg-zinc-50 border border-zinc-200 rounded-full text-xs text-zinc-950 placeholder-zinc-400 focus:outline-none focus:border-zinc-950 focus:bg-white transition-all font-medium"
+              className="w-full pl-9 pr-4 py-2.5 bg-white border-0 shadow-none rounded-full text-xs text-zinc-950 placeholder-zinc-400 focus:outline-none transition-all font-medium"
             />
           </div>
         </div>
@@ -273,14 +273,14 @@ export default function AttendeeListPage() {
         {/* Table */}
         {attendees.length === 0 && !loading ? (
           <div className="text-center py-16">
-            <Users className="w-12 h-12 mx-auto text-zinc-300 mb-3" />
+            <Users className="w-12 h-12 mx-auto text-zinc-400 mb-3" />
             <h3 className="text-base font-bold text-zinc-950 mb-1">Belum ada peserta</h3>
-            <p className="text-zinc-400 text-xs">Belum ada tiket yang diterbitkan untuk event ini.</p>
+            <p className="text-zinc-500 text-xs">Belum ada tiket yang diterbitkan untuk event ini.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm text-zinc-600">
-              <thead className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider bg-zinc-50 border-b border-zinc-200">
+              <thead className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider bg-zinc-200/50">
                 <tr>
                   <th scope="col" className="px-4 py-3.5">Informasi Peserta</th>
                   <th scope="col" className="px-4 py-3.5">Kode Tiket</th>
@@ -288,19 +288,19 @@ export default function AttendeeListPage() {
                   <th scope="col" className="px-4 py-3.5">Diterbitkan Pada</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-zinc-100">
+              <tbody className="divide-y divide-zinc-200/50">
                 {filteredAttendees.map((ticket, i) => {
                   const user = users[ticket.user_id];
                   const isUsed = ticket.status?.toUpperCase() === 'USED' || ticket.status?.toUpperCase() === 'CHECKED_IN';
 
                   return (
-                    <tr key={i} className="hover:bg-zinc-50/70 transition-colors">
+                    <tr key={i} className="hover:bg-zinc-200/40 transition-colors">
                       <td className="px-4 py-3.5">
                         <div className="font-bold text-zinc-950 text-xs mb-0.5">{user ? user.full_name : 'Pengunjung'}</div>
-                        <div className="text-zinc-400 text-[11px]">{user ? user.email : ticket.user_id.substring(0,8)+'...'}</div>
+                        <div className="text-zinc-500 text-[11px]">{user ? user.email : ticket.user_id.substring(0,8)+'...'}</div>
                       </td>
                       <td className="px-4 py-3.5">
-                        <div className="font-mono text-xs text-zinc-900 bg-zinc-50 px-2.5 py-1 rounded-full border border-zinc-200 inline-block font-bold">
+                        <div className="font-mono text-xs text-zinc-900 bg-white px-3 py-1 rounded-full border-0 shadow-none inline-block font-bold">
                           {ticket.ticket_code}
                         </div>
                         <div className="text-zinc-400 text-[10px] mt-0.5 font-mono">
@@ -310,7 +310,7 @@ export default function AttendeeListPage() {
                       <td className="px-4 py-3.5">
                         <Badge
                           variant={isUsed ? 'success' : 'warning'}
-                          className="text-[10px] font-bold px-2.5 py-0.5 rounded-full"
+                          className="text-[10px] font-bold px-2.5 py-0.5 rounded-full border-0 shadow-none"
                         >
                           {isUsed ? 'HADIR' : 'BELUM HADIR'}
                         </Badge>

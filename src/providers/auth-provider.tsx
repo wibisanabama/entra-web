@@ -38,6 +38,36 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     document.cookie = `entra_refresh=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT${secureFlag}`;
   };
 
+  const parseTokenRole = (tokenStr: string | null): string | null => {
+    if (!tokenStr) return null;
+    try {
+      const parts = tokenStr.split('.');
+      if (parts.length !== 3) return null;
+      const payload = JSON.parse(atob(parts[1].replace(/-/g, '+').replace(/_/g, '/')));
+      return payload?.role || null;
+    } catch {
+      return null;
+    }
+  };
+
+  const syncTokensIfRoleChanged = async (currentToken: string, currentRole: string) => {
+    const tokenRole = parseTokenRole(currentToken);
+    if (tokenRole && tokenRole !== currentRole) {
+      try {
+        const refreshMatch = document.cookie.match(/(?:(?:^|.*;\s*)entra_refresh\s*=\s*([^;]*).*$)|^.*$/);
+        const refreshTokenStr = refreshMatch ? refreshMatch[1] : null;
+        if (refreshTokenStr) {
+          const refreshRes = await authApi.post<AuthResponse>("/api/v1/auth/refresh", { refresh_token: refreshTokenStr });
+          if (refreshRes.data?.tokens) {
+            setCookies(refreshRes.data.tokens.access_token, refreshRes.data.tokens.refresh_token, refreshRes.data.tokens.expires_at);
+          }
+        }
+      } catch {
+        // ignore background refresh failure
+      }
+    }
+  };
+
   const loadProfile = React.useCallback(async () => {
     setIsLoading(true);
     try {
@@ -49,6 +79,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const response = await authApi.get<User>("/api/v1/auth/profile");
         if (response.data) {
           setUser(response.data);
+          await syncTokensIfRoleChanged(token, response.data.role);
         }
       } else {
         setUser(null);
@@ -73,6 +104,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           const response = await authApi.get<User>("/api/v1/auth/profile");
           if (isMounted && response.data) {
             setUser(response.data);
+            await syncTokensIfRoleChanged(token, response.data.role);
           }
         }
       } catch (error) {

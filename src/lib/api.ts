@@ -149,9 +149,9 @@ export class ApiClient {
       headers,
     });
 
-    // 401 Auto Token Refresh and Retry Interceptor (FE-SEC-002)
+    // 401/403 Auto Token Refresh and Retry Interceptor (FE-SEC-002)
     if (
-      response.status === 401 &&
+      (response.status === 401 || (response.status === 403 && endpoint.includes('/organizer'))) &&
       !options._isRetry &&
       !endpoint.includes('/auth/refresh') &&
       !endpoint.includes('/auth/login')

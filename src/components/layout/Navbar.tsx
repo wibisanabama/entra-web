@@ -82,7 +82,7 @@ export function Navbar() {
                     <p className="text-xs font-medium text-zinc-500">Masuk sebagai</p>
                     <p className="text-sm font-semibold text-zinc-950 truncate">{user.full_name || user.email}</p>
                     <span className="inline-block mt-1 px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-zinc-100 text-zinc-700 border-0">
-                      {user.role}
+                      {user.role === 'admin' ? 'Admin' : user.role === 'organizer' ? 'Organizer' : 'Pengguna'}
                     </span>
                   </div>
                   
@@ -103,7 +103,7 @@ export function Navbar() {
                       <Wallet className="w-4 h-4 text-zinc-400" />
                       Gelang Cashless
                     </Link>
-                    {user.role !== 'user' && (
+                    {(user.role === 'organizer' || user.role === 'admin') && (
                       <Link 
                         href="/dashboard" 
                         onClick={() => setIsAvatarDropdownOpen(false)} 

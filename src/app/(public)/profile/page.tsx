@@ -405,8 +405,26 @@ export default function ProfilePage() {
             </div>
           </div>
 
+          {/* Dashboard shortcut for Organizers */}
+          {(user.role === 'organizer' || user.role === 'admin') && (
+            <div className="bg-white p-5 sm:p-6 rounded-2xl max-w-xs text-center md:text-right space-y-3 border-0 shadow-none">
+              <div>
+                <p className="text-xs font-bold text-zinc-950">Panel Organizer</p>
+                <p className="text-[11px] text-zinc-500 leading-relaxed mt-1">
+                  Kelola event Anda, buat tiket baru, atau pantau statistik penjualan secara langsung.
+                </p>
+              </div>
+              <Button
+                onClick={() => { window.location.href = '/dashboard'; }}
+                className="w-full bg-zinc-950 hover:bg-zinc-800 text-white text-xs font-bold py-3 rounded-full border-0 shadow-none cursor-pointer"
+              >
+                Buka Dashboard Organizer
+              </Button>
+            </div>
+          )}
+
           {/* Upgrade to Organizer CTA for Users */}
-          {user.role === 'user' && (
+          {(user.role === 'user' || user.role === 'customer') && (
             <div className="bg-white p-5 sm:p-6 rounded-2xl max-w-xs text-center md:text-right space-y-3 border-0 shadow-none">
               <div>
                 <p className="text-xs font-bold text-zinc-950">Ingin Menggelar Event?</p>

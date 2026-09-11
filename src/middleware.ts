@@ -52,7 +52,7 @@ export function middleware(request: NextRequest) {
   }
 
   // Guard /dashboard from non-organizers and non-admins
-  if (pathname.startsWith('/dashboard') && hasValidToken && userRole === 'user') {
+  if (pathname.startsWith('/dashboard') && hasValidToken && userRole !== 'organizer' && userRole !== 'admin') {
     return NextResponse.redirect(new URL('/', request.url));
   }
 
@@ -64,7 +64,7 @@ export function middleware(request: NextRequest) {
   // 2. Check if user is accessing an auth route with an active valid token
   const isAuthRoute = authRoutes.some((route) => pathname === route);
   if (isAuthRoute && hasValidToken) {
-    const targetUrl = userRole === 'user' ? '/' : '/dashboard';
+    const targetUrl = (userRole === 'organizer' || userRole === 'admin') ? '/dashboard' : '/';
     return NextResponse.redirect(new URL(targetUrl, request.url));
   }
 

@@ -24,7 +24,7 @@ export function Sidebar() {
   const menuItems = allMenuItems.filter((item) => !item.adminOnly || user?.role === 'admin');
 
   return (
-    <div className="flex flex-col bg-white h-full transition-all duration-300 w-64 select-none">
+    <aside className="flex flex-col bg-white h-full w-full border-r border-zinc-200 select-none">
       <div className="flex items-center justify-between h-16 px-6 border-b border-zinc-200">
         <Link href="/" className="flex items-center gap-2.5">
           <span className="inline-flex items-center gap-2.5">
@@ -75,6 +75,6 @@ export function Sidebar() {
           <ArrowUpRight className="w-3.5 h-3.5 text-zinc-400" />
         </Link>
       </div>
-    </div>
+    </aside>
   );
 }

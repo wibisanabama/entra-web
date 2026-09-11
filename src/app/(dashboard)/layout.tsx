@@ -35,7 +35,7 @@ export default function DashboardLayout({
   return (
     <div className="h-screen overflow-hidden bg-white text-zinc-950 flex">
       {/* Sidebar - fixed on desktop */}
-      <div className="hidden md:block w-64 flex-shrink-0 border-r border-zinc-200">
+      <div className="hidden md:block w-64 flex-shrink-0 h-full">
         <Sidebar />
       </div>
 

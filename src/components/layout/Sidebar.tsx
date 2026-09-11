@@ -30,7 +30,7 @@ export function Sidebar() {
           <span className="inline-flex items-center gap-2.5">
             <BrandLogo markClassName="h-7 w-7" showWordmark={false} />
             <span className="font-black text-lg tracking-tight text-zinc-950">
-              Entra<span className="text-zinc-400 font-bold text-[10px] ml-1.5 px-1.5 py-0.5 bg-zinc-100 rounded-full">STUDIO</span>
+              Entra
             </span>
           </span>
         </Link>

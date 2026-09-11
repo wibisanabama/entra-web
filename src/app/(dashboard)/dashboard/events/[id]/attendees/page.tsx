@@ -192,7 +192,7 @@ export default function AttendeeListPage() {
             variant="outline"
             onClick={fetchAttendees}
             disabled={loading}
-            className="rounded-full border-zinc-200 text-zinc-700 hover:bg-zinc-100 flex items-center gap-2 text-xs font-bold px-4 py-2"
+            className="rounded-full bg-zinc-100 hover:bg-zinc-200 text-zinc-900 border-0 shadow-none flex items-center gap-2 text-xs font-bold px-4 py-2"
           >
             <RefreshCw className={`h-3.5 w-3.5 ${loading ? 'animate-spin' : ''}`} />
             Refresh

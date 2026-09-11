@@ -190,10 +190,9 @@ export function LocationPickerMapInner({
       // Add Zoom Control to bottom right
       L.control.zoom({ position: 'bottomright' }).addTo(map);
 
-      // Clean Light Voyager Tile Layer
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
-        subdomains: 'abcd',
+      // Standard OpenStreetMap Tile Layer (100% Free, No API Key Required)
+      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         maxZoom: 19,
       }).addTo(map);
 

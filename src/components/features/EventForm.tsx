@@ -286,7 +286,7 @@ export function EventForm({ initialData, onSubmit, onCancel, isLoading = false }
                     setVenueNameInput(selectedVenue.name);
                     setIsMapModalOpen(true);
                   }}
-                  className="px-4 py-2 bg-zinc-100 hover:bg-zinc-200 text-zinc-800 rounded-full text-xs font-bold transition-colors cursor-pointer border-0 shadow-none shrink-0"
+                  className="px-4 py-2 bg-zinc-100 text-zinc-800 rounded-full text-xs font-bold cursor-pointer border-0 shadow-none shrink-0"
                 >
                   Ubah di Peta
                 </button>
@@ -299,9 +299,9 @@ export function EventForm({ initialData, onSubmit, onCancel, isLoading = false }
                   setVenueNameInput('');
                   setIsMapModalOpen(true);
                 }}
-                className="w-full p-4 sm:p-5 bg-white hover:bg-white/90 rounded-2xl flex items-center justify-center gap-2.5 text-zinc-700 hover:text-zinc-950 transition-all cursor-pointer border-0 shadow-none group"
+                className="w-full p-4 sm:p-5 bg-white rounded-2xl flex items-center justify-center gap-2.5 text-zinc-950 cursor-pointer border-0 shadow-none"
               >
-                <div className="w-8 h-8 rounded-full bg-zinc-100 flex items-center justify-center text-zinc-900 group-hover:scale-110 transition-transform">
+                <div className="w-8 h-8 rounded-full bg-zinc-100 flex items-center justify-center text-zinc-900 shrink-0">
                   <MapPin className="h-4 w-4" />
                 </div>
                 <span className="text-xs font-bold">Pilih Titik Lokasi di Peta</span>

@@ -82,6 +82,8 @@ export function EventForm({ initialData, onSubmit, onCancel, isLoading = false }
     fetchData();
   }, []);
 
+  const selectedVenue = venues.find((v) => v.id === formData.venue_id) || initialData?.venue;
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
     
@@ -106,11 +108,15 @@ export function EventForm({ initialData, onSubmit, onCancel, isLoading = false }
     // Ensure numbers
     submitData.max_attendees = Number(submitData.max_attendees);
     
-    // Clean up unused fields
+    // Clean up unused fields & validation
     if (submitData.is_online) {
       submitData.venue_id = '';
     } else {
       submitData.online_url = '';
+      if (!submitData.venue_id) {
+        toast.error('Silakan tentukan lokasi di peta terlebih dahulu.');
+        return;
+      }
     }
     
     onSubmit(submitData);
@@ -121,7 +127,7 @@ export function EventForm({ initialData, onSubmit, onCancel, isLoading = false }
     try {
       setIsSavingVenue(true);
       const payload = {
-        name: (venueNameInput.trim() || selectedMapLoc.name || 'Venue Baru').trim(),
+        name: (venueNameInput.trim() || selectedMapLoc.name || 'Lokasi Terpilih').trim(),
         address: selectedMapLoc.address || `${selectedMapLoc.city}, ${selectedMapLoc.province}`,
         city: selectedMapLoc.city || 'Jakarta',
         province: selectedMapLoc.province || 'DKI Jakarta',
@@ -142,7 +148,7 @@ export function EventForm({ initialData, onSubmit, onCancel, isLoading = false }
       setIsMapModalOpen(false);
     } catch (err) {
       console.error('Failed to create venue from map:', err);
-      toast.error('Gagal menyimpan lokasi venue baru.');
+      toast.error('Gagal menyimpan lokasi.');
     } finally {
       setIsSavingVenue(false);
     }
@@ -254,10 +260,37 @@ export function EventForm({ initialData, onSubmit, onCancel, isLoading = false }
           />
         ) : (
           <div className="w-full space-y-2">
-            <div className="flex items-center justify-between">
-              <label className="block text-xs font-bold text-zinc-700 uppercase tracking-wider">
-                Lokasi (Venue)
-              </label>
+            <label className="block text-xs font-bold text-zinc-700 uppercase tracking-wider">
+              Lokasi
+            </label>
+            {selectedVenue ? (
+              <div className="p-4 bg-white rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-0 shadow-none">
+                <div className="flex items-start gap-3 min-w-0">
+                  <div className="w-9 h-9 rounded-full bg-zinc-100 flex items-center justify-center text-zinc-900 shrink-0 mt-0.5">
+                    <MapPin className="h-4 w-4" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-xs font-bold text-zinc-950 truncate">
+                      {selectedVenue.name}
+                    </p>
+                    <p className="text-[11px] text-zinc-500 truncate mt-0.5">
+                      {selectedVenue.address || `${selectedVenue.city}, ${selectedVenue.province}`}
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedMapLoc(null);
+                    setVenueNameInput(selectedVenue.name);
+                    setIsMapModalOpen(true);
+                  }}
+                  className="px-4 py-2 bg-zinc-100 hover:bg-zinc-200 text-zinc-800 rounded-full text-xs font-bold transition-colors cursor-pointer border-0 shadow-none shrink-0"
+                >
+                  Ubah di Peta
+                </button>
+              </div>
+            ) : (
               <button
                 type="button"
                 onClick={() => {
@@ -265,25 +298,14 @@ export function EventForm({ initialData, onSubmit, onCancel, isLoading = false }
                   setVenueNameInput('');
                   setIsMapModalOpen(true);
                 }}
-                className="inline-flex items-center gap-1.5 text-xs font-bold text-zinc-950 hover:text-zinc-700 bg-white hover:bg-zinc-200 px-3.5 py-1.5 rounded-full transition-all cursor-pointer border-0 shadow-none"
+                className="w-full p-4 sm:p-5 bg-white hover:bg-white/90 rounded-2xl flex items-center justify-center gap-2.5 text-zinc-700 hover:text-zinc-950 transition-all cursor-pointer border-0 shadow-none group"
               >
-                <MapPin className="h-3.5 w-3.5" />
-                <span>Pilih dari Peta</span>
+                <div className="w-8 h-8 rounded-full bg-zinc-100 flex items-center justify-center text-zinc-900 group-hover:scale-110 transition-transform">
+                  <MapPin className="h-4 w-4" />
+                </div>
+                <span className="text-xs font-bold">Pilih Titik Lokasi di Peta</span>
               </button>
-            </div>
-            <select
-              name="venue_id"
-              value={formData.venue_id || ''}
-              onChange={handleChange}
-              disabled={loadingData}
-              required={!formData.is_online}
-              className="flex w-full rounded-full bg-white border-0 shadow-none text-zinc-950 px-5 py-3 text-sm transition-all focus:outline-none focus:ring-0 focus:bg-white disabled:opacity-50 font-medium cursor-pointer"
-            >
-              <option value="">Pilih Venue Terdaftar</option>
-              {venues.map((v) => (
-                <option key={v.id} value={v.id}>{v.name} - {v.city}</option>
-              ))}
-            </select>
+            )}
           </div>
         )}
         
@@ -366,14 +388,18 @@ export function EventForm({ initialData, onSubmit, onCancel, isLoading = false }
         <Modal
           isOpen={isMapModalOpen}
           onClose={() => !isSavingVenue && setIsMapModalOpen(false)}
-          title="Pilih Lokasi Venue dari Peta"
+          title="Pilih Lokasi dari Peta"
         >
           <div className="space-y-4">
             <p className="text-xs text-zinc-500">
-              Ketik nama gedung/tempat di kotak pencarian atau klik dan geser pin pada peta untuk menentukan titik lokasi.
+              Ketik nama tempat di kotak pencarian atau klik dan geser pin pada peta untuk menentukan titik lokasi.
             </p>
 
             <LocationPickerMap
+              initialLat={selectedVenue?.latitude || undefined}
+              initialLng={selectedVenue?.longitude || undefined}
+              initialName={selectedVenue?.name || ''}
+              initialAddress={selectedVenue?.address || ''}
               onLocationSelect={(loc) => {
                 setSelectedMapLoc(loc);
                 if (!venueNameInput) {
@@ -387,13 +413,13 @@ export function EventForm({ initialData, onSubmit, onCancel, isLoading = false }
               <div className="p-4 bg-zinc-100 rounded-2xl space-y-3">
                 <div className="space-y-1">
                   <label className="block text-[10px] font-bold text-zinc-600 uppercase tracking-wider">
-                    Nama Venue / Gedung
+                    Nama Lokasi / Tempat
                   </label>
                   <input
                     type="text"
                     value={venueNameInput}
                     onChange={(e) => setVenueNameInput(e.target.value)}
-                    placeholder="Contoh: Istora Senayan / Balai Kartini"
+                    placeholder="Contoh: Istora Senayan / Gedung Serbaguna"
                     className="w-full px-4 py-2.5 bg-white rounded-full text-xs font-bold text-zinc-950 border-0 shadow-none focus:outline-none"
                     required
                   />

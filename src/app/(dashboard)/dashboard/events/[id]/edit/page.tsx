@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { EventForm } from '@/components/features/EventForm';
-import { Event } from '@/types';
+import { Event, Venue } from '@/types';
 import { eventApi } from '@/lib/api';
 import { toast } from '@/lib/toast';
 
@@ -30,8 +30,21 @@ export default function EditEventPage() {
             return d.toISOString().slice(0, 16); // Extract YYYY-MM-DDThh:mm
           };
 
+          let venueObj = data.venue;
+          if (!venueObj && data.venue_id) {
+            try {
+              const venueRes = await eventApi.get<Venue>(`/api/v1/venues/${data.venue_id}`);
+              if (venueRes.data) {
+                venueObj = venueRes.data;
+              }
+            } catch (err) {
+              console.error('Failed to fetch event venue', err);
+            }
+          }
+
           setInitialData({
             ...data,
+            venue: venueObj,
             start_date: formatDate(data.start_date),
             end_date: formatDate(data.end_date),
           });

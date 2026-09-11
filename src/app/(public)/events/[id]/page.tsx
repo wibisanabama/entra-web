@@ -246,7 +246,7 @@ export default function EventDetailPage() {
           eventApi.get<EventType>(`/api/v1/events/${eventId}`),
           eventApi.get<TicketType[]>(`/api/v1/events/${eventId}/tickets`).catch(() => ({ success: false, data: [] as TicketType[] })),
           eventApi.get<Category[]>(`/api/v1/categories`).catch(() => ({ success: false, data: [] as Category[] })),
-          eventApi.get<Venue[]>(`/api/v1/venues`).catch(() => ({ success: false, data: [] as Venue[] }))
+          eventApi.get<Venue[]>('/api/v1/venues?per_page=100').catch(() => ({ success: false, data: [] as Venue[] }))
         ]);
 
         if (res.data) {
@@ -302,6 +302,15 @@ export default function EventDetailPage() {
             const venue = venues.find((v) => v.id === apiEvent.venue_id);
             if (venue) {
               venueName = `${venue.name}, ${venue.city}`;
+            } else {
+              try {
+                const singleVen = await eventApi.get<Venue>(`/api/v1/venues/${apiEvent.venue_id}`);
+                if (singleVen.data) {
+                  venueName = `${singleVen.data.name}, ${singleVen.data.city}`;
+                }
+              } catch {
+                // ignore
+              }
             }
           }
           

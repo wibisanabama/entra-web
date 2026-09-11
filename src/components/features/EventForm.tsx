@@ -60,6 +60,9 @@ export function EventForm({ initialData, onSubmit, onCancel, isLoading = false }
       max_attendees: initialData.max_attendees || 0,
       status: initialData.status || 'draft',
     });
+    if (initialData.venue) {
+      setVenues((prev) => (prev.some((v) => v.id === initialData.venue?.id) ? prev : [initialData.venue!, ...prev]));
+    }
   }
 
   useEffect(() => {
@@ -67,11 +70,15 @@ export function EventForm({ initialData, onSubmit, onCancel, isLoading = false }
       try {
         const [catRes, venRes] = await Promise.all([
           eventApi.get<Category[]>('/api/v1/categories'),
-          eventApi.get<Venue[]>('/api/v1/venues')
+          eventApi.get<Venue[]>('/api/v1/venues?per_page=100')
         ]);
         
         if (catRes.data) setCategories(Array.isArray(catRes.data) ? catRes.data : []);
-        if (venRes.data) setVenues(Array.isArray(venRes.data) ? venRes.data : []);
+        let fetchedVenues = Array.isArray(venRes.data) ? venRes.data : [];
+        if (initialData?.venue && !fetchedVenues.some((v) => v.id === initialData.venue?.id)) {
+          fetchedVenues = [initialData.venue, ...fetchedVenues];
+        }
+        setVenues(fetchedVenues);
       } catch (error) {
         console.error("Failed to fetch form reference data", error);
         toast.error("Gagal memuat kategori dan venue");
@@ -80,9 +87,25 @@ export function EventForm({ initialData, onSubmit, onCancel, isLoading = false }
       }
     };
     fetchData();
-  }, []);
+  }, [initialData?.venue]);
 
-  const selectedVenue = venues.find((v) => v.id === formData.venue_id) || initialData?.venue;
+  // Ensure specific venue is loaded if not found in list
+  useEffect(() => {
+    const targetVenueId = formData.venue_id || initialData?.venue_id;
+    if (targetVenueId && !venues.some((v) => v.id === targetVenueId)) {
+      eventApi
+        .get<Venue>(`/api/v1/venues/${targetVenueId}`)
+        .then((res) => {
+          const venueData = res.data;
+          if (venueData) {
+            setVenues((prev) => (prev.some((v) => v.id === venueData.id) ? prev : [venueData, ...prev]));
+          }
+        })
+        .catch((err) => console.error('Failed to fetch specific venue', err));
+    }
+  }, [formData.venue_id, initialData?.venue_id, venues]);
+
+  const selectedVenue = venues.find((v) => v.id === formData.venue_id) || (initialData?.venue?.id === formData.venue_id ? initialData?.venue : undefined) || initialData?.venue;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;

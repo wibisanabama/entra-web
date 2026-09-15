@@ -131,14 +131,6 @@ export default function WithdrawalsPage() {
     fetchData();
   }, [fetchData]);
 
-  const handleQuickAmount = (percentage: number) => {
-    const calculated = Math.floor((balance.available_balance * percentage) / 100);
-    setFormData((prev) => ({ ...prev, amount: calculated }));
-  };
-
-  const handleFixedAmount = (val: number) => {
-    setFormData((prev) => ({ ...prev, amount: val }));
-  };
 
   const handleOpenRequestModal = () => {
     setFormData({
@@ -537,51 +529,6 @@ export default function WithdrawalsPage() {
               />
             </div>
 
-            {/* Quick Amount Chips */}
-            <div className="flex flex-wrap gap-1.5 pt-1">
-              <button
-                type="button"
-                onClick={() => handleQuickAmount(25)}
-                className="px-3.5 py-1.5 text-xs bg-zinc-100 hover:bg-zinc-200 text-zinc-800 rounded-full font-bold transition-colors border-0 shadow-none cursor-pointer"
-              >
-                25%
-              </button>
-              <button
-                type="button"
-                onClick={() => handleQuickAmount(50)}
-                className="px-3.5 py-1.5 text-xs bg-zinc-100 hover:bg-zinc-200 text-zinc-800 rounded-full font-bold transition-colors border-0 shadow-none cursor-pointer"
-              >
-                50%
-              </button>
-              <button
-                type="button"
-                onClick={() => handleQuickAmount(100)}
-                className="px-3.5 py-1.5 text-xs bg-zinc-950 hover:bg-zinc-800 text-white rounded-full font-bold transition-colors border-0 shadow-none cursor-pointer"
-              >
-                Tarik Semua (100%)
-              </button>
-              <button
-                type="button"
-                onClick={() => handleFixedAmount(100000)}
-                className="px-3.5 py-1.5 text-xs bg-zinc-100 hover:bg-zinc-200 text-zinc-800 rounded-full font-bold transition-colors border-0 shadow-none cursor-pointer"
-              >
-                100rb
-              </button>
-              <button
-                type="button"
-                onClick={() => handleFixedAmount(500000)}
-                className="px-3.5 py-1.5 text-xs bg-zinc-100 hover:bg-zinc-200 text-zinc-800 rounded-full font-bold transition-colors border-0 shadow-none cursor-pointer"
-              >
-                500rb
-              </button>
-              <button
-                type="button"
-                onClick={() => handleFixedAmount(1000000)}
-                className="px-3.5 py-1.5 text-xs bg-zinc-100 hover:bg-zinc-200 text-zinc-800 rounded-full font-bold transition-colors border-0 shadow-none cursor-pointer"
-              >
-                1 Juta
-              </button>
-            </div>
           </div>
 
           {/* Bank Select */}

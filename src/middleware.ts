@@ -36,40 +36,43 @@ function isTokenValid(token?: string): boolean {
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const token = request.cookies.get('entra_token')?.value;
+  const refreshToken = request.cookies.get('entra_refresh')?.value;
   const hasValidToken = isTokenValid(token);
-  const payload = hasValidToken ? decodeTokenPayload(token) : null;
+  const hasRefreshToken = typeof refreshToken === 'string' && refreshToken.trim().length > 0;
+  const payload = decodeTokenPayload(token);
   const userRole = payload?.role;
 
-  // 1. Check if user is accessing a protected route without a valid token
+  // 1. Check if user is accessing a protected route without any valid token or refresh token
   const isProtectedRoute = protectedPrefixes.some((prefix) =>
     pathname.startsWith(prefix)
   );
 
-  if (isProtectedRoute && !hasValidToken) {
+  if (isProtectedRoute && !hasValidToken && !hasRefreshToken) {
     const loginUrl = new URL('/login', request.url);
     loginUrl.searchParams.set('redirect', pathname);
     return NextResponse.redirect(loginUrl);
   }
 
   // Guard /dashboard from non-organizers and non-admins
-  if (pathname.startsWith('/dashboard') && hasValidToken && userRole !== 'organizer' && userRole !== 'admin') {
+  if (pathname.startsWith('/dashboard') && userRole && userRole !== 'organizer' && userRole !== 'admin') {
     return NextResponse.redirect(new URL('/', request.url));
   }
 
   // Guard /dashboard/admin from non-admins
-  if (pathname.startsWith('/dashboard/admin') && hasValidToken && userRole !== 'admin') {
+  if (pathname.startsWith('/dashboard/admin') && userRole && userRole !== 'admin') {
     return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 
-  // 2. Check if user is accessing an auth route with an active valid token
+  // 2. Check if user is accessing an auth route with an active valid token or refresh session
   const isAuthRoute = authRoutes.some((route) => pathname === route);
-  if (isAuthRoute && hasValidToken) {
+  if (isAuthRoute && (hasValidToken || hasRefreshToken)) {
     const targetUrl = (userRole === 'organizer' || userRole === 'admin') ? '/dashboard' : '/';
     return NextResponse.redirect(new URL(targetUrl, request.url));
   }
 
   return NextResponse.next();
 }
+
 
 export const config = {
   matcher: [

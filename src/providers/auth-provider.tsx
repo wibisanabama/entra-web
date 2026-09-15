@@ -22,16 +22,56 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  const refreshTimerRef = React.useRef<NodeJS.Timeout | null>(null);
+
+  const scheduleProactiveRefresh = React.useCallback((tokenStr: string | null) => {
+    if (refreshTimerRef.current) {
+      clearTimeout(refreshTimerRef.current);
+      refreshTimerRef.current = null;
+    }
+    if (!tokenStr) return;
+    try {
+      const parts = tokenStr.split('.');
+      if (parts.length !== 3) return;
+      const payload = JSON.parse(atob(parts[1].replace(/-/g, '+').replace(/_/g, '/')));
+      if (!payload.exp) return;
+      const msUntilExpiry = payload.exp * 1000 - Date.now();
+      // Proactively refresh 60 seconds before token expiry
+      const refreshDelay = Math.max(msUntilExpiry - 60 * 1000, 5000);
+      refreshTimerRef.current = setTimeout(async () => {
+        try {
+          const refreshMatch = document.cookie.match(/(?:(?:^|.*;\s*)entra_refresh\s*=\s*([^;]*).*$)|^.*$/);
+          const refreshTokenStr = refreshMatch ? refreshMatch[1] : null;
+          if (refreshTokenStr) {
+            const refreshRes = await authApi.post<AuthResponse>("/api/v1/auth/refresh", { refresh_token: refreshTokenStr });
+            if (refreshRes.data?.tokens) {
+              setCookies(refreshRes.data.tokens.access_token, refreshRes.data.tokens.refresh_token, refreshRes.data.tokens.expires_at);
+              scheduleProactiveRefresh(refreshRes.data.tokens.access_token);
+            }
+          }
+        } catch (err) {
+          console.error("Proactive background refresh failed:", err);
+        }
+      }, refreshDelay);
+    } catch {
+      // ignore parse error
+    }
+  }, []);
+
   const setCookies = (accessToken: string, refreshToken: string, expiresAt: number) => {
     const isSecure = typeof window !== 'undefined' && window.location.protocol === 'https:';
     const secureFlag = isSecure ? '; SameSite=Strict; Secure' : '; SameSite=Lax';
-    const accessDate = new Date(expiresAt * 1000).toUTCString();
     const refreshDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toUTCString();
-    document.cookie = `entra_token=${accessToken}; path=/; expires=${accessDate}${secureFlag}`;
+    // Allow access token cookie to remain available for client-side proactive refresh
+    document.cookie = `entra_token=${accessToken}; path=/; expires=${refreshDate}${secureFlag}`;
     document.cookie = `entra_refresh=${refreshToken}; path=/; expires=${refreshDate}${secureFlag}`;
   };
 
   const clearCookies = () => {
+    if (refreshTimerRef.current) {
+      clearTimeout(refreshTimerRef.current);
+      refreshTimerRef.current = null;
+    }
     const isSecure = typeof window !== 'undefined' && window.location.protocol === 'https:';
     const secureFlag = isSecure ? '; SameSite=Strict; Secure' : '; SameSite=Lax';
     document.cookie = `entra_token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT${secureFlag}`;
@@ -60,6 +100,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           const refreshRes = await authApi.post<AuthResponse>("/api/v1/auth/refresh", { refresh_token: refreshTokenStr });
           if (refreshRes.data?.tokens) {
             setCookies(refreshRes.data.tokens.access_token, refreshRes.data.tokens.refresh_token, refreshRes.data.tokens.expires_at);
+            scheduleProactiveRefresh(refreshRes.data.tokens.access_token);
           }
         }
       } catch {
@@ -71,15 +112,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const loadProfile = React.useCallback(async () => {
     setIsLoading(true);
     try {
-      // Check if token exists
       const tokenMatch = document.cookie.match(/(?:(?:^|.*;\s*)entra_token\s*=\s*([^;]*).*$)|^.*$/);
       const token = tokenMatch ? tokenMatch[1] : null;
+      const refreshMatch = document.cookie.match(/(?:(?:^|.*;\s*)entra_refresh\s*=\s*([^;]*).*$)|^.*$/);
+      const refreshTokenStr = refreshMatch ? refreshMatch[1] : null;
 
-      if (token) {
+      if (token || refreshTokenStr) {
         const response = await authApi.get<User>("/api/v1/auth/profile");
         if (response.data) {
           setUser(response.data);
-          await syncTokensIfRoleChanged(token, response.data.role);
+          const currentToken = document.cookie.match(/(?:(?:^|.*;\s*)entra_token\s*=\s*([^;]*).*$)|^.*$/)?.[1] || token;
+          if (currentToken) {
+            scheduleProactiveRefresh(currentToken);
+            await syncTokensIfRoleChanged(currentToken, response.data.role);
+          }
+        } else {
+          setUser(null);
         }
       } else {
         setUser(null);
@@ -91,7 +139,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [scheduleProactiveRefresh]);
 
   useEffect(() => {
     let isMounted = true;
@@ -99,12 +147,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       try {
         const tokenMatch = document.cookie.match(/(?:(?:^|.*;\s*)entra_token\s*=\s*([^;]*).*$)|^.*$/);
         const token = tokenMatch ? tokenMatch[1] : null;
+        const refreshMatch = document.cookie.match(/(?:(?:^|.*;\s*)entra_refresh\s*=\s*([^;]*).*$)|^.*$/);
+        const refreshTokenStr = refreshMatch ? refreshMatch[1] : null;
 
-        if (token) {
+        if (token || refreshTokenStr) {
           const response = await authApi.get<User>("/api/v1/auth/profile");
           if (isMounted && response.data) {
             setUser(response.data);
-            await syncTokensIfRoleChanged(token, response.data.role);
+            const currentToken = document.cookie.match(/(?:(?:^|.*;\s*)entra_token\s*=\s*([^;]*).*$)|^.*$/)?.[1] || token;
+            if (currentToken) {
+              scheduleProactiveRefresh(currentToken);
+              await syncTokensIfRoleChanged(currentToken, response.data.role);
+            }
           }
         }
       } catch (error) {
@@ -123,14 +177,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     initAuth();
     return () => {
       isMounted = false;
+      if (refreshTimerRef.current) {
+        clearTimeout(refreshTimerRef.current);
+      }
     };
-  }, []);
+  }, [scheduleProactiveRefresh]);
 
   const login = async (data: LoginRequest) => {
     const response = await authApi.post<AuthResponse>("/api/v1/auth/login", data);
     if (response.data) {
       const { user: userData, tokens } = response.data;
       setCookies(tokens.access_token, tokens.refresh_token, tokens.expires_at);
+      scheduleProactiveRefresh(tokens.access_token);
       setUser(userData);
     }
   };
@@ -140,6 +198,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (response.data) {
       const { user: userData, tokens } = response.data;
       setCookies(tokens.access_token, tokens.refresh_token, tokens.expires_at);
+      scheduleProactiveRefresh(tokens.access_token);
       setUser(userData);
     }
   };
@@ -160,6 +219,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (response.data) {
         const { tokens } = response.data;
         setCookies(tokens.access_token, tokens.refresh_token, tokens.expires_at);
+        scheduleProactiveRefresh(tokens.access_token);
       }
     } catch (error) {
       logout();
@@ -169,8 +229,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const setAuthData = React.useCallback((userData: User, tokens: TokenPair) => {
     setCookies(tokens.access_token, tokens.refresh_token, tokens.expires_at);
+    scheduleProactiveRefresh(tokens.access_token);
     setUser(userData);
-  }, []);
+  }, [scheduleProactiveRefresh]);
+
 
   const upgradeToOrganizer = React.useCallback(async () => {
     const response = await authApi.post<AuthResponse>("/api/v1/auth/upgrade");

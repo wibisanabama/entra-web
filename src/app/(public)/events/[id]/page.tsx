@@ -75,7 +75,11 @@ export default function EventDetailPage() {
         window.snap.pay(token, {
           onSuccess: async (result: any) => {
             try {
-              const payload = result && result.order_id ? result : { order_id: midtransOrderId || orderId };
+              const payload = {
+                ...(result || {}),
+                order_id: result?.order_id || midtransOrderId || orderId,
+                transaction_status: result?.transaction_status || 'settlement',
+              };
               await ticketApi.post('/api/v1/tickets/midtrans/webhook', payload);
             } catch (err) {
               console.error('Payment webhook sync error:', err);
@@ -84,7 +88,11 @@ export default function EventDetailPage() {
           },
           onPending: async (result: any) => {
             try {
-              const payload = result && result.order_id ? result : { order_id: midtransOrderId || orderId };
+              const payload = {
+                ...(result || {}),
+                order_id: result?.order_id || midtransOrderId || orderId,
+                transaction_status: result?.transaction_status || 'pending',
+              };
               await ticketApi.post('/api/v1/tickets/midtrans/webhook', payload);
             } catch (err) {
               console.error('Payment pending sync error:', err);

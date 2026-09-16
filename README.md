@@ -1,78 +1,104 @@
 # Entra Web
 
-Aplikasi web Entra untuk pencarian event, pembelian tiket, dan pengelolaan event oleh organizer.
+Aplikasi web portal publik dan dashboard manajemen event untuk platform Entra, dibangun menggunakan Next.js (App Router), React, TypeScript, dan Tailwind CSS.
 
-## Fitur
+## Fitur Utama
 
-- Katalog event, detail event, dan checkout tiket.
-- Akun pengguna, profil, tiket QR, dan transfer tiket.
-- Dompet cashless, top-up, dan riwayat transaksi.
-- Dashboard organizer untuk event, jenis tiket, venue, pesanan, peserta, dan media.
-- Pengajuan withdrawal organizer dan pengelolaan statusnya oleh admin.
+- Portal Publik: Pencarian dan penjelajahan katalog event, filter kategori, detail event, dan pembelian tiket online.
+- Transaksi dan Pembayaran: Integrasi Midtrans Snap untuk pembayaran digital (QRIS, Virtual Account, dan E-Wallet).
+- Tiket Digital: Manajemen e-ticket berbasis QR code dinamis, bukti pembelian, dan transfer kepemilikan tiket.
+- Dompet Cashless: Cek saldo digital, riwayat transaksi, dan simulasi top-up.
+- Dashboard Organizer: Manajemen pembuatan dan penyuntingan event, kuota tier tiket, pemantauan daftar peserta, dan laporan penjualan.
+- Manajemen Finansial: Pengajuan pencairan saldo pendapatan tiket (withdrawal) ke rekening bank serta panel persetujuan admin.
 
-## Teknologi
+## Prasyarat Sistem
 
-Next.js 16, React 19, TypeScript 5, Tailwind CSS 4, dan TanStack Query 5.
+- Node.js versi 20.9.0 atau lebih baru
+- npm versi 10.0.0 atau lebih baru
+- Backend Entra API yang aktif dan dapat diakses melalui jaringan
 
-## Prasyarat
+## Konfigurasi Lingkungan
 
-- Node.js 20.9.0 atau lebih baru dan npm.
-- Layanan [Entra API](https://github.com/wibisanabama/entra-api) yang sudah dikonfigurasi dan berjalan.
-
-## Instalasi
+Salin berkas konfigurasi lingkungan pada direktori root proyek:
 
 ```bash
-git clone https://github.com/wibisanabama/entra-web.git
-cd entra-web
-npm ci
+cp .env.example .env.local
 ```
 
-Buat `.env.local` di root repositori. Jika file sudah ada, sesuaikan nilainya tanpa menimpa konfigurasi yang masih digunakan:
+Atau menggunakan PowerShell pada Windows:
 
-```dotenv
-NEXT_PUBLIC_AUTH_API_URL=http://localhost:8081
-NEXT_PUBLIC_EVENT_API_URL=http://localhost:8082
-NEXT_PUBLIC_TICKET_API_URL=http://localhost:8083
-NEXT_PUBLIC_PAYMENT_API_URL=http://localhost:8084
-NEXT_PUBLIC_CASHLESS_API_URL=http://localhost:8085
-NEXT_PUBLIC_GATE_API_URL=http://localhost:8086
-NEXT_PUBLIC_STORAGE_API_URL=http://localhost:8087
-NEXT_PUBLIC_MIDTRANS_CLIENT_KEY=
+```powershell
+Copy-Item .env.example .env.local
 ```
 
-Isi client key Midtrans Sandbox untuk checkout. Server key hanya boleh disimpan di backend, bukan pada variabel `NEXT_PUBLIC_*`.
+Sesuaikan parameter berikut pada berkas `.env.local`:
 
-URL API harus dapat dijangkau browser pengguna. `localhost` hanya sesuai jika browser dan backend berjalan pada komputer yang sama. Halaman yang mengambil data di server juga memerlukan akses ke URL tersebut.
+| Parameter | Keterangan | Nilai Bawaan |
+| --- | --- | --- |
+| `NEXT_PUBLIC_AUTH_API_URL` | URL basis auth-service | http://localhost:8081 |
+| `NEXT_PUBLIC_EVENT_API_URL` | URL basis event-service | http://localhost:8082 |
+| `NEXT_PUBLIC_TICKET_API_URL` | URL basis ticket-service | http://localhost:8083 |
+| `NEXT_PUBLIC_PAYMENT_API_URL` | URL basis payment-service | http://localhost:8084 |
+| `NEXT_PUBLIC_CASHLESS_API_URL` | URL basis cashless-service | http://localhost:8085 |
+| `NEXT_PUBLIC_GATE_API_URL` | URL basis gate-service | http://localhost:8086 |
+| `NEXT_PUBLIC_STORAGE_API_URL` | URL basis storage-service | http://localhost:8087 |
+| `NEXT_PUBLIC_MIDTRANS_CLIENT_KEY` | Client Key Midtrans Sandbox untuk frontend | Sesuai akun Midtrans |
 
-## Menjalankan aplikasi
+Catatan: Seluruh variabel berawalan `NEXT_PUBLIC_` terekspos ke sisi peramban (browser) dan harus mengarah ke host backend yang dapat diakses oleh client.
+
+## Instalasi dan Menjalankan Aplikasi
+
+### 1. Instalasi Dependensi
+
+```bash
+npm install
+```
+
+### 2. Menjalankan Server Pengembangan
 
 ```bash
 npm run dev
 ```
 
-Buka [http://localhost:3000](http://localhost:3000).
+Aplikasi dapat diakses melalui peramban pada alamat [http://localhost:3000](http://localhost:3000).
 
-## Pemeriksaan dan build
+### 3. Build Produksi dan Eksekusi
 
 ```bash
-npm run lint
-npm test
+# Kompilasi build produksi
 npm run build
+
+# Menjalankan server produksi
 npm start
 ```
 
-`npm start` menjalankan hasil build, bukan server pengembangan. Tetapkan variabel `NEXT_PUBLIC_*` sebelum build; perubahan nilainya memerlukan build ulang.
+## Pengujian dan Kualitas Kode
 
-## Struktur
+```bash
+# Menjalankan unit test
+npm test
 
-- `src/app/(public)/`: katalog, autentikasi, profil, tiket, dan cashless.
-- `src/app/(dashboard)/`: dashboard organizer dan admin.
-- `src/components/`: komponen UI, layout, dan fitur.
-- `src/lib/api.ts`: klien API dan pembaruan access token.
-- `src/providers/`: state autentikasi, query, dan tema.
-- `src/types/`: definisi tipe data.
-- `public/`: aset statis.
+# Menjalankan linter kode
+npx eslint src
+```
 
-## Catatan integrasi
+## Struktur Direktori
 
-Aplikasi memanggil layanan backend secara langsung. Checkout menggunakan Midtrans Sandbox; fitur pembayaran, media, dan cashless memerlukan konfigurasi layanan terkait. Pembatasan akses tetap harus diterapkan oleh backend.
+```text
+entra-web/
+├── public/                 # Aset statis publik (gambar, ikon, logo)
+├── src/
+│   ├── app/
+│   │   ├── (public)/       # Rute portal publik (katalog event, tiket saya, cashless, autentikasi)
+│   │   └── (dashboard)/    # Rute dashboard organizer dan panel persetujuan admin
+│   ├── components/
+│   │   ├── features/       # Komponen spesifik modul bisnis (e-ticket, checkout, QR selector)
+│   │   ├── layout/         # Komponen tata letak (navbar, sidebar, topbar, footer)
+│   │   └── ui/             # Komponen antarmuka dasar berbasis Tailwind CSS
+│   ├── lib/                # Klien HTTP Axios/Fetch, utilitas formatting, dan toast
+│   ├── providers/          # React Context providers (autentikasi, session, react-query)
+│   └── types/              # Definisi tipe TypeScript
+├── next.config.ts          # Konfigurasi Next.js
+├── tailwind.config.ts      # Konfigurasi styling Tailwind CSS
+└── tsconfig.json           # Konfigurasi kompilator TypeScript
+```

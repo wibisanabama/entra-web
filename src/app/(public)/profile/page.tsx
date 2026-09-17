@@ -12,7 +12,6 @@ import { toast } from '@/lib/toast';
 import {
   User as UserIcon,
   Shield,
-  Key,
   Camera,
   CheckCircle2,
   Copy,
@@ -584,7 +583,7 @@ export default function ProfilePage() {
                 <KeyRound className="h-4 w-4" />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-zinc-950">Ubah Kata Sandi Langsung</h3>
+                <h3 className="text-sm font-bold text-zinc-950">Ubah Kata Sandi</h3>
                 <p className="text-xs text-zinc-500">
                   Masukkan kata sandi saat ini dan tentukan kata sandi baru Anda.
                 </p>
@@ -593,7 +592,17 @@ export default function ProfilePage() {
 
             <div className="space-y-4">
               <div>
-                <label className="text-xs font-bold text-zinc-700 mb-1.5 block">Kata Sandi Saat Ini</label>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="text-xs font-bold text-zinc-700">Kata Sandi Saat Ini</label>
+                  <button
+                    type="button"
+                    onClick={handleRequestPasswordReset}
+                    disabled={isRequestingReset}
+                    className="text-[11px] text-zinc-500 hover:text-zinc-950 font-medium underline underline-offset-2 cursor-pointer border-0 bg-transparent disabled:opacity-50 transition-colors"
+                  >
+                    {isRequestingReset ? 'Mengirim tautan...' : 'Lupa kata sandi?'}
+                  </button>
+                </div>
                 <div className="relative">
                   <input
                     type={showOldPassword ? "text" : "password"}
@@ -611,6 +620,12 @@ export default function ProfilePage() {
                     {showOldPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
                 </div>
+                {resetRequested && (
+                  <p className="text-[11px] text-emerald-600 font-medium mt-1.5 flex items-center gap-1.5">
+                    <CheckCircle2 className="h-3.5 w-3.5 flex-shrink-0" />
+                    Tautan reset kata sandi telah dikirim ke {user?.email || 'email Anda'}. Silakan periksa kotak masuk atau spam.
+                  </p>
+                )}
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
@@ -669,37 +684,6 @@ export default function ProfilePage() {
               </Button>
             </div>
           </form>
-
-          {/* Email Reset Option */}
-          <div className="p-5 sm:p-6 bg-white rounded-2xl space-y-4 border-0 shadow-none">
-            <div className="flex items-start gap-3">
-              <div className="p-2.5 bg-zinc-100 text-zinc-950 rounded-2xl">
-                <Key className="h-4 w-4" />
-              </div>
-              <div className="space-y-1">
-                <h3 className="text-sm font-bold text-zinc-950">Reset Kata Sandi Akun</h3>
-                <p className="text-xs text-zinc-500 leading-relaxed">
-                  Kami akan mengirimkan tautan verifikasi aman ke email Anda ({user.email}) untuk memperbarui kata sandi baru.
-                </p>
-              </div>
-            </div>
-
-            {resetRequested ? (
-              <div className="p-4 bg-emerald-100 text-emerald-800 rounded-2xl text-xs flex items-center gap-2.5 font-medium border-0 shadow-none">
-                <CheckCircle2 className="h-4 w-4 flex-shrink-0 text-emerald-600" />
-                <span>Tautan pembaruan kata sandi telah dikirimkan ke email Anda. Silakan periksa kotak masuk atau spam.</span>
-              </div>
-            ) : (
-              <Button
-                onClick={handleRequestPasswordReset}
-                disabled={isRequestingReset}
-                className="bg-zinc-950 hover:bg-zinc-800 text-white font-bold text-xs py-3 px-6 rounded-full flex items-center gap-2 border-0 shadow-none cursor-pointer"
-              >
-                <Lock className="h-3.5 w-3.5" />
-                {isRequestingReset ? 'Mengirim Permintaan...' : 'Kirim Tautan Reset Kata Sandi'}
-              </Button>
-            )}
-          </div>
         </div>
       )}
     </div>

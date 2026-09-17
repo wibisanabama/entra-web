@@ -94,24 +94,29 @@ export function ETicketModal({ isOpen, onClose, ticket, onOpenTransfer }: ETicke
 
             {/* Event Date, Time & Location Pill */}
             <div
-              className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mt-5 px-4 sm:px-5 py-3 bg-white/70 rounded-2xl border-0 text-xs text-zinc-600 print:flex-row print:items-center print:justify-between"
+              className="flex flex-col gap-2.5 mt-5 px-4 sm:px-5 py-3.5 bg-white/70 rounded-2xl border-0 text-xs text-zinc-600"
               style={{ WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact' }}
             >
-              <div className="flex items-center gap-2 flex-shrink-0" title={event?.start_date ? formatDate(event.start_date) : undefined}>
-                <Calendar className="h-4 w-4 text-zinc-500 flex-shrink-0" />
-                <span>
-                  {event?.start_date ? formatDate(event.start_date) : 'Waktu menyusul'}
-                </span>
+              {/* Row 1: Date & Time */}
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5">
+                <div className="flex items-center gap-2 flex-shrink-0" title={event?.start_date ? formatDate(event.start_date) : undefined}>
+                  <Calendar className="h-4 w-4 text-zinc-500 flex-shrink-0" />
+                  <span className="font-medium">
+                    {event?.start_date ? formatDate(event.start_date) : 'Waktu menyusul'}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 flex-shrink-0" title={event?.start_date ? formatTime(event.start_date, event.end_date) : undefined}>
+                  <Clock className="h-4 w-4 text-zinc-500 flex-shrink-0" />
+                  <span className="font-medium">
+                    {event?.start_date ? formatTime(event.start_date, event.end_date) : 'Waktu menyusul'}
+                  </span>
+                </div>
               </div>
-              <div className="flex items-center gap-2 flex-shrink-0" title={event?.start_date ? formatTime(event.start_date, event.end_date) : undefined}>
-                <Clock className="h-4 w-4 text-zinc-500 flex-shrink-0" />
-                <span>
-                  {event?.start_date ? formatTime(event.start_date, event.end_date) : 'Waktu menyusul'}
-                </span>
-              </div>
-              <div className="flex items-start gap-2 min-w-0">
+
+              {/* Row 2: Location */}
+              <div className="flex items-start gap-2 pt-2 border-t border-zinc-200/60">
                 <MapPin className="h-4 w-4 text-zinc-500 flex-shrink-0 mt-0.5" />
-                <span className="break-words leading-relaxed">
+                <span className="break-words leading-relaxed font-medium text-zinc-800">
                   {event?.is_online
                     ? 'Online Event'
                     : event?.venue?.name && event?.venue?.city

@@ -2,9 +2,7 @@ import React from 'react';
 import { Calendar, Clock, MapPin } from 'lucide-react';
 import Link from 'next/link';
 import { Event } from '@/types';
-import { format } from 'date-fns';
-import { id } from 'date-fns/locale';
-import { getPgText, formatCurrency } from '@/lib/utils';
+import { getPgText, formatCurrency, formatDateRange, formatTime } from '@/lib/utils';
 
 export interface EventCardProps {
   event: Event;
@@ -15,11 +13,8 @@ export function EventCard({ event }: EventCardProps) {
   let formattedTime = 'Waktu Belum Ditentukan';
   try {
     if (event.start_date) {
-      const startDate = new Date(event.start_date);
-      if (!isNaN(startDate.getTime())) {
-        formattedDate = format(startDate, 'dd MMM yyyy', { locale: id });
-        formattedTime = format(startDate, 'HH:mm', { locale: id }) + ' WIB';
-      }
+      formattedDate = formatDateRange(event.start_date, event.end_date);
+      formattedTime = formatTime(event.start_date, event.end_date) || 'Waktu Belum Ditentukan';
     }
   } catch {
     // ignore

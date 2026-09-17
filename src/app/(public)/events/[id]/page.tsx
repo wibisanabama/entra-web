@@ -7,10 +7,8 @@ import { Skeleton } from '@/components/ui/Skeleton';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { eventApi, ticketApi, authApi } from '@/lib/api';
-import { format } from 'date-fns';
-import { id as localeId } from 'date-fns/locale';
 import { useAuth } from '@/providers/auth-provider';
-import { getPgText } from '@/lib/utils';
+import { getPgText, formatDateRange, formatTime } from '@/lib/utils';
 import { Event as EventType, Category, Venue, User, TicketType } from '@/types';
 
 interface EventDetail {
@@ -282,17 +280,8 @@ export default function EventDetailPage() {
           let dateStr = 'TBA';
           let timeStr = 'TBA';
           if (apiEvent.start_date) {
-            const startDate = new Date(apiEvent.start_date);
-            dateStr = format(startDate, 'dd MMMM yyyy', { locale: localeId });
-            if (apiEvent.end_date) {
-              const endDate = new Date(apiEvent.end_date);
-              if (!isNaN(endDate.getTime()) && startDate.toDateString() !== endDate.toDateString()) {
-                dateStr = `${format(startDate, 'dd MMM', { locale: localeId })} - ${format(endDate, 'dd MMMM yyyy', { locale: localeId })}`;
-              }
-              timeStr = `${format(startDate, 'HH:mm', { locale: localeId })} - ${format(endDate, 'HH:mm', { locale: localeId })} WIB`;
-            } else {
-              timeStr = format(startDate, 'HH:mm', { locale: localeId }) + ' WIB';
-            }
+            dateStr = formatDateRange(apiEvent.start_date, apiEvent.end_date);
+            timeStr = formatTime(apiEvent.start_date, apiEvent.end_date) || 'TBA';
           }
 
           let categoryName = 'Kategori';

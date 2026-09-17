@@ -18,6 +18,71 @@ export function formatDate(dateStr: string): string {
   }
 }
 
+export function formatDateRange(dateStr?: string, endDateStr?: string): string {
+  if (!dateStr) return 'Tanggal Belum Ditentukan';
+  try {
+    const start = new Date(dateStr);
+    if (isNaN(start.getTime())) return dateStr;
+
+    if (!endDateStr) {
+      return new Intl.DateTimeFormat('id-ID', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      }).format(start);
+    }
+
+    const end = new Date(endDateStr);
+    if (isNaN(end.getTime()) || start.toDateString() === end.toDateString()) {
+      return new Intl.DateTimeFormat('id-ID', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      }).format(start);
+    }
+
+    const isSameYear = start.getFullYear() === end.getFullYear();
+    const isSameMonth = isSameYear && start.getMonth() === end.getMonth();
+
+    if (isSameMonth) {
+      const startDay = new Intl.DateTimeFormat('id-ID', { day: 'numeric' }).format(start);
+      const endFormatted = new Intl.DateTimeFormat('id-ID', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      }).format(end);
+      return `${startDay} - ${endFormatted}`;
+    }
+
+    if (isSameYear) {
+      const startFormatted = new Intl.DateTimeFormat('id-ID', {
+        day: 'numeric',
+        month: 'long',
+      }).format(start);
+      const endFormatted = new Intl.DateTimeFormat('id-ID', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      }).format(end);
+      return `${startFormatted} - ${endFormatted}`;
+    }
+
+    const startFormatted = new Intl.DateTimeFormat('id-ID', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    }).format(start);
+    const endFormatted = new Intl.DateTimeFormat('id-ID', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    }).format(end);
+    return `${startFormatted} - ${endFormatted}`;
+  } catch {
+    return dateStr;
+  }
+}
+
 export function formatTime(dateStr?: string, endDateStr?: string): string {
   if (!dateStr) return '';
   try {

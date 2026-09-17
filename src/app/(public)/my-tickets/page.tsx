@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useAuth } from '@/providers/auth-provider';
 import { ticketApi, eventApi } from '@/lib/api';
 import { EnrichedTicket, Order, Event as EventType, Ticket, Venue } from '@/types';
-import { formatCurrency, formatDate, formatTime } from '@/lib/utils';
+import { formatCurrency, formatDate, formatDateRange, formatTime } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { Modal } from '@/components/ui/Modal';
@@ -646,7 +646,7 @@ export default function MyTicketsPage() {
                           <div className="flex items-center gap-1.5">
                             <Calendar className="h-3.5 w-3.5 text-zinc-400 flex-shrink-0" />
                             <span>
-                              {t.event?.start_date ? formatDate(t.event.start_date) : 'Waktu menyusul'}
+                              {t.event?.start_date ? formatDateRange(t.event.start_date, t.event.end_date) : 'Waktu menyusul'}
                             </span>
                           </div>
                           {t.event?.start_date && (

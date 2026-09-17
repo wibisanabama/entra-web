@@ -6,7 +6,7 @@ import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { EnrichedTicket } from '@/types';
-import { formatDate, formatTime, getPgText } from '@/lib/utils';
+import { formatDate, formatDateRange, formatTime, getPgText } from '@/lib/utils';
 import {
   Calendar,
   Clock,
@@ -99,10 +99,10 @@ export function ETicketModal({ isOpen, onClose, ticket, onOpenTransfer }: ETicke
             >
               {/* Row 1: Date & Time */}
               <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5">
-                <div className="flex items-center gap-2 flex-shrink-0" title={event?.start_date ? formatDate(event.start_date) : undefined}>
+                <div className="flex items-center gap-2 flex-shrink-0" title={event?.start_date ? formatDateRange(event.start_date, event.end_date) : undefined}>
                   <Calendar className="h-4 w-4 text-zinc-500 flex-shrink-0" />
                   <span className="font-medium">
-                    {event?.start_date ? formatDate(event.start_date) : 'Waktu menyusul'}
+                    {event?.start_date ? formatDateRange(event.start_date, event.end_date) : 'Waktu menyusul'}
                   </span>
                 </div>
                 <div className="flex items-center gap-2 flex-shrink-0" title={event?.start_date ? formatTime(event.start_date, event.end_date) : undefined}>

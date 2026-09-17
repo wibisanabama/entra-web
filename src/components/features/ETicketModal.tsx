@@ -109,18 +109,9 @@ export function ETicketModal({ isOpen, onClose, ticket, onOpenTransfer }: ETicke
                   {event?.start_date ? formatTime(event.start_date, event.end_date) : 'Waktu menyusul'}
                 </span>
               </div>
-              <div
-                className="flex items-center gap-2 min-w-0"
-                title={
-                  event?.is_online
-                    ? 'Online Event'
-                    : event?.venue?.name && event?.venue?.city
-                    ? `${event.venue.name}, ${event.venue.city}`
-                    : event?.venue?.name || event?.venue?.address || event?.venue?.city || 'Lokasi Belum Ditentukan'
-                }
-              >
-                <MapPin className="h-4 w-4 text-zinc-500 flex-shrink-0" />
-                <span className="truncate">
+              <div className="flex items-start gap-2 min-w-0">
+                <MapPin className="h-4 w-4 text-zinc-500 flex-shrink-0 mt-0.5" />
+                <span className="break-words leading-relaxed">
                   {event?.is_online
                     ? 'Online Event'
                     : event?.venue?.name && event?.venue?.city

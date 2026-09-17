@@ -93,9 +93,9 @@ export function EventCard({ event }: EventCardProps) {
                   <span>{formattedTime}</span>
                 </div>
               </div>
-              <div className="flex items-center gap-1.5 truncate" title={venueName}>
-                <MapPin className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
-                <span className="truncate">{venueName}</span>
+              <div className="flex items-start gap-1.5">
+                <MapPin className="w-3.5 h-3.5 text-zinc-400 shrink-0 mt-0.5" />
+                <span className="break-words leading-snug">{venueName}</span>
               </div>
             </div>
           </div>

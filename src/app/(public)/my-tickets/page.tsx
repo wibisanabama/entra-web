@@ -658,18 +658,9 @@ export default function MyTicketsPage() {
                             </div>
                           )}
                         </div>
-                        <div
-                          className="flex items-center gap-1.5 min-w-0"
-                          title={
-                            t.event?.is_online
-                              ? 'Online Event'
-                              : t.event?.venue?.name && t.event?.venue?.city
-                              ? `${t.event.venue.name}, ${t.event.venue.city}`
-                              : t.event?.venue?.name || t.event?.venue?.address || t.event?.venue?.city || 'Lokasi Belum Ditentukan'
-                          }
-                        >
-                          <MapPin className="h-3.5 w-3.5 text-zinc-400 flex-shrink-0" />
-                          <span className="truncate">
+                        <div className="flex items-start gap-1.5 min-w-0">
+                          <MapPin className="h-3.5 w-3.5 text-zinc-400 flex-shrink-0 mt-0.5" />
+                          <span className="break-words leading-relaxed">
                             {t.event?.is_online
                               ? 'Online Event'
                               : t.event?.venue?.name && t.event?.venue?.city

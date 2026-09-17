@@ -598,7 +598,7 @@ export default function ProfilePage() {
                     type="button"
                     onClick={handleRequestPasswordReset}
                     disabled={isRequestingReset}
-                    className="text-[11px] text-zinc-500 hover:text-zinc-950 font-medium underline underline-offset-2 cursor-pointer border-0 bg-transparent disabled:opacity-50 transition-colors"
+                    className="text-[11px] text-zinc-500 hover:text-zinc-950 font-medium cursor-pointer border-0 bg-transparent disabled:opacity-50 transition-colors"
                   >
                     {isRequestingReset ? 'Mengirim tautan...' : 'Lupa kata sandi?'}
                   </button>

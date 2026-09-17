@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/providers/auth-provider';
 import { ticketApi, eventApi } from '@/lib/api';
-import { EnrichedTicket, Order, Event as EventType, Ticket } from '@/types';
+import { EnrichedTicket, Order, Event as EventType, Ticket, Venue } from '@/types';
 import { formatCurrency, formatDate, formatTime } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
 import { Skeleton } from '@/components/ui/Skeleton';
@@ -64,30 +64,77 @@ export default function MyTicketsPage() {
   const fetchUserTicketsAndOrders = useCallback(async () => {
     if (!user) return;
     try {
-      const [ticketsRes, ordersRes, eventsRes] = await Promise.all([
+      const [ticketsRes, ordersRes, eventsRes, venuesRes] = await Promise.all([
         ticketApi.get<Ticket[]>('/api/v1/tickets').catch(() => ({ success: false, data: [] as Ticket[] })),
         ticketApi.get<Order[]>('/api/v1/tickets/orders').catch(() => ({ success: false, data: [] as Order[] })),
-        eventApi.get<EventType[]>('/api/v1/events').catch(() => ({ success: false, data: [] as EventType[] })),
+        eventApi.get<EventType[]>('/api/v1/events?per_page=100').catch(() => ({ success: false, data: [] as EventType[] })),
+        eventApi.get<Venue[]>('/api/v1/venues?per_page=100').catch(() => ({ success: false, data: [] as Venue[] })),
       ]);
 
       const rawTickets = Array.isArray(ticketsRes.data) ? ticketsRes.data : [];
       const rawOrders = Array.isArray(ordersRes.data) ? ordersRes.data : [];
       const rawEvents: EventType[] = Array.isArray(eventsRes.data) ? eventsRes.data : [];
+      const rawVenues: Venue[] = Array.isArray(venuesRes.data) ? venuesRes.data : [];
 
-      // Create a map of events by ID for quick lookup
+      // Create a map of venues by ID
+      const venueMap = new Map<string, Venue>();
+      rawVenues.forEach((v) => venueMap.set(v.id, v));
+
+      // Create a map of events by ID for quick lookup and enrich with venue
       const eventMap = new Map<string, EventType>();
-      rawEvents.forEach((ev) => eventMap.set(ev.id, ev));
+      await Promise.all(
+        rawEvents.map(async (ev) => {
+          let venue = ev.venue || (ev.venue_id ? venueMap.get(ev.venue_id) : undefined);
+          if (!venue && ev.venue_id && !ev.is_online) {
+            try {
+              const singleVen = await eventApi.get<Venue>(`/api/v1/venues/${ev.venue_id}`);
+              if (singleVen.data) {
+                venue = singleVen.data;
+                venueMap.set(ev.venue_id, singleVen.data);
+              }
+            } catch {
+              // ignore
+            }
+          }
+          eventMap.set(ev.id, { ...ev, venue });
+        })
+      );
 
-      // Enrich tickets with event data and ticket type details
-      const enriched: EnrichedTicket[] = (rawTickets as Ticket[]).map((t) => {
-        const ev = eventMap.get(t.event_id);
-        const tt = ev?.ticket_types?.find((type) => type.id === t.ticket_type_id);
-        return {
-          ...t,
-          event: ev,
-          ticket_type: tt,
-        };
-      });
+      // Enrich tickets with event data, venue data, and ticket type details
+      const enriched: EnrichedTicket[] = await Promise.all(
+        (rawTickets as Ticket[]).map(async (t) => {
+          let ev = eventMap.get(t.event_id);
+          if (!ev && t.event_id) {
+            try {
+              const singleEv = await eventApi.get<EventType>(`/api/v1/events/${t.event_id}`);
+              if (singleEv.data) {
+                let venue = singleEv.data.venue || (singleEv.data.venue_id ? venueMap.get(singleEv.data.venue_id) : undefined);
+                if (!venue && singleEv.data.venue_id && !singleEv.data.is_online) {
+                  try {
+                    const singleVen = await eventApi.get<Venue>(`/api/v1/venues/${singleEv.data.venue_id}`);
+                    if (singleVen.data) {
+                      venue = singleVen.data;
+                      venueMap.set(singleEv.data.venue_id, singleVen.data);
+                    }
+                  } catch {
+                    // ignore
+                  }
+                }
+                ev = { ...singleEv.data, venue };
+                eventMap.set(t.event_id, ev);
+              }
+            } catch {
+              // ignore
+            }
+          }
+          const tt = ev?.ticket_types?.find((type) => type.id === t.ticket_type_id);
+          return {
+            ...t,
+            event: ev,
+            ticket_type: tt,
+          };
+        })
+      );
 
       setTickets(enriched);
       setOrders(rawOrders as Order[]);
@@ -611,10 +658,23 @@ export default function MyTicketsPage() {
                             </div>
                           )}
                         </div>
-                        <div className="flex items-center gap-1.5">
+                        <div
+                          className="flex items-center gap-1.5 min-w-0"
+                          title={
+                            t.event?.is_online
+                              ? 'Online Event'
+                              : t.event?.venue?.name && t.event?.venue?.city
+                              ? `${t.event.venue.name}, ${t.event.venue.city}`
+                              : t.event?.venue?.name || t.event?.venue?.address || t.event?.venue?.city || 'Lokasi Belum Ditentukan'
+                          }
+                        >
                           <MapPin className="h-3.5 w-3.5 text-zinc-400 flex-shrink-0" />
                           <span className="truncate">
-                            {t.event?.venue?.name || t.event?.venue?.address || 'Lokasi Acara'}
+                            {t.event?.is_online
+                              ? 'Online Event'
+                              : t.event?.venue?.name && t.event?.venue?.city
+                              ? `${t.event.venue.name}, ${t.event.venue.city}`
+                              : t.event?.venue?.name || t.event?.venue?.address || t.event?.venue?.city || 'Lokasi Belum Ditentukan'}
                           </span>
                         </div>
                       </div>

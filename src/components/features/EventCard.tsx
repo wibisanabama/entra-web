@@ -78,15 +78,13 @@ export function EventCard({ event }: EventCardProps) {
             </h3>
 
             <div className="mt-2 space-y-1.5 text-xs text-zinc-500">
-              <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
-                <div className="flex items-center gap-1.5">
-                  <Calendar className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
-                  <span>{formattedDate}</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <Clock className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
-                  <span>{formattedTime}</span>
-                </div>
+              <div className="flex items-center gap-1.5">
+                <Calendar className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
+                <span className="break-words leading-snug">{formattedDate}</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <Clock className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
+                <span className="break-words leading-snug">{formattedTime}</span>
               </div>
               <div className="flex items-start gap-1.5">
                 <MapPin className="w-3.5 h-3.5 text-zinc-400 shrink-0 mt-0.5" />

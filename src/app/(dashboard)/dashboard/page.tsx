@@ -25,6 +25,7 @@ interface BalanceData {
 
 interface SalesTrendItem {
   sale_date: string;
+  total_revenue?: string | number;
   tickets_sold: string | number;
 }
 
@@ -111,21 +112,60 @@ export default function DashboardOverviewPage() {
     { title: 'Event Aktif', value: activeEvents.toString(), change: 'Published', icon: 'M13 10V3L4 14h7v7l9-11h-7z' },
   ];
 
-  // Process sales trend to fit 30 days
+  const [timeframe, setTimeframe] = useState<7 | 14 | 30>(7);
+
+  // Process sales trend into a continuous daily timeline
   const processTrendChart = () => {
-    if (salesTrend.length === 0) return Array(12).fill(0);
-    
-    const recent = salesTrend.slice(-12);
-    const maxTickets = Math.max(...recent.map((t) => Number(t.tickets_sold) || 0), 1);
-    
-    return recent.map((t) => {
-      const sold = Number(t.tickets_sold) || 0;
-      const height = Math.max(5, Math.floor((sold / maxTickets) * 100));
-      return { height, label: new Date(t.sale_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }), tickets: sold };
+    // Build a map of sales by YYYY-MM-DD
+    const trendMap = new Map<string, { tickets: number; revenue: number }>();
+    salesTrend.forEach((item) => {
+      try {
+        const itemDate = new Date(item.sale_date);
+        if (!isNaN(itemDate.getTime())) {
+          const y = itemDate.getFullYear();
+          const m = String(itemDate.getMonth() + 1).padStart(2, '0');
+          const d = String(itemDate.getDate()).padStart(2, '0');
+          const key = `${y}-${m}-${d}`;
+          const existing = trendMap.get(key) || { tickets: 0, revenue: 0 };
+          trendMap.set(key, {
+            tickets: existing.tickets + (Number(item.tickets_sold) || 0),
+            revenue: existing.revenue + (Number(item.total_revenue) || 0),
+          });
+        }
+      } catch (err) {
+        console.error('Error parsing trend item date', err);
+      }
     });
+
+    const days = [];
+    const now = new Date();
+    for (let i = timeframe - 1; i >= 0; i--) {
+      const d = new Date(now);
+      d.setDate(d.getDate() - i);
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      const dayStr = String(d.getDate()).padStart(2, '0');
+      const key = `${y}-${m}-${dayStr}`;
+      const entry = trendMap.get(key) || { tickets: 0, revenue: 0 };
+      const label = d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
+      days.push({
+        key,
+        label,
+        tickets: entry.tickets,
+        revenue: entry.revenue,
+      });
+    }
+
+    const maxTickets = Math.max(...days.map((d) => d.tickets), 1);
+
+    return days.map((d) => ({
+      ...d,
+      height: maxTickets > 0 ? Math.round((d.tickets / maxTickets) * 100) : 0,
+    }));
   };
 
   const chartData = processTrendChart();
+  const totalTicketsInPeriod = chartData.reduce((acc, curr) => acc + curr.tickets, 0);
 
   return (
     <div className="space-y-8">
@@ -167,27 +207,95 @@ export default function DashboardOverviewPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Chart Area */}
         <div className="lg:col-span-2">
-          <Card className="bg-zinc-100 rounded-2xl p-6 sm:p-7 h-full min-h-[400px]">
-            <h3 className="text-base font-bold text-zinc-950 mb-6">Tren Penjualan (Riwayat)</h3>
-            <div className="flex h-64 items-end gap-2 mt-8">
+          <Card className="bg-zinc-100 rounded-2xl p-6 sm:p-7 h-full min-h-[400px] flex flex-col justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+              <div>
+                <h3 className="text-base font-bold text-zinc-950">Tren Penjualan (Riwayat)</h3>
+                <p className="text-xs text-zinc-500 mt-0.5">
+                  {totalTicketsInPeriod > 0
+                    ? `${totalTicketsInPeriod} tiket terjual dalam ${timeframe} hari terakhir`
+                    : `Belum ada tiket terjual dalam ${timeframe} hari terakhir`}
+                </p>
+              </div>
+              {/* Timeframe pill switcher */}
+              <div className="flex items-center gap-1 bg-white p-1 rounded-full self-start sm:self-auto border border-zinc-200/50">
+                {([7, 14, 30] as const).map((days) => (
+                  <button
+                    key={days}
+                    type="button"
+                    onClick={() => setTimeframe(days)}
+                    className={`px-3 py-1 text-[11px] font-bold rounded-full transition-all ${
+                      timeframe === days
+                        ? 'bg-zinc-950 text-white'
+                        : 'text-zinc-500 hover:text-zinc-950 hover:bg-zinc-100'
+                    }`}
+                  >
+                    {days} Hari
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="h-64 flex flex-col justify-end pt-4">
               {loading ? (
-                <div className="w-full h-full flex items-center justify-center text-zinc-400 text-xs">Memuat grafik...</div>
-              ) : chartData.every((d) => d === 0 || d.tickets === 0) ? (
-                 <div className="w-full h-full flex items-center justify-center text-zinc-400 text-xs">Belum ada data penjualan</div>
+                <div className="w-full h-full flex items-center justify-center text-zinc-400 text-xs">
+                  Memuat grafik tren...
+                </div>
               ) : (
-                chartData.map((data, i) => (
-                  <div key={i} className="flex-1 flex flex-col justify-end group">
-                    <div 
-                      className="w-full bg-zinc-300 group-hover:bg-zinc-950 rounded-t-md transition-all relative"
-                      style={{ height: `${data.height}%` }}
-                    >
-                      <div className="opacity-0 group-hover:opacity-100 absolute -top-8 left-1/2 -translate-x-1/2 bg-zinc-950 text-white text-[10px] font-bold py-1 px-2 rounded-full whitespace-nowrap z-10 shadow-sm">
-                        {data.tickets} Tiket
+                <div className="h-48 w-full flex items-end gap-1.5 sm:gap-3">
+                  {chartData.map((data) => {
+                    const isZero = data.tickets === 0;
+                    return (
+                      <div key={data.key} className="flex-1 flex flex-col items-center h-full justify-end group min-w-0">
+                        {/* Bar Track Area */}
+                        <div className="w-full h-full flex items-end justify-center relative">
+                          <div
+                            className={`w-full ${
+                              timeframe === 30
+                                ? 'max-w-[12px] sm:max-w-[18px]'
+                                : timeframe === 14
+                                ? 'max-w-[20px] sm:max-w-[28px]'
+                                : 'max-w-[32px] sm:max-w-[44px]'
+                            } rounded-t-lg transition-all duration-300 relative cursor-pointer ${
+                              isZero
+                                ? 'bg-zinc-200/80 group-hover:bg-zinc-300'
+                                : 'bg-zinc-900 group-hover:bg-zinc-700'
+                            }`}
+                            style={{
+                              height: isZero ? '6px' : `${Math.max(12, data.height)}%`,
+                            }}
+                          >
+                            {/* Value number on top of active bar */}
+                            {!isZero && (
+                              <span className="absolute -top-5 left-1/2 -translate-x-1/2 text-[10px] font-black text-zinc-900 group-hover:opacity-0 transition-opacity pointer-events-none">
+                                {data.tickets}
+                              </span>
+                            )}
+
+                            {/* Floating Tooltip */}
+                            <div className="opacity-0 group-hover:opacity-100 transition-all pointer-events-none absolute -top-12 left-1/2 -translate-x-1/2 bg-zinc-950 text-white text-[10px] font-bold py-1.5 px-3 rounded-xl whitespace-nowrap z-30 shadow-xl flex flex-col items-center gap-0.5">
+                              <span>{data.tickets} Tiket</span>
+                              {data.revenue > 0 && (
+                                <span className="text-[9px] font-medium text-zinc-400">
+                                  {formatCurrency(data.revenue)}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* X-Axis Date Label */}
+                        <div
+                          className={`text-[10px] sm:text-xs font-semibold text-zinc-500 text-center mt-2.5 truncate w-full group-hover:text-zinc-950 transition-colors ${
+                            timeframe === 30 ? 'hidden md:block' : ''
+                          }`}
+                        >
+                          {data.label}
+                        </div>
                       </div>
-                    </div>
-                    <div className="text-[10px] font-medium text-zinc-500 text-center mt-2 truncate">{data.label}</div>
-                  </div>
-                ))
+                    );
+                  })}
+                </div>
               )}
             </div>
           </Card>

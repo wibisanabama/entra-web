@@ -8,7 +8,7 @@ import { Modal } from '@/components/ui/Modal';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { ticketApi } from '@/lib/api';
 import { formatCurrency, formatDate, getPgText } from '@/lib/utils';
-import { Withdrawal } from '@/types';
+import { Withdrawal, AdminPlatformStats } from '@/types';
 import { toast } from '@/lib/toast';
 import {
   ShieldCheck,
@@ -21,12 +21,15 @@ import {
   AlertCircle,
   Banknote,
   Send,
-  User
+  User,
+  TrendingUp,
+  Percent
 } from 'lucide-react';
 
 export default function AdminWithdrawalsPage() {
   const [loading, setLoading] = useState(true);
   const [withdrawals, setWithdrawals] = useState<Withdrawal[]>([]);
+  const [platformStats, setPlatformStats] = useState<AdminPlatformStats | null>(null);
   const [statusFilter, setStatusFilter] = useState<string>('ALL');
   const [searchQuery, setSearchQuery] = useState<string>('');
 
@@ -77,9 +80,16 @@ export default function AdminWithdrawalsPage() {
 
   const fetchAdminWithdrawals = useCallback(async () => {
     try {
-      const res = await ticketApi.get<Withdrawal[]>('/api/v1/tickets/admin/withdrawals?per_page=100');
+      const [res, statsRes] = await Promise.all([
+        ticketApi.get<Withdrawal[]>('/api/v1/tickets/admin/withdrawals?per_page=100').catch(() => ({ success: false, data: [] as Withdrawal[] })),
+        ticketApi.get<AdminPlatformStats>('/api/v1/tickets/admin/stats/platform').catch(() => ({ success: false, data: null })),
+      ]);
+
       if (res && res.data) {
         setWithdrawals(Array.isArray(res.data) ? res.data : []);
+      }
+      if (statsRes && statsRes.data) {
+        setPlatformStats(statsRes.data);
       }
     } catch (error: unknown) {
       console.error('Failed to fetch admin withdrawals:', error);
@@ -208,46 +218,55 @@ export default function AdminWithdrawalsPage() {
 
       {/* 4 Financial Aggregate Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Pending Card */}
+        {/* Total GMV Card */}
         <Card className="bg-zinc-100 rounded-2xl p-5 border-0 shadow-none">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-xs text-amber-700 font-bold uppercase tracking-wider">
-                Menunggu Transfer
+              <p className="text-xs text-zinc-500 font-bold uppercase tracking-wider">
+                Total GMV Tiket
               </p>
               {loading ? (
                 <Skeleton className="h-7 w-28 mt-1 bg-zinc-200/70 rounded-lg" />
               ) : (
-                <h3 className="text-2xl font-black tracking-tight text-amber-600 mt-1">
-                  {formatCurrency(pendingSum)}
+                <h3 className="text-2xl font-black tracking-tight text-zinc-950 mt-1">
+                  {formatCurrency(platformStats?.total_gmv ?? 0)}
                 </h3>
               )}
-              <p className="text-[11px] text-zinc-400 mt-0.5 font-medium">{pendingList.length} permohonan antre</p>
+              <p className="text-[11px] text-zinc-400 mt-0.5 font-medium">
+                {platformStats?.total_paid_orders_count ?? 0} pesanan tiket lunas
+              </p>
             </div>
-            <div className="p-2.5 bg-white text-amber-600 rounded-xl border-0 shadow-none">
-              <Clock className="h-5 w-5" />
+            <div className="p-2.5 bg-white text-zinc-900 rounded-xl border-0 shadow-none">
+              <TrendingUp className="h-5 w-5" />
             </div>
           </div>
         </Card>
 
-        {/* Approved Card */}
+        {/* Platform Commission Card */}
         <Card className="bg-zinc-100 rounded-2xl p-5 border-0 shadow-none">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-xs text-blue-700 font-bold uppercase tracking-wider">
-                Disetujui (Ready to Pay)
-              </p>
+              <div className="flex items-center gap-1.5">
+                <p className="text-xs text-zinc-500 font-bold uppercase tracking-wider">
+                  Komisi Platform
+                </p>
+                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-zinc-200 text-zinc-700">
+                  {platformStats?.platform_fee_percent ?? 5}%
+                </span>
+              </div>
               {loading ? (
                 <Skeleton className="h-7 w-28 mt-1 bg-zinc-200/70 rounded-lg" />
               ) : (
-                <h3 className="text-2xl font-black tracking-tight text-blue-600 mt-1">
-                  {formatCurrency(approvedSum)}
+                <h3 className="text-2xl font-black tracking-tight text-zinc-950 mt-1">
+                  {formatCurrency(platformStats?.total_platform_revenue ?? 0)}
                 </h3>
               )}
-              <p className="text-[11px] text-zinc-400 mt-0.5 font-medium">{approvedList.length} pengajuan</p>
+              <p className="text-[11px] text-zinc-400 mt-0.5 font-medium">
+                Pendapatan bersih platform
+              </p>
             </div>
-            <div className="p-2.5 bg-white text-blue-600 rounded-xl border-0 shadow-none">
-              <Send className="h-5 w-5" />
+            <div className="p-2.5 bg-white text-zinc-900 rounded-xl border-0 shadow-none">
+              <Percent className="h-5 w-5" />
             </div>
           </div>
         </Card>
@@ -263,10 +282,12 @@ export default function AdminWithdrawalsPage() {
                 <Skeleton className="h-7 w-28 mt-1 bg-zinc-200/70 rounded-lg" />
               ) : (
                 <h3 className="text-2xl font-black tracking-tight text-emerald-600 mt-1">
-                  {formatCurrency(paidSum)}
+                  {formatCurrency(platformStats?.total_withdrawn_paid ?? paidSum)}
                 </h3>
               )}
-              <p className="text-[11px] text-zinc-400 mt-0.5 font-medium">{paidList.length} transaksi sukses</p>
+              <p className="text-[11px] text-zinc-400 mt-0.5 font-medium">
+                {paidList.length} transaksi sukses dicairkan
+              </p>
             </div>
             <div className="p-2.5 bg-white text-emerald-600 rounded-xl border-0 shadow-none">
               <CheckCircle2 className="h-5 w-5" />
@@ -274,24 +295,26 @@ export default function AdminWithdrawalsPage() {
           </div>
         </Card>
 
-        {/* Rejected Card */}
+        {/* Pending Card */}
         <Card className="bg-zinc-100 rounded-2xl p-5 border-0 shadow-none">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-xs text-rose-700 font-bold uppercase tracking-wider">
-                Total Ditolak
+              <p className="text-xs text-amber-700 font-bold uppercase tracking-wider">
+                Menunggu Transfer
               </p>
               {loading ? (
                 <Skeleton className="h-7 w-28 mt-1 bg-zinc-200/70 rounded-lg" />
               ) : (
-                <h3 className="text-2xl font-black tracking-tight text-rose-600 mt-1">
-                  {formatCurrency(rejectedSum)}
+                <h3 className="text-2xl font-black tracking-tight text-amber-600 mt-1">
+                  {formatCurrency(platformStats?.pending_withdrawals ?? pendingSum)}
                 </h3>
               )}
-              <p className="text-[11px] text-zinc-400 mt-0.5 font-medium">{rejectedList.length} pengajuan ditolak</p>
+              <p className="text-[11px] text-zinc-400 mt-0.5 font-medium">
+                {pendingList.length} antrean kliring bank
+              </p>
             </div>
-            <div className="p-2.5 bg-white text-rose-600 rounded-xl border-0 shadow-none">
-              <XCircle className="h-5 w-5" />
+            <div className="p-2.5 bg-white text-amber-600 rounded-xl border-0 shadow-none">
+              <Clock className="h-5 w-5" />
             </div>
           </div>
         </Card>

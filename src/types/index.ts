@@ -223,6 +223,10 @@ export interface Withdrawal {
 }
 
 export interface OrganizerBalance {
+  gross_revenue?: number;
+  platform_fee_percent?: number;
+  platform_fee_amount?: number;
+  net_revenue?: number;
   total_revenue: number;
   total_withdrawn: number;
   available_balance: number;
@@ -230,6 +234,17 @@ export interface OrganizerBalance {
   paid_amount: number;
   total_requests: number;
 }
+
+export interface AdminPlatformStats {
+  total_gmv: number;
+  platform_fee_percent: number;
+  total_platform_revenue: number;
+  total_withdrawn_paid: number;
+  pending_withdrawals: number;
+  total_paid_orders_count: number;
+  pending_requests_count: number;
+}
+
 
 export interface CreateWithdrawalRequest {
   amount: number;

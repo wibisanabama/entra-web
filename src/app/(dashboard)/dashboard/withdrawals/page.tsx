@@ -22,7 +22,8 @@ import {
   FileText,
   AlertCircle,
   RefreshCw,
-  Search
+  Search,
+  Percent
 } from 'lucide-react';
 
 const BANK_OPTIONS = [
@@ -259,42 +260,42 @@ export default function WithdrawalsPage() {
       </div>
 
       {/* Balance Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Available Balance Card */}
-        <Card className="bg-zinc-100 rounded-2xl p-5 border-0 shadow-none">
+        <Card className="bg-zinc-950 text-white rounded-2xl p-5 border-0 shadow-none">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-xs text-zinc-500 font-bold uppercase tracking-wider">
+              <p className="text-xs text-zinc-400 font-bold uppercase tracking-wider">
                 Saldo Tersedia
               </p>
               {loading ? (
-                <Skeleton className="h-7 w-36 mt-1 bg-zinc-200/70 rounded-lg" />
+                <Skeleton className="h-7 w-36 mt-1 bg-zinc-800 rounded-lg" />
               ) : (
-                <h3 className="text-2xl font-black tracking-tight text-zinc-950 mt-1">
+                <h3 className="text-2xl font-black tracking-tight text-white mt-1">
                   {formatCurrency(balance.available_balance)}
                 </h3>
               )}
               <p className="text-[11px] text-zinc-400 mt-0.5 font-medium">Siap dicairkan ke rekening</p>
             </div>
-            <div className="p-2.5 bg-white text-zinc-900 rounded-xl border-0 shadow-none">
+            <div className="p-2.5 bg-zinc-800 text-white rounded-xl border-0 shadow-none">
               <Wallet className="h-5 w-5" />
             </div>
           </div>
         </Card>
 
-        {/* Total Revenue */}
+        {/* Gross Revenue */}
         <Card className="bg-zinc-100 rounded-2xl p-5 border-0 shadow-none">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-xs text-zinc-500 font-bold uppercase tracking-wider">Total Omset</p>
+              <p className="text-xs text-zinc-500 font-bold uppercase tracking-wider">Penjualan Kotor</p>
               {loading ? (
                 <Skeleton className="h-7 w-32 mt-1 bg-zinc-200/70 rounded-lg" />
               ) : (
                 <h3 className="text-2xl font-black tracking-tight text-zinc-950 mt-1">
-                  {formatCurrency(balance.total_revenue)}
+                  {formatCurrency(balance.gross_revenue ?? balance.total_revenue)}
                 </h3>
               )}
-              <p className="text-[11px] text-zinc-400 mt-0.5 font-medium">Akumulasi tiket lunas</p>
+              <p className="text-[11px] text-zinc-400 mt-0.5 font-medium">Total penjualan tiket</p>
             </div>
             <div className="p-2.5 bg-white text-zinc-900 rounded-xl border-0 shadow-none">
               <TrendingUp className="h-5 w-5" />
@@ -302,44 +303,92 @@ export default function WithdrawalsPage() {
           </div>
         </Card>
 
-        {/* Pending Withdrawals */}
+        {/* Platform Fee */}
         <Card className="bg-zinc-100 rounded-2xl p-5 border-0 shadow-none">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-xs text-amber-700 font-bold uppercase tracking-wider">Sedang Diproses</p>
+              <div className="flex items-center gap-1.5">
+                <p className="text-xs text-zinc-500 font-bold uppercase tracking-wider">Biaya Platform</p>
+                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-zinc-200 text-zinc-700">
+                  {balance.platform_fee_percent ?? 5}%
+                </span>
+              </div>
               {loading ? (
                 <Skeleton className="h-7 w-32 mt-1 bg-zinc-200/70 rounded-lg" />
               ) : (
-                <h3 className="text-2xl font-black tracking-tight text-amber-600 mt-1">
-                  {formatCurrency(balance.pending_amount)}
+                <h3 className="text-2xl font-black tracking-tight text-zinc-950 mt-1">
+                  -{formatCurrency(balance.platform_fee_amount ?? 0)}
                 </h3>
               )}
-              <p className="text-[11px] text-zinc-400 mt-0.5 font-medium">Menunggu transfer admin</p>
+              <p className="text-[11px] text-zinc-400 mt-0.5 font-medium">Tiket gratis Rp 0 bebas biaya</p>
             </div>
-            <div className="p-2.5 bg-white text-amber-600 rounded-xl border-0 shadow-none">
-              <Clock className="h-5 w-5" />
+            <div className="p-2.5 bg-white text-zinc-900 rounded-xl border-0 shadow-none">
+              <Percent className="h-5 w-5" />
             </div>
           </div>
         </Card>
 
-        {/* Total Paid / Settled */}
+        {/* Net Revenue */}
         <Card className="bg-zinc-100 rounded-2xl p-5 border-0 shadow-none">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-xs text-emerald-700 font-bold uppercase tracking-wider">Berhasil Dicairkan</p>
+              <p className="text-xs text-zinc-500 font-bold uppercase tracking-wider">Pendapatan Bersih</p>
               {loading ? (
                 <Skeleton className="h-7 w-32 mt-1 bg-zinc-200/70 rounded-lg" />
               ) : (
-                <h3 className="text-2xl font-black tracking-tight text-emerald-600 mt-1">
-                  {formatCurrency(balance.paid_amount)}
+                <h3 className="text-2xl font-black tracking-tight text-zinc-950 mt-1">
+                  {formatCurrency(balance.net_revenue ?? balance.total_revenue)}
                 </h3>
               )}
-              <p className="text-[11px] text-zinc-400 mt-0.5 font-medium">{balance.total_requests} kali penarikan</p>
+              <p className="text-[11px] text-zinc-400 mt-0.5 font-medium">Hak bersih setelah komisi</p>
             </div>
             <div className="p-2.5 bg-white text-emerald-600 rounded-xl border-0 shadow-none">
               <CheckCircle2 className="h-5 w-5" />
             </div>
           </div>
+        </Card>
+      </div>
+
+      {/* Sub metrics: Processing & Settled */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* Pending Withdrawals */}
+        <Card className="bg-zinc-100 rounded-2xl p-4 border-0 shadow-none flex items-center justify-between">
+          <div className="flex items-center gap-3.5">
+            <div className="p-2.5 bg-white text-amber-600 rounded-xl border-0 shadow-none">
+              <Clock className="h-4 w-4" />
+            </div>
+            <div>
+              <p className="text-xs text-amber-700 font-bold uppercase tracking-wider">Sedang Diproses</p>
+              <p className="text-[11px] text-zinc-400 font-medium">Menunggu transfer admin</p>
+            </div>
+          </div>
+          {loading ? (
+            <Skeleton className="h-6 w-24 bg-zinc-200/70 rounded-lg" />
+          ) : (
+            <span className="text-lg font-black tracking-tight text-amber-600">
+              {formatCurrency(balance.pending_amount)}
+            </span>
+          )}
+        </Card>
+
+        {/* Total Paid / Settled */}
+        <Card className="bg-zinc-100 rounded-2xl p-4 border-0 shadow-none flex items-center justify-between">
+          <div className="flex items-center gap-3.5">
+            <div className="p-2.5 bg-white text-emerald-600 rounded-xl border-0 shadow-none">
+              <CheckCircle2 className="h-4 w-4" />
+            </div>
+            <div>
+              <p className="text-xs text-emerald-700 font-bold uppercase tracking-wider">Berhasil Dicairkan</p>
+              <p className="text-[11px] text-zinc-400 font-medium">{balance.total_requests} kali penarikan</p>
+            </div>
+          </div>
+          {loading ? (
+            <Skeleton className="h-6 w-24 bg-zinc-200/70 rounded-lg" />
+          ) : (
+            <span className="text-lg font-black tracking-tight text-emerald-600">
+              {formatCurrency(balance.paid_amount)}
+            </span>
+          )}
         </Card>
       </div>
 

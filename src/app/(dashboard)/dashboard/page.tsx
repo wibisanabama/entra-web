@@ -206,7 +206,7 @@ export default function DashboardOverviewPage() {
                 recentOrders.slice(0, 5).map((order) => {
                   const isPaid = order.status?.toUpperCase() === 'PAID' || order.status?.toUpperCase() === 'SUCCESS' || order.status === 'SUKSES';
                   const eventTitle = (order.event_id && eventsMap[order.event_id]) || order.event?.title || 'Tiket Event';
-                  const customerName = order.user?.name || (order.user_id ? `User #${order.user_id.slice(0, 6)}` : 'Pelanggan');
+                  const customerName = order.user?.name || (order.user_id ? `User #${order.user_id}` : 'Pelanggan');
                   return (
                     <div key={order.id} className="flex items-center gap-3.5 p-2 rounded-xl">
                       <div className="w-9 h-9 rounded-full bg-white flex items-center justify-center text-zinc-900 font-bold text-xs shrink-0">

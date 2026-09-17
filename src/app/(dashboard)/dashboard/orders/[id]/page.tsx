@@ -119,7 +119,7 @@ export default function OrderDetailsPage() {
           <div className="space-y-4">
             <div>
               <p className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-0.5">Nama Lengkap</p>
-              <p className="text-sm font-semibold text-zinc-900">{buyer?.full_name || (loading ? 'Memuat...' : `Pengguna #${order.user_id.slice(0, 8)}`)}</p>
+              <p className="text-sm font-semibold text-zinc-900 break-all">{buyer?.full_name || (loading ? 'Memuat...' : `Pengguna #${order.user_id}`)}</p>
             </div>
             <div>
               <p className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-0.5">Email</p>

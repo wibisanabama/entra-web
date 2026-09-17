@@ -430,14 +430,14 @@ export default function AdminWithdrawalsPage() {
                         {/* Date & ID */}
                         <td className="px-4 py-3.5">
                           <div className="font-bold text-zinc-950 text-xs">{formatDate(w.created_at)}</div>
-                          <div className="text-[11px] text-zinc-400 font-mono mt-0.5">ID: {w.id.substring(0, 8)}...</div>
+                          <div className="text-[11px] text-zinc-400 font-mono mt-0.5 break-all">ID: {w.id}</div>
                         </td>
 
                         {/* Organizer ID */}
                         <td className="px-4 py-3.5">
-                          <div className="text-xs font-mono font-bold text-zinc-800 bg-white px-2.5 py-1 rounded-full border-0 shadow-none inline-flex items-center gap-1.5">
-                            <User className="h-3 w-3 text-zinc-400" />
-                            {w.organizer_id.substring(0, 8)}...
+                          <div className="text-xs font-mono font-bold text-zinc-800 bg-white px-2.5 py-1 rounded-full border-0 shadow-none inline-flex items-center gap-1.5 break-all">
+                            <User className="h-3 w-3 text-zinc-400 shrink-0" />
+                            {w.organizer_id}
                           </div>
                         </td>
 

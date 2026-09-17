@@ -769,8 +769,8 @@ export default function MyTicketsPage() {
                   >
                     <div className="space-y-1">
                       <div className="flex items-center gap-3">
-                        <span className="font-mono text-sm font-bold text-zinc-950">
-                          Order #{order.id.substring(0, 8)}...
+                        <span className="font-mono text-sm font-bold text-zinc-950 break-all">
+                          Order #{order.id}
                         </span>
                         <span
                           className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-full border-0 ${
@@ -964,7 +964,7 @@ export default function MyTicketsPage() {
               <div className="flex justify-between items-start pb-4 border-0">
                 <div>
                   <h3 className="text-lg font-black text-zinc-950">INVOICE ENTRA</h3>
-                  <p className="text-xs text-zinc-500">Order #{selectedOrderForInvoice.id.substring(0, 16)}</p>
+                  <p className="text-xs text-zinc-500 break-all">Order #{selectedOrderForInvoice.id}</p>
                 </div>
                 <span
                   className="text-xs font-semibold px-3 py-1 bg-emerald-200/70 text-emerald-800 border-0 rounded-full"

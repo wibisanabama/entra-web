@@ -353,14 +353,14 @@ export default function AttendeeListPage() {
                     <tr key={i} className="hover:bg-zinc-200/40 transition-colors">
                       <td className="px-4 py-3.5">
                         <div className="font-bold text-zinc-950 text-xs mb-0.5">{user ? user.full_name : 'Pengunjung'}</div>
-                        <div className="text-zinc-500 text-[11px]">{user ? user.email : ticket.user_id.substring(0,8)+'...'}</div>
+                        <div className="text-zinc-500 text-[11px] break-all">{user ? user.email : ticket.user_id}</div>
                       </td>
                       <td className="px-4 py-3.5">
                         <div className="font-mono text-xs text-zinc-900 bg-white px-3 py-1 rounded-full border-0 shadow-none inline-block font-bold">
                           {ticket.ticket_code}
                         </div>
-                        <div className="text-zinc-400 text-[10px] mt-0.5 font-mono">
-                          ID: {ticket.ticket_type_id.substring(0,8)}...
+                        <div className="text-zinc-400 text-[10px] mt-0.5 font-mono break-all">
+                          ID: {ticket.ticket_type_id}
                         </div>
                       </td>
                       <td className="px-4 py-3.5">

@@ -339,11 +339,11 @@ export default function DashboardOrdersPage() {
 
                   return (
                     <tr key={order.id} className="hover:bg-zinc-200/40 transition-colors">
-                      <td className="px-4 py-3.5 font-mono font-medium text-zinc-600 text-xs">
-                        {order.id.substring(0, 8).toUpperCase()}...
+                      <td className="px-4 py-3.5 font-mono font-medium text-zinc-600 text-xs break-all">
+                        {order.id.toUpperCase()}
                       </td>
-                      <td className="px-4 py-3.5 text-zinc-950 font-bold text-xs max-w-xs truncate">
-                        {eventName || (order.event_id ? `Event #${order.event_id.substring(0, 8)}` : '-')}
+                      <td className="px-4 py-3.5 text-zinc-950 font-bold text-xs max-w-xs break-words">
+                        {eventName || (order.event_id ? `Event #${order.event_id}` : '-')}
                       </td>
                       <td className="px-4 py-3.5 text-zinc-950 font-black text-xs">
                         {formatCurrency(parseAmount(order.total_amount))}

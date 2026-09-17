@@ -172,8 +172,8 @@ export function ETicketModal({ isOpen, onClose, ticket, onOpenTransfer }: ETicke
                 </div>
               </div>
 
-              <div className="text-[11px] text-zinc-400 font-mono">
-                ID: {ticket.id.substring(0, 16)}...
+              <div className="text-[11px] text-zinc-400 font-mono break-all">
+                ID: {ticket.id}
               </div>
             </div>
 

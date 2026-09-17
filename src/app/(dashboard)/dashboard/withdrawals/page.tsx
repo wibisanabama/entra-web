@@ -496,7 +496,7 @@ export default function WithdrawalsPage() {
                       >
                         <td className="px-4 py-3.5">
                           <div className="font-bold text-zinc-950 text-xs">{formatDate(w.created_at)}</div>
-                          <div className="text-[11px] text-zinc-400 font-mono mt-0.5">ID: {w.id.substring(0, 8)}...</div>
+                          <div className="text-[11px] text-zinc-400 font-mono mt-0.5 break-all">ID: {w.id}</div>
                         </td>
                         <td className="px-4 py-3.5">
                           <div className="font-black text-zinc-950 text-xs">{formatCurrency(amountNum)}</div>

@@ -390,8 +390,8 @@ export default function ProfilePage() {
               </p>
 
               <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2.5 pt-1 text-xs text-zinc-600">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white rounded-full font-mono font-medium border-0 shadow-none">
-                  ID: {user.id.substring(0, 8)}...
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white rounded-full font-mono font-medium border-0 shadow-none break-all text-xs">
+                  ID: {user.id}
                   <button
                     onClick={handleCopyId}
                     className="hover:text-zinc-950 p-0.5 transition-colors cursor-pointer border-0"

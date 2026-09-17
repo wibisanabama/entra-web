@@ -32,7 +32,11 @@ export function EventCard({ event }: EventCardProps) {
     minPrice = Math.min(...prices);
   }
 
-  const venueName = event.venue?.name || event.venue?.city || (event.is_online ? 'Online Event' : 'Lokasi Terdaftar');
+  const venueName = event.is_online
+    ? 'Online Event'
+    : event.venue?.name && event.venue?.city
+    ? `${event.venue.name}, ${event.venue.city}`
+    : event.venue?.name || event.venue?.city || event.venue?.address || 'Lokasi Belum Ditentukan';
   const banner = getPgText(event.banner_url);
 
   return (
@@ -89,7 +93,7 @@ export function EventCard({ event }: EventCardProps) {
                   <span>{formattedTime}</span>
                 </div>
               </div>
-              <div className="flex items-center gap-1.5 truncate">
+              <div className="flex items-center gap-1.5 truncate" title={venueName}>
                 <MapPin className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
                 <span className="truncate">{venueName}</span>
               </div>

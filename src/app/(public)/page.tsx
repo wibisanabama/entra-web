@@ -80,7 +80,7 @@ export default function HomePage() {
         const [eventRes, catRes, venueRes] = await Promise.all([
           eventApi.get<EventType[]>('/api/v1/events?page=1&per_page=16'),
           eventApi.get<Category[]>('/api/v1/categories').catch(() => ({ success: false, data: [] as Category[] })),
-          eventApi.get<Venue[]>('/api/v1/venues').catch(() => ({ success: false, data: [] as Venue[] }))
+          eventApi.get<Venue[]>('/api/v1/venues?per_page=100').catch(() => ({ success: false, data: [] as Venue[] }))
         ]);
 
         const rawCategories = catRes.data && Array.isArray(catRes.data) ? catRes.data : [];
@@ -90,7 +90,17 @@ export default function HomePage() {
         if (eventRes.data && Array.isArray(eventRes.data)) {
           const eventsWithDetails: EventType[] = await Promise.all(
             eventRes.data.map(async (ev) => {
-              const venue = rawVenues.find((v) => v.id === ev.venue_id);
+              let venue = rawVenues.find((v) => v.id === ev.venue_id);
+              if (!venue && ev.venue_id && !ev.is_online) {
+                try {
+                  const singleVen = await eventApi.get<Venue>(`/api/v1/venues/${ev.venue_id}`);
+                  if (singleVen.data) {
+                    venue = singleVen.data;
+                  }
+                } catch {
+                  // ignore
+                }
+              }
               const category = rawCategories.find((c) => c.id === ev.category_id);
               let ticketTypes = ev.ticket_types || [];
               try {

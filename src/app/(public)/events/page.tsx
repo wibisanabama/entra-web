@@ -74,7 +74,7 @@ export default function EventsPage() {
       try {
         const [catRes, venueRes, res] = await Promise.all([
           eventApi.get<Category[]>('/api/v1/categories').catch(() => ({ success: false, data: [] as Category[] })),
-          eventApi.get<Venue[]>('/api/v1/venues').catch(() => ({ success: false, data: [] as Venue[] })),
+          eventApi.get<Venue[]>('/api/v1/venues?per_page=100').catch(() => ({ success: false, data: [] as Venue[] })),
           eventApi.get<Event[]>('/api/v1/events?page=1&per_page=50').catch(() => ({ success: false, data: [] as Event[] })),
         ]);
 
@@ -88,7 +88,17 @@ export default function EventsPage() {
         // Enrich events with venue, category & ticket_types models
         const enrichedEvents = await Promise.all(
           rawEvents.map(async (ev) => {
-            const matchedVenue = rawVenues.find((v) => v.id === ev.venue_id);
+            let matchedVenue = rawVenues.find((v) => v.id === ev.venue_id);
+            if (!matchedVenue && ev.venue_id && !ev.is_online) {
+              try {
+                const singleVen = await eventApi.get<Venue>(`/api/v1/venues/${ev.venue_id}`);
+                if (singleVen.data) {
+                  matchedVenue = singleVen.data;
+                }
+              } catch {
+                // ignore
+              }
+            }
             const matchedCat = rawCategories.find((c) => c.id === ev.category_id);
             let ticketTypes = ev.ticket_types || [];
             try {

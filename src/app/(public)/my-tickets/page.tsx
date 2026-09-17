@@ -61,6 +61,19 @@ export default function MyTicketsPage() {
   const [selectedOrderForInvoice, setSelectedOrderForInvoice] = useState<Order | null>(null);
   const [isInvoiceOpen, setIsInvoiceOpen] = useState(false);
 
+  // Feedback / Error Modal State
+  const [modalData, setModalData] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    type: 'success' | 'error';
+  }>({
+    isOpen: false,
+    title: '',
+    message: '',
+    type: 'success',
+  });
+
   const fetchUserTicketsAndOrders = useCallback(async () => {
     if (!user) return;
     try {
@@ -151,9 +164,49 @@ export default function MyTicketsPage() {
     }
   }, [user, authLoading, fetchUserTicketsAndOrders]);
 
+  // Auto-refresh data saat tab kembali aktif
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible' && user && !authLoading) {
+        fetchUserTicketsAndOrders();
+      }
+    };
+    window.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('focus', handleVisibilityChange);
+    return () => {
+      window.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('focus', handleVisibilityChange);
+    };
+  }, [user, authLoading, fetchUserTicketsAndOrders]);
+
+  // Polling berkala jika ada pesanan yang masih PENDING (refresh tiap 30 detik)
+  useEffect(() => {
+    const hasPendingOrder = orders.some((o) => o.status?.toUpperCase() === 'PENDING');
+    if (!hasPendingOrder) return;
+
+    const interval = setInterval(() => {
+      fetchUserTicketsAndOrders();
+    }, 30000);
+
+    return () => clearInterval(interval);
+  }, [orders, fetchUserTicketsAndOrders]);
+
   const loading = authLoading || (user ? dataLoading : false);
 
   const handlePayOrder = async (orderId: string) => {
+    // Validasi kedaluwarsa di sisi klien terlebih dahulu
+    const targetOrder = orders.find((o) => o.id === orderId);
+    if (targetOrder?.expires_at && new Date(targetOrder.expires_at).getTime() <= Date.now()) {
+      setModalData({
+        isOpen: true,
+        title: 'Batas Waktu Pembayaran Habis',
+        message: 'Waktu pembayaran untuk pesanan ini telah berakhir (kedaluwarsa). Tiket telah dikembalikan ke kuota umum. Silakan lakukan pemesanan ulang.',
+        type: 'error',
+      });
+      await fetchUserTicketsAndOrders();
+      return;
+    }
+
     try {
       setPayingOrderId(orderId);
       const res = await ticketApi.post<{ token?: string; midtrans_order_id?: string } | string>(`/api/v1/tickets/orders/${orderId}/pay`);
@@ -168,7 +221,7 @@ export default function MyTicketsPage() {
       if (token.startsWith('MOCK_') || typeof window === 'undefined' || !window.snap) {
         try {
           await ticketApi.post(`/api/v1/tickets/orders/${orderId}/simulate`);
-          fetchUserTicketsAndOrders();
+          await fetchUserTicketsAndOrders();
           return;
         } catch {
           // If simulate fails, fall through
@@ -203,8 +256,8 @@ export default function MyTicketsPage() {
             }
             await fetchUserTicketsAndOrders();
           },
-          onError: () => {
-            fetchUserTicketsAndOrders();
+          onError: async () => {
+            await fetchUserTicketsAndOrders();
           },
           onClose: async () => {
             try {
@@ -220,6 +273,21 @@ export default function MyTicketsPage() {
       }
     } catch (error: unknown) {
       console.error('Payment error:', error);
+      const errMsg = error instanceof Error ? error.message : 'Gagal memproses pembayaran pesanan.';
+      const isNotPending =
+        errMsg.toLowerCase().includes('not pending') ||
+        errMsg.toLowerCase().includes('tidak pending') ||
+        errMsg.toLowerCase().includes('cancelled');
+
+      setModalData({
+        isOpen: true,
+        title: isNotPending ? 'Pesanan Kedaluwarsa' : 'Gagal Membuka Pembayaran',
+        message: isNotPending
+          ? 'Batas waktu pembayaran pesanan ini telah berakhir (kedaluwarsa) sehingga pesanan otomatis dibatalkan oleh sistem. Silakan buat pesanan baru untuk mendapatkan tiket.'
+          : `${errMsg} Silakan coba lagi beberapa saat lagi.`,
+        type: 'error',
+      });
+      await fetchUserTicketsAndOrders();
     } finally {
       setPayingOrderId(null);
     }
@@ -759,8 +827,11 @@ export default function MyTicketsPage() {
           ) : (
             <div className="space-y-3">
               {orders.map((order) => {
-                const isPaid = order.status?.toUpperCase() === 'PAID';
-                const isPending = order.status?.toUpperCase() === 'PENDING';
+                const isPaid = order.status?.toUpperCase() === 'PAID' || order.status?.toUpperCase() === 'SUCCESS';
+                const isCancelled = order.status?.toUpperCase() === 'CANCELLED';
+                const isExpired = order.expires_at ? new Date(order.expires_at).getTime() <= Date.now() : false;
+                const isOrderExpired = (order.status?.toUpperCase() === 'PENDING' && isExpired) || order.status?.toUpperCase() === 'EXPIRED';
+                const isPending = order.status?.toUpperCase() === 'PENDING' && !isExpired;
 
                 return (
                   <div
@@ -778,10 +849,20 @@ export default function MyTicketsPage() {
                               ? 'bg-emerald-200/70 text-emerald-800'
                               : isPending
                               ? 'bg-amber-200/70 text-amber-800'
-                              : 'bg-rose-200/70 text-rose-800'
+                              : isOrderExpired
+                              ? 'bg-rose-100 text-rose-700'
+                              : 'bg-zinc-200/70 text-zinc-700'
                           }`}
                         >
-                          {isPaid ? 'LUNAS' : isPending ? 'MENUNGGU PEMBAYARAN' : order.status}
+                          {isPaid
+                            ? 'LUNAS'
+                            : isPending
+                            ? 'MENUNGGU PEMBAYARAN'
+                            : isOrderExpired
+                            ? 'KEDALUWARSA'
+                            : isCancelled
+                            ? 'DIBATALKAN'
+                            : order.status}
                         </span>
                       </div>
 
@@ -791,6 +872,12 @@ export default function MyTicketsPage() {
                           <span className="text-amber-600 flex items-center gap-1 font-medium">
                             <Clock className="h-3 w-3" />
                             Batas Bayar: {formatDate(order.expires_at)}
+                          </span>
+                        )}
+                        {isOrderExpired && (
+                          <span className="text-rose-600 flex items-center gap-1 font-medium">
+                            <Clock className="h-3 w-3" />
+                            Batas waktu pembayaran telah berakhir
                           </span>
                         )}
                       </div>
@@ -829,6 +916,18 @@ export default function MyTicketsPage() {
                             {payingOrderId === order.id ? 'Memuat...' : 'Bayar Sekarang'}
                             <ArrowRight className="h-3.5 w-3.5" />
                           </Button>
+                        )}
+
+                        {(isOrderExpired || isCancelled) && (
+                          <Link href="/events">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="bg-white hover:bg-zinc-200 text-zinc-800 text-xs flex items-center gap-1.5 rounded-full border-0 shadow-none font-semibold px-4 py-2.5"
+                            >
+                              Pesan Ulang
+                            </Button>
+                          </Link>
                         )}
                       </div>
                     </div>
@@ -1010,6 +1109,40 @@ export default function MyTicketsPage() {
           </div>
         </Modal>
       )}
+
+      {/* Feedback / Error Modal */}
+      <Modal
+        isOpen={modalData.isOpen}
+        onClose={() => setModalData((prev) => ({ ...prev, isOpen: false }))}
+        title={modalData.title}
+      >
+        <div className="space-y-4 text-center py-2">
+          <div
+            className={`mx-auto flex items-center justify-center h-14 w-14 rounded-full ${
+              modalData.type === 'success' ? 'bg-emerald-100 text-emerald-600' : 'bg-rose-100 text-rose-600'
+            }`}
+          >
+            {modalData.type === 'success' ? (
+              <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+              </svg>
+            ) : (
+              <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+            )}
+          </div>
+          <p className="text-zinc-600 text-sm leading-relaxed max-w-sm mx-auto">{modalData.message}</p>
+          <div className="pt-2">
+            <Button
+              className="w-full rounded-full py-2.5 bg-zinc-950 hover:bg-zinc-800 text-white font-semibold text-xs border-0 shadow-none"
+              onClick={() => setModalData((prev) => ({ ...prev, isOpen: false }))}
+            >
+              Tutup
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }

@@ -67,6 +67,7 @@ export default function MyTicketsPage() {
     title: string;
     message: string;
     type: 'success' | 'error';
+    eventId?: string;
   }>({
     isOpen: false,
     title: '',
@@ -150,7 +151,30 @@ export default function MyTicketsPage() {
       );
 
       setTickets(enriched);
-      setOrders(rawOrders as Order[]);
+
+      const enrichedOrders: Order[] = await Promise.all(
+        (rawOrders as Order[]).map(async (order) => {
+          let ev = eventMap.get(order.event_id);
+          if (!ev && order.event_id) {
+            try {
+              const singleEv = await eventApi.get<EventType>(`/api/v1/events/${order.event_id}`);
+              if (singleEv.data) {
+                let venue = singleEv.data.venue || (singleEv.data.venue_id ? venueMap.get(singleEv.data.venue_id) : undefined);
+                ev = { ...singleEv.data, venue };
+                eventMap.set(order.event_id, ev);
+              }
+            } catch {
+              // ignore
+            }
+          }
+          return {
+            ...order,
+            event: ev,
+          };
+        })
+      );
+
+      setOrders(enrichedOrders);
     } catch (error) {
       console.error('Failed to fetch user tickets:', error);
     } finally {
@@ -200,8 +224,9 @@ export default function MyTicketsPage() {
       setModalData({
         isOpen: true,
         title: 'Batas Waktu Pembayaran Habis',
-        message: 'Waktu pembayaran untuk pesanan ini telah berakhir (kedaluwarsa). Tiket telah dikembalikan ke kuota umum. Silakan lakukan pemesanan ulang.',
+        message: 'Waktu pembayaran untuk pesanan ini telah berakhir (kedaluwarsa). Tiket telah dikembalikan ke kuota umum. Anda dapat memesan ulang tiket untuk event ini.',
         type: 'error',
+        eventId: targetOrder.event_id,
       });
       await fetchUserTicketsAndOrders();
       return;
@@ -283,9 +308,10 @@ export default function MyTicketsPage() {
         isOpen: true,
         title: isNotPending ? 'Pesanan Kedaluwarsa' : 'Gagal Membuka Pembayaran',
         message: isNotPending
-          ? 'Batas waktu pembayaran pesanan ini telah berakhir (kedaluwarsa) sehingga pesanan otomatis dibatalkan oleh sistem. Silakan buat pesanan baru untuk mendapatkan tiket.'
+          ? 'Batas waktu pembayaran pesanan ini telah berakhir (kedaluwarsa) sehingga pesanan otomatis dibatalkan oleh sistem. Anda dapat memesan ulang tiket untuk event ini.'
           : `${errMsg} Silakan coba lagi beberapa saat lagi.`,
         type: 'error',
+        eventId: targetOrder?.event_id,
       });
       await fetchUserTicketsAndOrders();
     } finally {
@@ -866,6 +892,12 @@ export default function MyTicketsPage() {
                         </span>
                       </div>
 
+                      {order.event?.title && (
+                        <h4 className="text-sm font-bold text-zinc-900 line-clamp-1 pt-0.5">
+                          {order.event.title}
+                        </h4>
+                      )}
+
                       <div className="flex flex-wrap items-center gap-4 text-xs text-zinc-500 pt-1">
                         <span>Waktu Pesan: {formatDate(order.created_at)}</span>
                         {isPending && order.expires_at && (
@@ -919,7 +951,7 @@ export default function MyTicketsPage() {
                         )}
 
                         {(isOrderExpired || isCancelled) && (
-                          <Link href="/events">
+                          <Link href={order.event_id ? `/events/${order.event_id}` : '/events'}>
                             <Button
                               variant="ghost"
                               size="sm"
@@ -1133,12 +1165,24 @@ export default function MyTicketsPage() {
             )}
           </div>
           <p className="text-zinc-600 text-sm leading-relaxed max-w-sm mx-auto">{modalData.message}</p>
-          <div className="pt-2">
+          <div className="pt-2 space-y-2">
+            {modalData.eventId && (
+              <Link href={`/events/${modalData.eventId}`}>
+                <Button className="w-full rounded-full py-2.5 bg-zinc-950 hover:bg-zinc-800 text-white font-semibold text-xs border-0 shadow-none">
+                  Pesan Ulang Tiket Event Ini
+                </Button>
+              </Link>
+            )}
             <Button
-              className="w-full rounded-full py-2.5 bg-zinc-950 hover:bg-zinc-800 text-white font-semibold text-xs border-0 shadow-none"
+              variant={modalData.eventId ? 'outline' : 'primary'}
+              className={`w-full rounded-full py-2.5 text-xs font-semibold border-0 shadow-none ${
+                modalData.eventId
+                  ? 'bg-zinc-100 hover:bg-zinc-200 text-zinc-800'
+                  : 'bg-zinc-950 hover:bg-zinc-800 text-white'
+              }`}
               onClick={() => setModalData((prev) => ({ ...prev, isOpen: false }))}
             >
-              Tutup
+              {modalData.eventId ? 'Tutup' : 'Mengerti'}
             </Button>
           </div>
         </div>

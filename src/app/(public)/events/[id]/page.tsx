@@ -429,9 +429,9 @@ export default function EventDetailPage() {
                   <div className="p-2 bg-zinc-100 rounded-xl text-zinc-900 flex-shrink-0">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
                   </div>
-                  <div>
+                  <div className="min-w-0 flex-1">
                     <p className="text-[11px] font-medium text-zinc-500 uppercase tracking-wider">Lokasi</p>
-                    <p className="font-bold text-zinc-950 text-xs sm:text-sm mt-0.5 line-clamp-1">{event.venue}</p>
+                    <p className="font-bold text-zinc-950 text-xs sm:text-sm mt-0.5 leading-snug break-words">{event.venue}</p>
                   </div>
                 </div>
               </div>

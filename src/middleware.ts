@@ -9,8 +9,8 @@ const protectedPrefixes = [
   '/cashless',
 ];
 
-// Auth routes where authenticated users should be redirected away from
-const authRoutes = ['/login', '/register', '/forgot-password', '/reset-password'];
+// Auth routes where authenticated users should be redirected away from (guest-only)
+const authRoutes = ['/login', '/register', '/forgot-password'];
 
 // Helper function to decode and check token payload and expiration in Edge runtime
 function decodeTokenPayload(token?: string): { role?: string; exp?: number } | null {

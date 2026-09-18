@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/providers/auth-provider';
-import { BarChart3, Calendar, ShoppingCart, Folder, Wallet, ShieldCheck, ArrowUpRight } from 'lucide-react';
+import { BarChart3, Calendar, ShoppingCart, Folder, Wallet, ShieldCheck } from 'lucide-react';
 import { BrandLogo } from '@/components/brand/BrandLogo';
 
 export function Sidebar() {
@@ -63,16 +63,6 @@ export function Sidebar() {
             );
           })}
         </ul>
-      </div>
-
-      <div className="p-4 border-t border-zinc-200">
-        <Link
-          href="/"
-          className="flex items-center justify-between w-full py-2.5 px-4 rounded-full text-xs font-bold text-zinc-600 hover:text-zinc-950 hover:bg-zinc-100 transition-all border border-zinc-200 shadow-none"
-        >
-          <span>Buka Portal Publik</span>
-          <ArrowUpRight className="w-3.5 h-3.5 text-zinc-400" />
-        </Link>
       </div>
     </aside>
   );

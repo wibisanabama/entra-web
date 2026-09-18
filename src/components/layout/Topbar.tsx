@@ -2,11 +2,13 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useAuth } from '@/providers/auth-provider';
 import { User, LogOut, Home, Ticket, Wallet } from 'lucide-react';
 
 export function Topbar() {
   const { user, logout } = useAuth();
+  const pathname = usePathname();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -62,38 +64,53 @@ export function Topbar() {
               </div>
               
               <div className="py-1">
-                <Link 
-                  href="/" 
-                  onClick={() => setIsDropdownOpen(false)} 
-                  className="flex items-center gap-2.5 px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50 hover:text-zinc-950 transition-colors"
-                >
-                  <Home className="w-4 h-4 text-zinc-400" />
-                  Halaman Utama
-                </Link>
-                <Link 
-                  href="/profile" 
-                  onClick={() => setIsDropdownOpen(false)} 
-                  className="flex items-center gap-2.5 px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50 hover:text-zinc-950 transition-colors"
-                >
-                  <User className="w-4 h-4 text-zinc-400" />
-                  Profil & Akun
-                </Link>
-                <Link 
-                  href="/my-tickets" 
-                  onClick={() => setIsDropdownOpen(false)} 
-                  className="flex items-center gap-2.5 px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50 hover:text-zinc-950 transition-colors"
-                >
-                  <Ticket className="w-4 h-4 text-zinc-400" />
-                  Tiket Saya
-                </Link>
-                <Link 
-                  href="/cashless" 
-                  onClick={() => setIsDropdownOpen(false)} 
-                  className="flex items-center gap-2.5 px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50 hover:text-zinc-950 transition-colors"
-                >
-                  <Wallet className="w-4 h-4 text-zinc-400" />
-                  Gelang Cashless
-                </Link>
+                {(() => {
+                  const isCurrent = (path: string) => path === '/' ? pathname === '/' : pathname === path || pathname.startsWith(path + '/');
+                  return (
+                    <>
+                      {!isCurrent('/') && (
+                        <Link 
+                          href="/" 
+                          onClick={() => setIsDropdownOpen(false)} 
+                          className="flex items-center gap-2.5 px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50 hover:text-zinc-950 transition-colors"
+                        >
+                          <Home className="w-4 h-4 text-zinc-400" />
+                          Halaman Utama
+                        </Link>
+                      )}
+                      {!isCurrent('/profile') && (
+                        <Link 
+                          href="/profile" 
+                          onClick={() => setIsDropdownOpen(false)} 
+                          className="flex items-center gap-2.5 px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50 hover:text-zinc-950 transition-colors"
+                        >
+                          <User className="w-4 h-4 text-zinc-400" />
+                          Profil & Akun
+                        </Link>
+                      )}
+                      {!isCurrent('/my-tickets') && (
+                        <Link 
+                          href="/my-tickets" 
+                          onClick={() => setIsDropdownOpen(false)} 
+                          className="flex items-center gap-2.5 px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50 hover:text-zinc-950 transition-colors"
+                        >
+                          <Ticket className="w-4 h-4 text-zinc-400" />
+                          Tiket Saya
+                        </Link>
+                      )}
+                      {!isCurrent('/cashless') && (
+                        <Link 
+                          href="/cashless" 
+                          onClick={() => setIsDropdownOpen(false)} 
+                          className="flex items-center gap-2.5 px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50 hover:text-zinc-950 transition-colors"
+                        >
+                          <Wallet className="w-4 h-4 text-zinc-400" />
+                          Gelang Cashless
+                        </Link>
+                      )}
+                    </>
+                  );
+                })()}
               </div>
 
               <div className="border-t border-zinc-100 pt-1">

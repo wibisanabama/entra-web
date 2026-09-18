@@ -87,40 +87,53 @@ export function Navbar() {
                   </div>
                   
                   <div className="py-1">
-                    <Link 
-                      href="/my-tickets" 
-                      onClick={() => setIsAvatarDropdownOpen(false)} 
-                      className="flex items-center gap-2.5 px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50 hover:text-zinc-950 transition-colors"
-                    >
-                      <Ticket className="w-4 h-4 text-zinc-400" />
-                      Tiket Saya
-                    </Link>
-                    <Link 
-                      href="/cashless" 
-                      onClick={() => setIsAvatarDropdownOpen(false)} 
-                      className="flex items-center gap-2.5 px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50 hover:text-zinc-950 transition-colors"
-                    >
-                      <Wallet className="w-4 h-4 text-zinc-400" />
-                      Gelang Cashless
-                    </Link>
-                    {(user.role === 'organizer' || user.role === 'admin') && (
-                      <Link 
-                        href="/dashboard" 
-                        onClick={() => setIsAvatarDropdownOpen(false)} 
-                        className="flex items-center gap-2.5 px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50 hover:text-zinc-950 transition-colors"
-                      >
-                        <LayoutDashboard className="w-4 h-4 text-zinc-400" />
-                        Dashboard Organizer
-                      </Link>
-                    )}
-                    <Link 
-                      href="/profile" 
-                      onClick={() => setIsAvatarDropdownOpen(false)} 
-                      className="flex items-center gap-2.5 px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50 hover:text-zinc-950 transition-colors"
-                    >
-                      <User className="w-4 h-4 text-zinc-400" />
-                      Profil & Akun
-                    </Link>
+                    {(() => {
+                      const isCurrent = (path: string) => path === '/' ? pathname === '/' : pathname === path || pathname.startsWith(path + '/');
+                      return (
+                        <>
+                          {!isCurrent('/my-tickets') && (
+                            <Link 
+                              href="/my-tickets" 
+                              onClick={() => setIsAvatarDropdownOpen(false)} 
+                              className="flex items-center gap-2.5 px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50 hover:text-zinc-950 transition-colors"
+                            >
+                              <Ticket className="w-4 h-4 text-zinc-400" />
+                              Tiket Saya
+                            </Link>
+                          )}
+                          {!isCurrent('/cashless') && (
+                            <Link 
+                              href="/cashless" 
+                              onClick={() => setIsAvatarDropdownOpen(false)} 
+                              className="flex items-center gap-2.5 px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50 hover:text-zinc-950 transition-colors"
+                            >
+                              <Wallet className="w-4 h-4 text-zinc-400" />
+                              Gelang Cashless
+                            </Link>
+                          )}
+                          {(user.role === 'organizer' || user.role === 'admin') && !isCurrent('/dashboard') && (
+                            <Link 
+                              href="/dashboard" 
+                              onClick={() => setIsAvatarDropdownOpen(false)} 
+                              className="flex items-center gap-2.5 px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50 hover:text-zinc-950 transition-colors"
+                            >
+                              <LayoutDashboard className="w-4 h-4 text-zinc-400" />
+                              Dashboard Organizer
+                            </Link>
+                          )}
+                          {!isCurrent('/profile') && (
+                            <Link 
+                              href="/profile" 
+                              onClick={() => setIsAvatarDropdownOpen(false)} 
+                              className="flex items-center gap-2.5 px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50 hover:text-zinc-950 transition-colors"
+                            >
+                              <User className="w-4 h-4 text-zinc-400" />
+                              Profil & Akun
+                            </Link>
+                          )}
+                        </>
+                      );
+                    })()}
                   </div>
 
                   <div className="border-t border-zinc-100 pt-1">

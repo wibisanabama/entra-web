@@ -112,9 +112,9 @@ export default function DashboardOverviewPage() {
     { title: 'Event Aktif', value: activeEvents.toString(), change: 'Published', icon: 'M13 10V3L4 14h7v7l9-11h-7z' },
   ];
 
-  const [timeframe, setTimeframe] = useState<7 | 14 | 30>(7);
+  const TIMEFRAME_DAYS = 7;
 
-  // Process sales trend into a continuous daily timeline
+  // Process sales trend into a continuous daily timeline (7 hari terakhir)
   const processTrendChart = () => {
     // Build a map of sales by YYYY-MM-DD
     const trendMap = new Map<string, { tickets: number; revenue: number }>();
@@ -139,7 +139,7 @@ export default function DashboardOverviewPage() {
 
     const days = [];
     const now = new Date();
-    for (let i = timeframe - 1; i >= 0; i--) {
+    for (let i = TIMEFRAME_DAYS - 1; i >= 0; i--) {
       const d = new Date(now);
       d.setDate(d.getDate() - i);
       const y = d.getFullYear();
@@ -208,32 +208,13 @@ export default function DashboardOverviewPage() {
         {/* Chart Area */}
         <div className="lg:col-span-2">
           <Card className="bg-zinc-100 rounded-2xl p-6 sm:p-7 h-full min-h-[400px] flex flex-col justify-between">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
-              <div>
-                <h3 className="text-base font-bold text-zinc-950">Tren Penjualan (Riwayat)</h3>
-                <p className="text-xs text-zinc-500 mt-0.5">
-                  {totalTicketsInPeriod > 0
-                    ? `${totalTicketsInPeriod} tiket terjual dalam ${timeframe} hari terakhir`
-                    : `Belum ada tiket terjual dalam ${timeframe} hari terakhir`}
-                </p>
-              </div>
-              {/* Timeframe pill switcher */}
-              <div className="flex items-center gap-1 bg-white p-1 rounded-full self-start sm:self-auto border border-zinc-200/50">
-                {([7, 14, 30] as const).map((days) => (
-                  <button
-                    key={days}
-                    type="button"
-                    onClick={() => setTimeframe(days)}
-                    className={`px-3 py-1 text-[11px] font-bold rounded-full transition-all ${
-                      timeframe === days
-                        ? 'bg-zinc-950 text-white'
-                        : 'text-zinc-500 hover:text-zinc-950 hover:bg-zinc-100'
-                    }`}
-                  >
-                    {days} Hari
-                  </button>
-                ))}
-              </div>
+            <div className="mb-6">
+              <h3 className="text-base font-bold text-zinc-950">Tren Penjualan (Riwayat)</h3>
+              <p className="text-xs text-zinc-500 mt-0.5">
+                {totalTicketsInPeriod > 0
+                  ? `${totalTicketsInPeriod} tiket terjual dalam 7 hari terakhir`
+                  : `Belum ada tiket terjual dalam 7 hari terakhir`}
+              </p>
             </div>
 
             <div className="h-64 flex flex-col justify-end pt-4">
@@ -250,13 +231,7 @@ export default function DashboardOverviewPage() {
                         {/* Bar Track Area */}
                         <div className="w-full h-full flex items-end justify-center relative">
                           <div
-                            className={`w-full ${
-                              timeframe === 30
-                                ? 'max-w-[12px] sm:max-w-[18px]'
-                                : timeframe === 14
-                                ? 'max-w-[20px] sm:max-w-[28px]'
-                                : 'max-w-[32px] sm:max-w-[44px]'
-                            } rounded-t-lg transition-all duration-300 relative cursor-pointer ${
+                            className={`w-full max-w-[32px] sm:max-w-[44px] rounded-t-lg transition-all duration-300 relative cursor-pointer ${
                               isZero
                                 ? 'bg-zinc-200/80 group-hover:bg-zinc-300'
                                 : 'bg-zinc-900 group-hover:bg-zinc-700'
@@ -285,11 +260,7 @@ export default function DashboardOverviewPage() {
                         </div>
 
                         {/* X-Axis Date Label */}
-                        <div
-                          className={`text-[10px] sm:text-xs font-semibold text-zinc-500 text-center mt-2.5 truncate w-full group-hover:text-zinc-950 transition-colors ${
-                            timeframe === 30 ? 'hidden md:block' : ''
-                          }`}
-                        >
+                        <div className="text-[10px] sm:text-xs font-semibold text-zinc-500 text-center mt-2.5 truncate w-full group-hover:text-zinc-950 transition-colors">
                           {data.label}
                         </div>
                       </div>

@@ -260,7 +260,7 @@ export default function DashboardOverviewPage() {
                         </div>
 
                         {/* X-Axis Date Label */}
-                        <div className="text-[10px] sm:text-xs font-semibold text-zinc-500 text-center mt-2.5 truncate w-full group-hover:text-zinc-950 transition-colors">
+                        <div className="text-[10px] sm:text-xs font-semibold text-zinc-500 text-center mt-2.5 whitespace-nowrap w-full group-hover:text-zinc-950 transition-colors">
                           {data.label}
                         </div>
                       </div>
@@ -287,17 +287,17 @@ export default function DashboardOverviewPage() {
                   const eventTitle = (order.event_id && eventsMap[order.event_id]) || order.event?.title || 'Tiket Event';
                   const customerName = order.user?.name || (order.user_id ? `User #${order.user_id}` : 'Pelanggan');
                   return (
-                    <div key={order.id} className="flex items-center gap-3.5 p-2 rounded-xl">
-                      <div className="w-9 h-9 rounded-full bg-white flex items-center justify-center text-zinc-900 font-bold text-xs shrink-0">
+                    <div key={order.id} className="flex items-start gap-3.5 p-2 rounded-xl">
+                      <div className="w-9 h-9 rounded-full bg-white flex items-center justify-center text-zinc-900 font-bold text-xs shrink-0 mt-0.5">
                         {customerName[0].toUpperCase()}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs font-bold text-zinc-950 truncate">{customerName}</p>
-                        <p className="text-[11px] text-zinc-500 truncate">{eventTitle}</p>
+                        <p className="text-xs font-bold text-zinc-950 break-all">{customerName}</p>
+                        <p className="text-[11px] text-zinc-500 break-words mt-0.5">{eventTitle}</p>
                       </div>
                       <div className="text-right shrink-0">
                         <p className="text-xs font-black text-zinc-950">{formatCurrency(Number(order.total_amount))}</p>
-                        <span className={`inline-block text-[10px] font-bold px-2 py-0.5 rounded-full ${isPaid ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}`}>
+                        <span className={`inline-block text-[10px] font-bold px-2 py-0.5 rounded-full mt-0.5 ${isPaid ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}`}>
                           {isPaid ? 'LUNAS' : order.status}
                         </span>
                       </div>

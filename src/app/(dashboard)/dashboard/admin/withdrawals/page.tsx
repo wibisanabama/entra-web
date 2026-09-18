@@ -424,8 +424,7 @@ export default function AdminWithdrawalsPage() {
                     return (
                       <tr
                         key={w.id}
-                        className="hover:bg-zinc-200/40 transition-colors cursor-pointer"
-                        onClick={() => setSelectedWithdrawal(w)}
+                        className="hover:bg-zinc-200/40 transition-colors"
                       >
                         {/* Date & ID */}
                         <td className="px-4 py-3.5">
@@ -469,7 +468,7 @@ export default function AdminWithdrawalsPage() {
                         </td>
 
                         {/* Admin Actions */}
-                        <td className="px-4 py-3.5 text-right" onClick={(e) => e.stopPropagation()}>
+                        <td className="px-4 py-3.5 text-right">
                           <div className="flex items-center justify-end gap-1.5">
                             {isPending && (
                               <>

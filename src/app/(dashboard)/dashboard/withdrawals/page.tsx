@@ -491,8 +491,7 @@ export default function WithdrawalsPage() {
                     return (
                       <tr
                         key={w.id}
-                        className="hover:bg-zinc-200/40 transition-colors cursor-pointer"
-                        onClick={() => setSelectedWithdrawal(w)}
+                        className="hover:bg-zinc-200/40 transition-colors"
                       >
                         <td className="px-4 py-3.5">
                           <div className="font-bold text-zinc-950 text-xs">{formatDate(w.created_at)}</div>
@@ -522,10 +521,7 @@ export default function WithdrawalsPage() {
                             variant="outline"
                             size="sm"
                             className="rounded-full bg-white text-zinc-800 hover:bg-zinc-200 text-xs py-1 px-3.5 h-8 font-bold border-0 shadow-none cursor-pointer"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setSelectedWithdrawal(w);
-                            }}
+                            onClick={() => setSelectedWithdrawal(w)}
                           >
                             Detail
                           </Button>

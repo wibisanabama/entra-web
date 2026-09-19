@@ -5,7 +5,7 @@ import { TicketType } from '@/types';
 import { Button } from '@/components/ui/Button';
 import { formatCurrency, getPgText } from '@/lib/utils';
 import { ticketApi } from '@/lib/api';
-import { Tag, Check, X, Percent } from 'lucide-react';
+import { Tag, Check, X, Percent, AlertCircle } from 'lucide-react';
 
 export interface AppliedPromo {
   promoCode: string;
@@ -19,6 +19,8 @@ export interface AppliedPromo {
 export interface TicketSelectorProps {
   ticketTypes: TicketType[];
   eventId?: string;
+  eventEndDate?: string;
+  eventStatus?: string;
   initialQuantities?: Record<string, number>;
   initialPromo?: AppliedPromo | null;
   isLoading?: boolean;
@@ -41,6 +43,8 @@ interface PromoValidateResponse {
 export function TicketSelector({
   ticketTypes,
   eventId,
+  eventEndDate,
+  eventStatus,
   initialQuantities,
   initialPromo,
   isLoading = false,
@@ -153,8 +157,15 @@ export function TicketSelector({
     setPromoError(null);
   };
 
+  const now = new Date();
+  const isEventEnded = Boolean(
+    (eventEndDate && new Date(eventEndDate).getTime() < now.getTime()) ||
+    eventStatus === 'completed' ||
+    eventStatus === 'cancelled'
+  );
+
   const handleCheckout = () => {
-    if (isLoading || isDebouncing) return;
+    if (isLoading || isDebouncing || isEventEnded) return;
     const selected = Object.entries(quantities)
       .filter(([, qty]) => qty > 0)
       .map(([id, quantity]) => ({ ticketTypeId: id, quantity }));
@@ -172,14 +183,26 @@ export function TicketSelector({
 
   return (
     <div className="space-y-4 text-zinc-900">
+      {/* Event Ended Banner Notice */}
+      {isEventEnded && (
+        <div className="p-3.5 bg-rose-50 border border-rose-200 text-rose-800 rounded-2xl text-xs font-semibold flex items-center gap-2">
+          <AlertCircle className="h-4 w-4 text-rose-600 shrink-0" />
+          <span>Event ini telah berakhir. Tiket sudah tidak dapat dibeli.</span>
+        </div>
+      )}
+
       {/* Ticket List */}
       <div className="space-y-3">
         {ticketTypes.map(ticket => {
           const qty = quantities[ticket.id] || 0;
           const quota = getTicketQuota(ticket);
-          const isAvailable = quota > 0;
           const priceNum = parsePrice(ticket.price);
           const desc = getPgText(ticket.description);
+
+          const isInactive = ticket.is_active === false;
+          const isSaleUpcoming = Boolean(ticket.sale_start && new Date(ticket.sale_start).getTime() > now.getTime());
+          const isSaleEnded = Boolean(ticket.sale_end && new Date(ticket.sale_end).getTime() < now.getTime());
+          const isAvailable = !isEventEnded && !isInactive && !isSaleUpcoming && !isSaleEnded && quota > 0;
 
           return (
             <div key={ticket.id} className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 bg-white rounded-2xl">
@@ -189,8 +212,20 @@ export function TicketSelector({
                 <div className="mt-1 font-extrabold text-zinc-950 text-sm">
                   {priceNum === 0 ? 'Gratis' : formatCurrency(priceNum)}
                 </div>
-                <div className="text-[11px] text-zinc-400 mt-0.5">
-                  Sisa kuota: {quota} tiket
+                <div className="text-[11px] mt-0.5">
+                  {isEventEnded ? (
+                    <span className="font-semibold text-rose-600">Event Berakhir</span>
+                  ) : isInactive ? (
+                    <span className="font-semibold text-zinc-400">Tidak Aktif</span>
+                  ) : isSaleEnded ? (
+                    <span className="font-semibold text-rose-600">Penjualan Berakhir</span>
+                  ) : isSaleUpcoming ? (
+                    <span className="font-semibold text-amber-600">Segera Hadir</span>
+                  ) : quota <= 0 ? (
+                    <span className="font-semibold text-zinc-500">Tiket Habis (Sold Out)</span>
+                  ) : (
+                    <span className="text-zinc-400">Sisa kuota: {quota} tiket</span>
+                  )}
                 </div>
               </div>
               
@@ -318,12 +353,14 @@ export function TicketSelector({
           variant="primary" 
           size="lg" 
           className="w-full bg-zinc-950 hover:bg-zinc-800 text-white font-semibold py-3.5 rounded-full text-base border-none disabled:opacity-50 disabled:cursor-not-allowed"
-          disabled={totalTickets === 0 || isLoading || isDebouncing}
+          disabled={totalTickets === 0 || isLoading || isDebouncing || isEventEnded}
           onClick={handleCheckout}
         >
-          {isLoading || isDebouncing 
-            ? 'Memproses Tiket...' 
-            : (finalPrice === 0 ? 'Dapatkan Tiket Gratis' : `Beli Tiket (${formatCurrency(finalPrice)})`)}
+          {isEventEnded
+            ? 'Event Telah Berakhir'
+            : (isLoading || isDebouncing 
+              ? 'Memproses Tiket...' 
+              : (finalPrice === 0 ? 'Dapatkan Tiket Gratis' : `Beli Tiket (${formatCurrency(finalPrice)})`))}
         </Button>
       </div>
     </div>

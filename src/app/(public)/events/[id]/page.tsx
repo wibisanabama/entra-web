@@ -23,6 +23,9 @@ interface EventDetail {
   organizer: string;
   organizerAvatar?: string;
   tickets: TicketType[];
+  startDateRaw?: string;
+  endDateRaw?: string;
+  status?: string;
 }
 
 export default function EventDetailPage() {
@@ -211,7 +214,11 @@ export default function EventDetailPage() {
         errMsg.includes('409');
       const isPendingOrder = 
         errMsg.toLowerCase().includes('pesanan tiket yang menunggu pembayaran') || 
-        errMsg.toLowerCase().includes('pesanan aktif');
+        errMsg.toLowerCase().includes('pesanan aktif') ||
+        errMsg.toLowerCase().includes('belum diselesaikan');
+      const isSaleEnded =
+        errMsg.toLowerCase().includes('berakhir') ||
+        errMsg.toLowerCase().includes('belum dimulai');
 
       let modalTitle = 'Gagal Memesan Tiket';
       let modalMessage = 'Terjadi kesalahan: ' + errMsg;
@@ -219,12 +226,15 @@ export default function EventDetailPage() {
       if (isAuthError) {
         modalTitle = 'Sesi Masuk Telah Berakhir';
         modalMessage = 'Sesi masuk Anda telah berakhir demi keamanan. Silakan masuk kembali ke akun Anda untuk menyelesaikan pemesanan tiket.';
-      } else if (isSoldOut) {
-        modalTitle = 'Tiket Habis (Sold Out)';
-        modalMessage = errMsg || 'Maaf, kuota tiket untuk kategori ini telah habis terjual karena tingginya permintaan.';
+      } else if (isSaleEnded) {
+        modalTitle = 'Penjualan Ditutup';
+        modalMessage = errMsg;
       } else if (isPendingOrder) {
         modalTitle = 'Pesanan Menunggu Pembayaran';
         modalMessage = errMsg || 'Anda masih memiliki pesanan tiket yang menunggu pembayaran. Silakan selesaikan pembayaran tiket Anda.';
+      } else if (isSoldOut) {
+        modalTitle = 'Tiket Habis (Sold Out)';
+        modalMessage = errMsg || 'Maaf, kuota tiket untuk kategori ini telah habis terjual karena tingginya permintaan.';
       }
 
       setModalData({
@@ -355,7 +365,10 @@ export default function EventDetailPage() {
             category: apiEvent.category?.name || categoryName,
             organizer: organizerName,
             organizerAvatar,
-            tickets: rawTickets
+            tickets: rawTickets,
+            startDateRaw: apiEvent.start_date,
+            endDateRaw: apiEvent.end_date,
+            status: apiEvent.status,
           });
         }
       } catch (error) {
@@ -501,6 +514,8 @@ export default function EventDetailPage() {
                   <TicketSelector 
                     ticketTypes={event.tickets} 
                     eventId={String(event.id)}
+                    eventEndDate={event.endDateRaw}
+                    eventStatus={event.status}
                     initialQuantities={restoredQuantities}
                     initialPromo={restoredPromo}
                     isLoading={checkoutLoading || isPaying}

@@ -34,6 +34,12 @@ export function EventCard({ event }: EventCardProps) {
     : event.venue?.name || event.venue?.city || event.venue?.address || 'Lokasi Belum Ditentukan';
   const banner = getPgText(event.banner_url);
 
+  const isPast = Boolean(
+    (event.end_date && new Date(event.end_date).getTime() < Date.now()) ||
+    event.status === 'completed' ||
+    event.status === 'cancelled'
+  );
+
   return (
     <Link href={`/events/${event.id}`} className="block h-full">
       <div className="h-full flex flex-col rounded-2xl bg-zinc-100 p-3">
@@ -60,14 +66,19 @@ export function EventCard({ event }: EventCardProps) {
             </div>
           )}
 
-          {/* Online badge */}
-          {event.is_online && (
-            <div className="absolute top-2.5 right-2.5">
+          {/* Status badges */}
+          <div className="absolute top-2.5 right-2.5 flex items-center gap-1.5">
+            {isPast && (
+              <span className="px-2.5 py-0.5 text-[10px] font-semibold bg-rose-950/90 text-rose-200 backdrop-blur-md rounded-full tracking-wider uppercase">
+                Selesai
+              </span>
+            )}
+            {event.is_online && (
               <span className="px-2.5 py-0.5 text-[10px] font-semibold bg-zinc-950/90 backdrop-blur-md text-white rounded-full tracking-wider uppercase">
                 Online
               </span>
-            </div>
-          )}
+            )}
+          </div>
         </div>
 
         {/* Card Body */}
@@ -96,8 +107,10 @@ export function EventCard({ event }: EventCardProps) {
           {/* Card Footer: Price Pill */}
           <div className="pt-2 flex items-center justify-between">
             <span className="text-xs text-zinc-500 font-medium">Harga Tiket</span>
-            <div className="px-2.5 py-1 rounded-full text-xs font-semibold bg-white text-zinc-900">
-              {minPrice === null
+            <div className={`px-2.5 py-1 rounded-full text-xs font-semibold ${isPast ? 'bg-zinc-200 text-zinc-600' : 'bg-white text-zinc-900'}`}>
+              {isPast
+                ? 'Event Telah Berakhir'
+                : minPrice === null
                 ? 'Informasi Belum Ada'
                 : minPrice === 0
                 ? 'Gratis'

@@ -21,6 +21,7 @@ export interface TicketSelectorProps {
   eventId?: string;
   initialQuantities?: Record<string, number>;
   initialPromo?: AppliedPromo | null;
+  isLoading?: boolean;
   onSelect: (
     selectedTickets: { ticketTypeId: string; quantity: number }[],
     appliedPromo?: AppliedPromo | null
@@ -42,6 +43,7 @@ export function TicketSelector({
   eventId,
   initialQuantities,
   initialPromo,
+  isLoading = false,
   onSelect,
 }: TicketSelectorProps) {
   const [quantities, setQuantities] = useState<Record<string, number>>(initialQuantities || {});
@@ -49,6 +51,7 @@ export function TicketSelector({
   const [promoLoading, setPromoLoading] = useState(false);
   const [appliedPromo, setAppliedPromo] = useState<AppliedPromo | null>(initialPromo || null);
   const [promoError, setPromoError] = useState<string | null>(null);
+  const [isDebouncing, setIsDebouncing] = useState(false);
 
   React.useEffect(() => {
     if (initialQuantities && Object.keys(initialQuantities).length > 0) {
@@ -151,11 +154,14 @@ export function TicketSelector({
   };
 
   const handleCheckout = () => {
+    if (isLoading || isDebouncing) return;
     const selected = Object.entries(quantities)
       .filter(([, qty]) => qty > 0)
       .map(([id, quantity]) => ({ ticketTypeId: id, quantity }));
     
     if (selected.length > 0) {
+      setIsDebouncing(true);
+      setTimeout(() => setIsDebouncing(false), 2000);
       onSelect(selected, appliedPromo);
     }
   };
@@ -311,11 +317,13 @@ export function TicketSelector({
         <Button 
           variant="primary" 
           size="lg" 
-          className="w-full bg-zinc-950 hover:bg-zinc-800 text-white font-semibold py-3.5 rounded-full text-base border-none"
-          disabled={totalTickets === 0}
+          className="w-full bg-zinc-950 hover:bg-zinc-800 text-white font-semibold py-3.5 rounded-full text-base border-none disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled={totalTickets === 0 || isLoading || isDebouncing}
           onClick={handleCheckout}
         >
-          {finalPrice === 0 ? 'Dapatkan Tiket Gratis' : `Beli Tiket (${formatCurrency(finalPrice)})`}
+          {isLoading || isDebouncing 
+            ? 'Memproses Tiket...' 
+            : (finalPrice === 0 ? 'Dapatkan Tiket Gratis' : `Beli Tiket (${formatCurrency(finalPrice)})`)}
         </Button>
       </div>
     </div>

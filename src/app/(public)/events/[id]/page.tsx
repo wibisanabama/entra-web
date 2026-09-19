@@ -165,12 +165,25 @@ export default function EventDetailPage() {
           unitPrice = item.quantity > 0 ? Math.round((finalItemSubtotal / item.quantity) * 100) / 100 : basePrice;
         }
 
-        const orderRes = await ticketApi.post<{ id: string }>('/api/v1/tickets/orders', {
-          event_id: event.id,
-          ticket_type_id: item.ticketTypeId,
-          quantity: item.quantity,
-          price: unitPrice
-        });
+        // Generate robust idempotency key per order attempt
+        const idempotencyKey = typeof crypto !== 'undefined' && crypto.randomUUID
+          ? crypto.randomUUID()
+          : `web-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+
+        const orderRes = await ticketApi.post<{ id: string }>(
+          '/api/v1/tickets/orders',
+          {
+            event_id: event.id,
+            ticket_type_id: item.ticketTypeId,
+            quantity: item.quantity,
+            price: unitPrice
+          },
+          {
+            headers: {
+              'Idempotency-Key': idempotencyKey,
+            }
+          }
+        );
         if (orderRes?.data?.id) {
           lastOrderId = orderRes.data.id;
         }
@@ -192,12 +205,32 @@ export default function EventDetailPage() {
         errMsg.toLowerCase().includes('unauthorized') ||
         errMsg.toLowerCase().includes('401');
 
+      const isSoldOut = 
+        errMsg.toLowerCase().includes('habis') || 
+        errMsg.toLowerCase().includes('sold out') || 
+        errMsg.includes('409');
+      const isPendingOrder = 
+        errMsg.toLowerCase().includes('pesanan tiket yang menunggu pembayaran') || 
+        errMsg.toLowerCase().includes('pesanan aktif');
+
+      let modalTitle = 'Gagal Memesan Tiket';
+      let modalMessage = 'Terjadi kesalahan: ' + errMsg;
+
+      if (isAuthError) {
+        modalTitle = 'Sesi Masuk Telah Berakhir';
+        modalMessage = 'Sesi masuk Anda telah berakhir demi keamanan. Silakan masuk kembali ke akun Anda untuk menyelesaikan pemesanan tiket.';
+      } else if (isSoldOut) {
+        modalTitle = 'Tiket Habis (Sold Out)';
+        modalMessage = errMsg || 'Maaf, kuota tiket untuk kategori ini telah habis terjual karena tingginya permintaan.';
+      } else if (isPendingOrder) {
+        modalTitle = 'Pesanan Menunggu Pembayaran';
+        modalMessage = errMsg || 'Anda masih memiliki pesanan tiket yang menunggu pembayaran. Silakan selesaikan pembayaran tiket Anda.';
+      }
+
       setModalData({
         isOpen: true,
-        title: isAuthError ? 'Sesi Masuk Telah Berakhir' : 'Gagal Memesan Tiket',
-        message: isAuthError
-          ? 'Sesi masuk Anda telah berakhir demi keamanan. Silakan masuk kembali ke akun Anda untuk menyelesaikan pemesanan tiket.'
-          : 'Terjadi kesalahan: ' + errMsg,
+        title: modalTitle,
+        message: modalMessage,
         type: 'error',
         isAuthError,
       });
@@ -470,6 +503,7 @@ export default function EventDetailPage() {
                     eventId={String(event.id)}
                     initialQuantities={restoredQuantities}
                     initialPromo={restoredPromo}
+                    isLoading={checkoutLoading || isPaying}
                     onSelect={executeCheckout} 
                   />
                   {(checkoutLoading || isPaying) && (

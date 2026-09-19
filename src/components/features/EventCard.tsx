@@ -69,12 +69,12 @@ export function EventCard({ event }: EventCardProps) {
           {/* Status badges */}
           <div className="absolute top-2.5 right-2.5 flex items-center gap-1.5">
             {isPast && (
-              <span className="px-2.5 py-0.5 text-[10px] font-semibold bg-rose-950/90 text-rose-200 backdrop-blur-md rounded-full tracking-wider uppercase">
+              <span className="px-2.5 py-0.5 text-[10px] font-semibold bg-rose-950/90 text-rose-200 backdrop-blur-md rounded-full tracking-wider uppercase border-none">
                 Selesai
               </span>
             )}
             {event.is_online && (
-              <span className="px-2.5 py-0.5 text-[10px] font-semibold bg-zinc-950/90 backdrop-blur-md text-white rounded-full tracking-wider uppercase">
+              <span className="px-2.5 py-0.5 text-[10px] font-semibold bg-zinc-950/90 backdrop-blur-md text-white rounded-full tracking-wider uppercase border-none">
                 Online
               </span>
             )}

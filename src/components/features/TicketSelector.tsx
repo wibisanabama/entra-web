@@ -185,7 +185,7 @@ export function TicketSelector({
     <div className="space-y-4 text-zinc-900">
       {/* Event Ended Banner Notice */}
       {isEventEnded && (
-        <div className="p-3.5 bg-rose-50 border border-rose-200 text-rose-800 rounded-2xl text-xs font-semibold flex items-center gap-2">
+        <div className="p-3.5 bg-rose-50 text-rose-800 rounded-2xl text-xs font-semibold flex items-center gap-2 border-none">
           <AlertCircle className="h-4 w-4 text-rose-600 shrink-0" />
           <span>Event ini telah berakhir. Tiket sudah tidak dapat dibeli.</span>
         </div>

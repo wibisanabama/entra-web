@@ -57,27 +57,30 @@ export function EventCard({ event }: EventCardProps) {
             </div>
           )}
 
-          {/* Category Pill Tag Overlay */}
-          {event.category?.name && (
-            <div className="absolute top-2.5 left-2.5">
-              <span className="px-2.5 py-1 text-[11px] font-semibold bg-white/95 backdrop-blur-md text-zinc-900 rounded-full">
-                {event.category.name}
-              </span>
+          {/* Badges Overlay */}
+          <div className="absolute top-2.5 inset-x-2.5 flex items-center justify-between gap-2 pointer-events-none">
+            {/* Category Pill Tag Overlay */}
+            <div className="flex items-center">
+              {event.category?.name && (
+                <span className="inline-flex items-center justify-center h-6 px-2.5 text-[11px] font-semibold bg-white/95 backdrop-blur-md text-zinc-900 rounded-full shadow-xs">
+                  {event.category.name}
+                </span>
+              )}
             </div>
-          )}
 
-          {/* Status badges */}
-          <div className="absolute top-2.5 right-2.5 flex items-center gap-1.5">
-            {isPast && (
-              <span className="px-2.5 py-0.5 text-[10px] font-semibold bg-rose-950/90 text-rose-200 backdrop-blur-md rounded-full tracking-wider uppercase border-none">
-                Selesai
-              </span>
-            )}
-            {event.is_online && (
-              <span className="px-2.5 py-0.5 text-[10px] font-semibold bg-zinc-950/90 backdrop-blur-md text-white rounded-full tracking-wider uppercase border-none">
-                Online
-              </span>
-            )}
+            {/* Status badges */}
+            <div className="flex items-center gap-1.5 ml-auto">
+              {isPast && (
+                <span className="inline-flex items-center justify-center h-6 px-2.5 text-[10px] font-semibold bg-rose-950/90 text-rose-200 backdrop-blur-md rounded-full tracking-wider uppercase border-none shadow-xs">
+                  Selesai
+                </span>
+              )}
+              {event.is_online && (
+                <span className="inline-flex items-center justify-center h-6 px-2.5 text-[10px] font-semibold bg-zinc-950/90 backdrop-blur-md text-white rounded-full tracking-wider uppercase border-none shadow-xs">
+                  Online
+                </span>
+              )}
+            </div>
           </div>
         </div>
 

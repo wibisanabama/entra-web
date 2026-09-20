@@ -6,7 +6,6 @@ const protectedPrefixes = [
   '/dashboard',
   '/my-tickets',
   '/profile',
-  '/cashless',
 ];
 
 // Auth routes where authenticated users should be redirected away from (guest-only)

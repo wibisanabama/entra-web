@@ -7,7 +7,6 @@ Aplikasi web portal publik dan dashboard manajemen event untuk platform Entra, d
 - Portal Publik: Pencarian dan penjelajahan katalog event, filter kategori, detail event, dan pembelian tiket online.
 - Transaksi dan Pembayaran: Integrasi Midtrans Snap untuk pembayaran digital (QRIS, Virtual Account, dan E-Wallet).
 - Tiket Digital: Manajemen e-ticket berbasis QR code dinamis, bukti pembelian, dan transfer kepemilikan tiket.
-- Dompet Cashless: Cek saldo digital, riwayat transaksi, dan simulasi top-up.
 - Dashboard Organizer: Manajemen pembuatan dan penyuntingan event, kuota tier tiket, pemantauan daftar peserta, dan laporan penjualan.
 - Manajemen Finansial: Pengajuan pencairan saldo pendapatan tiket (withdrawal) ke rekening bank serta panel persetujuan admin.
 
@@ -39,7 +38,6 @@ Sesuaikan parameter berikut pada berkas `.env.local`:
 | `NEXT_PUBLIC_EVENT_API_URL` | URL basis event-service | http://localhost:8082 |
 | `NEXT_PUBLIC_TICKET_API_URL` | URL basis ticket-service | http://localhost:8083 |
 | `NEXT_PUBLIC_PAYMENT_API_URL` | URL basis payment-service | http://localhost:8084 |
-| `NEXT_PUBLIC_CASHLESS_API_URL` | URL basis cashless-service | http://localhost:8085 |
 | `NEXT_PUBLIC_GATE_API_URL` | URL basis gate-service | http://localhost:8086 |
 | `NEXT_PUBLIC_STORAGE_API_URL` | URL basis storage-service | http://localhost:8087 |
 | `NEXT_PUBLIC_MIDTRANS_CLIENT_KEY` | Client Key Midtrans Sandbox untuk frontend | Sesuai akun Midtrans |
@@ -89,7 +87,7 @@ entra-web/
 ├── public/                 # Aset statis publik (gambar, ikon, logo)
 ├── src/
 │   ├── app/
-│   │   ├── (public)/       # Rute portal publik (katalog event, tiket saya, cashless, autentikasi)
+│   │   ├── (public)/       # Rute portal publik (katalog event, tiket saya, autentikasi)
 │   │   └── (dashboard)/    # Rute dashboard organizer dan panel persetujuan admin
 │   ├── components/
 │   │   ├── features/       # Komponen spesifik modul bisnis (e-ticket, checkout, QR selector)

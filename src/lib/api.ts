@@ -248,6 +248,5 @@ export const authApi = new ApiClient(process.env.NEXT_PUBLIC_AUTH_API_URL || 'ht
 export const eventApi = new ApiClient(process.env.NEXT_PUBLIC_EVENT_API_URL || 'http://localhost:8082');
 export const ticketApi = new ApiClient(process.env.NEXT_PUBLIC_TICKET_API_URL || 'http://localhost:8083');
 export const paymentApi = new ApiClient(process.env.NEXT_PUBLIC_PAYMENT_API_URL || 'http://localhost:8084');
-export const cashlessApi = new ApiClient(process.env.NEXT_PUBLIC_CASHLESS_API_URL || 'http://localhost:8085');
 export const gateApi = new ApiClient(process.env.NEXT_PUBLIC_GATE_API_URL || 'http://localhost:8086');
 export const storageApi = new ApiClient(process.env.NEXT_PUBLIC_STORAGE_API_URL || 'http://localhost:8087');

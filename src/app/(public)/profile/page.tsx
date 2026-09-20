@@ -428,7 +428,7 @@ export default function ProfilePage() {
               <div>
                 <p className="text-xs font-bold text-zinc-950">Ingin Menggelar Event?</p>
                 <p className="text-[11px] text-zinc-500 leading-relaxed mt-1">
-                  Buka akses dashboard penjualan tiket, manajemen kuota, dan scanner pintu masuk.
+                  Buka akses dashboard penjualan tiket, manajemen kuota, dan monitoring peserta event.
                 </p>
               </div>
               <Button

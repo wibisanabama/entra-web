@@ -38,7 +38,6 @@ Sesuaikan parameter berikut pada berkas `.env.local`:
 | `NEXT_PUBLIC_EVENT_API_URL` | URL basis event-service | http://localhost:8082 |
 | `NEXT_PUBLIC_TICKET_API_URL` | URL basis ticket-service | http://localhost:8083 |
 | `NEXT_PUBLIC_PAYMENT_API_URL` | URL basis payment-service | http://localhost:8084 |
-| `NEXT_PUBLIC_GATE_API_URL` | URL basis gate-service | http://localhost:8086 |
 | `NEXT_PUBLIC_STORAGE_API_URL` | URL basis storage-service | http://localhost:8087 |
 | `NEXT_PUBLIC_MIDTRANS_CLIENT_KEY` | Client Key Midtrans Sandbox untuk frontend | Sesuai akun Midtrans |
 

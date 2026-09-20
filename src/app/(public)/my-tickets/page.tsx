@@ -242,14 +242,11 @@ export default function MyTicketsPage() {
         throw new Error('Token pembayaran tidak ditemukan.');
       }
 
-      // If mock token or no snap instance, trigger simulate
-      if (token.startsWith('MOCK_') || typeof window === 'undefined' || !window.snap) {
-        try {
-          await ticketApi.post(`/api/v1/tickets/orders/${orderId}/simulate`);
-          await fetchUserTicketsAndOrders();
-          return;
-        } catch {
-          // If simulate fails, fall through
+      // Tunggu window.snap siap jika sedang dimuat
+      if (typeof window !== 'undefined' && !window.snap) {
+        for (let i = 0; i < 20; i++) {
+          await new Promise((r) => setTimeout(r, 150));
+          if (window.snap) break;
         }
       }
 

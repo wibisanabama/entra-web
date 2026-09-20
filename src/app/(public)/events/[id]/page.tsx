@@ -53,21 +53,10 @@ export default function EventDetailPage() {
       }
 
       // Tunggu window.snap siap jika sedang dimuat
-      if (typeof window !== 'undefined' && !window.snap && !token.startsWith('MOCK_')) {
+      if (typeof window !== 'undefined' && !window.snap) {
         for (let i = 0; i < 20; i++) {
           await new Promise((r) => setTimeout(r, 150));
           if (window.snap) break;
-        }
-      }
-
-      // If mock token or no snap instance, trigger simulate
-      if (token.startsWith('MOCK_') || typeof window === 'undefined' || !window.snap) {
-        try {
-          await ticketApi.post(`/api/v1/tickets/orders/${orderId}/simulate`);
-          router.push('/my-tickets');
-          return;
-        } catch {
-          // If simulate fails, fall through
         }
       }
 

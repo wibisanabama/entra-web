@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { TicketSelector, AppliedPromo } from '@/components/features/TicketSelector';
+import { TicketSelector } from '@/components/features/TicketSelector';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
@@ -39,7 +39,6 @@ export default function EventDetailPage() {
   const [createdOrderId, setCreatedOrderId] = useState<string | null>(null);
   const [isPaying, setIsPaying] = useState(false);
   const [restoredQuantities, setRestoredQuantities] = useState<Record<string, number> | undefined>(undefined);
-  const [restoredPromo, setRestoredPromo] = useState<AppliedPromo | null | undefined>(undefined);
   const [autoResuming, setAutoResuming] = useState(false);
 
   const handlePayOrder = async (orderId: string) => {
@@ -131,15 +130,13 @@ export default function EventDetailPage() {
   };
 
   const executeCheckout = async (
-    selected: { ticketTypeId: string; quantity: number }[],
-    appliedPromo?: AppliedPromo | null
+    selected: { ticketTypeId: string; quantity: number }[]
   ) => {
     if (!user) {
       if (typeof window !== 'undefined') {
         sessionStorage.setItem('entra_pending_checkout', JSON.stringify({
           eventId: event?.id || String(params.id),
           selected,
-          appliedPromo: appliedPromo || null,
         }));
       }
       const currentPath = `/events/${params.id}?checkout=true`;
@@ -150,23 +147,12 @@ export default function EventDetailPage() {
     if (selected.length === 0 || !event) return;
     try {
       setCheckoutLoading(true);
-      const totalRawSubtotal = selected.reduce((sum, item) => {
-        const t = event.tickets.find((tk) => tk.id === item.ticketTypeId);
-        const price = t?.price ? (typeof t.price === 'number' ? t.price : parseFloat(t.price) || 0) : 0;
-        return sum + price * item.quantity;
-      }, 0);
 
       let lastOrderId = '';
       for (const item of selected) {
         const ticketData = event.tickets.find((t) => t.id === item.ticketTypeId);
         const basePrice = ticketData?.price ? (typeof ticketData.price === 'number' ? ticketData.price : parseFloat(ticketData.price) || 0) : 0;
-        let unitPrice = basePrice;
-        if (appliedPromo && appliedPromo.discountAmount > 0 && totalRawSubtotal > 0) {
-          const itemSubtotal = basePrice * item.quantity;
-          const itemDiscount = (itemSubtotal / totalRawSubtotal) * appliedPromo.discountAmount;
-          const finalItemSubtotal = Math.max(0, itemSubtotal - itemDiscount);
-          unitPrice = item.quantity > 0 ? Math.round((finalItemSubtotal / item.quantity) * 100) / 100 : basePrice;
-        }
+        const unitPrice = basePrice;
 
         // Generate robust idempotency key per order attempt
         const idempotencyKey = typeof crypto !== 'undefined' && crypto.randomUUID
@@ -270,9 +256,6 @@ export default function EventDetailPage() {
           qtyMap[item.ticketTypeId] = item.quantity;
         }
         setRestoredQuantities(qtyMap);
-        if (pending.appliedPromo) {
-          setRestoredPromo(pending.appliedPromo);
-        }
 
         // Bersihkan query param di URL browser
         if (window.location.search.includes('checkout=')) {
@@ -280,7 +263,7 @@ export default function EventDetailPage() {
         }
 
         // Langsung eksekusi checkout & lanjut pembayaran
-        executeCheckout(pending.selected, pending.appliedPromo);
+        executeCheckout(pending.selected);
       }
     } catch {
       sessionStorage.removeItem('entra_pending_checkout');
@@ -517,7 +500,6 @@ export default function EventDetailPage() {
                     eventEndDate={event.endDateRaw}
                     eventStatus={event.status}
                     initialQuantities={restoredQuantities}
-                    initialPromo={restoredPromo}
                     isLoading={checkoutLoading || isPaying}
                     onSelect={executeCheckout} 
                   />

@@ -4,17 +4,7 @@ import React, { useState } from 'react';
 import { TicketType } from '@/types';
 import { Button } from '@/components/ui/Button';
 import { formatCurrency, getPgText } from '@/lib/utils';
-import { ticketApi } from '@/lib/api';
-import { Tag, Check, X, Percent, AlertCircle } from 'lucide-react';
-
-export interface AppliedPromo {
-  promoCode: string;
-  discountType: string;
-  discountValue: number;
-  discountAmount: number;
-  finalTotal: number;
-  message: string;
-}
+import { AlertCircle } from 'lucide-react';
 
 export interface TicketSelectorProps {
   ticketTypes: TicketType[];
@@ -22,39 +12,21 @@ export interface TicketSelectorProps {
   eventEndDate?: string;
   eventStatus?: string;
   initialQuantities?: Record<string, number>;
-  initialPromo?: AppliedPromo | null;
   isLoading?: boolean;
   onSelect: (
-    selectedTickets: { ticketTypeId: string; quantity: number }[],
-    appliedPromo?: AppliedPromo | null
+    selectedTickets: { ticketTypeId: string; quantity: number }[]
   ) => void;
-}
-
-interface PromoValidateResponse {
-  is_valid: boolean;
-  promo_code: string;
-  discount_type: string;
-  discount_value: number;
-  discount_amount: number;
-  final_total: number;
-  message: string;
 }
 
 export function TicketSelector({
   ticketTypes,
-  eventId,
   eventEndDate,
   eventStatus,
   initialQuantities,
-  initialPromo,
   isLoading = false,
   onSelect,
 }: TicketSelectorProps) {
   const [quantities, setQuantities] = useState<Record<string, number>>(initialQuantities || {});
-  const [promoInput, setPromoInput] = useState(initialPromo?.promoCode || '');
-  const [promoLoading, setPromoLoading] = useState(false);
-  const [appliedPromo, setAppliedPromo] = useState<AppliedPromo | null>(initialPromo || null);
-  const [promoError, setPromoError] = useState<string | null>(null);
   const [isDebouncing, setIsDebouncing] = useState(false);
 
   React.useEffect(() => {
@@ -62,13 +34,6 @@ export function TicketSelector({
       setQuantities(initialQuantities);
     }
   }, [initialQuantities]);
-
-  React.useEffect(() => {
-    if (initialPromo) {
-      setAppliedPromo(initialPromo);
-      setPromoInput(initialPromo.promoCode);
-    }
-  }, [initialPromo]);
 
   const parsePrice = (price: string | number): number => {
     if (typeof price === 'number') return price;
@@ -89,11 +54,6 @@ export function TicketSelector({
       const next = Math.max(0, Math.min(current + delta, max, 10)); // max 10 per transaction or available quota
       return { ...prev, [id]: next };
     });
-    // Reset applied promo when quantity changes so it can be revalidated
-    if (appliedPromo) {
-      setAppliedPromo(null);
-      setPromoError(null);
-    }
   };
 
   const subtotalPrice = ticketTypes.reduce((sum, ticket) => {
@@ -102,60 +62,6 @@ export function TicketSelector({
   }, 0);
 
   const totalTickets = Object.values(quantities).reduce((a, b) => a + b, 0);
-
-  const discountAmount = appliedPromo?.discountAmount || 0;
-  const finalPrice = Math.max(0, subtotalPrice - discountAmount);
-
-  const handleApplyPromo = async (codeToApply?: string) => {
-    const code = (codeToApply || promoInput).trim().toUpperCase();
-    setPromoError(null);
-    if (!code) {
-      setPromoError('Masukkan kode promo terlebih dahulu');
-      return;
-    }
-    if (totalTickets === 0 || subtotalPrice <= 0) {
-      setPromoError('Pilih tiket berbayar terlebih dahulu untuk menggunakan promo');
-      return;
-    }
-
-    try {
-      setPromoLoading(true);
-      const res = await ticketApi.post<PromoValidateResponse | { data: PromoValidateResponse }>('/api/v1/tickets/promo/validate', {
-        promo_code: code,
-        subtotal: subtotalPrice,
-        ticket_quantity: totalTickets,
-        event_id: eventId || '',
-      });
-
-      const data = (res.data && 'data' in res.data && res.data.data) ? res.data.data : (res.data as PromoValidateResponse | undefined);
-      if (data && data.is_valid) {
-        setAppliedPromo({
-          promoCode: data.promo_code,
-          discountType: data.discount_type,
-          discountValue: data.discount_value,
-          discountAmount: data.discount_amount,
-          finalTotal: data.final_total,
-          message: data.message,
-        });
-        setPromoInput(data.promo_code);
-        setPromoError(null);
-      } else {
-        setPromoError(data?.message || 'Kode promo tidak valid');
-      }
-    } catch (error: unknown) {
-      console.error('Error validating promo code:', error);
-      const errMsg = error instanceof Error ? error.message : 'Gagal memvalidasi kode promo';
-      setPromoError(errMsg);
-    } finally {
-      setPromoLoading(false);
-    }
-  };
-
-  const handleRemovePromo = () => {
-    setAppliedPromo(null);
-    setPromoInput('');
-    setPromoError(null);
-  };
 
   const now = new Date();
   const isEventEnded = Boolean(
@@ -173,7 +79,7 @@ export function TicketSelector({
     if (selected.length > 0) {
       setIsDebouncing(true);
       setTimeout(() => setIsDebouncing(false), 2000);
-      onSelect(selected, appliedPromo);
+      onSelect(selected);
     }
   };
 
@@ -251,78 +157,6 @@ export function TicketSelector({
         })}
       </div>
 
-      {/* Promo Code Section */}
-      {subtotalPrice > 0 && (
-        <div className="p-4 bg-white rounded-2xl space-y-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1.5 text-xs font-bold text-zinc-800">
-              <Tag className="h-3.5 w-3.5 text-zinc-600" />
-              <span>Kupon Promo & Diskon</span>
-            </div>
-            {appliedPromo && (
-              <span className="text-[11px] text-emerald-700 font-bold bg-emerald-50 px-2.5 py-0.5 rounded-full">
-                PROMO AKTIF
-              </span>
-            )}
-          </div>
-
-          {/* Input & Apply Button */}
-          <div className="flex gap-2">
-            <div className="relative flex-1">
-              <input
-                type="text"
-                value={promoInput}
-                onChange={(e) => setPromoInput(e.target.value.toUpperCase())}
-                placeholder="Masukkan kode promo"
-                aria-label="Kode kupon promo"
-                disabled={appliedPromo !== null || promoLoading}
-                className="w-full px-3.5 py-2 bg-zinc-100 rounded-full text-xs text-zinc-900 font-mono uppercase focus:outline-none disabled:opacity-60 border-none"
-              />
-            </div>
-            {appliedPromo ? (
-              <Button
-                type="button"
-                size="sm"
-                onClick={handleRemovePromo}
-                className="text-xs text-rose-600 bg-rose-50 hover:bg-rose-100 rounded-full border-none"
-              >
-                <X className="h-3.5 w-3.5 mr-1" />
-                Hapus
-              </Button>
-            ) : (
-              <Button
-                type="button"
-                size="sm"
-                onClick={() => handleApplyPromo()}
-                disabled={promoLoading || !promoInput.trim()}
-                className="bg-zinc-950 hover:bg-zinc-800 text-white text-xs font-semibold px-4 rounded-full border-none"
-              >
-                {promoLoading ? 'Cek...' : 'Terapkan'}
-              </Button>
-            )}
-          </div>
-
-          {promoError && (
-            <p className="text-xs text-rose-600 font-medium px-1">
-              {promoError}
-            </p>
-          )}
-
-          {/* Applied Promo Banner */}
-          {appliedPromo && (
-            <div className="p-2.5 bg-emerald-50 rounded-xl flex items-start gap-2 text-xs text-emerald-800">
-              <Check className="h-4 w-4 text-emerald-600 flex-shrink-0 mt-0.5" />
-              <div>
-                <p className="font-bold">{appliedPromo.message}</p>
-                <p className="text-[11px] text-emerald-700">
-                  Potongan harga sebesar {formatCurrency(appliedPromo.discountAmount)} diterapkan.
-                </p>
-              </div>
-            </div>
-          )}
-        </div>
-      )}
-
       {/* Checkout Summary & Action */}
       <div className="pt-2 space-y-3">
         <div className="space-y-1.5 text-xs text-zinc-500">
@@ -331,20 +165,10 @@ export function TicketSelector({
             <span className="text-zinc-900 font-semibold">{formatCurrency(subtotalPrice)}</span>
           </div>
 
-          {appliedPromo && (
-            <div className="flex justify-between items-center text-emerald-700 font-medium">
-              <span className="flex items-center gap-1">
-                <Percent className="h-3 w-3" />
-                Diskon Promo ({appliedPromo.promoCode})
-              </span>
-              <span>- {formatCurrency(discountAmount)}</span>
-            </div>
-          )}
-
           <div className="flex justify-between items-center pt-2 text-sm">
             <span className="text-zinc-800 font-bold">Total Pembayaran</span>
             <span className="text-2xl font-black text-zinc-950 font-mono">
-              {formatCurrency(finalPrice)}
+              {formatCurrency(subtotalPrice)}
             </span>
           </div>
         </div>
@@ -360,9 +184,10 @@ export function TicketSelector({
             ? 'Event Telah Berakhir'
             : (isLoading || isDebouncing 
               ? 'Memproses Tiket...' 
-              : (finalPrice === 0 ? 'Dapatkan Tiket Gratis' : `Beli Tiket (${formatCurrency(finalPrice)})`))}
+              : (subtotalPrice === 0 ? 'Dapatkan Tiket Gratis' : `Beli Tiket (${formatCurrency(subtotalPrice)})`))}
         </Button>
       </div>
     </div>
   );
 }
+

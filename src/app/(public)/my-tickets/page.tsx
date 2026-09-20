@@ -21,7 +21,6 @@ import {
   RefreshCw,
   Clock,
   ShoppingBag,
-  SendHorizontal,
   Printer,
   FileText,
   AlertCircle,
@@ -48,14 +47,6 @@ export default function MyTicketsPage() {
   // E-Ticket Detail Modal State
   const [selectedTicket, setSelectedTicket] = useState<EnrichedTicket | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  // Transfer Ticket Modal State
-  const [isTransferOpen, setIsTransferOpen] = useState(false);
-  const [transferTicket, setTransferTicket] = useState<EnrichedTicket | null>(null);
-  const [recipientEmail, setRecipientEmail] = useState('');
-  const [recipientName, setRecipientName] = useState('');
-  const [transferLoading, setTransferLoading] = useState(false);
-  const [transferError, setTransferError] = useState<string | null>(null);
 
   // Invoice Modal State
   const [selectedOrderForInvoice, setSelectedOrderForInvoice] = useState<Order | null>(null);
@@ -316,39 +307,6 @@ export default function MyTicketsPage() {
     }
   };
 
-  const handleTransferSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setTransferError(null);
-    if (!transferTicket) return;
-    if (!recipientEmail.trim() || !recipientEmail.includes('@')) {
-      setTransferError('Masukkan alamat email penerima yang valid');
-      return;
-    }
-
-    try {
-      setTransferLoading(true);
-      await ticketApi.post(`/api/v1/tickets/${transferTicket.id}/transfer`, {
-        recipient_email: recipientEmail.trim(),
-        recipient_name: recipientName.trim() || 'Teman / Kerabat',
-      });
-
-      setIsTransferOpen(false);
-      setTransferTicket(null);
-      setRecipientEmail('');
-      setRecipientName('');
-      setTransferError(null);
-      fetchUserTicketsAndOrders();
-    } catch (error: any) {
-      const errMsg =
-        error?.response?.data?.message ||
-        error?.response?.data?.error ||
-        (error instanceof Error ? error.message : 'Gagal mentransfer tiket.');
-      setTransferError(errMsg);
-    } finally {
-      setTransferLoading(false);
-    }
-  };
-
   // Filter tickets
   const filteredTickets = tickets.filter((t) => {
     const matchesFilter =
@@ -461,7 +419,7 @@ export default function MyTicketsPage() {
         <div>
           <h1 className="text-3xl font-black text-zinc-950 tracking-tight">Tiket & Pesanan Saya</h1>
           <p className="text-zinc-500 text-sm mt-1">
-            Kelola e-ticket digital Anda, transfer ke teman, cetak PDF resmi, dan pantau riwayat transaksi.
+            Kelola e-ticket digital Anda, cetak PDF resmi, dan pantau riwayat transaksi.
           </p>
         </div>
 
@@ -792,22 +750,6 @@ export default function MyTicketsPage() {
                           <QrCode className="h-3.5 w-3.5" />
                           Buka E-Ticket
                         </Button>
-
-                        {isActive && (
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={() => {
-                              setTransferTicket(t);
-                              setTransferError(null);
-                              setIsTransferOpen(true);
-                            }}
-                            className="bg-white hover:bg-zinc-200 text-zinc-800 text-xs px-3.5 py-2.5 rounded-full border-0 shadow-none font-semibold"
-                            title="Transfer Tiket ke Teman"
-                          >
-                            <SendHorizontal className="h-3.5 w-3.5 text-zinc-700" />
-                          </Button>
-                        )}
                       </div>
                     </div>
                   </div>
@@ -977,104 +919,7 @@ export default function MyTicketsPage() {
           setSelectedTicket(null);
         }}
         ticket={selectedTicket}
-        onOpenTransfer={(t) => {
-          setTransferTicket(t);
-          setTransferError(null);
-          setIsTransferOpen(true);
-        }}
       />
-
-      {/* MODAL: Transfer Tiket ke Teman */}
-      {isTransferOpen && transferTicket && (
-        <Modal
-          isOpen={isTransferOpen}
-          onClose={() => !transferLoading && setIsTransferOpen(false)}
-          title="Transfer Tiket ke Pengguna Lain"
-        >
-          <form onSubmit={handleTransferSubmit} className="space-y-4 text-zinc-900">
-            <div className="p-4 bg-zinc-100 rounded-2xl text-xs text-zinc-600 space-y-1 border-0">
-              <p className="text-zinc-950 font-semibold flex items-center gap-1.5">
-                <SendHorizontal className="h-4 w-4 text-zinc-700" />
-                Pindah Kepemilikan Tiket
-              </p>
-              <p>
-                Tiket yang ditransfer akan berpindah ke akun penerima dan tidak dapat lagi Anda gunakan di gerbang masuk.
-              </p>
-            </div>
-
-            {/* Ticket Snapshot Card */}
-            <div className="p-4 bg-zinc-100 rounded-2xl space-y-1 border-0">
-              <p className="text-xs text-zinc-950 font-bold">{transferTicket.event?.title || 'Event'}</p>
-              <div className="flex justify-between text-xs text-zinc-500">
-                <span>{transferTicket.ticket_type?.name || 'Tiket'}</span>
-                <span className="font-mono text-zinc-950 font-bold">{transferTicket.ticket_code}</span>
-              </div>
-            </div>
-
-            {/* Error Feedback Banner */}
-            {transferError && (
-              <div className="p-3.5 bg-rose-50 text-rose-800 rounded-2xl text-xs flex items-start gap-2.5 animate-in fade-in duration-150 border-0 shadow-none">
-                <AlertCircle className="h-4 w-4 shrink-0 text-rose-600 mt-0.5" />
-                <div className="space-y-0.5">
-                  <p className="font-bold text-rose-950">Gagal Mentransfer Tiket</p>
-                  <p className="text-rose-700 leading-relaxed">{transferError}</p>
-                </div>
-              </div>
-            )}
-
-            {/* Recipient Email Input */}
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">
-                Email Penerima
-              </label>
-              <input
-                type="email"
-                value={recipientEmail}
-                onChange={(e) => {
-                  setRecipientEmail(e.target.value);
-                  if (transferError) setTransferError(null);
-                }}
-                placeholder="nama@email.com"
-                className="w-full px-4 py-3 bg-zinc-100 rounded-full text-zinc-900 font-medium text-sm border-0 outline-none ring-0 focus:outline-none focus:ring-0 shadow-none placeholder-zinc-400"
-                required
-              />
-            </div>
-
-            {/* Recipient Name Input */}
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">
-                Nama Penerima (Opsional)
-              </label>
-              <input
-                type="text"
-                value={recipientName}
-                onChange={(e) => setRecipientName(e.target.value)}
-                placeholder="Nama Teman / Kerabat"
-                className="w-full px-4 py-3 bg-zinc-100 rounded-full text-zinc-900 font-medium text-sm border-0 outline-none ring-0 focus:outline-none focus:ring-0 shadow-none placeholder-zinc-400"
-              />
-            </div>
-
-            <div className="flex justify-end gap-2.5 pt-2">
-              <Button
-                type="button"
-                variant="outline"
-                disabled={transferLoading}
-                onClick={() => setIsTransferOpen(false)}
-                className="rounded-full bg-zinc-100 text-zinc-700 hover:bg-zinc-200 text-xs border-0 shadow-none font-semibold px-5 py-2.5"
-              >
-                Batal
-              </Button>
-              <Button
-                type="submit"
-                disabled={transferLoading || !recipientEmail.trim()}
-                className="bg-zinc-950 hover:bg-zinc-800 text-white px-6 font-semibold flex items-center gap-1.5 rounded-full text-xs border-0 shadow-none py-2.5"
-              >
-                {transferLoading ? 'Mentransfer...' : 'Kirim Tiket Sekarang'}
-              </Button>
-            </div>
-          </form>
-        </Modal>
-      )}
 
       {/* MODAL: Invoice Pembayaran Resmi */}
       {isInvoiceOpen && selectedOrderForInvoice && (

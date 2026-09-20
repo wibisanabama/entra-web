@@ -14,8 +14,7 @@ import {
   Printer,
   Copy,
   Check,
-  Ticket as TicketIcon,
-  SendHorizontal
+  Ticket as TicketIcon
 } from 'lucide-react';
 import { toast } from '@/lib/toast';
 
@@ -23,10 +22,9 @@ interface ETicketModalProps {
   isOpen: boolean;
   onClose: () => void;
   ticket: EnrichedTicket | null;
-  onOpenTransfer?: (ticket: EnrichedTicket) => void;
 }
 
-export function ETicketModal({ isOpen, onClose, ticket, onOpenTransfer }: ETicketModalProps) {
+export function ETicketModal({ isOpen, onClose, ticket }: ETicketModalProps) {
   const [copied, setCopied] = React.useState(false);
 
   if (!ticket) return null;
@@ -205,20 +203,6 @@ export function ETicketModal({ isOpen, onClose, ticket, onOpenTransfer }: ETicke
             <Printer className="h-4 w-4" />
             Cetak / PDF
           </Button>
-
-          {isActive && onOpenTransfer && (
-            <Button
-              variant="outline"
-              onClick={() => {
-                onClose();
-                onOpenTransfer(ticket);
-              }}
-              className="flex items-center gap-2 text-zinc-800 bg-zinc-100 hover:bg-zinc-200 text-xs rounded-full border-0 font-semibold px-4 py-2.5 shadow-none"
-            >
-              <SendHorizontal className="h-4 w-4" />
-              Transfer Tiket
-            </Button>
-          )}
         </div>
       </div>
     </Modal>

@@ -4,7 +4,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/providers/auth-provider';
-import { User, LogOut, Home, Ticket, Wallet } from 'lucide-react';
+import { User, LogOut, Ticket, Wallet } from 'lucide-react';
 
 export function Topbar() {
   const { user, logout } = useAuth();
@@ -65,19 +65,9 @@ export function Topbar() {
               
               <div className="py-1">
                 {(() => {
-                  const isCurrent = (path: string) => path === '/' ? pathname === '/' : pathname === path || pathname.startsWith(path + '/');
+                  const isCurrent = (path: string) => pathname === path || pathname.startsWith(path + '/');
                   return (
                     <>
-                      {!isCurrent('/') && (
-                        <Link 
-                          href="/" 
-                          onClick={() => setIsDropdownOpen(false)} 
-                          className="flex items-center gap-2.5 px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50 hover:text-zinc-950 transition-colors"
-                        >
-                          <Home className="w-4 h-4 text-zinc-400" />
-                          Halaman Utama
-                        </Link>
-                      )}
                       {!isCurrent('/profile') && (
                         <Link 
                           href="/profile" 

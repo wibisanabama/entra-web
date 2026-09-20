@@ -77,11 +77,30 @@ textarea {
   transition-duration: var(--motion-base);
 }
 
-/* Strict No-Shadow Policy for all buttons across the application */
+/* Strict No-Shadow / No-Ring / No-Highlight Policy for all buttons in all states */
 button,
 [role="button"],
-.btn {
+.btn,
+button:hover,
+button:active,
+button:focus,
+button:focus-visible,
+[role="button"]:hover,
+[role="button"]:active,
+[role="button"]:focus,
+[role="button"]:focus-visible,
+.btn:hover,
+.btn:active,
+.btn:focus,
+.btn:focus-visible {
   box-shadow: none !important;
+  outline: none !important;
+  -webkit-box-shadow: none !important;
+  -moz-box-shadow: none !important;
+  -webkit-tap-highlight-color: transparent !important;
+  --tw-ring-shadow: 0 0 #0000 !important;
+  --tw-shadow: 0 0 #0000 !important;
+  --tw-shadow-colored: 0 0 #0000 !important;
 }
 
 /* Strict Zero-Toast / Zero-Popup Notification Policy */
@@ -97,7 +116,7 @@ button,
   pointer-events: none !important;
 }
 
-:focus-visible {
+:focus-visible:not(button):not([role="button"]):not(.btn) {
   outline: 2px solid var(--ring);
   outline-offset: 2px;
 }

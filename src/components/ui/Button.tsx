@@ -21,7 +21,7 @@ export function Button({
   children,
   ...props
 }: ButtonProps) {
-  const baseStyles = 'inline-flex items-center justify-center rounded-full font-medium transition-all duration-200 focus:outline-none disabled:opacity-50 disabled:pointer-events-none cursor-pointer select-none';
+  const baseStyles = 'inline-flex items-center justify-center rounded-full font-medium transition-all duration-200 focus:outline-none focus:ring-0 active:outline-none active:shadow-none active:ring-0 disabled:opacity-50 disabled:pointer-events-none cursor-pointer select-none';
   
   const variants = {
     primary: 'bg-zinc-950 text-white hover:bg-zinc-800 shadow-none',

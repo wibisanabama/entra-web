@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback, useRef } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '@/providers/auth-provider';
 import { ticketApi, eventApi } from '@/lib/api';
 import { EnrichedTicket, Order, Event as EventType, Ticket, Venue } from '@/types';
@@ -27,13 +28,8 @@ import {
   X
 } from 'lucide-react';
 
-declare global {
-  interface Window {
-    snap?: any;
-  }
-}
-
 export default function MyTicketsPage() {
+  const router = useRouter();
   const { user, isLoading: authLoading } = useAuth();
   const [activeTab, setActiveTab] = useState<'tickets' | 'orders'>('tickets');
   const [ticketFilter, setTicketFilter] = useState<'ALL' | 'ACTIVE' | 'USED'>('ALL');
@@ -208,7 +204,7 @@ export default function MyTicketsPage() {
 
   const loading = authLoading || (user ? dataLoading : false);
 
-  const handlePayOrder = async (orderId: string) => {
+  const handlePayOrder = (orderId: string) => {
     // Validasi kedaluwarsa di sisi klien terlebih dahulu
     const targetOrder = orders.find((o) => o.id === orderId);
     if (targetOrder?.expires_at && new Date(targetOrder.expires_at).getTime() <= Date.now()) {
@@ -219,92 +215,26 @@ export default function MyTicketsPage() {
         type: 'error',
         eventId: targetOrder.event_id,
       });
-      await fetchUserTicketsAndOrders();
+      fetchUserTicketsAndOrders();
       return;
     }
 
-    try {
-      setPayingOrderId(orderId);
-      const res = await ticketApi.post<{ token?: string; midtrans_order_id?: string } | string>(`/api/v1/tickets/orders/${orderId}/pay`);
-      const token = typeof res.data === 'string' ? res.data : res.data?.token;
-      const midtransOrderId = typeof res.data === 'object' ? res.data?.midtrans_order_id : undefined;
-
-      if (!token) {
-        throw new Error('Token pembayaran tidak ditemukan.');
-      }
-
-      // Tunggu window.snap siap jika sedang dimuat
-      if (typeof window !== 'undefined' && !window.snap) {
-        for (let i = 0; i < 20; i++) {
-          await new Promise((r) => setTimeout(r, 150));
-          if (window.snap) break;
-        }
-      }
-
-      if (typeof window !== 'undefined' && window.snap) {
-        window.snap.pay(token, {
-          onSuccess: async (result: any) => {
-            try {
-              const payload = {
-                ...(result || {}),
-                order_id: result?.order_id || midtransOrderId || orderId,
-                transaction_status: result?.transaction_status || 'settlement',
-              };
-              await ticketApi.post('/api/v1/tickets/midtrans/webhook', payload);
-            } catch (err) {
-              console.error('Payment webhook sync error:', err);
-            }
-            await fetchUserTicketsAndOrders();
-          },
-          onPending: async (result: any) => {
-            try {
-              const payload = {
-                ...(result || {}),
-                order_id: result?.order_id || midtransOrderId || orderId,
-                transaction_status: result?.transaction_status || 'pending',
-              };
-              await ticketApi.post('/api/v1/tickets/midtrans/webhook', payload);
-            } catch (err) {
-              console.error('Payment pending sync error:', err);
-            }
-            await fetchUserTicketsAndOrders();
-          },
-          onError: async () => {
-            await fetchUserTicketsAndOrders();
-          },
-          onClose: async () => {
-            try {
-              if (midtransOrderId) {
-                await ticketApi.post('/api/v1/tickets/midtrans/webhook', { order_id: midtransOrderId });
-              }
-            } catch {
-              // ignore
-            }
-            await fetchUserTicketsAndOrders();
-          },
-        });
-      }
-    } catch (error: unknown) {
-      console.error('Payment error:', error);
-      const errMsg = error instanceof Error ? error.message : 'Gagal memproses pembayaran pesanan.';
-      const isNotPending =
-        errMsg.toLowerCase().includes('not pending') ||
-        errMsg.toLowerCase().includes('tidak pending') ||
-        errMsg.toLowerCase().includes('cancelled');
-
+    const eventId = targetOrder?.event_id;
+    if (!eventId) {
       setModalData({
         isOpen: true,
-        title: isNotPending ? 'Pesanan Kedaluwarsa' : 'Gagal Membuka Pembayaran',
-        message: isNotPending
-          ? 'Batas waktu pembayaran pesanan ini telah berakhir (kedaluwarsa) sehingga pesanan otomatis dibatalkan oleh sistem. Anda dapat memesan ulang tiket untuk event ini.'
-          : `${errMsg} Silakan coba lagi beberapa saat lagi.`,
+        title: 'Gagal Membuka Antrian',
+        message: 'Data event untuk pesanan ini tidak ditemukan.',
         type: 'error',
-        eventId: targetOrder?.event_id,
       });
-      await fetchUserTicketsAndOrders();
-    } finally {
-      setPayingOrderId(null);
+      return;
     }
+
+    setPayingOrderId(orderId);
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    }
+    router.push(`/events/${eventId}/queue?orderId=${orderId}`, { scroll: true });
   };
 
   // Filter tickets

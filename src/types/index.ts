@@ -274,3 +274,9 @@ export interface QueueStatusResponse {
   expires_at?: string;
 }
 
+declare global {
+  interface Window {
+    snap?: any;
+  }
+}
+

@@ -29,6 +29,7 @@ export default function EventQueuePage() {
   const topRef = useRef<HTMLDivElement>(null);
   const hasAutoOpenedSnap = useRef(false);
   const isNavigatingAway = useRef(false);
+  const targetEndTimeRef = useRef<number | null>(null);
 
   // Pastikan posisi scroll website benar-benar di paling awal/atas saat masuk ke antrian
   useEffect(() => {
@@ -241,8 +242,20 @@ export default function EventQueuePage() {
           }
 
           if (data.status === 'ACTIVE') {
-            if (data.seconds_remaining !== undefined) {
-              setSecondsRemaining(data.seconds_remaining);
+            const serverSeconds = typeof data.seconds_remaining === 'number' ? data.seconds_remaining : 180;
+            const now = Date.now();
+            const estimatedTarget = now + serverSeconds * 1000;
+
+            if (!targetEndTimeRef.current) {
+              targetEndTimeRef.current = estimatedTarget;
+              setSecondsRemaining(serverSeconds);
+            } else {
+              // Resync only if server drift is significant (> 3 seconds)
+              const localRemaining = Math.max(0, Math.ceil((targetEndTimeRef.current - now) / 1000));
+              if (Math.abs(localRemaining - serverSeconds) > 3) {
+                targetEndTimeRef.current = estimatedTarget;
+                setSecondsRemaining(serverSeconds);
+              }
             }
 
             // Auto-trigger snap popup on first reaching ACTIVE state
@@ -276,22 +289,48 @@ export default function EventQueuePage() {
     };
   }, [orderId, redirectSilentlyToEvent, handleOpenPayment, router]);
 
-  // Local 1-second countdown interval when ACTIVE
+  // Local monotonic high-precision countdown interval when ACTIVE
   useEffect(() => {
-    if (queueData?.status !== 'ACTIVE') return;
+    if (queueData?.status !== 'ACTIVE') {
+      targetEndTimeRef.current = null;
+      return;
+    }
 
-    const timer = setInterval(() => {
+    const updateCountdown = () => {
+      if (!targetEndTimeRef.current) return;
+      const now = Date.now();
+      const diffMs = targetEndTimeRef.current - now;
+      const remainingSeconds = Math.max(0, Math.ceil(diffMs / 1000));
+
+      if (remainingSeconds <= 0) {
+        setSecondsRemaining(0);
+        redirectSilentlyToEvent();
+        return;
+      }
+
       setSecondsRemaining((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          redirectSilentlyToEvent();
-          return 0;
+        // Enforce strictly monotonic non-increasing countdown (never jump up)
+        if (remainingSeconds < prev) {
+          return remainingSeconds;
         }
-        return prev - 1;
+        return prev;
       });
-    }, 1000);
+    };
 
-    return () => clearInterval(timer);
+    updateCountdown();
+    const timer = setInterval(updateCountdown, 250);
+
+    const onVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        updateCountdown();
+      }
+    };
+    document.addEventListener('visibilitychange', onVisibilityChange);
+
+    return () => {
+      clearInterval(timer);
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+    };
   }, [queueData?.status, redirectSilentlyToEvent]);
 
   // Format seconds into MM:SS

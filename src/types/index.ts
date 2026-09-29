@@ -260,3 +260,17 @@ export interface Attendee {
   gate_name?: string | null;
 }
 
+export interface QueueStatusResponse {
+  order_id: string;
+  event_id: string;
+  event_title?: string;
+  ticket_type_name?: string;
+  quantity?: number;
+  total_amount?: number;
+  position: number;
+  status: 'ACTIVE' | 'WAITING' | 'COMPLETED' | 'CANCELLED' | 'EXPIRED' | 'SOLD_OUT' | string;
+  people_ahead: number;
+  seconds_remaining: number;
+  expires_at?: string;
+}
+

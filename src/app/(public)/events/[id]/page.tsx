@@ -173,8 +173,8 @@ export default function EventDetailPage() {
 
       setCreatedOrderId(lastOrderId);
 
-      // Lanjut otomatis ke pembayaran gateway Midtrans
-      await handlePayOrder(lastOrderId);
+      // Arahkan ke ruang antrian tiket
+      router.push(`/events/${event.id}/queue?orderId=${lastOrderId}`);
 
     } catch (error: unknown) {
       const errMsg = error instanceof Error ? error.message : 'Terjadi kesalahan saat memesan tiket';

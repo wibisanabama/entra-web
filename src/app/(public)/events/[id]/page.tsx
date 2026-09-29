@@ -35,7 +35,7 @@ export default function EventDetailPage() {
   const [event, setEvent] = useState<EventDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
-  const [modalData, setModalData] = useState<{isOpen: boolean, title: string, message: string, type: 'success' | 'error', isAuthError?: boolean}>({isOpen: false, title: '', message: '', type: 'success'});
+  const [modalData, setModalData] = useState<{isOpen: boolean, title: string, message: string, type: 'success' | 'error', isAuthError?: boolean, isPendingOrder?: boolean}>({isOpen: false, title: '', message: '', type: 'success'});
   const [createdOrderId, setCreatedOrderId] = useState<string | null>(null);
   const [isPaying, setIsPaying] = useState(false);
   const [restoredQuantities, setRestoredQuantities] = useState<Record<string, number> | undefined>(undefined);
@@ -199,21 +199,28 @@ export default function EventDetailPage() {
         errMsg.toLowerCase().includes('berakhir') ||
         errMsg.toLowerCase().includes('belum dimulai');
 
+      const formatSentence = (str: string) => {
+        if (!str) return '';
+        const trimmed = str.trim();
+        const capitalized = trimmed.charAt(0).toUpperCase() + trimmed.slice(1);
+        return capitalized.endsWith('.') ? capitalized : capitalized + '.';
+      };
+
       let modalTitle = 'Gagal Memesan Tiket';
-      let modalMessage = 'Terjadi kesalahan: ' + errMsg;
+      let modalMessage = formatSentence(errMsg) || 'Terjadi kesalahan saat memproses pesanan tiket Anda.';
 
       if (isAuthError) {
         modalTitle = 'Sesi Masuk Telah Berakhir';
         modalMessage = 'Sesi masuk Anda telah berakhir demi keamanan. Silakan masuk kembali ke akun Anda untuk menyelesaikan pemesanan tiket.';
       } else if (isSaleEnded) {
         modalTitle = 'Penjualan Ditutup';
-        modalMessage = errMsg;
+        modalMessage = formatSentence(errMsg) || 'Periode penjualan tiket untuk kategori ini telah berakhir.';
       } else if (isPendingOrder) {
         modalTitle = 'Pesanan Menunggu Pembayaran';
-        modalMessage = errMsg || 'Anda masih memiliki pesanan tiket yang menunggu pembayaran. Silakan selesaikan pembayaran tiket Anda.';
+        modalMessage = 'Anda masih memiliki pesanan yang belum diselesaikan untuk event ini. Silakan selesaikan pembayaran di Tiket Saya atau batalkan pesanan sebelumnya.';
       } else if (isSoldOut) {
         modalTitle = 'Tiket Habis (Sold Out)';
-        modalMessage = errMsg || 'Maaf, kuota tiket untuk kategori ini telah habis terjual karena tingginya permintaan.';
+        modalMessage = formatSentence(errMsg) || 'Maaf, kuota tiket untuk kategori ini telah habis terjual karena tingginya permintaan.';
       }
 
       setModalData({
@@ -222,6 +229,7 @@ export default function EventDetailPage() {
         message: modalMessage,
         type: 'error',
         isAuthError,
+        isPendingOrder,
       });
     } finally {
       setCheckoutLoading(false);
@@ -559,7 +567,7 @@ export default function EventDetailPage() {
             <div className="space-y-2 pt-2">
               {modalData.isAuthError && (
                 <Button 
-                  className="w-full bg-zinc-950 hover:bg-zinc-800 text-white rounded-full py-3 font-semibold"
+                  className="w-full bg-zinc-950 hover:bg-zinc-800 text-white rounded-full py-3 font-semibold border-0 shadow-none"
                   onClick={() => {
                     setModalData({...modalData, isOpen: false});
                     router.push(`/login?redirect=${encodeURIComponent(`/events/${params.id}`)}`);
@@ -568,9 +576,20 @@ export default function EventDetailPage() {
                   Masuk Kembali
                 </Button>
               )}
+              {modalData.isPendingOrder && (
+                <Button 
+                  className="w-full bg-zinc-950 hover:bg-zinc-800 text-white rounded-full py-3 font-semibold border-0 shadow-none"
+                  onClick={() => {
+                    setModalData({...modalData, isOpen: false});
+                    router.push('/my-tickets');
+                  }}
+                >
+                  Lihat Tiket Saya
+                </Button>
+              )}
               <Button 
-                variant={modalData.isAuthError ? 'outline' : 'primary'}
-                className={`w-full rounded-full py-3 ${modalData.isAuthError ? 'bg-zinc-100 hover:bg-zinc-200 border-none text-zinc-800 font-semibold' : 'bg-zinc-950 hover:bg-zinc-800 text-white font-semibold'}`}
+                variant={modalData.isAuthError || modalData.isPendingOrder ? 'outline' : 'primary'}
+                className={`w-full rounded-full py-3 border-0 shadow-none font-semibold ${modalData.isAuthError || modalData.isPendingOrder ? 'bg-zinc-100 hover:bg-zinc-200 text-zinc-800' : 'bg-zinc-950 hover:bg-zinc-800 text-white'}`}
                 onClick={() => setModalData({...modalData, isOpen: false})}
               >
                 Tutup

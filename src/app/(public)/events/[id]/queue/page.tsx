@@ -42,38 +42,26 @@ export default function EventQueuePage() {
       window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
       document.documentElement.scrollTop = 0;
       document.body.scrollTop = 0;
-      if (topRef.current) {
-        topRef.current.scrollIntoView({ block: 'start', inline: 'nearest', behavior: 'instant' });
-      }
     };
 
     resetToTop();
 
-    // Jalankan berulang di interval awal saat DOM dirender dan Next.js menyelesaikan transisi
-    const delays = [0, 50, 100, 200, 350, 500, 750, 1000, 1500];
-    const timers = delays.map((d) => setTimeout(resetToTop, d));
+    // Kunci overflow selama 500ms awal render halaman agar browser tidak melompat scroll
+    document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
 
-    // Kunci posisi scroll di 0 selama 1.5 detik pertama agar browser tidak mengembalikan scroll lama
-    let isLocked = true;
-    const onScrollLock = () => {
-      if (isLocked && (window.scrollY > 0 || document.documentElement.scrollTop > 0)) {
-        window.scrollTo(0, 0);
-        document.documentElement.scrollTop = 0;
-        document.body.scrollTop = 0;
+    const timer = setTimeout(() => {
+      if (!document.getElementById('snap-midtrans')) {
+        document.body.style.overflow = '';
+        document.documentElement.style.overflow = '';
       }
-    };
-
-    window.addEventListener('scroll', onScrollLock, { passive: true });
-
-    const unlockTimer = setTimeout(() => {
-      isLocked = false;
-      window.removeEventListener('scroll', onScrollLock);
-    }, 1500);
+      resetToTop();
+    }, 500);
 
     return () => {
-      timers.forEach(clearTimeout);
-      clearTimeout(unlockTimer);
-      window.removeEventListener('scroll', onScrollLock);
+      clearTimeout(timer);
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
       if ('scrollRestoration' in window.history) {
         window.history.scrollRestoration = 'auto';
       }
@@ -85,9 +73,6 @@ export default function EventQueuePage() {
       window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
       document.documentElement.scrollTop = 0;
       document.body.scrollTop = 0;
-      if (topRef.current) {
-        topRef.current.scrollIntoView({ block: 'start', inline: 'nearest', behavior: 'instant' });
-      }
     }
   }, [loading]);
 
@@ -95,6 +80,10 @@ export default function EventQueuePage() {
   const redirectSilentlyToEvent = useCallback(() => {
     if (isNavigatingAway.current) return;
     isNavigatingAway.current = true;
+    if (typeof document !== 'undefined') {
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+    }
     router.push(`/events/${eventId}`);
   }, [eventId, router]);
 
@@ -134,8 +123,17 @@ export default function EventQueuePage() {
       }
 
       if (typeof window !== 'undefined' && window.snap) {
+        // Kunci overflow body & html sebelum snap.pay memunculkan modal agar browser tidak scroll ke bawah
+        document.body.style.overflow = 'hidden';
+        document.documentElement.style.overflow = 'hidden';
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+
         window.snap.pay(token, {
           onSuccess: async (result: any) => {
+            document.body.style.overflow = '';
+            document.documentElement.style.overflow = '';
             isNavigatingAway.current = true;
             try {
               const payload = {
@@ -150,6 +148,8 @@ export default function EventQueuePage() {
             router.push('/my-tickets');
           },
           onPending: async (result: any) => {
+            document.body.style.overflow = '';
+            document.documentElement.style.overflow = '';
             isNavigatingAway.current = true;
             try {
               const payload = {
@@ -164,10 +164,14 @@ export default function EventQueuePage() {
             router.push('/my-tickets');
           },
           onError: () => {
+            document.body.style.overflow = '';
+            document.documentElement.style.overflow = '';
             isNavigatingAway.current = true;
             router.push('/my-tickets');
           },
           onClose: async () => {
+            document.body.style.overflow = '';
+            document.documentElement.style.overflow = '';
             try {
               if (midtransOrderId) {
                 await ticketApi.post('/api/v1/tickets/midtrans/webhook', { order_id: midtransOrderId });
@@ -178,24 +182,13 @@ export default function EventQueuePage() {
             // User closed snap modal manually. They stay on this page to either re-open or cancel.
           },
         });
-
-        // Snap creates an iframe and might shift scroll; force back to top immediately
-        setTimeout(() => {
-          window.scrollTo(0, 0);
-          document.documentElement.scrollTop = 0;
-          document.body.scrollTop = 0;
-          if (topRef.current) {
-            topRef.current.scrollIntoView({ block: 'start', inline: 'nearest', behavior: 'instant' });
-          }
-        }, 50);
-        setTimeout(() => {
-          window.scrollTo(0, 0);
-          document.documentElement.scrollTop = 0;
-          document.body.scrollTop = 0;
-        }, 200);
       }
     } catch (err) {
       console.error('Failed to open payment gateway:', err);
+      if (typeof document !== 'undefined') {
+        document.body.style.overflow = '';
+        document.documentElement.style.overflow = '';
+      }
     } finally {
       setIsOpeningPayment(false);
     }

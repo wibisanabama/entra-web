@@ -116,6 +116,26 @@ button:focus-visible,
   pointer-events: none !important;
 }
 
+/* Fix Midtrans Snap iframe injection jump/blink */
+iframe#snap-midtrans,
+#snap-midtrans,
+#snap-container,
+.snap-container,
+iframe[src*="midtrans"],
+iframe[id*="snap"],
+iframe[name*="snap"] {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 999999 !important;
+  border: none !important;
+  outline: none !important;
+}
+
 :focus-visible:not(button):not([role="button"]):not(.btn) {
   outline: 2px solid var(--ring);
   outline-offset: 2px;

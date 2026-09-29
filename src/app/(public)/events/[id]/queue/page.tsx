@@ -85,7 +85,9 @@ export default function EventQueuePage() {
       document.body.style.overflow = '';
       document.documentElement.style.overflow = '';
     }
-    router.push(`/events/${eventId}`);
+    setTimeout(() => {
+      router.push(`/events/${eventId}`);
+    }, 0);
   }, [eventId, router]);
 
   // Jika sesi pengguna berakhir atau logout saat di halaman antrian, batalkan pesanan dan kembali ke halaman event
@@ -232,7 +234,13 @@ export default function EventQueuePage() {
 
           if (data.status === 'COMPLETED') {
             isNavigatingAway.current = true;
-            router.push('/my-tickets');
+            if (typeof document !== 'undefined') {
+              document.body.style.overflow = '';
+              document.documentElement.style.overflow = '';
+            }
+            setTimeout(() => {
+              router.push('/my-tickets');
+            }, 0);
             return;
           }
 

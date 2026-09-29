@@ -269,7 +269,7 @@ export default function EventQueuePage() {
   if (queueData?.status === 'SOLD_OUT') {
     return (
       <div className="min-h-[70vh] flex flex-col items-center justify-center px-4">
-        <Card className="max-w-md w-full p-8 text-center bg-white border border-zinc-200 rounded-2xl shadow-none">
+        <Card className="max-w-md w-full p-8 text-center bg-white border-0 rounded-3xl shadow-none">
           <div className="w-16 h-16 mx-auto mb-5 rounded-full bg-rose-50 flex items-center justify-center text-rose-600">
             <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
@@ -281,7 +281,7 @@ export default function EventQueuePage() {
           </p>
           <Button
             onClick={redirectSilentlyToEvent}
-            className="w-full bg-zinc-950 hover:bg-zinc-800 text-white rounded-full py-3 text-sm font-semibold shadow-none active:shadow-none focus:shadow-none"
+            className="w-full bg-zinc-950 hover:bg-zinc-800 text-white rounded-full py-3 text-sm font-semibold border-0 shadow-none active:shadow-none focus:shadow-none"
           >
             Kembali ke Halaman Event
           </Button>
@@ -296,17 +296,17 @@ export default function EventQueuePage() {
     <div className="min-h-[80vh] bg-zinc-50/60 py-12 px-4 sm:px-6">
       <div className="max-w-xl mx-auto space-y-6">
         {/* Main Status Card */}
-        <Card className="p-6 sm:p-8 bg-white border border-zinc-200/80 rounded-3xl shadow-none">
+        <Card className="p-6 sm:p-8 bg-white border-0 rounded-3xl shadow-none">
           <div className="text-center space-y-6">
             {/* Top Badge */}
             <div className="flex justify-center">
               {isActive ? (
-                <Badge className="bg-emerald-50 text-emerald-700 border-emerald-200/60 px-3.5 py-1 text-xs font-semibold rounded-full flex items-center gap-1.5 shadow-none">
+                <Badge className="bg-emerald-50 text-emerald-700 border-0 px-3.5 py-1 text-xs font-semibold rounded-full flex items-center gap-1.5 shadow-none">
                   <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                   Giliran Anda Tiba
                 </Badge>
               ) : (
-                <Badge className="bg-amber-50 text-amber-700 border-amber-200/60 px-3.5 py-1 text-xs font-semibold rounded-full flex items-center gap-1.5 shadow-none">
+                <Badge className="bg-amber-50 text-amber-700 border-0 px-3.5 py-1 text-xs font-semibold rounded-full flex items-center gap-1.5 shadow-none">
                   <span className="w-2 h-2 rounded-full bg-amber-500 animate-ping" />
                   Dalam Antrian Pembelian
                 </Badge>
@@ -327,7 +327,7 @@ export default function EventQueuePage() {
             {isActive ? (
               <div className="space-y-5 pt-2">
                 {/* 3-Minute Countdown */}
-                <div className="bg-zinc-50 border border-zinc-200/70 rounded-2xl p-5 space-y-3">
+                <div className="bg-zinc-50 border-0 rounded-2xl p-5 space-y-3">
                   <div className="flex items-center justify-between text-xs font-medium text-zinc-600">
                     <span className="flex items-center gap-1.5">
                       <svg className="w-4 h-4 text-zinc-700" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor">
@@ -364,16 +364,15 @@ export default function EventQueuePage() {
                   <Button
                     onClick={handleOpenPayment}
                     disabled={isOpeningPayment}
-                    className="w-full bg-zinc-950 hover:bg-zinc-800 text-white rounded-full py-3.5 text-sm font-semibold transition-all shadow-none active:shadow-none focus:shadow-none"
+                    className="w-full bg-zinc-950 hover:bg-zinc-800 text-white rounded-full py-3.5 text-sm font-semibold transition-all border-0 shadow-none active:shadow-none focus:shadow-none"
                   >
                     {isOpeningPayment ? 'Menghubungkan Gateway...' : 'Buka Pembayaran'}
                   </Button>
 
                   <Button
-                    variant="outline"
                     onClick={() => setShowCancelModal(true)}
                     disabled={cancelLoading}
-                    className="w-full border-rose-200 text-rose-600 hover:bg-rose-50 hover:border-rose-300 rounded-full py-3 text-sm font-semibold transition-all shadow-none active:shadow-none focus:shadow-none"
+                    className="w-full bg-rose-50 text-rose-600 hover:bg-rose-100 border-0 rounded-full py-3 text-sm font-semibold transition-all shadow-none active:shadow-none focus:shadow-none"
                   >
                     Batalkan Pembayaran
                   </Button>
@@ -381,7 +380,7 @@ export default function EventQueuePage() {
               </div>
             ) : (
               <div className="space-y-5 pt-2">
-                <div className="bg-amber-50/60 border border-amber-200/60 rounded-2xl p-5 space-y-2 text-center">
+                <div className="bg-amber-50/70 border-0 rounded-2xl p-5 space-y-2 text-center">
                   <p className="text-base font-semibold text-amber-950">
                     Ada {queueData?.people_ahead ?? 0} orang di depan Anda
                   </p>
@@ -400,10 +399,9 @@ export default function EventQueuePage() {
                 {/* Cancel queue button */}
                 <div className="pt-2">
                   <Button
-                    variant="outline"
                     onClick={() => setShowCancelModal(true)}
                     disabled={cancelLoading}
-                    className="w-full border-zinc-200 text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 rounded-full py-3 text-sm font-semibold transition-all shadow-none active:shadow-none focus:shadow-none"
+                    className="w-full bg-zinc-100 hover:bg-zinc-200 text-zinc-700 border-0 rounded-full py-3 text-sm font-semibold transition-all shadow-none active:shadow-none focus:shadow-none"
                   >
                     Batalkan Antrian
                   </Button>
@@ -415,28 +413,28 @@ export default function EventQueuePage() {
 
         {/* Order Summary Card */}
         {queueData && (
-          <Card className="p-5 sm:p-6 bg-white border border-zinc-200/80 rounded-3xl space-y-4 shadow-none">
+          <Card className="p-5 sm:p-6 bg-white border-0 rounded-3xl space-y-4 shadow-none">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
               Ringkasan Pesanan Tiket
             </h3>
 
             <div className="space-y-3 text-sm">
               {queueData.ticket_type_name && (
-                <div className="flex justify-between items-center py-1 border-b border-zinc-100">
+                <div className="flex justify-between items-center py-1.5">
                   <span className="text-zinc-500">Kategori Tiket</span>
                   <span className="font-semibold text-zinc-900">{queueData.ticket_type_name}</span>
                 </div>
               )}
 
               {queueData.quantity && queueData.quantity > 0 && (
-                <div className="flex justify-between items-center py-1 border-b border-zinc-100">
+                <div className="flex justify-between items-center py-1.5">
                   <span className="text-zinc-500">Jumlah Tiket</span>
                   <span className="font-semibold text-zinc-900">{queueData.quantity} tiket</span>
                 </div>
               )}
 
               {queueData.total_amount !== undefined && (
-                <div className="flex justify-between items-center pt-1">
+                <div className="flex justify-between items-center pt-1.5">
                   <span className="text-zinc-500 font-medium">Total Pembayaran</span>
                   <span className="text-base font-bold text-zinc-950">
                     {formatCurrency(queueData.total_amount)}
@@ -474,15 +472,14 @@ export default function EventQueuePage() {
 
           <div className="space-y-2 pt-3">
             <Button
-              className="w-full bg-rose-600 hover:bg-rose-700 text-white rounded-full py-3 text-sm font-semibold shadow-none active:shadow-none focus:shadow-none"
+              className="w-full bg-rose-600 hover:bg-rose-700 text-white rounded-full py-3 text-sm font-semibold border-0 shadow-none active:shadow-none focus:shadow-none"
               onClick={handleConfirmCancel}
               disabled={cancelLoading}
             >
               {cancelLoading ? 'Membatalkan...' : 'Ya, Batalkan'}
             </Button>
             <Button
-              variant="outline"
-              className="w-full border-zinc-200 text-zinc-700 hover:bg-zinc-100 rounded-full py-3 text-sm font-medium shadow-none active:shadow-none focus:shadow-none"
+              className="w-full bg-zinc-100 hover:bg-zinc-200 text-zinc-700 border-0 rounded-full py-3 text-sm font-medium shadow-none active:shadow-none focus:shadow-none"
               onClick={() => setShowCancelModal(false)}
               disabled={cancelLoading}
             >

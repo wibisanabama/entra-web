@@ -173,8 +173,12 @@ export default function EventDetailPage() {
 
       setCreatedOrderId(lastOrderId);
 
+      if (typeof window !== 'undefined') {
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+      }
+
       // Arahkan ke ruang antrian tiket
-      router.push(`/events/${event.id}/queue?orderId=${lastOrderId}`);
+      router.push(`/events/${event.id}/queue?orderId=${lastOrderId}`, { scroll: true });
 
     } catch (error: unknown) {
       const errMsg = error instanceof Error ? error.message : 'Terjadi kesalahan saat memesan tiket';

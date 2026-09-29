@@ -24,10 +24,11 @@ export default function EventQueuePage() {
   const [cancelLoading, setCancelLoading] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
 
+  const topRef = useRef<HTMLDivElement>(null);
   const hasAutoOpenedSnap = useRef(false);
   const isNavigatingAway = useRef(false);
 
-  // Pastikan posisi scroll website selalu berada di paling awal/atas saat masuk ke antrian
+  // Pastikan posisi scroll website benar-benar di paling awal/atas saat masuk ke antrian
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
@@ -35,21 +36,42 @@ export default function EventQueuePage() {
       window.history.scrollRestoration = 'manual';
     }
 
-    const scrollToTop = () => {
+    const resetToTop = () => {
       window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
       document.documentElement.scrollTop = 0;
       document.body.scrollTop = 0;
+      if (topRef.current) {
+        topRef.current.scrollIntoView({ block: 'start', inline: 'nearest', behavior: 'instant' });
+      }
     };
 
-    scrollToTop();
-    const frameId = requestAnimationFrame(scrollToTop);
-    const t1 = setTimeout(scrollToTop, 50);
-    const t2 = setTimeout(scrollToTop, 150);
+    resetToTop();
+
+    // Jalankan berulang di interval awal saat DOM dirender dan Next.js menyelesaikan transisi
+    const delays = [0, 50, 100, 200, 350, 500, 750, 1000, 1500];
+    const timers = delays.map((d) => setTimeout(resetToTop, d));
+
+    // Kunci posisi scroll di 0 selama 1.5 detik pertama agar browser tidak mengembalikan scroll lama
+    let isLocked = true;
+    const onScrollLock = () => {
+      if (isLocked && (window.scrollY > 0 || document.documentElement.scrollTop > 0)) {
+        window.scrollTo(0, 0);
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+      }
+    };
+
+    window.addEventListener('scroll', onScrollLock, { passive: true });
+
+    const unlockTimer = setTimeout(() => {
+      isLocked = false;
+      window.removeEventListener('scroll', onScrollLock);
+    }, 1500);
 
     return () => {
-      cancelAnimationFrame(frameId);
-      clearTimeout(t1);
-      clearTimeout(t2);
+      timers.forEach(clearTimeout);
+      clearTimeout(unlockTimer);
+      window.removeEventListener('scroll', onScrollLock);
       if ('scrollRestoration' in window.history) {
         window.history.scrollRestoration = 'auto';
       }
@@ -61,6 +83,9 @@ export default function EventQueuePage() {
       window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
       document.documentElement.scrollTop = 0;
       document.body.scrollTop = 0;
+      if (topRef.current) {
+        topRef.current.scrollIntoView({ block: 'start', inline: 'nearest', behavior: 'instant' });
+      }
     }
   }, [loading]);
 
@@ -140,6 +165,21 @@ export default function EventQueuePage() {
             // User closed snap modal manually. They stay on this page to either re-open or cancel.
           },
         });
+
+        // Snap creates an iframe and might shift scroll; force back to top immediately
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          document.documentElement.scrollTop = 0;
+          document.body.scrollTop = 0;
+          if (topRef.current) {
+            topRef.current.scrollIntoView({ block: 'start', inline: 'nearest', behavior: 'instant' });
+          }
+        }, 50);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          document.documentElement.scrollTop = 0;
+          document.body.scrollTop = 0;
+        }, 200);
       }
     } catch (err) {
       console.error('Failed to open payment gateway:', err);
@@ -257,46 +297,41 @@ export default function EventQueuePage() {
 
   const timerProgress = Math.max(0, Math.min(100, (secondsRemaining / 180) * 100));
 
-  if (loading) {
-    return (
-      <div className="min-h-[70vh] flex flex-col items-center justify-center px-4">
-        <div className="w-12 h-12 border-3 border-zinc-200 border-t-zinc-900 rounded-full animate-spin mb-4" />
-        <p className="text-zinc-600 font-medium text-sm">Menghubungkan ke ruang antrian tiket...</p>
-      </div>
-    );
-  }
-
-  if (queueData?.status === 'SOLD_OUT') {
-    return (
-      <div className="min-h-[70vh] flex flex-col items-center justify-center px-4">
-        <Card className="max-w-md w-full p-8 text-center bg-white border-0 rounded-3xl shadow-none">
-          <div className="w-16 h-16 mx-auto mb-5 rounded-full bg-rose-50 flex items-center justify-center text-rose-600">
-            <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-            </svg>
-          </div>
-          <h2 className="text-xl font-bold text-zinc-900 mb-2">Tiket Telah Habis Terjual</h2>
-          <p className="text-sm text-zinc-500 mb-6">
-            Mohon maaf, tiket untuk acara ini telah habis dibeli oleh antrian sebelum Anda.
-          </p>
-          <Button
-            onClick={redirectSilentlyToEvent}
-            className="w-full bg-zinc-950 hover:bg-zinc-800 text-white rounded-full py-3 text-sm font-semibold border-0 shadow-none active:shadow-none focus:shadow-none"
-          >
-            Kembali ke Halaman Event
-          </Button>
-        </Card>
-      </div>
-    );
-  }
-
   const isActive = queueData?.status === 'ACTIVE';
 
   return (
-    <div className="min-h-[80vh] bg-zinc-50/60 py-12 px-4 sm:px-6">
-      <div className="max-w-xl mx-auto space-y-6">
-        {/* Main Status Card */}
-        <Card className="p-6 sm:p-8 bg-white border-0 rounded-3xl shadow-none">
+    <div className="min-h-[85vh] bg-zinc-50/60 py-12 px-4 sm:px-6 relative">
+      <div ref={topRef} id="queue-page-top" aria-hidden="true" className="w-full h-0 pointer-events-none" />
+
+      {loading ? (
+        <div className="min-h-[60vh] flex flex-col items-center justify-center px-4">
+          <div className="w-12 h-12 border-3 border-zinc-200 border-t-zinc-900 rounded-full animate-spin mb-4" />
+          <p className="text-zinc-600 font-medium text-sm">Menghubungkan ke ruang antrian tiket...</p>
+        </div>
+      ) : queueData?.status === 'SOLD_OUT' ? (
+        <div className="min-h-[60vh] flex flex-col items-center justify-center px-4">
+          <Card className="max-w-md w-full p-8 text-center bg-white border-0 rounded-3xl shadow-none">
+            <div className="w-16 h-16 mx-auto mb-5 rounded-full bg-rose-50 flex items-center justify-center text-rose-600">
+              <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+            </div>
+            <h2 className="text-xl font-bold text-zinc-900 mb-2">Tiket Telah Habis Terjual</h2>
+            <p className="text-sm text-zinc-500 mb-6">
+              Mohon maaf, tiket untuk acara ini telah habis dibeli oleh antrian sebelum Anda.
+            </p>
+            <Button
+              onClick={redirectSilentlyToEvent}
+              className="w-full bg-zinc-950 hover:bg-zinc-800 text-white rounded-full py-3 text-sm font-semibold border-0 shadow-none active:shadow-none focus:shadow-none"
+            >
+              Kembali ke Halaman Event
+            </Button>
+          </Card>
+        </div>
+      ) : (
+        <div className="max-w-xl mx-auto space-y-6">
+          {/* Main Status Card */}
+          <Card className="p-6 sm:p-8 bg-white border-0 rounded-3xl shadow-none">
           <div className="text-center space-y-6">
             {/* Top Badge */}
             <div className="flex justify-center">
@@ -445,6 +480,7 @@ export default function EventQueuePage() {
           </Card>
         )}
       </div>
+      )}
 
       {/* Confirmation Modal */}
       <Modal

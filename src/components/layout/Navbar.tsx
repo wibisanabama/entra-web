@@ -2,15 +2,39 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/providers/auth-provider';
+import { ticketApi } from '@/lib/api';
 import { Ticket, LayoutDashboard, User, LogOut } from 'lucide-react';
 
 export function Navbar() {
   const { user, logout } = useAuth();
   const pathname = usePathname();
+  const router = useRouter();
   const [isAvatarDropdownOpen, setIsAvatarDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const handleLogout = async () => {
+    setIsAvatarDropdownOpen(false);
+    if (pathname.includes('/queue')) {
+      if (typeof window !== 'undefined') {
+        const urlParams = new URLSearchParams(window.location.search);
+        const orderId = urlParams.get('orderId');
+        if (orderId) {
+          try {
+            await ticketApi.post(`/api/v1/tickets/orders/${orderId}/cancel`);
+          } catch (e) {
+            console.error('Failed to cancel queue order on logout:', e);
+          }
+        }
+      }
+      logout();
+      const parts = pathname.split('/queue');
+      router.push(parts[0] || '/events');
+      return;
+    }
+    logout();
+  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -128,7 +152,7 @@ export function Navbar() {
 
                   <div className="border-t border-zinc-100 pt-1">
                     <button 
-                      onClick={() => { setIsAvatarDropdownOpen(false); logout(); }} 
+                      onClick={handleLogout} 
                       className="flex items-center gap-2.5 w-full text-left px-4 py-2 text-sm text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
                     >
                       <LogOut className="w-4 h-4 text-rose-500" />

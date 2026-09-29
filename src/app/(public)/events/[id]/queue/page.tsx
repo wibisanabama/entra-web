@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/Card';
 import { Modal } from '@/components/ui/Modal';
+import { useAuth } from '@/providers/auth-provider';
 import { QueueStatusResponse } from '@/types';
 
 export default function EventQueuePage() {
@@ -16,6 +17,7 @@ export default function EventQueuePage() {
   const searchParams = useSearchParams();
   const orderId = searchParams.get('orderId');
   const eventId = String(params.id || '');
+  const { user, isLoading: isAuthLoading } = useAuth();
 
   const [queueData, setQueueData] = useState<QueueStatusResponse | null>(null);
   const [loading, setLoading] = useState(true);
@@ -95,6 +97,17 @@ export default function EventQueuePage() {
     isNavigatingAway.current = true;
     router.push(`/events/${eventId}`);
   }, [eventId, router]);
+
+  // Jika sesi pengguna berakhir atau logout saat di halaman antrian, batalkan pesanan dan kembali ke halaman event
+  useEffect(() => {
+    if (isAuthLoading) return;
+    if (!user && !isNavigatingAway.current) {
+      if (orderId) {
+        ticketApi.post(`/api/v1/tickets/orders/${orderId}/cancel`).catch(() => {});
+      }
+      redirectSilentlyToEvent();
+    }
+  }, [user, isAuthLoading, orderId, redirectSilentlyToEvent]);
 
   // Handle open Snap Payment Modal
   const handleOpenPayment = useCallback(async () => {
@@ -251,8 +264,8 @@ export default function EventQueuePage() {
       } catch (err: any) {
         if (!isMounted) return;
         const msg = String(err?.message || '').toLowerCase();
-        // If order was cancelled, expired, or access denied -> redirect silently
-        if (msg.includes('not found') || msg.includes('access denied') || msg.includes('cancelled') || msg.includes('404')) {
+        // If order was cancelled, expired, access denied, or unauthorized -> redirect silently
+        if (msg.includes('not found') || msg.includes('access denied') || msg.includes('cancelled') || msg.includes('404') || msg.includes('401') || msg.includes('unauthorized')) {
           redirectSilentlyToEvent();
         }
       }
